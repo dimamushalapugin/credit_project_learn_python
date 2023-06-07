@@ -1,69 +1,165 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="UTF-8">
-  <style>
-    .container {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-    }
+    <meta charset="UTF-8">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
-    .form-label,
-    .form-control {
-      margin-bottom: 10px; /* Adjust the margin value to increase or decrease the space */
-    }
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #00bcd4, #00897b);
+        }
 
-    .form-control:last-child {
-      margin-bottom: 20px; /* Adjust the margin value to increase or decrease the space */
-    }
-  </style>
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .form-container {
+            max-width: 400px;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-container h2 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            text-align: center;
+            color: #333;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            font-size: 16px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #888;
+        }
+
+        .btn-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: #fff;
+            font-size: 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn:hover {
+            background-color: #45a049;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+        }
+
+        .btn-primary:hover {
+            background-color: #0069d9;
+        }
+
+        .menu {
+            background-color: #f0f0f0;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .menu a {
+            display: inline-block;
+            margin: 0 10px;
+            color: #333;
+            text-decoration: none;
+        }
+
+        .menu a.active {
+            font-weight: bold;
+        }
+    </style>
 </head>
 <body>
-  <div class="container">
+<div class="menu">
+    <a href="first_page.html" class="active">Страница ввода данных</a>
+    <a href="credit_table_page.html">Страница для просмотра информации по кредитам</a>
+</div>
+
+<div class="container">
     <form class="dropdown-menu p-4">
-      <div class="mb-3">
-        <label for="exampleDropdownFormName" class="form-label">Номер договора лизинга</label>
-        <input type="text" class="form-control" id="exampleDropdownFormName" placeholder="Пример 71/23">
-      </div>
+        <div class="mb-3">
+            <label for="exampleDropdownFormName" class="form-label">Номер договора лизинга</label>
+            <input type="text" class="form-control" id="exampleDropdownFormName" placeholder="Пример 71/23">
+        </div>
+        <div class="mb-3">
+            <label for="exampleDropdownFormName" class="form-label">Дата выдачи кредита</label>
+            <input type="text" class="form-control" id="exampleDropdowndate" placeholder="Пример 03.03.2023">
+        </div>
 
-      <div class="mb-3">
-        <label for="exampleDropdownFormCountry" class="form-label">Инвестор</label>
-        <select class="form-control" id="exampleDropdownFormCountry">
-          <option value="usa">Московский Кредитный Банк</option>
-          <option value="canada">Ак Барс Банк</option>
-          <option value="uk">Металлинвестбанк</option>
-          <option value="uk">Альфа-Банк</option>
-          <option value="uk">Первоуральскбанк</option>
-          <option value="uk">Урал ФД</option>
-          <option value="uk">Кредит Европа Банк</option>
-          <option value="uk">Солид Банк</option>
-          <option value="uk">Собственные средства</option>
-          <!-- Add more options as needed -->
-        </select>
-      </div>
 
-      <div class="mb-3">
-        <label for="typeCreditDogovor" class="form-label">Номер кредитного договора</label>
-        <select class="form-control" id="typeCreditDogovor">
-          <option value="usa">№ 1000</option>
-          <option value="canada">№ 1001</option>
-          <option value="uk">№ 1002</option>
-          <option value="uk">№ 1003</option>
-          <option value="uk">№ 1004</option>
-          <option value="uk">№ 1005</option>
-          <!-- Add more options as needed -->
-        </select>
-      </div>
+        <div class="mb-3">
+            <label for="exampleDropdownFormCountry" class="form-label">Инвестор</label>
+            <select class="form-control" id="exampleDropdownFormCountry">
+                <option value="mkb">Московский Кредитный Банк</option>
+                <option value="abb">Ак Барс Банк</option>
+                <option value="mib">Металлинвестбанк</option>
+                <option value="alfa">Альфа-Банк</option>
+                <option value="pub">Первоуральскбанк</option>
+                <option value="ural_fd">Урал ФД</option>
+                <option value="keb">Кредит Европа Банк</option>
+                <option value="solid">Солид Банк</option>
+                <option value="own_funds">Собственные средства</option>
+                <!-- Add more options as needed -->
+            </select>
+        </div>
 
-      <div class="mb-3">
-        <label for="exampleFileInput" class="form-label">Загрузить файл</label>
-        <input type="file" class="form-control" id="exampleFileInput">
-      </div>
+        <div class="mb-3">
+            <label for="typeCreditDogovor" class="form-label">Номер кредитного договора</label>
+            <select class="form-control" id="typeCreditDogovor">
+                <option value="1">№ 1000</option>
+                <option value="2">№ 1001</option>
+                <option value="3">№ 1002</option>
+                <option value="4">№ 1003</option>
+                <option value="5">№ 1004</option>
+                <option value="6">№ 1005</option>
+                <!-- Add more options as needed -->
+            </select>
+        </div>
+        <div class="mb-3">
+            <label for="exampleFileInput" class="form-label">Загрузить файл</label>
+            <input type="file" class="form-control" id="exampleFileInput">
+        </div>
 
-      <button type="button" onclick="handleFile()" class="btn btn-primary">Обработать файл</button>
+        <button type="button" onclick="handleFile()" class="btn btn-primary">Обработать файл</button>
     </form>
-  </div>
+</div>
 </body>
 </html>
