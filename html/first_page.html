@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <style>
+    .container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .form-label,
+    .form-control {
+      margin-bottom: 10px; /* Adjust the margin value to increase or decrease the space */
+    }
+
+    .form-control:last-child {
+      margin-bottom: 20px; /* Adjust the margin value to increase or decrease the space */
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <form class="dropdown-menu p-4">
+      <div class="mb-3">
+        <label for="exampleDropdownFormName" class="form-label">Номер договора лизинга</label>
+        <input type="text" class="form-control" id="exampleDropdownFormName" placeholder="Пример 71/23">
+      </div>
+
+      <div class="mb-3">
+        <label for="exampleDropdownFormCountry" class="form-label">Инвестор</label>
+        <select class="form-control" id="exampleDropdownFormCountry">
+          <option value="usa">Московский Кредитный Банк</option>
+          <option value="canada">Ак Барс Банк</option>
+          <option value="uk">Металлинвестбанк</option>
+          <option value="uk">Альфа-Банк</option>
+          <option value="uk">Первоуральскбанк</option>
+          <option value="uk">Урал ФД</option>
+          <option value="uk">Кредит Европа Банк</option>
+          <option value="uk">Солид Банк</option>
+          <option value="uk">Собственные средства</option>
+          <!-- Add more options as needed -->
+        </select>
+      </div>
+
+      <div class="mb-3">
+        <label for="typeCreditDogovor" class="form-label">Номер кредитного договора</label>
+        <select class="form-control" id="typeCreditDogovor">
+          <option value="usa">№ 1000</option>
+          <option value="canada">№ 1001</option>
+          <option value="uk">№ 1002</option>
+          <option value="uk">№ 1003</option>
+          <option value="uk">№ 1004</option>
+          <option value="uk">№ 1005</option>
+          <!-- Add more options as needed -->
+        </select>
+      </div>
+
+      <div class="mb-3">
+        <label for="exampleFileInput" class="form-label">Загрузить файл</label>
+        <input type="file" class="form-control" id="exampleFileInput">
+      </div>
+
+      <button type="button" onclick="handleFile()" class="btn btn-primary">Обработать файл</button>
+    </form>
+  </div>
+</body>
+</html>
