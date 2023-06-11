@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Основная страница</title>
+    <title>Страница создания нового пользователя</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
@@ -15,6 +15,7 @@
         .content {
             flex: 1;
         }
+
 
     </style>
 </head>
@@ -48,49 +49,30 @@
     </div>
 </nav>
 
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="mb-3">
-            <label for="exampleDropdownFormName" class="form-label">Номер договора лизинга</label>
-            <input type="text" class="form-control" id="exampleDropdownFormName" placeholder="Пример 71/23">
-        </div>
+<div class="row">
+    <div class="col-md-4 offset-md-4">
+        <div class="card card-body">
+            <form action="#" method="POST">
+                <div class="form-group">
+                    <label>Электронная почта</label>
+                    <input type="text" name="type_pl" value="" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label>Пароль</label>
+                    <input type="text" name="identificator_pl" value=""
+                           class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary btn-block">
+                        Создание пользователя
+                    </button>
+                </div>
+            </form>
 
-        <table class="table">
-            <thead>
-            <tr>
-                <th scope="col">№</th>
-                <th scope="col">Номер договора лизинга</th>
-                <th scope="col">Остаток долга по кредиту</th>
-                <th scope="col">Уплаченные проценты по кредиту</th>
-                <th scope="col">Проценты к уплате по кредиту</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-                <th scope="row">1</th>
-                <td>7/23</td>
-                <td>2 000 000</td>
-                <td>12 000 000</td>
-                <td>13 000 000</td>
-            </tr>
-            <tr>
-                <th scope="row">2</th>
-                <td>102/23</td>
-                <td>3 000 000</td>
-                <td>7 000 000</td>
-                <td>17 000 000</td>
-            </tr>
-            <tr>
-                <th scope="row">3</th>
-                <td>111/22</td>
-                <td>4 000 000</td>
-                <td>1 000 000</td>
-                <td>19 000 000</td>
-            </tr>
-            </tbody>
-        </table>
+        </div>
     </div>
 </div>
+
 <footer class="footer mt-auto py-3">
     <div class="container text-center">
         <p class="text-muted">&copy; All rights reserved 2023 Leasing Company of Tatarstan</p>
