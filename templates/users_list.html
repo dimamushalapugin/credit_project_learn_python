@@ -24,16 +24,12 @@
         .content {
             flex: 1;
         }
-
-
-
-
     </style>
 </head>
 <body style="background-color:#85c1df;">
 <nav class="navbar navbar-expand-lg navbar-light bg-info">
     <div class="container-fluid">
-        <a class="navbar-brand" href="#">Загрузка графиков по кредитам</a>
+        <a class="navbar-brand" href="{{ url_for('load_xlsx') }}">Загрузка графиков по кредитам</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -41,19 +37,16 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Вывод информации по кредитам</a>
+                    <a class="nav-link" href="{{ url_for('home') }}">Вывод информации по кредитам</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Изменение графиков по кредитам</a>
+                    <a class="nav-link" href="{{ url_for('list_of_user') }}">Список всех пользователей</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Список всех пользователей</a>
+                    <a class="nav-link" href="{{ url_for('create_user') }}">Добавление нового пользователя</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Добавление нового пользователя</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Выход</a>
+                    <a class="nav-link" href="{{ url_for('exit_user') }}">Выход</a>
                 </li>
             </ul>
         </div>
@@ -75,7 +68,6 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <!--        {% for row in list_users %}-->
                         <tr>
                             <td>1</td>
                             <td>mail@mail.com</td>
@@ -85,7 +77,6 @@
                                 <a href="#" class="btn btn-danger btn-delete btn-sm">Удаление пользователя</a>
                             </td>
                         </tr>
-                        <!--                    {% endfor %}-->
                         </tbody>
                     </table>
                     <script>
@@ -113,7 +104,6 @@ $('#example').DataTable({
 
 
                     </script>
-                    <!--                {% endblock %}-->
                 </div>
             </div>
         </div>
