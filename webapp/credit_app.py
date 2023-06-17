@@ -46,19 +46,37 @@ def delete_user(user_id):
     return redirect(url_for('list_of_user'))
 
 
+def write_to_db(new_data):
+    models.db.session.add(new_data)
+    models.db.session.commit()
+
+
+def assign_leasing_contract_id(request_form):
+    new_leasing_contract = models.LeasingContract(leasing_contract_number=request_form)
+    write_to_db(new_leasing_contract)
+    return new_leasing_contract.id
+
+
+def find_credit_contract_id(request_form):
+    new_credit_contract = models.CreditContract.query.filter(
+        models.CreditContract.credit_contract_name == request_form).first()
+    print(request_form)
+    if new_credit_contract:
+        return new_credit_contract.id
+    return None
+
+
 @app.route('/first_page', methods=['GET', 'POST'])
 def load_xlsx():
     if request.method == 'POST':
-        leasing_contract = request.form['leasing_contract']
-        payment_date_str = request.form['payment_date']
-        payment_date = datetime.strptime(payment_date_str, '%d.%m.%Y').date()
-        credit_contract = request.form['credit_contract']
+        leasing_contract = assign_leasing_contract_id(request.form['leasing_contract'])
+        payment_date = datetime.strptime(request.form['payment_date'], '%d.%m.%Y').date()
+        credit_contract = find_credit_contract_id(request.form['credit_contract'])
 
-        new_payment = models.Payment(payment_date=payment_date)
-        models.db.session.add(new_payment)
-        models.db.session.commit()
+        new_payment = models.Payment(payment_date=payment_date, leasing_contract_id=leasing_contract,
+                                     credit_contract_id=credit_contract)
+        write_to_db(new_payment)
         return redirect(url_for('success'))
-
     return render_template('first_page.html')
 
 
