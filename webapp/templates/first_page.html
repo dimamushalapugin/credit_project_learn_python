@@ -23,7 +23,7 @@
 <body style="background-color:#85c1df;">
 <nav class="navbar navbar-expand-lg navbar-light bg-info">
     <div class="container-fluid">
-        <a class="navbar-brand" href="{{ url_for('load_xlsx') }}">Загрузка графиков по кредитам</a>
+        <a class="navbar-brand" href="{{ url_for('create_payment') }}">Загрузка графиков по кредитам</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -34,7 +34,7 @@
                     <a class="nav-link" href="{{ url_for('home') }}">Вывод информации по кредитам</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('list_of_user') }}">Список всех пользователей</a>
+                    <a class="nav-link" href="{{ url_for('list_of_users') }}">Список всех пользователей</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="{{ url_for('create_user') }}">Добавление нового пользователя</a>
@@ -48,21 +48,21 @@
 </nav>
 <div class="container mt-5">
     <div class="row justify-content-center">
-        <form action="{{ url_for('load_xlsx') }}" method="POST" enctype="multipart/form-data">
+        <form action="{{ url_for('create_payment') }}" method="POST" enctype="multipart/form-data">
             <div class="mb-3">
                 <label for="exampleDropdownFormName" class="form-label fs-4">Номер договора лизинга</label>
                 <input type="text" class="form-control-lg" id="exampleDropdownFormName" name="leasing_contract"
-                       placeholder="Пример 73/23">
+                       placeholder="Пример 73/23" required>
             </div>
             <div class="mb-3">
                 <label for="exampleDropdownFormName" class="form-label fs-4">Дата выдачи кредита</label>
                 <input type="text" class="form-control flatpickr-input" id="datepicker" name="payment_date" readonly
                        data-flatpickr='{"locale": "ru", "appendTo": document.body}'
-                       data-i18n='{"ru": {"toggleTitle": "Выберите дату", "today": "Сегодня", "prevMonth": "Предыдущий месяц", "nextMonth": "Следующий месяц"}}'>
+                       data-i18n='{"ru": {"toggleTitle": "Выберите дату", "today": "Сегодня", "prevMonth": "Предыдущий месяц", "nextMonth": "Следующий месяц"}}' required>
             </div>
             <div class="mb-3">
                 <label for="exampleDropdownFormCountry" class="form-label fs-4">Инвестор</label>
-                <select class="form-control-lg" id="exampleDropdownFormCountry" name="investor" onchange="updateCreditContracts()">
+                <select class="form-control-lg" id="exampleDropdownFormCountry" name="investor" onchange="updateCreditContracts()" required>
                     <option value="mkb">Московский Кредитный Банк</option>
                     <option value="abb">Ак Барс Банк</option>
                     <option value="mib">Металлинвестбанк</option>
@@ -143,9 +143,31 @@
             </script>
             <div class="mb-3">
                 <label for="exampleFileInput" class="form-label fs-4">Выбрать файл</label>
-                <input type="file" class="form-control-lg" id="exampleFileInput" name="uploaded_file">
+                <input type="file" class="form-control-lg" id="exampleFileInput" name="uploaded_file" required>
             </div>
             <button type="submit" onclick="handleFile()" class="btn btn-primary" name="save_file">Сохранить файл</button>
+            <script>
+                function handleFile() {
+                    const fileInput = document.getElementById('exampleFileInput');
+                    const file = fileInput.files[0];
+
+                    if (file) {
+                        const formData = new FormData();
+                        formData.append('uploaded_file', file);
+
+                        fetch('/total_amount_from_xlsx', {
+                            method: 'POST',
+                            body: formData
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                        })
+                        .catch(error => {
+                            console.error('Ошибка:', error);
+                        });
+                    }
+                }
+            </script>
         </form>
     </div>
 </div>

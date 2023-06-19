@@ -22,7 +22,7 @@
 <body style="background-color:#85c1df;">
 <nav class="navbar navbar-expand-lg navbar-light bg-info">
     <div class="container-fluid">
-        <a class="navbar-brand" href="{{ url_for('load_xlsx') }}">Загрузка графиков по кредитам</a>
+        <a class="navbar-brand" href="{{ url_for('create_payment') }}">Загрузка графиков по кредитам</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -33,7 +33,7 @@
                     <a class="nav-link" href="{{ url_for('home') }}">Вывод информации по кредитам</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('list_of_user') }}">Список всех пользователей</a>
+                    <a class="nav-link" href="{{ url_for('list_of_users') }}">Список всех пользователей</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="{{ url_for('create_user') }}">Добавление нового пользователя</a>
