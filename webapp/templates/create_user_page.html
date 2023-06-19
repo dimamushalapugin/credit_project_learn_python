@@ -22,7 +22,7 @@
 <body style="background-color:#85c1df;">
 <nav class="navbar navbar-expand-lg navbar-light bg-info">
     <div class="container-fluid">
-        <a class="navbar-brand" href="#">Загрузка графиков по кредитам</a>
+        <a class="navbar-brand" href="{{ url_for('create_payment') }}">Загрузка графиков по кредитам</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -30,19 +30,16 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Вывод информации по кредитам</a>
+                    <a class="nav-link" href="{{ url_for('home') }}">Вывод информации по кредитам</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Изменение графиков по кредитам</a>
+                    <a class="nav-link" href="{{ url_for('list_of_users') }}">Список всех пользователей</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Список всех пользователей</a>
+                    <a class="nav-link" href="{{ url_for('create_user') }}">Добавление нового пользователя</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Добавление нового пользователя</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Выход</a>
+                    <a class="nav-link" href="{{ url_for('exit_user') }}">Выход</a>
                 </li>
             </ul>
         </div>
@@ -52,7 +49,7 @@
 <div class="row">
     <div class="col-md-4 offset-md-4">
         <div class="card card-body">
-            <form action="#" method="POST">
+            <form action="{{ url_for('create_user') }}" method="POST">
                 <div class="form-group">
                     <label>Электронная почта</label>
                     <input type="text" name="type_pl" value="" class="form-control" required>
