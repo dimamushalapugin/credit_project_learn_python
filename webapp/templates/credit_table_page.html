@@ -63,6 +63,8 @@
             <tr>
                 <th scope="col">№</th>
                 <th scope="col">Номер договора лизинга</th>
+                <th scope="col">Наименование банка</th>
+                <th scope="col">Номер кредитного договора</th>
                 <th scope="col">Остаток долга по кредиту</th>
                 <th scope="col">Уплаченные проценты по кредиту</th>
                 <th scope="col">Проценты к уплате по кредиту</th>
@@ -70,36 +72,20 @@
             </tr>
             </thead>
             <tbody>
-            <tr>
-                <th scope="row">1</th>
-                <td>7/23</td>
-                <td>2 000 000</td>
-                <td>12 000 000</td>
-                <td>13 000 000</td>
+                {% for payment in result %}
+                <tr>
+                <td>{{ loop.index }}</td>
+                <td>{{ payment.leasing_contract_number }}</td>
+                <td>{{ payment.bank_name }}</td>
+                <td>{{ payment.credit_contract_name }}</td>
+                <td>{{ payment.sum_amount }}</td>
+                <td>-</td>
+                <td>-</td>
                 <td><label for="exampleFileInput1" class="form-label fs-4"></label>
                     <input type="file" class="form-control-lg" id="exampleFileInput1"
                            style="font-size: 12px;"></td>
-            </tr>
-            <tr>
-                <th scope="row">2</th>
-                <td>102/23</td>
-                <td>3 000 000</td>
-                <td>7 000 000</td>
-                <td>17 000 000</td>
-                <td><label for="exampleFileInput2" class="form-label fs-4"></label>
-                    <input type="file" class="form-control-lg" id="exampleFileInput2"
-                           style="font-size: 12px;"></td>
-            </tr>
-            <tr>
-                <th scope="row">3</th>
-                <td>111/22</td>
-                <td>4 000 000</td>
-                <td>1 000 000</td>
-                <td>19 000 000</td>
-                <td><label for="exampleFileInput3" class="form-label fs-4"></label>
-                    <input type="file" class="form-control-lg" id="exampleFileInput3"
-                           style="font-size: 12px;"></td>
-            </tr>
+                </tr>
+                {% endfor %}
             </tbody>
         </table>
     </div>

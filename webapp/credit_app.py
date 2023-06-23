@@ -3,6 +3,7 @@ import pandas as pd
 from flask import Flask, render_template, redirect, url_for, request, jsonify, flash
 from datetime import datetime
 from change_xlsx import change_of_date
+from sqlalchemy import func
 
 app = Flask(__name__)
 app.config.from_pyfile('config.py')
@@ -61,6 +62,25 @@ def list_of_users():
     return render_template('users_list.html', users=users)
 
 
+@app.route('/credit_table')
+def list_of_all_payments():
+    result = models.db.session.query(
+        models.LeasingContract.leasing_contract_number,
+        models.Bank.bank_name,
+        models.CreditContract.credit_contract_name,
+        func.sum(models.PaymentSchedule.amount).label('sum_amount')
+    ).select_from(models.PaymentSchedule).join(models.Payment).join(models.LeasingContract).join(
+        models.CreditContract).join(models.Bank). \
+        filter(models.PaymentSchedule.payment_date > func.CURRENT_DATE()). \
+        group_by(
+        models.LeasingContract.leasing_contract_number,
+        models.Bank.bank_name,
+        models.CreditContract.credit_contract_name
+    ).all()
+
+    return render_template('credit_table_page.html', result=result)
+
+
 @app.route('/delete_user/<int:user_id>', methods=['GET', 'POST'])
 def delete_user(user_id):
     user = models.db.session.get(models.User, user_id)
@@ -104,12 +124,12 @@ def total_amount_from_xlsx():
 def create_payment():
     if request.method == 'POST':
         leasing_contract = assign_leasing_contract_id(request.form['leasing_contract'])
-        date_of_issue = datetime.strptime(request.form['date_of_issue'], '%d.%m.%Y').date()
+        date_of_issue = datetime.strptime(request.form['date_of_issue'], '%Y-%m-%d').date()
         credit_contract = find_credit_contract_id(request.form['credit_contract'])
-        amount = float(total_amount_from_xlsx())
+        total_amount = float(total_amount_from_xlsx())
 
         new_payment = models.Payment(date_of_issue=date_of_issue, leasing_contract_id=leasing_contract,
-                                     credit_contract_id=credit_contract, amount=amount)
+                                     credit_contract_id=credit_contract, total_amount=total_amount)
         write_to_db(new_payment)
         create_payment_schedule(new_payment)
 
