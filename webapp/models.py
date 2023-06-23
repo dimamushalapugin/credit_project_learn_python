@@ -61,14 +61,14 @@ class Payment(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     leasing_contract_id = db.Column(db.Integer, db.ForeignKey('leasing_contracts.id'))
-    payment_date = db.Column(db.Date)
+    date_of_issue = db.Column(db.Date)
     amount = db.Column(db.Float)
     credit_contract_id = db.Column(db.Integer, db.ForeignKey('credit_contracts.id'))
 
     payment_schedules = db.relationship("PaymentSchedule", backref="payment")
 
     def __repr__(self):
-        return f'Payment {self.id}, {self.leasing_contract_id}, {self.payment_date}, {self.amount}'
+        return f'Payment {self.id}, {self.leasing_contract_id}, {self.date_of_issue}, {self.amount}'
 
 
 class PaymentSchedule(db.Model):

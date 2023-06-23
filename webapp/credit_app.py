@@ -1,13 +1,14 @@
 import models
+import pandas as pd
 from flask import Flask, render_template, redirect, url_for, request, jsonify, flash
 from datetime import datetime
-import pandas as pd
-from flask_login import LoginManager, login_user, login_required
+from change_xlsx import change_of_date
 
 app = Flask(__name__)
 app.config.from_pyfile('config.py')
 models.db.init_app(app)
 app.config['SECRET_KEY'] = '12134587481321321'
+
 
 @app.route('/login', methods=['POST', 'GET'])
 def login():
@@ -74,9 +75,15 @@ def write_to_db(new_data):
 
 
 def assign_leasing_contract_id(request_form):
-    new_leasing_contract = models.LeasingContract(leasing_contract_number=request_form)
-    write_to_db(new_leasing_contract)
-    return new_leasing_contract.id
+    existing_contract = models.LeasingContract.query.filter(
+        models.LeasingContract.leasing_contract_number == request_form).first()
+
+    if existing_contract:
+        return existing_contract.id
+    else:
+        new_leasing_contract = models.LeasingContract(leasing_contract_number=request_form)
+        write_to_db(new_leasing_contract)
+        return new_leasing_contract.id
 
 
 def find_credit_contract_id(request_form):
@@ -97,11 +104,11 @@ def total_amount_from_xlsx():
 def create_payment():
     if request.method == 'POST':
         leasing_contract = assign_leasing_contract_id(request.form['leasing_contract'])
-        payment_date = datetime.strptime(request.form['payment_date'], '%d.%m.%Y').date()
+        date_of_issue = datetime.strptime(request.form['date_of_issue'], '%d.%m.%Y').date()
         credit_contract = find_credit_contract_id(request.form['credit_contract'])
         amount = float(total_amount_from_xlsx())
 
-        new_payment = models.Payment(payment_date=payment_date, leasing_contract_id=leasing_contract,
+        new_payment = models.Payment(date_of_issue=date_of_issue, leasing_contract_id=leasing_contract,
                                      credit_contract_id=credit_contract, amount=amount)
         write_to_db(new_payment)
         create_payment_schedule(new_payment)
@@ -111,7 +118,7 @@ def create_payment():
 
 
 def create_payment_schedule(new_payment):
-    df = pd.read_excel(request.files['uploaded_file'])
+    df = change_of_date(request.files['uploaded_file'])
     for index, row in df.iterrows():
         new_payment_schedule = models.PaymentSchedule(payment_id=new_payment.id, payment_date=row['payment_date'],
                                                       amount=row['amount'], interest_rate=row['interest_rate'])
