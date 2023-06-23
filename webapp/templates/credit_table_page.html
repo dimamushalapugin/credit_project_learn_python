@@ -17,6 +17,11 @@
         }
 
 
+
+
+
+
+
     </style>
 </head>
 <body style="background-color:#85c1df;">
@@ -49,8 +54,8 @@
 <div class="container mt-5">
     <div class="row justify-content-center">
         <div class="mb-3">
-            <label for="exampleDropdownFormName" class="form-label">Номер договора лизинга</label>
-            <input type="text" class="form-control" id="exampleDropdownFormName" placeholder="Пример 71/23">
+            <label for="searchInput" class="form-label">Номер договора лизинга</label>
+            <input type="text" class="form-control" id="searchInput" placeholder="Пример 71/23">
         </div>
 
         <table class="table">
@@ -72,7 +77,8 @@
                 <td>12 000 000</td>
                 <td>13 000 000</td>
                 <td><label for="exampleFileInput1" class="form-label fs-4"></label>
-                    <input type="file" class="form-control-lg" id="exampleFileInput1" style="font-size: 12px;"></td>
+                    <input type="file" class="form-control-lg" id="exampleFileInput1"
+                           style="font-size: 12px;"></td>
             </tr>
             <tr>
                 <th scope="row">2</th>
@@ -81,7 +87,8 @@
                 <td>7 000 000</td>
                 <td>17 000 000</td>
                 <td><label for="exampleFileInput2" class="form-label fs-4"></label>
-                    <input type="file" class="form-control-lg" id="exampleFileInput2" style="font-size: 12px;"></td>
+                    <input type="file" class="form-control-lg" id="exampleFileInput2"
+                           style="font-size: 12px;"></td>
             </tr>
             <tr>
                 <th scope="row">3</th>
@@ -90,12 +97,40 @@
                 <td>1 000 000</td>
                 <td>19 000 000</td>
                 <td><label for="exampleFileInput3" class="form-label fs-4"></label>
-                    <input type="file" class="form-control-lg" id="exampleFileInput3" style="font-size: 12px;"></td>
+                    <input type="file" class="form-control-lg" id="exampleFileInput3"
+                           style="font-size: 12px;"></td>
             </tr>
             </tbody>
         </table>
     </div>
 </div>
+<script>
+function searchLeasingContract() {
+    // Get the search query entered by the user
+    var query = document.getElementById('searchInput').value.toLowerCase();
+
+    // Get all the rows in the table body
+    var rows = document.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+
+    // Loop through each row and check if it matches the search query
+    for (var i = 0; i < rows.length; i++) {
+        var contractNumber = rows[i].getElementsByTagName('td')[0].innerText.toLowerCase();
+
+        // If the contract number contains the search query, display the row, otherwise hide it
+        if (contractNumber.includes(query)) {
+            rows[i].style.display = '';
+        } else {
+            rows[i].style.display = 'none';
+        }
+    }
+}
+
+// Add an event listener to the search input field
+document.getElementById('searchInput').addEventListener('input', searchLeasingContract);
+
+
+
+</script>
 <footer class="footer mt-auto py-3">
     <div class="container text-center">
         <p class="text-muted">&copy; All rights reserved 2023 Leasing Company of Tatarstan</p>
