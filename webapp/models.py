@@ -62,7 +62,7 @@ class Payment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     leasing_contract_id = db.Column(db.Integer, db.ForeignKey('leasing_contracts.id'))
     date_of_issue = db.Column(db.Date)
-    amount = db.Column(db.Float)
+    total_amount = db.Column(db.Float)
     credit_contract_id = db.Column(db.Integer, db.ForeignKey('credit_contracts.id'))
 
     payment_schedules = db.relationship("PaymentSchedule", backref="payment")
