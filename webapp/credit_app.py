@@ -1,15 +1,37 @@
 import models
-from flask import Flask, render_template, redirect, url_for, request, jsonify
+from flask import Flask, render_template, redirect, url_for, request, jsonify, flash
 from datetime import datetime
 import pandas as pd
+from flask_login import LoginManager, login_user, login_required
 
 app = Flask(__name__)
 app.config.from_pyfile('config.py')
 models.db.init_app(app)
+app.config['SECRET_KEY'] = '12134587481321321'
 
-
-@app.route('/login', methods=['GET', 'POST'])
+@app.route('/login', methods=['POST', 'GET'])
 def login():
+    if request.method == 'POST':
+        username = request.form['inputEmail']
+        password = request.form['inputPassword']
+        print(username, password)
+        try:
+            user = models.User.query.filter(models.User.login == username).first().login
+        except AttributeError:
+            user = None
+        try:
+            password_check = models.User.query.filter(models.User.password == password).first().password
+        except AttributeError:
+            password_check = None
+        print("user:", user)
+        print("password_check:", password_check)
+        if user == username and password_check == password:
+            return redirect(url_for('home'))
+        elif user != username or password_check != password:
+            flash('Неверный логин или пароль', 'error')
+            return redirect(url_for('login'))
+        else:
+            return redirect(url_for('login'))
     return render_template('login_page.html')
 
 
@@ -27,7 +49,6 @@ def create_user():
         new_user = models.User(login=email, password=password, blocked=False)
         models.db.session.add(new_user)
         models.db.session.commit()
-
         return redirect(url_for('list_of_users'))
 
     return render_template('create_user_page.html')
@@ -96,7 +117,6 @@ def create_payment_schedule(new_payment):
                                                       amount=row['amount'], interest_rate=row['interest_rate'])
         models.db.session.add(new_payment_schedule)
     models.db.session.commit()
-    return jsonify(message='Файл успешно загружен')
 
 
 @app.route('/', methods=['POST', 'GET'])
