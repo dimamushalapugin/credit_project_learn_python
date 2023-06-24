@@ -16,7 +16,6 @@ def login():
     if request.method == 'POST':
         username = request.form['inputEmail']
         password = request.form['inputPassword']
-        print(username, password)
         try:
             user = models.User.query.filter(models.User.login == username).first().login
         except AttributeError:
@@ -25,8 +24,6 @@ def login():
             password_check = models.User.query.filter(models.User.password == password).first().password
         except AttributeError:
             password_check = None
-        print("user:", user)
-        print("password_check:", password_check)
         if user == username and password_check == password:
             return redirect(url_for('list_of_all_payments'))
         elif user != username or password_check != password:
