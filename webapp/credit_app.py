@@ -1,14 +1,14 @@
 import models
 import pandas as pd
-from flask import Flask, render_template, redirect, url_for, request, jsonify, flash
+from flask import Flask, render_template, redirect, url_for, request, flash
 from datetime import datetime
 from change_xlsx import change_of_date
 from sqlalchemy import func
 
+
 app = Flask(__name__)
 app.config.from_pyfile('config.py')
 models.db.init_app(app)
-app.config['SECRET_KEY'] = '12134587481321321'
 
 
 @app.route('/login', methods=['POST', 'GET'])
@@ -28,7 +28,7 @@ def login():
         print("user:", user)
         print("password_check:", password_check)
         if user == username and password_check == password:
-            return redirect(url_for('home'))
+            return redirect(url_for('list_of_all_payments'))
         elif user != username or password_check != password:
             flash('Неверный логин или пароль', 'error')
             return redirect(url_for('login'))
@@ -133,7 +133,7 @@ def create_payment():
         write_to_db(new_payment)
         create_payment_schedule(new_payment)
 
-        return redirect(url_for('home'))
+        return redirect(url_for('list_of_all_payments'))
     return render_template('first_page.html')
 
 
@@ -146,9 +146,9 @@ def create_payment_schedule(new_payment):
     models.db.session.commit()
 
 
-@app.route('/', methods=['POST', 'GET'])
+@app.route('/')
 def home():
-    return render_template('credit_table_page.html')
+    return redirect(url_for('list_of_all_payments'))
 
 
 if __name__ == '__main__':
