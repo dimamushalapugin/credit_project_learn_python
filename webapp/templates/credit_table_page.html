@@ -35,7 +35,7 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('home') }}">Вывод информации по кредитам</a>
+                    <a class="nav-link" href="{{ url_for('list_of_all_payments') }}">Вывод информации по кредитам</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="{{ url_for('list_of_users') }}">Список всех пользователей</a>
@@ -53,9 +53,25 @@
 
 <div class="container mt-5">
     <div class="row justify-content-center">
-        <div class="mb-3">
-            <label for="searchInput" class="form-label">Номер договора лизинга</label>
-            <input type="text" class="form-control" id="searchInput" placeholder="Пример 71/23">
+        <div class="row">
+            <div class="col">
+                <div class="mb-3">
+                    <label for="searchInput" class="form-label">Номер договора лизинга</label>
+                    <input type="text" class="form-control form-control" id="searchInput" placeholder="Пример 71/23">
+                </div>
+            </div>
+            <div class="col">
+                <div class="mb-3">
+                    <label for="searchInput2" class="form-label">Наименование банка</label>
+                    <input type="text" class="form-control form-control" id="searchInput2" placeholder="">
+                </div>
+            </div>
+            <div class="col">
+                <div class="mb-3">
+                    <label for="searchInput3" class="form-label">Номер кредитного договора</label>
+                    <input type="text" class="form-control form-control" id="searchInput3" placeholder="">
+                </div>
+            </div>
         </div>
 
         <table class="table">
@@ -78,7 +94,7 @@
                 <td>{{ payment.leasing_contract_number }}</td>
                 <td>{{ payment.bank_name }}</td>
                 <td>{{ payment.credit_contract_name }}</td>
-                <td>{{ payment.sum_amount }}</td>
+                <td>{{ '{:,.2f}'.format(payment.sum_amount).replace(',', ' ').replace('.', ',') }}</td>
                 <td>-</td>
                 <td>-</td>
                 <td><label for="exampleFileInput1" class="form-label fs-4"></label>
@@ -100,7 +116,7 @@ function searchLeasingContract() {
 
     // Loop through each row and check if it matches the search query
     for (var i = 0; i < rows.length; i++) {
-        var contractNumber = rows[i].getElementsByTagName('td')[0].innerText.toLowerCase();
+        var contractNumber = rows[i].getElementsByTagName('td')[1].innerText.toLowerCase();
 
         // If the contract number contains the search query, display the row, otherwise hide it
         if (contractNumber.includes(query)) {
@@ -114,7 +130,41 @@ function searchLeasingContract() {
 // Add an event listener to the search input field
 document.getElementById('searchInput').addEventListener('input', searchLeasingContract);
 
+function searchBank() {
+    var query = document.getElementById('searchInput2').value.toLowerCase();
 
+    var rows = document.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+
+    for (var i = 0; i < rows.length; i++) {
+        var nameBank = rows[i].getElementsByTagName('td')[2].innerText.toLowerCase();
+
+        if (nameBank.includes(query)) {
+            rows[i].style.display = '';
+        } else {
+            rows[i].style.display = 'none';
+        }
+    }
+}
+
+document.getElementById('searchInput2').addEventListener('input', searchBank);
+
+function searchCreditContract() {
+    var query = document.getElementById('searchInput3').value.toLowerCase();
+
+    var rows = document.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+
+    for (var i = 0; i < rows.length; i++) {
+        var creditContract = rows[i].getElementsByTagName('td')[3].innerText.toLowerCase();
+
+        if (creditContract.includes(query)) {
+            rows[i].style.display = '';
+        } else {
+            rows[i].style.display = 'none';
+        }
+    }
+}
+
+document.getElementById('searchInput3').addEventListener('input', searchCreditContract);
 
 </script>
 <footer class="footer mt-auto py-3">
