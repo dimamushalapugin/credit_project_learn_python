@@ -6,10 +6,10 @@ from change_xlsx import change_of_date
 from sqlalchemy import func
 from flask_login import LoginManager, login_required, current_user, login_user, logout_user
 
-
 app = Flask(__name__)
 app.config.from_pyfile('config.py')
 models.db.init_app(app)
+
 
 # login_manager = LoginManager()
 # login_manager.init_app(app)
@@ -51,10 +51,12 @@ def login():
             return redirect(url_for('login'))
     return render_template('login_page.html')
 
+
 @app.route('/full_credit_info/<int:leasing_contract_number>', methods=['GET', 'POST'])
 @login_required
 def full_credit(leasing_contract_number):
     return redirect(url_for('full_credit_info'))
+
 
 @app.route('/logout')
 # @login_required
@@ -174,6 +176,7 @@ def create_payment_schedule(new_payment):
 # @login_required
 def home():
     return redirect(url_for('list_of_all_payments'))
+
 
 if __name__ == '__main__':
     with app.app_context():
