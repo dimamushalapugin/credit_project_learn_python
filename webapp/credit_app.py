@@ -11,24 +11,6 @@ app.config.from_pyfile('config.py')
 models.db.init_app(app)
 
 
-# login_manager = LoginManager()
-# login_manager.init_app(app)
-# # Укажите страницу входа (login) для перенаправления при неавторизованном доступе
-# login_manager.login_view = 'login'
-
-# @login_manager.user_loader
-# def load_user(user_id):
-#     return models.User.query.get(user_id)
-
-# class User(models.db.Model):
-#     id = models.db.Column(models.db.Integer, primary_key=True)
-#     login = models.db.Column(models.db.String(50), nullable=False, unique=True)
-#     password = models.db.Column(models.db.String(50), nullable=False)
-#     blocked = models.db.Column(models.db.Boolean, default=False)
-#
-#     def is_active(self):
-#         return not self.blocked
-
 @app.route('/login', methods=['POST', 'GET'])
 def login():
     if request.method == 'POST':
@@ -59,13 +41,11 @@ def full_credit(leasing_contract_number):
 
 
 @app.route('/logout')
-# @login_required
 def exit_user():
     return redirect(url_for('login'))
 
 
 @app.route('/create_new_user', methods=['GET', 'POST'])
-# @login_required
 def create_user():
     if request.method == 'POST':
         email = request.form['type_pl']
@@ -78,14 +58,12 @@ def create_user():
 
 
 @app.route('/list_user')
-# @login_required
 def list_of_users():
     users = models.User.query.all()
     return render_template('users_list.html', users=users)
 
 
 @app.route('/credit_table')
-# @login_required
 def list_of_all_payments():
     result = models.db.session.query(
         models.LeasingContract.leasing_contract_number,
@@ -105,7 +83,6 @@ def list_of_all_payments():
 
 
 @app.route('/delete_user/<int:user_id>', methods=['GET', 'POST'])
-# @login_required
 def delete_user(user_id):
     user = models.db.session.get(models.User, user_id)
     if user:
@@ -139,14 +116,12 @@ def find_credit_contract_id(request_form):
 
 
 @app.route('/total_amount_from_xlsx', methods=['POST'])
-# @login_required
 def total_amount_from_xlsx():
     df = pd.read_excel(request.files['uploaded_file'])
     return str(df['amount'].sum())
 
 
 @app.route('/first_page', methods=['GET', 'POST'])
-# @login_required
 def create_payment():
     if request.method == 'POST':
         leasing_contract = assign_leasing_contract_id(request.form['leasing_contract'])
@@ -173,7 +148,6 @@ def create_payment_schedule(new_payment):
 
 
 @app.route('/')
-# @login_required
 def home():
     return redirect(url_for('list_of_all_payments'))
 
