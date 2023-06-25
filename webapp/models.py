@@ -83,3 +83,4 @@ class PaymentSchedule(db.Model):
     def __repr__(self):
         return f'PaymentSchedule {self.id}, {self.payment_date}, {self.amount}'
 
+
