@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Первая страница</title>
+    <title>Загрузка графиков</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style-navbar.css') }}">
@@ -33,17 +33,30 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('create_payment') }}">Загрузка графиков по кредитам</a>
+                    <a class="nav-link" href="{{ url_for('create_payment') }}">Загрузка графиков</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('list_of_all_payments') }}">Вывод информации по кредитам</a>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
+                       aria-expanded="false">
+                        Информация по кредитам
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <li><a class="dropdown-item" href="{{ url_for('list_of_all_payments') }}">Общая таблица</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('list_of_daily_payments') }}">Мониторинг платежей</a></li>
+                    </ul>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('list_of_users') }}">Список всех пользователей</a>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown2" role="button" data-bs-toggle="dropdown"
+                       aria-expanded="false">
+                        Информация по пользователям
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <li><a class="dropdown-item" href="{{ url_for('list_of_users') }}">Список пользователей</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('create_user') }}">Добавление нового пользователя</a></li>
+                    </ul>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('create_user') }}">Добавление нового пользователя</a>
-                </li>
+            </ul>
+            <ul class="navbar-nav ms-auto">
                 <li class="nav-item">
                     <a class="nav-link" href="{{ url_for('exit_user') }}">Выход</a>
                 </li>
@@ -58,14 +71,16 @@
                 <label for="exampleDropdownFormName" class="form-label fs-4">Номер договора лизинга</label>
                 <input type="text" class="form-control-lg" id="exampleDropdownFormName"
                        name="leasing_contract"
-                       placeholder="Пример 73/23" required>
+                       placeholder="Пример 73/23" required
+                       style="width: 170px;">
             </div>
             <div class="mb-3">
                 <label for="exampleDropdownFormName" class="form-label fs-4">Дата выдачи кредита</label>
 
-                <input type="text" class="form-control flatpickr-input" id="datepicker" name="date_of_issue"
+                <input type="text" class="form-control-lg flatpickr-input" id="datepicker" name="date_of_issue"
                        required readonly
-                       data-flatpickr='{"locale": "ru", "dateFormat": "d.m.Y"}'></div>
+                       data-flatpickr='{"locale": "ru", "dateFormat": "d.m.Y"}'
+                       style="width: 200px;"></div>
             <div class="mb-3">
                 <label for="exampleDropdownFormCountry" class="form-label fs-4">Инвестор</label>
                 <select class="form-control-lg" id="exampleDropdownFormCountry" name="investor"
@@ -79,7 +94,6 @@
                     <option value="keb">Кредит Европа Банк</option>
                     <option value="solid">Солид Банк</option>
                     <option value="own_funds">Собственные средства</option>
-                    <!-- Add more options as needed -->
                 </select>
             </div>
             <div class="mb-3">

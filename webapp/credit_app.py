@@ -1,10 +1,9 @@
 import models
 import pandas as pd
-from flask import Flask, render_template, redirect, url_for, request, flash, session
-from datetime import datetime
+from flask import Flask, render_template, redirect, url_for, request, flash
+from datetime import datetime, timedelta
 from change_xlsx import change_of_date
 from sqlalchemy import func
-from flask_login import LoginManager, login_required, current_user, login_user, logout_user
 
 app = Flask(__name__)
 app.config.from_pyfile('config.py')
@@ -35,7 +34,6 @@ def login():
 
 
 @app.route('/full_credit_info/<int:leasing_contract_number>', methods=['GET', 'POST'])
-@login_required
 def full_credit(leasing_contract_number):
     return redirect(url_for('full_credit_info'))
 
@@ -78,8 +76,24 @@ def list_of_all_payments():
         models.Bank.bank_name,
         models.CreditContract.credit_contract_name
     ).all()
-
     return render_template('credit_table_page.html', result=result)
+
+
+@app.route('/daily_payments')
+def list_of_daily_payments():
+    current_date = func.CURRENT_DATE()
+    next_date = current_date + timedelta(days=1)
+    date_after_tomorrow = current_date + timedelta(days=2)
+    result = models.db.session.query(
+        models.PaymentSchedule.payment_date,
+        func.sum(models.PaymentSchedule.amount).label('main_debt'),
+        models.Bank.bank_name).select_from(models.PaymentSchedule).join(models.Payment).join(
+        models.CreditContract).join(models.Bank).filter(
+        models.PaymentSchedule.payment_date.in_(
+            [current_date, next_date, date_after_tomorrow])).group_by(
+            models.PaymentSchedule.payment_date,
+            models.Bank.bank_name).all()
+    return render_template('daily_payments.html', result=result)
 
 
 @app.route('/delete_user/<int:user_id>', methods=['GET', 'POST'])
@@ -133,7 +147,6 @@ def create_payment():
                                      credit_contract_id=credit_contract, total_amount=total_amount)
         write_to_db(new_payment)
         create_payment_schedule(new_payment)
-
         return redirect(url_for('list_of_all_payments'))
     return render_template('first_page.html')
 
