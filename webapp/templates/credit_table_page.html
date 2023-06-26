@@ -25,6 +25,7 @@
 
 
 
+
     </style>
 </head>
 <body style="background-color:#85c1df;">
@@ -89,10 +90,10 @@
             </tr>
             </thead>
             <tbody>
-                {% for payment in result %}
-                <tr>
+            {% for payment in result %}
+            <tr>
                 <td>{{ loop.index }}</td>
-                <td>{{ payment.leasing_contract_number }}</td>
+                <td><a href="{{ url_for('full_credit_info', leasing_contract_number=payment.leasing_contract_number) }}">{{ payment.leasing_contract_number }}</a></td>
                 <td>{{ payment.bank_name }}</td>
                 <td>{{ payment.credit_contract_name }}</td>
                 <td>{{ '{:,.2f}'.format(payment.sum_amount).replace(',', ' ').replace('.', ',') }}</td>
@@ -101,8 +102,8 @@
                 <td><label for="exampleFileInput1" class="form-label fs-4"></label>
                     <input type="file" class="form-control-lg" id="exampleFileInput1"
                            style="font-size: 12px;"></td>
-                </tr>
-                {% endfor %}
+            </tr>
+            {% endfor %}
             </tbody>
         </table>
     </div>
