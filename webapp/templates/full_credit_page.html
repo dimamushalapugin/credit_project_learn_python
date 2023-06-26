@@ -19,6 +19,7 @@
         }
 
 
+
     </style>
 </head>
 <body style="background-color:#85c1df;">
@@ -59,23 +60,25 @@
     </div>
 </nav>
 
-<div class="container mt-5">
+<form class="container mt-5">
     <div class="row justify-content-center">
-        <div class="row">
-            <div class="col">
-                <div class="mb-3">
-                    <label for="searchInput" class="form-label">Дата выдачи кредита</label>
-                    <input type="text" class="form-control form-control" id="searchInput">
+        <form action="/{{lcn}}" method="POST">
+            <div class="row">
+                <div class="col">
+                    <div class="mb-3">
+                        <label for="searchInput" class="form-label">Дата выдачи кредита</label>
+                        <input type="text" class="form-control form-control" id="searchInput">
+                    </div>
                 </div>
-            </div>
-            <div class="col">
-                <div class="mb-3">
-                    <label for="searchInput2" class="form-label">Сумма выдачи кредита</label>
-                    <input type="text" class="form-control form-control" id="searchInput2">
+                <div class="col">
+                    <div class="mb-3">
+                        <label for="searchInput2" class="form-label">Сумма выдачи кредита</label>
+                        <input type="text" class="form-control form-control" id="searchInput2">
+                    </div>
                 </div>
-            </div>
-        </div>
 
+            </div>
+        </form>
         <table class="table">
             <thead>
             <tr>
@@ -101,7 +104,7 @@
             </tbody>
         </table>
     </div>
-</div>
+</form>
 
 <footer class="footer mt-auto py-3">
     <div class="container text-center">
