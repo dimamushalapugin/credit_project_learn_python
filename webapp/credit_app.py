@@ -33,13 +33,12 @@ def login():
     return render_template('login_page.html')
 
 
-
 @app.route('/full_credit_info/<path:leasing_contract_number>', methods=['GET', 'POST'])
 def full_credit_info(leasing_contract_number):
     leasing_contract_number = leasing_contract_number.replace('-', '/')
-    lcn = models.LeasingContract.query.filter(models.LeasingContract.leasing_contract_number == leasing_contract_number).first()
+    lcn = models.LeasingContract.query.filter(
+        models.LeasingContract.leasing_contract_number == leasing_contract_number).first()
     return render_template('full_credit_page.html', leasing_contract_number=leasing_contract_number)
-
 
 
 @app.route('/logout')
@@ -95,8 +94,8 @@ def list_of_daily_payments():
         models.CreditContract).join(models.Bank).filter(
         models.PaymentSchedule.payment_date.in_(
             [current_date, next_date, date_after_tomorrow])).group_by(
-            models.PaymentSchedule.payment_date,
-            models.Bank.bank_name).all()
+        models.PaymentSchedule.payment_date,
+        models.Bank.bank_name).all()
     return render_template('daily_payments.html', result=result)
 
 
