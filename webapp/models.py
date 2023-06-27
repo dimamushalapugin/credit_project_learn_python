@@ -1,4 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
+from flask_login import UserMixin
 
 db = SQLAlchemy()
 
@@ -10,6 +11,7 @@ class User(db.Model):
     login = db.Column(db.String(), unique=True)
     password = db.Column(db.String())
     blocked = db.Column(db.Boolean())
+    # is_active = db.Column(db.Boolean())
 
     def __repr__(self):
         return f'User {self.id}, {self.login}'
@@ -61,14 +63,14 @@ class Payment(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     leasing_contract_id = db.Column(db.Integer, db.ForeignKey('leasing_contracts.id'))
-    payment_date = db.Column(db.Date)
-    amount = db.Column(db.Float)
+    date_of_issue = db.Column(db.Date)
+    total_amount = db.Column(db.Float)
     credit_contract_id = db.Column(db.Integer, db.ForeignKey('credit_contracts.id'))
 
     payment_schedules = db.relationship("PaymentSchedule", backref="payment")
 
     def __repr__(self):
-        return f'Payment {self.id}, {self.leasing_contract_id}, {self.payment_date}, {self.amount}'
+        return f'Payment {self.id}, {self.leasing_contract_id}, {self.date_of_issue}, {self.amount}'
 
 
 class PaymentSchedule(db.Model):
@@ -82,4 +84,5 @@ class PaymentSchedule(db.Model):
 
     def __repr__(self):
         return f'PaymentSchedule {self.id}, {self.payment_date}, {self.amount}'
+
 

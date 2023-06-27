@@ -3,10 +3,13 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Первая страница</title>
+    <title>Загрузка графиков</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style-navbar.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr@latest/dist/flatpickr.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ru.js"></script>
+
     <style>
         body {
             min-height: 100vh;
@@ -18,27 +21,42 @@
             flex: 1;
         }
 
+
+
+
+
     </style>
 </head>
 <body style="background-color:#85c1df;">
 <nav class="navbar navbar-expand-lg navbar-light bg-info">
     <div class="container-fluid">
-        <a class="navbar-brand" href="{{ url_for('load_xlsx') }}">Загрузка графиков по кредитам</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('home') }}">Вывод информации по кредитам</a>
+                    <a class="nav-link" href="{{ url_for('create_payment') }}">Загрузка графиков</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('list_of_user') }}">Список всех пользователей</a>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
+                       aria-expanded="false">
+                        Информация по кредитам
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <li><a class="dropdown-item" href="{{ url_for('list_of_all_payments') }}">Общая таблица</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('list_of_daily_payments') }}">Мониторинг платежей</a></li>
+                    </ul>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('create_user') }}">Добавление нового пользователя</a>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown2" role="button" data-bs-toggle="dropdown"
+                       aria-expanded="false">
+                        Информация по пользователям
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <li><a class="dropdown-item" href="{{ url_for('list_of_users') }}">Список пользователей</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('create_user') }}">Добавление нового пользователя</a></li>
+                    </ul>
                 </li>
+            </ul>
+            <ul class="navbar-nav ms-auto">
                 <li class="nav-item">
                     <a class="nav-link" href="{{ url_for('exit_user') }}">Выход</a>
                 </li>
@@ -48,21 +66,25 @@
 </nav>
 <div class="container mt-5">
     <div class="row justify-content-center">
-        <form action="{{ url_for('load_xlsx') }}" method="POST" enctype="multipart/form-data">
+        <form action="{{ url_for('create_payment') }}" method="POST" enctype="multipart/form-data">
             <div class="mb-3">
                 <label for="exampleDropdownFormName" class="form-label fs-4">Номер договора лизинга</label>
-                <input type="text" class="form-control-lg" id="exampleDropdownFormName" name="leasing_contract"
-                       placeholder="Пример 73/23">
+                <input type="text" class="form-control-lg" id="exampleDropdownFormName"
+                       name="leasing_contract"
+                       placeholder="Пример 73/23" required
+                       style="width: 170px;">
             </div>
             <div class="mb-3">
                 <label for="exampleDropdownFormName" class="form-label fs-4">Дата выдачи кредита</label>
-                <input type="text" class="form-control flatpickr-input" id="datepicker" name="payment_date" readonly
-                       data-flatpickr='{"locale": "ru", "appendTo": document.body}'
-                       data-i18n='{"ru": {"toggleTitle": "Выберите дату", "today": "Сегодня", "prevMonth": "Предыдущий месяц", "nextMonth": "Следующий месяц"}}'>
-            </div>
+
+                <input type="text" class="form-control-lg flatpickr-input" id="datepicker" name="date_of_issue"
+                       required readonly
+                       data-flatpickr='{"locale": "ru", "dateFormat": "d.m.Y"}'
+                       style="width: 200px;"></div>
             <div class="mb-3">
                 <label for="exampleDropdownFormCountry" class="form-label fs-4">Инвестор</label>
-                <select class="form-control-lg" id="exampleDropdownFormCountry" name="investor" onchange="updateCreditContracts()">
+                <select class="form-control-lg" id="exampleDropdownFormCountry" name="investor"
+                        onchange="updateCreditContracts()" required>
                     <option value="mkb">Московский Кредитный Банк</option>
                     <option value="abb">Ак Барс Банк</option>
                     <option value="mib">Металлинвестбанк</option>
@@ -72,7 +94,6 @@
                     <option value="keb">Кредит Европа Банк</option>
                     <option value="solid">Солид Банк</option>
                     <option value="own_funds">Собственные средства</option>
-                    <!-- Add more options as needed -->
                 </select>
             </div>
             <div class="mb-3">
@@ -80,72 +101,14 @@
                 <select class="form-control-lg" id="typeCreditDogovor" name="credit_contract">
                 </select>
             </div>
-
-            <script>
-                function updateCreditContracts() {
-                    var investorSelect = document.getElementById("exampleDropdownFormCountry");
-                    var contractSelect = document.getElementById("typeCreditDogovor");
-
-                    contractSelect.innerHTML = "";
-
-                    if (investorSelect.value === "mkb") {
-                        contractSelect.innerHTML += '<option value="МКБ1">МКБ1</option>';
-                        contractSelect.innerHTML += '<option value="МКБ2">МКБ2</option>';
-                        contractSelect.innerHTML += '<option value="МКБ3">МКБ3</option>';
-                        contractSelect.innerHTML += '<option value="МКБ5">МКБ5</option>';
-                    }
-                    else if (investorSelect.value === "abb") {
-                        contractSelect.innerHTML += '<option value="АББ4">АББ4</option>';
-                        contractSelect.innerHTML += '<option value="АББ5">АББ5</option>';
-                        contractSelect.innerHTML += '<option value="АББ6">АББ6</option>';
-                        contractSelect.innerHTML += '<option value="АББ7">АББ7</option>';
-                        contractSelect.innerHTML += '<option value="АББ8">АББ8</option>';
-                        contractSelect.innerHTML += '<option value="АББ9">АББ9</option>';
-                    }
-                     else if (investorSelect.value === "mib") {
-                        contractSelect.innerHTML += '<option value="МИБ1">МИБ1</option>';
-                        contractSelect.innerHTML += '<option value="МИБ2">МИБ2</option>';
-                        contractSelect.innerHTML += '<option value="МИБ3">МИБ3</option>';
-                        contractSelect.innerHTML += '<option value="МИБ4">МИБ4</option>';
-                    }
-                    else if (investorSelect.value === "alfa") {
-                        contractSelect.innerHTML += '<option value="Альфа1">Альфа1</option>';
-                    }
-                    else if (investorSelect.value === "pub") {
-                        contractSelect.innerHTML += '<option value="ПУБ1">ПУБ1</option>';
-                        contractSelect.innerHTML += '<option value="ПУБ2">ПУБ2</option>';
-                        contractSelect.innerHTML += '<option value="ПУБ3">ПУБ3</option>';
-                        contractSelect.innerHTML += '<option value="ПУБ4">ПУБ4</option>';
-                        contractSelect.innerHTML += '<option value="ПУБ5">ПУБ5</option>';
-                        contractSelect.innerHTML += '<option value="ПУБ6">ПУБ6</option>';
-                        contractSelect.innerHTML += '<option value="ПУБ7">ПУБ7</option>';
-                        contractSelect.innerHTML += '<option value="ПУБ8">ПУБ8</option>';
-                    }
-                    else if (investorSelect.value === "ural_fd") {
-                        contractSelect.innerHTML += '<option value="Урал1">Урал1</option>';
-                        contractSelect.innerHTML += '<option value="Урал2">Урал2</option>';
-                        contractSelect.innerHTML += '<option value="Урал3">Урал3</option>';
-                    }
-                    else if (investorSelect.value === "keb") {
-                        contractSelect.innerHTML += '<option value="КЕБ1">КЕБ1</option>';
-                        contractSelect.innerHTML += '<option value="КЕБ2">КЕБ2</option>';
-                    }
-                    else if (investorSelect.value === "solid") {
-                        contractSelect.innerHTML += '<option value="СОЛ1">СОЛ1</option>';
-                        contractSelect.innerHTML += '<option value="СОЛ2">СОЛ2</option>';
-                        contractSelect.innerHTML += '<option value="СОЛ3">СОЛ3</option>';
-                    }
-                }
-                window.onload = function() {
-                    updateCreditContracts();
-                };
-
-            </script>
             <div class="mb-3">
                 <label for="exampleFileInput" class="form-label fs-4">Выбрать файл</label>
-                <input type="file" class="form-control-lg" id="exampleFileInput" name="uploaded_file">
+                <input type="file" class="form-control-lg" id="exampleFileInput" name="uploaded_file"
+                       required>
             </div>
-            <button type="submit" onclick="handleFile()" class="btn btn-primary" name="save_file">Сохранить файл</button>
+            <button type="submit" onclick="handleFile()" class="btn btn-primary" name="save_file">Сохранить
+                файл
+            </button>
         </form>
     </div>
 </div>
@@ -156,10 +119,19 @@
 </footer>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-  flatpickr("#datepicker", {
-    dateFormat: "d.m.Y"
-  });
-
+    flatpickr("#datepicker", {
+        locale: "ru",
+        appendTo: document.body,
+        i18n: {
+            previousMonth: "Предыдущий месяц",
+            nextMonth: "Следующий месяц",
+            months: {
+                shorthand: ['Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн', 'Июл', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек'],
+                longhand: ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь']
+            }
+        }
+    });
 </script>
+<script src="{{ url_for('static', filename='js/first-page.js') }}"></script>
 </body>
 </html>
