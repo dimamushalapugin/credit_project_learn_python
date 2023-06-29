@@ -1,5 +1,4 @@
 from flask_sqlalchemy import SQLAlchemy
-from flask_login import UserMixin
 
 db = SQLAlchemy()
 
@@ -11,7 +10,7 @@ class User(db.Model):
     login = db.Column(db.String(), unique=True)
     password = db.Column(db.String())
     blocked = db.Column(db.Boolean())
-    # is_active = db.Column(db.Boolean())
+    role = db.Column(db.String)
 
     def __repr__(self):
         return f'User {self.id}, {self.login}'
@@ -84,5 +83,3 @@ class PaymentSchedule(db.Model):
 
     def __repr__(self):
         return f'PaymentSchedule {self.id}, {self.payment_date}, {self.amount}'
-
-
