@@ -18,8 +18,32 @@
         .content {
             flex: 1;
         }
+        .pagination {
+            display: flex;
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .pagination li {
+            margin-right: 5px;
+        }
+
+        .pagination a {
+            text-decoration: none;
+            padding: 5px 10px;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+
+        .pagination a.active {
+            background-color: #333;
+            color: #fff;
+        }
+
 
     </style>
+<script src="{{ url_for('static', filename='js/pagination.js') }}"></script>
+
 </head>
 <body style="background-color:#85c1df;">
 <nav class="navbar navbar-expand-lg navbar-light bg-info">
@@ -30,23 +54,27 @@
                     <a class="nav-link" href="{{ url_for('create_payment') }}">Загрузка графиков</a>
                 </li>
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                       data-bs-toggle="dropdown"
                        aria-expanded="false">
                         Информация по кредитам
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                         <li><a class="dropdown-item" href="{{ url_for('list_of_all_payments') }}">Общая таблица</a></li>
-                        <li><a class="dropdown-item" href="{{ url_for('list_of_daily_payments') }}">Мониторинг платежей</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('list_of_daily_payments') }}">Мониторинг
+                            платежей</a></li>
                     </ul>
                 </li>
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown2" role="button" data-bs-toggle="dropdown"
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown2" role="button"
+                       data-bs-toggle="dropdown"
                        aria-expanded="false">
                         Информация по пользователям
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                         <li><a class="dropdown-item" href="{{ url_for('list_of_users') }}">Список пользователей</a></li>
-                        <li><a class="dropdown-item" href="{{ url_for('create_user') }}">Добавление нового пользователя</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('create_user') }}">Добавление нового
+                            пользователя</a></li>
                     </ul>
                 </li>
             </ul>
@@ -97,17 +125,20 @@
             </thead>
             <tbody>
             {% for payment in result %}
-            <tr>
+            <tr class="table-row">
                 <td>{{ loop.index }}</td>
-                <td><a href="{{ url_for('full_credit_info', leasing_contract_number=payment.leasing_contract_number) }}">{{ payment.leasing_contract_number }}</a></td>
+                <td>
+                    <a href="{{ url_for('full_credit_info', leasing_contract_number=payment.leasing_contract_number) }}">{{
+                        payment.leasing_contract_number }}</a></td>
                 <td>{{ payment.bank_name }}</td>
                 <td>{{ payment.credit_contract_name }}</td>
                 <td>{{ '{:,.2f}'.format(payment.sum_amount).replace(',', ' ').replace('.', ',') }}</td>
                 <td>-</td>
                 <td>-</td>
-                <td><label for="exampleFileInput1" class="form-label fs-4"></label>
-                    <input type="file" class="form-control-lg" id="exampleFileInput1"
-                           style="font-size: 12px;"></td>
+                <td>
+                    <label for="exampleFileInput1" class="form-label fs-4"></label>
+                    <input type="file" class="form-control-lg" id="exampleFileInput1" style="font-size: 12px;">
+                </td>
             </tr>
             {% endfor %}
             </tbody>
