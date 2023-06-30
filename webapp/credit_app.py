@@ -3,7 +3,7 @@ import pandas as pd
 from flask import Flask, render_template, redirect, url_for, request, flash, jsonify
 from datetime import datetime
 from sql_queries import write_to_db, assign_leasing_contract_id, find_credit_contract_id, create_payment_schedule, \
-    query_for_all_payments, query_for_daily_payments, query_for_bank_debt
+    query_for_all_payments, query_for_daily_payments, query_for_bank_debts
 
 app = Flask(__name__)
 app.config.from_pyfile('config.py')
@@ -70,9 +70,9 @@ def list_of_all_payments():
 
 @app.route('/daily_payments')
 def list_of_daily_payments():
-    date = datetime.now().strftime('%d.%m.%Y')
-    return render_template('daily_payments.html', result=query_for_daily_payments(), bank_debt=query_for_bank_debt(),
-                           date=date)
+    today_str = datetime.now().strftime('%d.%m.%Y')
+    return render_template('daily_payments.html', result=query_for_daily_payments(), bank_debts=query_for_bank_debts(),
+                           today_str=today_str)
 
 
 @app.route('/delete_user/<int:user_id>', methods=['GET', 'POST'])

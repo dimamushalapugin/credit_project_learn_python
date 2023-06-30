@@ -97,7 +97,7 @@
             </table>
         </div>
         <div class="col-md-5">
-            <h3>Долг перед банками на {{ date }}</h3>
+            <h3>Долг перед банками на {{ today_str }}</h3>
             <br>
             <table class="table">
                 <thead>
@@ -108,7 +108,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% for payment in bank_debt %}
+                    {% for payment in bank_debts %}
                     <tr>
                         <td>{{ loop.index }}</td>
                         <td>{{ payment.bank_name }}</td>
