@@ -56,6 +56,17 @@ def query_for_all_payments():
     return result
 
 
+def query_for_bank_debt():
+    bank_debt = models.db.session.query(
+        func.sum(models.PaymentSchedule.amount).label('payment_amount'),
+        models.Bank.bank_name).select_from(
+        models.PaymentSchedule).join(models.Payment).join(
+        models.CreditContract).join(models.Bank).filter(
+        models.PaymentSchedule.payment_date >= func.CURRENT_DATE()).group_by(
+        models.Bank.bank_name).all()
+    return bank_debt
+
+
 def query_for_daily_payments():
     current_date = func.CURRENT_DATE()
     next_date = current_date + timedelta(days=1)

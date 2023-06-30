@@ -71,28 +71,53 @@
 </nav>
 
 <div class="container mt-5">
-    <div class="row justify-content-center">
-
-        <table class="table">
-            <thead>
-            <tr>
-                <th scope="col">№</th>
-                <th scope="col">Дата платежа</th>
-                <th scope="col">Наименование банка</th>
-                <th scope="col">Сумма платежа</th>
-            </tr>
-            </thead>
-            <tbody>
-                {% for payment in result %}
-                <tr>
-                <td>{{ loop.index }}</td>
-                <td>{{ payment.payment_date.strftime('%d.%m.%Y') }}</td>
-                <td>{{ payment.bank_name }}</td>
-                <td>{{ '{:,.2f}'.format(payment.main_debt).replace(',', ' ').replace('.', ',') }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+    <div class="row d-flex justify-content-between align-items-start">
+        <div class="col-md-5">
+            <h3>Предстоящие платежи</h3>
+            <br>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">№</th>
+                        <th scope="col">Дата платежа</th>
+                        <th scope="col">Наименование банка</th>
+                        <th scope="col">Сумма платежа</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for payment in result %}
+                    <tr>
+                        <td>{{ loop.index }}</td>
+                        <td>{{ payment.payment_date.strftime('%d.%m.%Y') }}</td>
+                        <td>{{ payment.bank_name }}</td>
+                        <td>{{ '{:,.2f}'.format(payment.main_debt).replace(',', ' ').replace('.', ',') }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="col-md-5">
+            <h3>Долг перед банками на {{ date }}</h3>
+            <br>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">№</th>
+                        <th scope="col">Наименование банка</th>
+                        <th scope="col">Сумма долга</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for payment in bank_debt %}
+                    <tr>
+                        <td>{{ loop.index }}</td>
+                        <td>{{ payment.bank_name }}</td>
+                        <td>{{ '{:,.2f}'.format(payment.payment_amount).replace(',', ' ').replace('.', ',') }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 
