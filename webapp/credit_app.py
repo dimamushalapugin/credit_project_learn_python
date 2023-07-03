@@ -23,9 +23,8 @@ def load_user(user_id):
 
 @app.route('/login')
 def login():
-    title = "Авторизация"
     login_form = LoginForm()
-    return render_template('login_page.html', page_title=title, form=login_form)
+    return render_template('login_page.html', form=login_form)
 
 
 @app.route('/process-login', methods=['POST'])
