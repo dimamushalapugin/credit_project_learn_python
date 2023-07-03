@@ -1,9 +1,12 @@
 from flask_sqlalchemy import SQLAlchemy
+from flask_login import UserMixin
+from werkzeug.security import generate_password_hash, check_password_hash
+
 
 db = SQLAlchemy()
 
 
-class User(db.Model):
+class User(db.Model, UserMixin):
     __tablename__ = 'users'
 
     id = db.Column(db.Integer, primary_key=True)
@@ -11,6 +14,16 @@ class User(db.Model):
     password = db.Column(db.String())
     blocked = db.Column(db.Boolean())
     role = db.Column(db.String)
+
+    def set_password(self, password):
+        self.password = generate_password_hash(password)
+
+    def check_password(self, password):
+        return check_password_hash(self.password, password)
+
+    @property
+    def is_admin(self):
+        return self.role == 'admin'
 
     def __repr__(self):
         return f'User {self.id}, {self.login}'
@@ -24,7 +37,7 @@ class Bank(db.Model):
     __tablename__ = "banks"
 
     id = db.Column(db.Integer, primary_key=True)
-    bank_name = db.Column(db.String)
+    bank_name = db.Column(db.String, index=True)
     credit_contracts = db.relationship("CreditContract", backref="bank")
 
     def __repr__(self):
@@ -48,7 +61,7 @@ class LeasingContract(db.Model):
     __tablename__ = 'leasing_contracts'
 
     id = db.Column(db.Integer, primary_key=True)
-    leasing_contract_number = db.Column(db.String, unique=True)
+    leasing_contract_number = db.Column(db.String, unique=True, index=True)
     company_name = db.Column(db.String)
 
     payments = db.relationship("Payment", backref="leasing_contract")
