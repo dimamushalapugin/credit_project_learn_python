@@ -62,9 +62,15 @@ def list_of_users():
         return redirect(url_for('payment.list_of_all_payments'))
 
 
-@blueprint.route('/delete_user/<int:user_id>', methods=['GET', 'POST'])
+@blueprint.route('/delete_user/<int:user_id>', methods=['POST'])
+@login_required
 def delete_user(user_id):
-    user = db.session.get(User, user_id)
-    if user:
-        user.delete()
+    if current_user.is_admin:
+        user = User.query.get(user_id)
+        if user:
+            db.session.delete(user)
+            db.session.commit()
+    else:
+        return redirect(url_for('payment.list_of_all_payments'))
+
     return redirect(url_for('user.list_of_users'))
