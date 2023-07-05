@@ -37,7 +37,7 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('create_payment') }}">Загрузка графиков</a>
+                    <a class="nav-link" href="{{ url_for('payment.create_payment') }}">Загрузка графиков</a>
                 </li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
@@ -45,7 +45,7 @@
                         Информация по кредитам
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <li><a class="dropdown-item" href="{{ url_for('list_of_all_payments') }}">Общая таблица</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('payment.list_of_all_payments') }}">Общая таблица</a></li>
                         <li><a class="dropdown-item" href="#">Мониторинг платежей</a></li>
                     </ul>
                 </li>
@@ -55,14 +55,14 @@
                         Информация по пользователям
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <li><a class="dropdown-item" href="{{ url_for('list_of_users') }}">Список пользователей</a></li>
-                        <li><a class="dropdown-item" href="{{ url_for('create_user') }}">Добавление нового пользователя</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('user.list_of_users') }}">Список пользователей</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('user.create_user') }}">Добавление нового пользователя</a></li>
                     </ul>
                 </li>
             </ul>
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('exit_user') }}">Выход</a>
+                    <a class="nav-link" href="{{ url_for('user.exit_user') }}">Выход</a>
                 </li>
             </ul>
         </div>
