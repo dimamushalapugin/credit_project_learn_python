@@ -1,8 +1,9 @@
 from flask import Blueprint, flash, render_template, redirect, request, url_for
-from flask_login import current_user, login_required, login_user, logout_user
+from flask_login import login_user, logout_user
+from webapp.db import db
+from webapp.user.decorators import admin_required
 from webapp.user.forms import LoginForm
 from webapp.user.models import User
-from webapp.db import db
 from webapp.sql_queries import write_to_db
 
 blueprint = Blueprint('user', __name__, url_prefix='/users')
@@ -34,43 +35,34 @@ def exit_user():
 
 
 @blueprint.route('/create_new_user', methods=['GET', 'POST'])
-@login_required
+@admin_required
 def create_user():
-    if current_user.is_admin:
-        if request.method == 'POST':
-            login = request.form['type_pl']
-            new_user = User(login=login, blocked=False, role='admin')
-            new_user.set_password(request.form['identificator_pl'])
+    if request.method == 'POST':
+        login = request.form['type_pl']
+        new_user = User(login=login, blocked=False, role='admin')
+        new_user.set_password(request.form['identificator_pl'])
 
-            if User.query.filter(User.login == login).count():
-                flash('Такой пользователь уже есть')
-                return redirect(url_for('user.create_user'))
-            write_to_db(new_user)
-            return redirect(url_for('user.list_of_users'))
-        return render_template('create_user_page.html')
-    else:
-        return redirect(url_for('payment.list_of_all_payments'))
+        if User.query.filter(User.login == login).count():
+            flash('Такой пользователь уже есть')
+            return redirect(url_for('user.create_user'))
+        write_to_db(new_user)
+        return redirect(url_for('user.list_of_users'))
+    return render_template('create_user_page.html')
 
 
 @blueprint.route('/list_user')
-@login_required
+@admin_required
 def list_of_users():
-    if current_user.is_admin:
-        users = User.query.all()
-        return render_template('users_list.html', users=users)
-    else:
-        return redirect(url_for('payment.list_of_all_payments'))
+    users = User.query.all()
+    return render_template('users_list.html', users=users)
 
 
 @blueprint.route('/delete_user/<int:user_id>', methods=['POST'])
-@login_required
+@admin_required
 def delete_user(user_id):
-    if current_user.is_admin:
-        user = User.query.get(user_id)
-        if user:
-            db.session.delete(user)
-            db.session.commit()
-    else:
-        return redirect(url_for('payment.list_of_all_payments'))
+    user = User.query.get(user_id)
+    if user:
+        db.session.delete(user)
+        db.session.commit()
 
     return redirect(url_for('user.list_of_users'))
