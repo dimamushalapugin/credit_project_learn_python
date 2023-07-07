@@ -1,7 +1,7 @@
 from flask import Blueprint, flash, render_template, redirect, request, url_for
 from flask_login import login_user, logout_user
 from webapp.db import db
-from webapp.user.decorators import admin_required
+from webapp.user.auth_utils import admin_required
 from webapp.user.forms import LoginForm
 from webapp.user.models import User
 from webapp.sql_queries import write_to_db
@@ -38,9 +38,9 @@ def exit_user():
 @admin_required
 def create_user():
     if request.method == 'POST':
-        login = request.form['type_pl']
+        login = request.form['user_email']
         new_user = User(login=login, blocked=False, role='admin')
-        new_user.set_password(request.form['identificator_pl'])
+        new_user.set_password(request.form['user_password'])
 
         if User.query.filter(User.login == login).count():
             flash('Такой пользователь уже есть')
