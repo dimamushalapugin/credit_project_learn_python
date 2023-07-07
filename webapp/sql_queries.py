@@ -4,7 +4,7 @@ from sqlalchemy import func
 from webapp.db import db
 from webapp.payment.change_xlsx import change_of_date
 from webapp.payment.models import LeasingContract, Bank, CreditContract, Payment, PaymentSchedule, Company, Seller
-from webapp.parsing import get_customer_name
+from webapp.parsing_egrul import get_customer_name
 
 
 def write_to_db(new_data):
