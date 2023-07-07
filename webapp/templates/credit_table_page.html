@@ -10,7 +10,6 @@
 
       gtag('config', 'G-KQX5FDFY5F');
 
-
     </script>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -50,9 +49,6 @@
             color: #fff;
         }
 
-
-
-
     </style>
     <script src="{{ url_for('static', filename='js/pagination.js') }}"></script>
 
@@ -60,18 +56,17 @@
 <body style="background-color:#85c1df;">
 {% include 'menu.html' %}
 
-<div class="container mt-5">
-    {% with messages = get_flashed_messages() %}
-    {% if messages %}
-    <div class="alert alert-warning" role="alert">
-        {% for message in messages %}
-        {{ message }}<br>
-        {% endfor %}
-    </div>
-    {% endif %}
-    {% endwith %}
-    <div class="row justify-content-center">
-        <div class="row">
+    <div class="container mt-5">
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <div class="alert alert-warning" role="alert">
+            {% for message in messages %}
+            {{ message }}<br>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+        <div class="row justify-content-center">
             <div class="col">
                 <div class="mb-3">
                     <label for="searchInput" class="form-label">Номер договора лизинга</label>
@@ -90,47 +85,58 @@
                     <input type="text" class="form-control form-control" id="searchInput3" placeholder="">
                 </div>
             </div>
+            <div class="row justify-content-center">
+                <div class="col">
+                    <div class="mb-3">
+                        <label for="searchInput4" class="form-label">Наименование лизингополучателя</label>
+                        <input type="text" class="form-control form-control" id="searchInput4" placeholder="">
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="mb-3">
+                        <label for="searchInput5" class="form-label">ИНН лизингополучателя</label>
+                        <input type="text" class="form-control form-control" id="searchInput5" placeholder="">
+                    </div>
+                </div>
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th scope="col">№</th>
+                        <th scope="col">Номер договора лизинга</th>
+                        <th scope="col">Наименование банка</th>
+                        <th scope="col">Номер кредитного договора</th>
+                        <th scope="col">Остаток долга по кредиту</th>
+                        <th scope="col">Уплаченные проценты по кредиту</th>
+                        <th scope="col">Проценты к уплате по кредиту</th>
+                        <th scope="col">Лизингополучатель</th>
+                        <th scope="col">ИНН</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for payment in result %}
+                    <tr class="table-row">
+                        <td>{{ loop.index }}</td>
+                        <td>
+                            <a href="{{ url_for('payment.full_credit_info', leasing_contract_number=payment.leasing_contract_number) }}">{{
+                                payment.leasing_contract_number }}</a></td>
+                        <td>{{ payment.bank_name }}</td>
+                        <td>{{ payment.credit_contract_name }}</td>
+                        <td>{{ '{:,.2f}'.format(payment.sum_amount).replace(',', ' ').replace('.', ',') }}</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>{{ payment.company_name }}</td>
+                        <td>{{ payment.company_inn }}</td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </div>
 
-        <table class="table">
-            <thead>
-            <tr>
-                <th scope="col">№</th>
-                <th scope="col">Номер договора лизинга</th>
-                <th scope="col">Наименование банка</th>
-                <th scope="col">Номер кредитного договора</th>
-                <th scope="col">Остаток долга по кредиту</th>
-                <th scope="col">Уплаченные проценты по кредиту</th>
-                <th scope="col">Проценты к уплате по кредиту</th>
-                <th scope="col">Изменить график платежей</th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for payment in result %}
-            <tr class="table-row">
-                <td>{{ loop.index }}</td>
-                <td>
-                    <a href="{{ url_for('payment.full_credit_info', leasing_contract_number=payment.leasing_contract_number) }}">{{
-                        payment.leasing_contract_number }}</a></td>
-                <td>{{ payment.bank_name }}</td>
-                <td>{{ payment.credit_contract_name }}</td>
-                <td>{{ '{:,.2f}'.format(payment.sum_amount).replace(',', ' ').replace('.', ',') }}</td>
-                <td>-</td>
-                <td>-</td>
-                <td>
-                    <label for="exampleFileInput1" class="form-label fs-4"></label>
-                    <input type="file" class="form-control-lg" id="exampleFileInput1" style="font-size: 12px;">
-                </td>
-            </tr>
-            {% endfor %}
-            </tbody>
-        </table>
+        {% include 'footer.html' %}
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="{{ url_for('static', filename='js/search.js') }}"></script>
     </div>
-</div>
-
-{% include 'footer.html' %}
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="{{ url_for('static', filename='js/search.js') }}"></script>
 </body>
 </html>
