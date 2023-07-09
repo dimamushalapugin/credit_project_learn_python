@@ -30,7 +30,8 @@ class LeasingContract(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     leasing_contract_number = db.Column(db.String, unique=True, index=True)
-    company_name = db.Column(db.String)
+    company_id = db.Column(db.Integer, db.ForeignKey('companies.id'))
+    seller_id = db.Column(db.Integer, db.ForeignKey('sellers.id'))
 
     payments = db.relationship("Payment", backref="leasing_contract")
 
@@ -64,3 +65,29 @@ class PaymentSchedule(db.Model):
 
     def __repr__(self):
         return f'PaymentSchedule {self.id}, {self.payment_date}, {self.amount}'
+
+
+class Company(db.Model):
+    __tablename__ = "companies"
+
+    id = db.Column(db.Integer, primary_key=True)
+    company_name = db.Column(db.String)
+    company_inn = db.Column(db.String(20), index=True, unique=True)
+
+    leasing_contracts = db.relationship("LeasingContract", backref="company_name")
+
+    def __repr__(self):
+        return f'Company {self.id}, {self.company_name}: {self.company_inn}'
+
+
+class Seller(db.Model):
+    __tablename__ = "sellers"
+
+    id = db.Column(db.Integer, primary_key=True)
+    seller_name = db.Column(db.String)
+    seller_inn = db.Column(db.String(20), index=True, unique=True)
+
+    leasing_contracts = db.relationship("LeasingContract", backref="seller_name")
+
+    def __repr__(self):
+        return f'Seller {self.id}, {self.seller_name}: {self.seller_inn}'

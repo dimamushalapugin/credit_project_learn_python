@@ -1,5 +1,5 @@
 function updateCreditContracts() {
-                    var investorSelect = document.getElementById("exampleDropdownFormCountry");
+                    var investorSelect = document.getElementById("exampleDropdownFormInvestor");
                     var contractSelect = document.getElementById("typeCreditDogovor");
 
                     contractSelect.innerHTML = "";

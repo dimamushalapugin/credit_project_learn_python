@@ -56,3 +56,39 @@ function searchCreditContract() {
 }
 
 document.getElementById('searchInput3').addEventListener('input', searchCreditContract);
+
+function searchCompanyName() {
+    var query = document.getElementById('searchInput4').value.toLowerCase();
+
+    var rows = document.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+
+    for (var i = 0; i < rows.length; i++) {
+        var сompanyName = rows[i].getElementsByTagName('td')[7].innerText.toLowerCase();
+
+        if (сompanyName.includes(query)) {
+            rows[i].style.display = '';
+        } else {
+            rows[i].style.display = 'none';
+        }
+    }
+}
+
+document.getElementById('searchInput4').addEventListener('input', searchCompanyName);
+
+function searchCompanyInn() {
+    var query = document.getElementById('searchInput5').value.toLowerCase();
+
+    var rows = document.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+
+    for (var i = 0; i < rows.length; i++) {
+        var сompanyInn = rows[i].getElementsByTagName('td')[8].innerText.toLowerCase();
+
+        if (сompanyInn.includes(query)) {
+            rows[i].style.display = '';
+        } else {
+            rows[i].style.display = 'none';
+        }
+    }
+}
+
+document.getElementById('searchInput5').addEventListener('input', searchCompanyInn);
