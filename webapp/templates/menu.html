@@ -18,14 +18,17 @@
                 logo.style.transition = "transform 0.4s";
                 logo.style.transform = "scale(1)";
   });
+
         </script>
 
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
                 aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
+
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                {% if current_user.is_admin %}
                 <li class="nav-item">
                     <a class="nav-link active" aria-current="page" href="{{ url_for('payment.create_payment') }}">Загрузка
                         графиков</a>
@@ -54,6 +57,20 @@
                             пользователя</a></li>
                     </ul>
                 </li>
+                {% else %}
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                       aria-expanded="false">
+                        Информация по кредитам
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{{ url_for('payment.list_of_all_payments') }}">Общая
+                            таблица</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('payment.list_of_daily_payments') }}">Мониторинг
+                            платежей</a></li>
+                    </ul>
+                </li>
+                {% endif %}
             </ul>
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item">
