@@ -1,77 +1,82 @@
-@import url(https://fonts.googleapis.com/css?family=Maven Pro);
-
-*, *:before, *:after{
-  -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
+@import url("https://fonts.googleapis.com/css?family=DM+Sans:500,700&display=swap");
+* {
   box-sizing: border-box;
-  padding: 0;
-  margin: 0;
-  font-family: 'Maven Pro', sans-serif;
 }
 
-nav{
-  position: fixed;
-  top: 0;
+body {
+  text-align: center;
+  display: flex;
+  height: 100vh;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  padding: 0 20px;
+  overflow: hidden;
+  background: url("https://source.unsplash.com/_nWaeTF6qo0");
+  background-position: center;
+  background-size: cover;
+}
+
+.nav {
+  display: inline-flex;
+  position: relative;
+  max-width: 100%;
+  background-color: #fff;
+  padding: 0 20px;
+  border-radius: 40px;
+  background-color: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(5px);
+}
+
+.nav-item {
+  color: white;
+  padding: 20px;
+  text-decoration: none;
+  transition: 0.3s;
+  margin: 0 6px;
+  z-index: 1;
+  font-family: "DM Sans", sans-serif;
+  font-weight: 500;
+  position: relative;
+}
+.nav-item:before {
+  content: "";
+  position: absolute;
+  bottom: -6px;
   left: 0;
   width: 100%;
-  background: #fff;
-  box-shadow: 0 3px 10px -2px rgba(0,0,0,.1);
-  border: 1px solid rgba(0,0,0,.1);
+  height: 5px;
+  background-color: #dfe2ea;
+  border-radius: 8px 8px 0 0;
+  opacity: 0;
+  transition: 0.3s;
 }
 
-nav ul{
-  list-style: none;
-  position: relative;
-  float: right;
-  margin-right: 100px;
-  display: inline-table;
+.nav-item:not(.is-active):hover:before {
+  opacity: 1;
+  bottom: 0;
 }
 
-nav ul li{
-  float: left;
-  -webkit-transition: all .2s ease-in-out;
-  -moz-transition: all .2s ease-in-out;
-  transition: all .2s ease-in-out;
+.nav-item:not(.is-active):hover {
+  color: #333;
 }
 
-nav ul li:hover{
-  background: rgba(0,0,0,.15);
-}
-
-nav ul li:hover > ul{
-  display: block;
-}
-
-nav ul li a{
-  display: block;
-  padding: 10px 10px;
-  color: #222;
-  font-size: 1em;
-  letter-spacing: 1px;
-  text-decoration: none;
-}
-
-nav ul ul{
-  display: none;
-  background: #fff;
+.nav-indicator {
   position: absolute;
-  top: 100%;
-  box-shadow: -3px 3px 10px -2px rgba(0,0,0,.1);
-  border: 1px solid rgba(0,0,0,.1);
+  left: 0;
+  bottom: 0;
+  height: 4px;
+  transition: 0.4s;
+  height: 5px;
+  z-index: 1;
+  border-radius: 8px 8px 0 0;
+}
+i{
+  margin-right: 5px;
 }
 
-nav ul ul li{
-  float: none;
-  position: relative;
-}
-
-nav ul ul li a {
-  padding: 15px 30px;
-  border-bottom: 1px solid rgba(0,0,0,.05);
-}
-
-nav ul ul ul {
-  position: absolute;
-  left: 100%;
-  top:0;
+@media (max-width: 580px) {
+  .nav {
+    overflow: auto;
+  }
 }
