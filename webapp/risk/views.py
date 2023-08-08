@@ -1,3 +1,5 @@
+import time
+
 import openpyxl
 import os
 from flask import Blueprint, flash, render_template, redirect, request, url_for, send_from_directory
@@ -31,10 +33,10 @@ def create_xlsx_file(data):
 def create_xlsx():
     try:
         data = request.form
-
+        time.sleep(5)
         file_name = create_xlsx_file(data)
-
-        return render_template('risk_conclusion.html', file_name=file_name)
+        flash(f'Файл успешно создан', 'success')
+        return redirect(url_for('risk.risk_page', file_name=file_name))
     except Exception as e:
         flash(str(e), 'warning')
         return redirect(url_for('risk.risk_page'))
