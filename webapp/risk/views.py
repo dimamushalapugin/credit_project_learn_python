@@ -8,11 +8,18 @@ from webapp.user.auth_utils import admin_required
 blueprint = Blueprint('risk', __name__, url_prefix='/risk')
 
 
-@blueprint.route('/risk_conclusion')
+@blueprint.route('/risk_conclusion', methods=['GET', 'POST'])
 @admin_required
 def risk_page():
-    filenames = os.listdir('webapp/static/files')
-    return render_template('risk_conclusion.html', filenames=filenames)
+    if request.method == 'GET':
+        filenames = os.listdir('webapp/static/files')
+        return render_template('risk_conclusion.html', filenames=filenames)
+
+    elif request.method == 'POST':
+        folder_path = 'static/files/'
+        folders = os.listdir(folder_path)
+        data = request.form
+        return render_template('risk_conclusion.html', folders=folders, data=data)
 
 
 def create_xlsx_file(data):
@@ -33,7 +40,7 @@ def create_xlsx_file(data):
 def create_xlsx():
     try:
         data = request.form
-        time.sleep(5)
+        time.sleep(2)
         file_name = create_xlsx_file(data)
         flash(f'Файл успешно создан', 'success')
         return redirect(url_for('risk.risk_page', file_name=file_name))
@@ -42,6 +49,6 @@ def create_xlsx():
         return redirect(url_for('risk.risk_page'))
 
 
-@blueprint.route('/download/<file_name>')
-def download(file_name):
-    return send_from_directory('static/files', file_name, as_attachment=True)
+@blueprint.route('/download/<path:filename>')
+def download(filename):
+    return send_from_directory(f'static/files/', filename, as_attachment=True)

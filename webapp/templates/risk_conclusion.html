@@ -90,7 +90,7 @@
                                class="form-control" required>
                     </div>
                     <div class="form-group"><br>
-                        <button type="submit" class="btn btn-primary btn-block">
+                        <button type="submit" id="submit-button" class="btn btn-primary btn-block">
                             Проверка юр. лица
                         </button>
                     </div>
@@ -109,12 +109,14 @@
         <div class="col-md-8"><br>
             <!-- Окошко со списком файлов и ссылками на их скачивание -->
             <div class="card card-body">
-                <h3>Список файлов</h3>
+                <h3>Список риск заключений</h3>
+                {% if filenames %}
                 <ul>
                     {% for filename in filenames %}
-                    <li><a href="{{ url_for('risk.download', file_name=filename) }}">{{ filename }}</a></li>
+                    <li><a href="{{ url_for('risk.download', filename=filename) }}">{{ filename }}</a></li>
                     {% endfor %}
                 </ul>
+                {% endif %}
             </div>
         </div>
     </div>
