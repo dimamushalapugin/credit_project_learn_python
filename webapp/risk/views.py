@@ -11,8 +11,19 @@ blueprint = Blueprint('risk', __name__, url_prefix='/risk')
 @blueprint.route('/risk_conclusion')
 @admin_required
 def risk_page():
+    print('__risk_page__')
     filenames = os.listdir('webapp/static/files')
     return render_template('risk_conclusion.html', filenames=filenames)
+
+
+@blueprint.route('/risk_conclusion/<path:folder_path>')
+def risk_conclusion_folder(folder_path, filename):
+    folder_path = os.path.join('webapp/static/files', folder_path)
+    if os.path.exists(folder_path) and os.path.isdir(folder_path):
+        items = os.listdir(folder_path)
+        return render_template('risk_conclusion_folder.html', items=items)
+    else:
+        return "Folder not found", 404
 
 
 def create_xlsx_file(data):
