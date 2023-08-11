@@ -8,18 +8,11 @@ from webapp.user.auth_utils import admin_required
 blueprint = Blueprint('risk', __name__, url_prefix='/risk')
 
 
-@blueprint.route('/risk_conclusion', methods=['GET', 'POST'])
+@blueprint.route('/risk_conclusion')
 @admin_required
 def risk_page():
-    if request.method == 'GET':
-        filenames = os.listdir('webapp/static/files')
-        return render_template('risk_conclusion.html', filenames=filenames)
-
-    elif request.method == 'POST':
-        folder_path = 'static/files/'
-        folders = os.listdir(folder_path)
-        data = request.form
-        return render_template('risk_conclusion.html', folders=folders, data=data)
+    filenames = os.listdir('webapp/static/files')
+    return render_template('risk_conclusion.html', filenames=filenames)
 
 
 def create_xlsx_file(data):
