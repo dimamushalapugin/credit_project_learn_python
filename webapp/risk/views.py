@@ -1,9 +1,7 @@
-import time
-
-import openpyxl
 import os
 from flask import Blueprint, flash, render_template, redirect, request, url_for, send_from_directory, jsonify, Response
 from webapp.user.auth_utils import admin_required
+from webapp.risk.create_risk_conclusion import create_conclusion
 
 blueprint = Blueprint('risk', __name__, url_prefix='/risk')
 
@@ -49,24 +47,13 @@ def risk_conclusion_folder(folder_path):
 
 
 def create_xlsx_file(data):
-    wb = openpyxl.Workbook()
-    ws = wb.active
-
-    ws['A1'] = data['client_inn']
-    ws['B1'] = data['seller_inn']
-
-    file_name = 'test.xlsx'
-    full_file_path = os.path.join('webapp', 'static', 'files', file_name)
-    wb.save(full_file_path)
-
-    return file_name
+    return create_conclusion(data['client_inn'], data['seller_inn'])
 
 
 @blueprint.route('/create_xlsx', methods=['POST'])
-def create_xlsx():
+def create_risk_conclusion():
     try:
         data = request.form
-        time.sleep(2)
         file_name = create_xlsx_file(data)
         flash(f'Файл успешно создан', 'success')
         return redirect(url_for('risk.risk_page', file_name=file_name))

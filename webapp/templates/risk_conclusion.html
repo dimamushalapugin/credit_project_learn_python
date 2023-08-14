@@ -79,7 +79,7 @@
             {% endif %}
             {% endwith %}
             <div class="card card-body">
-                <form action="{{ url_for('risk.create_xlsx') }}" method="POST">
+                <form action="{{ url_for('risk.create_risk_conclusion') }}" method="POST">
                     <div class="form-group">
                         <label>ИНН лизингополучателя</label>
                         <input type="text" name="client_inn" value="" class="form-control" required>
