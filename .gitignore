@@ -162,5 +162,5 @@ cython_debug/
 users.py
 test.py
 webapp/config.py
-
 /alembic.ini
+/logs/
