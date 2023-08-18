@@ -164,3 +164,5 @@ test.py
 webapp/config.py
 /alembic.ini
 /logs/
+/webapp/risk/okveds.xlsx
+/webapp/sellers.xlsx
