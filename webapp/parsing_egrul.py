@@ -1,4 +1,5 @@
 import requests
+import json
 
 
 def parsing_egrul_json(company_inn):
@@ -11,8 +12,8 @@ def parsing_egrul_json(company_inn):
         return {}
 
 
-def get_customer_name(request_form):
-    info_about_customer = parsing_egrul_json(request_form)
+def get_customer_name(client_inn):
+    info_about_customer = parsing_egrul_json(client_inn)
     if 'СвЮЛ' in info_about_customer:
         try:
             info_about_customer = info_about_customer['СвЮЛ']['СвНаимЮЛ']['СвНаимЮЛСокр']['@attributes'][
@@ -33,3 +34,20 @@ def get_customer_name(request_form):
         info_about_customer = None
 
     return info_about_customer
+
+
+def get_dir_name(client_inn):
+    dir_name = parsing_egrul_json(client_inn)
+    if 'СвЮЛ' in dir_name:
+        try:
+            dir_name = dir_name['СвЮЛ']['СведДолжнФЛ']['СвФЛ']['@attributes']
+        except KeyError:
+            dir_name = None
+    elif 'СвИП' in dir_name:
+        try:
+            dir_name = dir_name['СвИП']['СвФЛ']['ФИОРус']['@attributes']
+        except KeyError:
+            dir_name = None
+    else:
+        dir_name = None
+    return json.dumps(dir_name, indent=3, ensure_ascii=False)

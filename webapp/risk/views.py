@@ -1,5 +1,6 @@
 import os
 from flask import Blueprint, flash, render_template, redirect, request, url_for, send_from_directory, jsonify, Response
+from webapp.parsing_egrul import get_dir_name, get_customer_name
 from webapp.user.auth_utils import admin_required
 from webapp.risk.new_create_risk_conclusion import create_conclusion
 
@@ -58,3 +59,8 @@ def download(filename):
     folder_path = request.args.get('folder_path')
     real_path = os.path.join('static', 'files', folder_path).replace('\\', '/').replace(f"/{filename}", '')
     return send_from_directory(real_path, filename, as_attachment=True)
+
+
+@blueprint.route('/get_dir_name', methods=['POST'])
+def parsing_dir_name(client_inn):
+    return get_dir_name(client_inn)
