@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Риск заключения</title>
+    <title>Договоры</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="icon" href="{{ url_for('static', filename='images/favicon.png') }}" type="image/png">
 
@@ -16,13 +16,13 @@
                 <ul class="list-group">
                     {% for item in items %}
                         <li class="list-group-item">
-                            {% if item.name.endswith('.xlsx') %}
-                                <a href="{{ url_for('risk.download', filename=item.name, folder_path=item.path) }}"
+                            {% if item.name.endswith(('.xlsx', '.xlsm', '.docx')) %}
+                                <a href="{{ url_for('manager.download', filename=item.name, folder_path=item.path) }}"
                                    class="text-primary">
                                     {{ item.name }}
                                 </a>
                             {% else %}
-                                <a href="{{ url_for('risk.risk_conclusion_folder', folder_path=item.path) }}"
+                                <a href="{{ url_for('manager.agreements_folder', folder_path=item.path) }}"
                                    class="text-secondary">
                                     {{ item.name }}
                                 </a>

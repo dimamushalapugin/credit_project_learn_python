@@ -13,7 +13,7 @@
     </script>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Создание риск заключения</title>
+    <title>Создание договоров</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="icon" href="{{ url_for('static', filename='images/favicon.png') }}" type="image/png">
 
@@ -81,15 +81,20 @@
             {% endif %}
             {% endwith %}
             <div class="card card-body">
-                <form action="{{ url_for('risk.create_risk_conclusion') }}" method="POST">
+                <form action="{{ url_for('manager.create_agreement') }}" method="POST">
                     <div class="form-group">
                         <label>ИНН лизингополучателя</label>
                         <input type="text" name="client_inn" value="" class="form-control" required>
                     </div>
-                    <div class="form-group"><br>
-                        <label>ИНН поставщика</label>
-                        <input type="text" name="seller_inn" value=""
-                               class="form-control" required><br>
+                    <div class="mb-3"><br>
+                        <label for="applicationFileInput" class="form-label fs-5">Заявка от Клиента</label>
+                        <input type="file" class="form-control-sm" id="applicationFileInput" name="uploaded_application"
+                               required>
+                    </div>
+                    <div class="mb-5">
+                        <label for="graphicFileInput" class="form-label fs-5">График к ДЛ</label>
+                        <input type="file" class="form-control-sm" id="graphicFileInput" name="uploaded_graphic"
+                               required>
                     </div>
                     <div class="form-group">
                         <button type="button" id="check-button" class="btn btn-primary btn-sm">
@@ -98,35 +103,52 @@
                     </div>
                     <div class="form-group"><br>
                         <button type="submit" id="submit-button" class="btn btn-primary btn-block">
-                            Проверка юр. лица
+                            Создать ДЛ
                         </button>
                     </div>
                     <script>
-                        // Получаем ссылки на кнопки
+                        // Получаем ссылки на кнопки и инпуты для файлов
                         var checkButton = document.getElementById("check-button");
+                        var applicationFileInput = document.getElementById("applicationFileInput");
+                        var graphicFileInput = document.getElementById("graphicFileInput");
                         var submitButton = document.getElementById("submit-button");
 
-                        // Блокируем кнопку "Проверка юр. лица" при загрузке страницы
+                        // Блокируем кнопку "Предпроверка" при загрузке страницы
+                        checkButton.disabled = true;
                         submitButton.disabled = true;
 
+                        // Функция для проверки загрузки обоих файлов и разблокировки кнопки "Предпроверка"
+                        function checkFilesUploaded() {
+                            if (applicationFileInput.files.length > 0 && graphicFileInput.files.length > 0) {
+                                // Если оба файла загружены, разблокируем кнопку "Предпроверка"
+                                checkButton.disabled = false;
+                            }
+                        }
+
+                        // Добавляем обработчик события change для обоих инпутов файлов
+                        applicationFileInput.addEventListener("change", checkFilesUploaded);
+                        graphicFileInput.addEventListener("change", checkFilesUploaded);
+
+                        // Обработчик события для кнопки "Предпроверка"
                         checkButton.addEventListener("click", function() {
-                            var clientInnInput = document.querySelector('input[name="client_inn"]');
-                            var clientInnValue = clientInnInput.value;
-                            // Отправляем POST-запрос на сервер
-                            fetch("{{ url_for('risk.parsing_dir_name') }}", {
+                            // Создаем объект FormData для загрузки файлов
+                            var formData = new FormData();
+                            formData.append('uploaded_application', applicationFileInput.files[0]);
+                            formData.append('uploaded_graphic', graphicFileInput.files[0]);
+
+                            // Отправляем файлы на сервер
+                            fetch("{{ url_for('manager.upload_files') }}", {
                                 method: 'POST',
-                                body: JSON.stringify({ client_inn: clientInnValue }), // Отправляем ИНН в теле запроса
-                                headers: {
-                                    'Content-Type': 'application/json'
-                                }
+                                body: formData
                             })
                             .then(response => response.json())
                             .then(data => {
-                                console.log(data); // Обработка данных с сервера
-                            });
+                                console.log(data); // Обработка данных с сервера после загрузки файлов
 
-                            submitButton.disabled = false; // Разблокируем кнопку "Проверка юр. лица"
-                            checkButton.disabled = true; // Блокируем кнопку "Чек"
+                                // После успешной загрузки и сохранения файлов, можно выполнить дополнительные действия
+                                checkButton.disabled = true;
+                                submitButton.disabled = false;
+                            });
                         });
                     </script>
                 </form>
@@ -135,11 +157,11 @@
         <div class="col-md-5 mt-4">
             <div class="card">
                 <div class="card-body">
-                    <h3 class="card-title">Риск заключения</h3>
+                    <h3 class="card-title">Договоры</h3>
                     <ul class="list-group list-group-flush">
                         {% for folder_name in folder_names %}
                         <li class="list-group-item">
-                            <a href="{{ url_for('risk.risk_conclusion_folder', folder_path=folder_name) }}"
+                            <a href="{{ url_for('manager.agreements_folder', folder_path=folder_name) }}"
                                class="btn btn-light btn-sm">
                                 {{ folder_name }}
                             </a>

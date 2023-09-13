@@ -5,7 +5,7 @@ from flask_login import login_required
 from webapp.payment.models import LeasingContract, Payment
 from webapp.sql_queries import write_to_db, assign_leasing_contract_id, find_credit_contract_id, \
     create_payment_schedule, query_for_all_payments, query_for_daily_payments, query_for_bank_debts
-from webapp.user.auth_utils import admin_required
+from webapp.user.auth_utils import admin_required, manager_required
 
 blueprint = Blueprint('payment', __name__, url_prefix='/payments')
 
@@ -19,13 +19,13 @@ def full_credit_info(leasing_contract_number):
 
 
 @blueprint.route('/credit_table')
-@login_required
+@manager_required
 def list_of_all_payments():
     return render_template('credit_table_page.html', result=query_for_all_payments())
 
 
 @blueprint.route('/daily_payments')
-@login_required
+@manager_required
 def list_of_daily_payments():
     today_str = datetime.now().strftime('%d.%m.%Y')
     return render_template('daily_payments.html', result=query_for_daily_payments(),
