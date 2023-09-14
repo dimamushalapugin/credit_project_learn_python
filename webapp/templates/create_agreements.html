@@ -27,30 +27,9 @@
         .content {
             flex: 1;
         }
-
-        .loading-spinner {
-        border: 4px solid rgba(255, 255, 255, 0.3);
-        border-top: 4px solid #FFFFFF;
-        border-radius: 50%;
-        width: 40px;
-        height: 40px;
-        animation: spin 2s linear infinite;
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        margin-top: -20px;
-        margin-left: -20px;
-        z-index: 100;
-        display: none;
-    }
-
-    @keyframes spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
-    }
     </style>
 </head>
-<body style="background-color:#85c1df;">
+<body style="background-color: #edf6fc;">
 {% include 'menu.html' %}
 <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
     <symbol id="check-circle-fill" fill="currentColor" viewBox="0 0 16 16">
@@ -80,84 +59,167 @@
             </div>
             {% endif %}
             {% endwith %}
-            <div class="card card-body">
-                <form action="{{ url_for('manager.create_agreement') }}" method="POST">
-                    <div class="form-group">
-                        <label>ИНН лизингополучателя</label>
-                        <input type="text" name="client_inn" value="" class="form-control" required>
-                    </div>
-                    <div class="mb-3"><br>
-                        <label for="applicationFileInput" class="form-label fs-5">Заявка от Клиента</label>
-                        <input type="file" class="form-control-sm" id="applicationFileInput" name="uploaded_application"
-                               required>
-                    </div>
-                    <div class="mb-5">
-                        <label for="graphicFileInput" class="form-label fs-5">График к ДЛ</label>
-                        <input type="file" class="form-control-sm" id="graphicFileInput" name="uploaded_graphic"
-                               required>
-                    </div>
-                    <div class="form-group">
-                        <button type="button" id="check-button" class="btn btn-primary btn-sm">
-                            Предпроверка
-                        </button>
-                    </div>
-                    <div class="form-group"><br>
-                        <button type="submit" id="submit-button" class="btn btn-primary btn-block">
-                            Создать ДЛ
-                        </button>
-                    </div>
-                    <script>
-                        // Получаем ссылки на кнопки и инпуты для файлов
-                        var checkButton = document.getElementById("check-button");
-                        var applicationFileInput = document.getElementById("applicationFileInput");
-                        var graphicFileInput = document.getElementById("graphicFileInput");
-                        var submitButton = document.getElementById("submit-button");
+            <div class="card border-light mb-3">
+                <div class="card-body">
+                    <form action="{{ url_for('manager.create_agreement') }}" method="POST">
+                        <div class="mb-3">
+                            <h5 class="card-header">ИНН лизингополучателя</h5>
+                        </div>
+                        <div class="input-group input-group-sm mb-3">
+                            <input type="text" name="client_inn" value="" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <h5 class="card-header">ИНН продавца</h5>
+                        </div>
+                        <div class="input-group input-group-sm mb-3">
+                            <input type="text" name="seller_inn" value="" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <button type="submit" id="submit-button1" class="btn btn-outline-primary btn-block">
+                                Скачать заявку
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <br>
+            <div class="card border-light mb-3">
+                <div class="card-body">
+                    <form action="{{ url_for('manager.create_agreement') }}" method="POST">
+                        <div class="mb-3">
+                            <div class="mb-3">
+                                <h5 class="card-header">Заполнение ДЛ</h5>
+                            </div>
+                            <label>Выберите подписанта от ЛКМБ</label>
+                            <select class="form-select form-select-sm" aria-label=".form-select-sm example" required>
+                                <option selected></option>
+                                <option value="signatory1">Каюмов А. Д.</option>
+                                <option value="signatory2">Габдрахманов Р. Р.</option>
+                                <option value="signatory3">Хасанова Д. Р.</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label>Выберите инвестора</label>
+                            <select class="form-select form-select-sm" aria-label=".form-select-sm example" required>
+                                <option selected></option>
+                                <option value="bank1">ПАО «АК БАРС» БАНК</option>
+                                <option value="bank2">АО «АЛЬФА-БАНК»</option>
+                                <option value="bank3">ПАО АКБ «МЕТАЛЛИНВЕСТБАНК»</option>
+                                <option value="bank4">ПАО «МКБ»</option>
+                                <option value="bank5">АО «ПЕРВОУРАЛЬСКБАНК»</option>
+                                <option value="bank6">АО «СОЛИД БАНК»</option>
+                                <option value="bank7">АО КБ «УРАЛ ФД»</option>
+                                <option value="lkmb">ООО «ЛКМБ-РТ»</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label>Выберите валюту</label>
+                            <select class="form-select form-select-sm" aria-label=".form-select-sm example" required>
+                                <option selected></option>
+                                <option value="currency1">Рубль</option>
+                                <option value="currency2">Китайский юань</option>
+                                <option value="currency3">Доллар США</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label>Выберите предмет лизинга</label>
+                            <select class="form-select form-select-sm" aria-label=".form-select-sm example" required>
+                                <option selected></option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label>Укажите цену предмета лизинга</label>
+                            <select class="form-select form-select-sm" aria-label=".form-select-sm example" required>
+                                <option selected></option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label>Выберите график платежей</label>
+                            <select class="form-select form-select-sm" aria-label=".form-select-sm example" required>
+                                <option selected></option>
+                                <option value="graph1">Аннуитет</option>
+                                <option value="graph2">Регрессив</option>
+                                <option value="graph3">Clients</option>
+                            </select>
+                        </div>
+                        <br>
+                        <div class="mb-3">
+                            <div class="mb-3">
+                                <h5 class="card-header">Заявка по клиенту</h5>
+                            </div>
+                            <input type="file" class="form-control form-control-sm" id="applicationFileInput"
+                                   name="uploaded_application"
+                                   required>
+                        </div>
+                        <br>
+                        <div class="mb-5">
+                            <div class="mb-3">
+                                <h5 class="card-header">График к ДЛ</h5>
+                            </div>
+                            <input type="file" class="form-control form-control-sm" id="graphicFileInput"
+                                   name="uploaded_graphic"
+                                   required>
+                        </div>
+                        <div class="btn-group" role="group" aria-label="Basic outlined example">
+                            <button type="button" id="check-button" class="btn btn-outline-primary">Предпроверка
+                            </button>
+                            <button type="submit" id="submit-button" class="btn btn-outline-primary">Создать ДЛ</button>
+                        </div>
+                        <script>
+                            // Получаем ссылки на кнопки и инпуты для файлов
+                            var checkButton = document.getElementById("check-button");
+                            var applicationFileInput = document.getElementById("applicationFileInput");
+                            var graphicFileInput = document.getElementById("graphicFileInput");
+                            var submitButton = document.getElementById("submit-button");
 
-                        // Блокируем кнопку "Предпроверка" при загрузке страницы
-                        checkButton.disabled = true;
-                        submitButton.disabled = true;
+                            // Блокируем кнопку "Предпроверка" при загрузке страницы
+                            checkButton.disabled = true;
+                            submitButton.disabled = true;
 
-                        // Функция для проверки загрузки обоих файлов и разблокировки кнопки "Предпроверка"
-                        function checkFilesUploaded() {
-                            if (applicationFileInput.files.length > 0 && graphicFileInput.files.length > 0) {
-                                // Если оба файла загружены, разблокируем кнопку "Предпроверка"
-                                checkButton.disabled = false;
+                            // Функция для проверки загрузки обоих файлов и разблокировки кнопки "Предпроверка"
+                            function checkFilesUploaded() {
+                                if (applicationFileInput.files.length > 0 && graphicFileInput.files.length > 0) {
+                                    // Если оба файла загружены, разблокируем кнопку "Предпроверка"
+                                    checkButton.disabled = false;
+                                }
                             }
-                        }
 
-                        // Добавляем обработчик события change для обоих инпутов файлов
-                        applicationFileInput.addEventListener("change", checkFilesUploaded);
-                        graphicFileInput.addEventListener("change", checkFilesUploaded);
+                            // Добавляем обработчик события change для обоих инпутов файлов
+                            applicationFileInput.addEventListener("change", checkFilesUploaded);
+                            graphicFileInput.addEventListener("change", checkFilesUploaded);
 
-                        // Обработчик события для кнопки "Предпроверка"
-                        checkButton.addEventListener("click", function() {
-                            // Создаем объект FormData для загрузки файлов
-                            var formData = new FormData();
-                            formData.append('uploaded_application', applicationFileInput.files[0]);
-                            formData.append('uploaded_graphic', graphicFileInput.files[0]);
+                            // Обработчик события для кнопки "Предпроверка"
+                            checkButton.addEventListener("click", function() {
+                                // Создаем объект FormData для загрузки файлов
+                                var formData = new FormData();
+                                formData.append('uploaded_application', applicationFileInput.files[0]);
+                                formData.append('uploaded_graphic', graphicFileInput.files[0]);
 
-                            // Отправляем файлы на сервер
-                            fetch("{{ url_for('manager.upload_files') }}", {
-                                method: 'POST',
-                                body: formData
-                            })
-                            .then(response => response.json())
-                            .then(data => {
-                                console.log(data); // Обработка данных с сервера после загрузки файлов
+                                // Отправляем файлы на сервер
+                                fetch("{{ url_for('manager.upload_files') }}", {
+                                    method: 'POST',
+                                    body: formData
+                                })
+                                .then(response => response.json())
+                                .then(data => {
+                                    console.log(data); // Обработка данных с сервера после загрузки файлов
 
-                                // После успешной загрузки и сохранения файлов, можно выполнить дополнительные действия
-                                checkButton.disabled = true;
-                                submitButton.disabled = false;
+                                    // После успешной загрузки и сохранения файлов, можно выполнить дополнительные действия
+                                    checkButton.disabled = true;
+                                    submitButton.disabled = false;
+                                });
                             });
-                        });
-                    </script>
-                </form>
+                        </script>
+                    </form>
+                </div>
             </div>
         </div>
-        <div class="col-md-5 mt-4">
-            <div class="card">
+        <div class="col-md-7 mt-4 offset-md-1">
+            <div class="card border-light mb-3">
                 <div class="card-body">
-                    <h3 class="card-title">Договоры</h3>
+                    <div class="mb-3">
+                        <h4 class="card-header">Документы по клиенту</h4>
+                    </div>
                     <ul class="list-group list-group-flush">
                         {% for folder_name in folder_names %}
                         <li class="list-group-item">
@@ -174,7 +236,7 @@
     </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
+<br><br><br>
 {% include 'footer.html' %}
 
 </body>
