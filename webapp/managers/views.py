@@ -1,8 +1,10 @@
 import os
-from flask import Blueprint, flash, render_template, redirect, request, url_for, send_from_directory, jsonify
+
+from flask import Blueprint, flash, render_template, redirect, request, url_for, send_from_directory, jsonify, send_file
 from flask_login import login_required
 
-from webapp.managers.parser_for_application import start
+from webapp.managers.parser_for_application import start_filling_application, start_filling_agreement
+from webapp.config import APPLICATION_PATH
 
 blueprint = Blueprint('manager', __name__, url_prefix='/managers')
 application_path = ''
@@ -49,8 +51,15 @@ def download(filename):
     return send_from_directory(real_path, filename, as_attachment=True)
 
 
+def create_xlsx_file(data):
+    return start_filling_application(data['client_inn'], APPLICATION_PATH)
+
+
 def create_docx_file(data):
-    return start(data['client_inn'], application_path.replace('/', '\\'), graphic_path.replace('/', '\\'))
+    path_application = application_path.replace('/', '\\')
+    path_graphic = graphic_path.replace('/', '\\')
+    return start_filling_agreement(data['client_inn'], path_application, path_graphic, data['signatory'],
+                                   data['investor'], data['currency'], data['insurant'], data['graph'])
 
 
 @blueprint.route('/create_xlsx', methods=['POST'])
@@ -58,7 +67,6 @@ def create_agreement():
     try:
         data = request.form
         file_name = create_docx_file(data)
-        flash(f'Файл успешно создан', 'success')
         os.remove(application_path.replace('/', '\\'))
         os.remove(graphic_path.replace('/', '\\'))
         return redirect(url_for('manager.managers_page', file_name=file_name))
@@ -91,3 +99,22 @@ def upload_files():
     uploaded_application.save(application_path)
     uploaded_graphic.save(graphic_path)
     return jsonify({'message': 'Файлы успешно загружены и сохранены.'})
+
+
+@blueprint.route('/download_application')
+def download_application(file_path, filename):
+    response = send_file(file_path, as_attachment=True, download_name=filename)
+    return response
+
+
+@blueprint.route('/create_application', methods=['POST'])
+def create_application():
+    try:
+        data = request.form
+        file_path = create_xlsx_file(data)
+        file_name = f'Заявка с заключением {data["client_inn"]}.xlsx'
+        flash(f'Файл успешно создан и загружен', 'success')
+        return download_application(file_path, file_name)
+    except Exception as e:
+        flash(str(e), 'warning')
+        return redirect(url_for('manager.managers_page'))

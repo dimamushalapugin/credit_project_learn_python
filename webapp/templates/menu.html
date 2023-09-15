@@ -1,4 +1,6 @@
 <link rel="icon" href="{{ url_for('static', filename='images/favicon.png') }}" type="image/png">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container">
         <a class="navbar-brand" href="{{ url_for('payment.list_of_all_payments') }}">
@@ -106,7 +108,7 @@
             </ul>
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('user.exit_user') }}">Выход</a>
+                    <a class="nav-link" href="{{ url_for('user.exit_user') }}">Выход <i class="fa-solid fa-arrow-right-from-bracket"></i></a>
                 </li>
             </ul>
         </div>

@@ -16,6 +16,7 @@
     <title>Создание договоров</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="icon" href="{{ url_for('static', filename='images/favicon.png') }}" type="image/png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 
     <style>
         body {
@@ -61,18 +62,13 @@
             {% endwith %}
             <div class="card border-light mb-3">
                 <div class="card-body">
-                    <form action="{{ url_for('manager.create_agreement') }}" method="POST">
+                    <form action="{{ url_for('manager.create_application') }}" method="POST">
                         <div class="mb-3">
-                            <h5 class="card-header">ИНН лизингополучателя</h5>
+                            <h5 class="card-header"><i class="fa-solid fa-circle-info fa-xs"></i> ИНН лизингополучателя
+                            </h5>
                         </div>
                         <div class="input-group input-group-sm mb-3">
                             <input type="text" name="client_inn" value="" class="form-control" required>
-                        </div>
-                        <div class="mb-3">
-                            <h5 class="card-header">ИНН продавца</h5>
-                        </div>
-                        <div class="input-group input-group-sm mb-3">
-                            <input type="text" name="seller_inn" value="" class="form-control" required>
                         </div>
                         <div class="form-group">
                             <button type="submit" id="submit-button1" class="btn btn-outline-primary btn-block">
@@ -82,79 +78,106 @@
                     </form>
                 </div>
             </div>
-            <br>
             <div class="card border-light mb-3">
                 <div class="card-body">
                     <form action="{{ url_for('manager.create_agreement') }}" method="POST">
                         <div class="mb-3">
                             <div class="mb-3">
-                                <h5 class="card-header">Заполнение ДЛ</h5>
+                                <h5 class="card-header"><i class="fa-solid fa-circle-info fa-xs"></i> Заполнение ДЛ</h5>
+                            </div>
+                            <div class="mb-3">
+                                <label>Введите ИНН лизингополучателя</label>
+                                <div class="input-group input-group-sm mb-3">
+                                    <input type="text" name="client_inn" value="" class="form-control" required>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label>Введите ИНН продавца</label>
+                                <div class="input-group input-group-sm mb-3">
+                                    <input type="text" name="seller_inn" value="" class="form-control" required>
+                                </div>
                             </div>
                             <label>Выберите подписанта от ЛКМБ</label>
-                            <select class="form-select form-select-sm" aria-label=".form-select-sm example" required>
+                            <select class="form-select form-select-sm" name="signatory"
+                                    aria-label=".form-select-sm example" required>
                                 <option selected></option>
-                                <option value="signatory1">Каюмов А. Д.</option>
-                                <option value="signatory2">Габдрахманов Р. Р.</option>
-                                <option value="signatory3">Хасанова Д. Р.</option>
+                                <option value="Каюмов А. Д.">Каюмов А. Д.</option>
+                                <option value="Габдрахманов Р. Р.">Габдрахманов Р. Р.</option>
+                                <option value="Хасанова Д. Р.">Хасанова Д. Р.</option>
                             </select>
                         </div>
                         <div class="mb-3">
                             <label>Выберите инвестора</label>
-                            <select class="form-select form-select-sm" aria-label=".form-select-sm example" required>
+                            <select class="form-select form-select-sm" name="investor"
+                                    aria-label=".form-select-sm example" required>
                                 <option selected></option>
-                                <option value="bank1">ПАО «АК БАРС» БАНК</option>
-                                <option value="bank2">АО «АЛЬФА-БАНК»</option>
-                                <option value="bank3">ПАО АКБ «МЕТАЛЛИНВЕСТБАНК»</option>
-                                <option value="bank4">ПАО «МКБ»</option>
-                                <option value="bank5">АО «ПЕРВОУРАЛЬСКБАНК»</option>
-                                <option value="bank6">АО «СОЛИД БАНК»</option>
-                                <option value="bank7">АО КБ «УРАЛ ФД»</option>
-                                <option value="lkmb">ООО «ЛКМБ-РТ»</option>
+                                <option value="ПАО «АК БАРС» БАНК">ПАО «АК БАРС» БАНК</option>
+                                <option value="АО «АЛЬФА-БАНК»">АО «АЛЬФА-БАНК»</option>
+                                <option value="ПАО АКБ «МЕТАЛЛИНВЕСТБАНК»">ПАО АКБ «МЕТАЛЛИНВЕСТБАНК»</option>
+                                <option value="ПАО «МКБ»">ПАО «МКБ»</option>
+                                <option value="АО «ПЕРВОУРАЛЬСКБАНК»">АО «ПЕРВОУРАЛЬСКБАНК»</option>
+                                <option value="АО «СОЛИД БАНК»">АО «СОЛИД БАНК»</option>
+                                <option value="АО КБ «УРАЛ ФД»">АО КБ «УРАЛ ФД»</option>
+                                <option value="ООО «ЛКМБ-РТ»">ООО «ЛКМБ-РТ»</option>
                             </select>
                         </div>
                         <div class="mb-3">
                             <label>Выберите валюту</label>
-                            <select class="form-select form-select-sm" aria-label=".form-select-sm example" required>
+                            <select class="form-select form-select-sm" name="currency"
+                                    aria-label=".form-select-sm example" required>
                                 <option selected></option>
-                                <option value="currency1">Рубль</option>
-                                <option value="currency2">Китайский юань</option>
-                                <option value="currency3">Доллар США</option>
+                                <option value="Рубль">Рубль</option>
+                                <option value="Китайский юань">Китайский юань</option>
+                                <option value="Доллар США">Доллар США</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label>Выберите страхователя</label>
+                            <select class="form-select form-select-sm" name="insurant"
+                                    aria-label=".form-select-sm example" required>
+                                <option selected></option>
+                                <option value="ООО «ЛКМБ-РТ»">ООО «ЛКМБ-РТ»</option>
+                                <option value="Лизингополучатель">Лизингополучатель</option>
                             </select>
                         </div>
                         <div class="mb-3">
                             <label>Выберите предмет лизинга</label>
-                            <select class="form-select form-select-sm" aria-label=".form-select-sm example" required>
+                            <select class="form-select form-select-sm" name="pl" aria-label=".form-select-sm example"
+                                    required>
                                 <option selected></option>
+                                <option value="pl1">ООО «ЛКМБ-РТ»</option>
                             </select>
                         </div>
                         <div class="mb-3">
                             <label>Укажите цену предмета лизинга</label>
-                            <select class="form-select form-select-sm" aria-label=".form-select-sm example" required>
+                            <select class="form-select form-select-sm" name="price" aria-label=".form-select-sm example"
+                                    required>
                                 <option selected></option>
+                                <option value="price1">ООО «ЛКМБ-РТ»</option>
                             </select>
                         </div>
                         <div class="mb-3">
                             <label>Выберите график платежей</label>
-                            <select class="form-select form-select-sm" aria-label=".form-select-sm example" required>
+                            <select class="form-select form-select-sm" name="graph" aria-label=".form-select-sm example"
+                                    required>
                                 <option selected></option>
-                                <option value="graph1">Аннуитет</option>
-                                <option value="graph2">Регрессив</option>
-                                <option value="graph3">Clients</option>
+                                <option value="Аннуитет">Аннуитет</option>
+                                <option value="Регрессив">Регрессив</option>
+                                <option value="Clients">Clients</option>
                             </select>
                         </div>
-                        <br>
                         <div class="mb-3">
                             <div class="mb-3">
-                                <h5 class="card-header">Заявка по клиенту</h5>
+                                <h5 class="card-header"><i class="fa-solid fa-circle-info fa-xs"></i> Заявка по клиенту
+                                </h5>
                             </div>
                             <input type="file" class="form-control form-control-sm" id="applicationFileInput"
                                    name="uploaded_application"
                                    required>
                         </div>
-                        <br>
                         <div class="mb-5">
                             <div class="mb-3">
-                                <h5 class="card-header">График к ДЛ</h5>
+                                <h5 class="card-header"><i class="fa-solid fa-circle-info fa-xs"></i> График к ДЛ</h5>
                             </div>
                             <input type="file" class="form-control form-control-sm" id="graphicFileInput"
                                    name="uploaded_graphic"
@@ -225,7 +248,7 @@
                         <li class="list-group-item">
                             <a href="{{ url_for('manager.agreements_folder', folder_path=folder_name) }}"
                                class="btn btn-light btn-sm">
-                                {{ folder_name }}
+                                <i class="fa-regular fa-folder"></i> {{ folder_name }}
                             </a>
                         </li>
                         {% endfor %}

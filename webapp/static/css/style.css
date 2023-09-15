@@ -1,24 +1,19 @@
-/* Стилизация таблицы */
-.table {
-  width: 100%;
-  border-collapse: collapse;
-  font-family: Arial, sans-serif;
+/* Овальный input */
+.form-control {
+    border: none; /* Удалить границу */
+    border-radius: 50px; /* Закругленные углы для создания овальной формы */
+    padding: 8px 12px; /* Внутренний отступ */
+    width: 100%; /* Заполнить доступное пространство */
+    background-color: rgba(255, 255, 255, 0.4); /* Немного прозрачный белый фон */
 }
 
-/* Заголовки таблицы */
-.table thead th {
-  border-bottom: 2px solid #ADD8E6;
+/* Отступ между input и соседними элементами */
+.input-group {
+    margin-bottom: 15px;
 }
 
-/* Строки таблицы */
-.table tbody tr {
-  transition: background-color 0.3s ease, transform 0.3s ease, filter 0.3s ease;
+/* Стили для input при фокусе (когда на него кликают) */
+.form-control:focus {
+    outline: none; /* Убрать синее подчеркивание */
+    box-shadow: 0 0 5px rgba(52, 152, 219, 0.7); /* Тень вокруг input при фокусе */
 }
-
-/* Наведение на строки */
-.table tbody tr:hover {
-  background-color: #E6F1FF;
-  filter: brightness(95%) saturate(120%);
-}
-
-
