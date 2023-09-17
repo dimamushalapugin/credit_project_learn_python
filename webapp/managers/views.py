@@ -59,7 +59,8 @@ def create_docx_file(data):
     path_application = application_path.replace('/', '\\')
     path_graphic = graphic_path.replace('/', '\\')
     return start_filling_agreement(data['client_inn'], path_application, path_graphic, data['signatory'],
-                                   data['investor'], data['currency'], data['insurant'], data['graph'])
+                                   data['investor'], data['currency'], data['insurant'], data['graph'], data['pl'],
+                                   data['number_dl'], data['seller_inn'])
 
 
 @blueprint.route('/create_xlsx', methods=['POST'])
@@ -69,6 +70,7 @@ def create_agreement():
         file_name = create_docx_file(data)
         os.remove(application_path.replace('/', '\\'))
         os.remove(graphic_path.replace('/', '\\'))
+        flash(f'Файлы успешно созданы и загружены', 'success')
         return redirect(url_for('manager.managers_page', file_name=file_name))
     except Exception as e:
         flash(str(e), 'warning')
