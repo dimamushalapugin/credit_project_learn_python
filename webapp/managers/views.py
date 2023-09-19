@@ -86,7 +86,7 @@ def upload_files():
     uploaded_graphic = request.files['uploaded_graphic']
 
     if not uploaded_application or not uploaded_graphic:
-        return flash('Загрузите оба файла', 'error')
+        return flash('Загрузите оба файла', 'info')
 
     if not (uploaded_application.filename.endswith(('.xlsx', '.xlsm')) and uploaded_graphic.filename.endswith(
             ('.xlsx', '.xlsm'))):
@@ -118,5 +118,7 @@ def create_application():
         flash(f'Файл успешно создан и загружен', 'success')
         return download_application(file_path, file_name)
     except Exception as e:
+        flash('Проверьте корректность ИНН', 'error')
+        flash('Ошибка:', 'error')
         flash(str(e), 'error')
         return redirect(url_for('manager.managers_page'))

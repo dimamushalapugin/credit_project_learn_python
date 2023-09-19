@@ -74,6 +74,20 @@
             </div>
             {% endif %}
             {% endwith %}
+            {% with messages = get_flashed_messages(category_filter=["info"]) %}
+            {% if messages %}
+            <div class="alert alert-primary d-flex align-items-center" role="alert">
+                <svg class="bi flex-shrink-0 me-2" width="15" height="15" role="img" aria-label="Info:">
+                    <use xlink:href="#info-fill"/>
+                </svg>
+                <div>
+                    {% for message in messages %}
+                    {{ message }}<br>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+            {% endwith %}
             <div class="card border-light mb-3">
                 <div class="card-body">
                     <form action="{{ url_for('manager.create_application') }}" method="POST">

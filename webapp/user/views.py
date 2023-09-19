@@ -22,14 +22,14 @@ def process_login():
         user = User.query.filter_by(login=form.username.data).first()
         if user and user.check_password(form.password.data):
             login_user(user, remember=form.remember_me.data)
-            flash('Вы вошли на сайт')
+            flash('Вы вошли на сайт', 'success')
             print(current_user)
             print(current_user.is_manager)
             print(current_user.is_admin)
             if current_user.is_manager:
                 return redirect(url_for('manager.managers_page'))
             return redirect(url_for('payment.list_of_all_payments'))
-    flash('Неправильное имя пользователя или пароль')
+    flash('Неправильное имя пользователя или пароль', 'info')
     return redirect(url_for('user.login'))
 
 
@@ -48,7 +48,7 @@ def create_user():
         new_user.set_password(request.form['user_password'])
 
         if User.query.filter(User.login == login).count():
-            flash('Такой пользователь уже есть')
+            flash('Такой пользователь уже есть', 'info')
             return redirect(url_for('user.create_user'))
         write_to_db(new_user)
         return redirect(url_for('user.list_of_users'))

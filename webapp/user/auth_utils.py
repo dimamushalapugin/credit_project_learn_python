@@ -14,7 +14,7 @@ def admin_required(func):
         elif not current_user.is_authenticated:
             return current_app.login_manager.unauthorized()
         elif not current_user.is_admin:
-            flash('Эта страница доступна только админам')
+            flash('Эта страница доступна только админам', 'info')
             return redirect(url_for('payment.list_of_all_payments'))
         return func(*args, **kwargs)
 

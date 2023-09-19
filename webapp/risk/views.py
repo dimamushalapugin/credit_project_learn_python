@@ -51,7 +51,7 @@ def create_risk_conclusion():
         flash(f'Файл успешно создан', 'success')
         return redirect(url_for('risk.risk_page', file_name=file_name))
     except Exception as e:
-        flash(str(e), 'warning')
+        flash(str(e), 'error')
         return redirect(url_for('risk.risk_page'))
 
 
