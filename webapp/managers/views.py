@@ -73,7 +73,7 @@ def create_agreement():
         flash(f'Файлы успешно созданы и загружены', 'success')
         return redirect(url_for('manager.managers_page', file_name=file_name))
     except Exception as e:
-        flash(str(e), 'warning')
+        flash(str(e), 'error')
         os.remove(application_path.replace('/', '\\'))
         os.remove(graphic_path.replace('/', '\\'))
         return redirect(url_for('manager.managers_page'))
@@ -118,5 +118,5 @@ def create_application():
         flash(f'Файл успешно создан и загружен', 'success')
         return download_application(file_path, file_name)
     except Exception as e:
-        flash(str(e), 'warning')
+        flash(str(e), 'error')
         return redirect(url_for('manager.managers_page'))

@@ -1,5 +1,7 @@
-from flask import Flask, redirect, url_for
+from flask import Flask, redirect, url_for, send_from_directory
 from flask_login import LoginManager, login_required, current_user
+from flask_caching import Cache
+
 from webapp.user.forms import LoginForm
 from webapp.user.models import User
 from webapp.user.views import blueprint as user_blueprint
@@ -14,6 +16,9 @@ def create_app():
     app = Flask(__name__)
     app.config.from_pyfile('config.py')
     db.init_app(app)
+
+    cache = Cache(config={'CACHE_TYPE': 'SimpleCache'})
+    cache.init_app(app)
 
     login_manager = LoginManager()
     login_manager.init_app(app)

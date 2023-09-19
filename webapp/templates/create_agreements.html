@@ -46,7 +46,21 @@
 <div class="container">
     <div class="row">
         <div class="col-md-3 offset-md-0"><br>
-            {% with messages = get_flashed_messages() %}
+            {% with messages = get_flashed_messages(category_filter=["error"]) %}
+            {% if messages %}
+            <div class="alert alert-danger d-flex align-items-center" role="alert">
+                <svg class="bi flex-shrink-0 me-2" width="15" height="15" role="img" aria-label="Danger:">
+                    <use xlink:href="#exclamation-triangle-fill"/>
+                </svg>
+                <div>
+                    {% for message in messages %}
+                    {{ message }}<br>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+            {% endwith %}
+            {% with messages = get_flashed_messages(category_filter=["success"]) %}
             {% if messages %}
             <div class="alert alert-success d-flex align-items-center" role="alert">
                 <svg class="bi flex-shrink-0 me-2" width="15" height="15" role="img" aria-label="Success:">
