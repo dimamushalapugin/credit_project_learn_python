@@ -1,11 +1,10 @@
 import re
-import sys
-import time
 import json
 
+from datetime import datetime as dt
+from dateutil.relativedelta import relativedelta
 from bs4 import BeautifulSoup
 from typing import List
-from pprint import pprint
 
 from webapp.risk.download_page import read_main_page
 from webapp.risk.logger import logging
@@ -504,6 +503,65 @@ def get_url_delta(soup):
         return '-'
 
 
+def period_of_activity(soup):
+    try:
+        reg_comp_seller = dt.strptime(date_of_registration(soup), '%d.%m.%Y')
+        cur_date_seller = dt.strptime(dt.now().strftime('%d.%m.%Y'), '%d.%m.%Y')
+        if relativedelta(cur_date_seller, reg_comp_seller).years >= 3:
+            return 'Нет'
+        else:
+            return 'Да'
+    except (AttributeError, TypeError, IndexError) as _ex:
+        logging.info(_ex, exc_info=True)
+        return '-'
+
+
+def unprofitability(fin_func):
+    try:
+        if fin_func[0][2022]['Чистая прибыль'].startswith('-'):
+            return 'Да'
+        else:
+            return 'Нет'
+    except (AttributeError, TypeError, IndexError) as _ex:
+        logging.info(_ex, exc_info=True)
+        return '-'
+
+
+def inaccuracy_of_information(soup):
+    try:
+        if 'недостоверн' in soup.find(
+                'div', class_='cards__column cards__column-first').get_text(' ', strip=True).lower():
+            return 'Да'
+        else:
+            return 'Нет'
+    except (AttributeError, TypeError, IndexError) as _ex:
+        logging.info(_ex, exc_info=True)
+        return '-'
+
+
+def mass_address(soup):
+    try:
+        if soup.find('div', class_='cards__column_block address_info').find('p', class_='link-red'):
+            return 'Да'
+        else:
+            return 'Нет'
+    except (AttributeError, TypeError, IndexError) as _ex:
+        logging.info(_ex, exc_info=True)
+        return '-'
+
+
+def extremism(soup):
+    status = rosfinmonitoring(soup)
+    try:
+        if 'источнику отсутствует' in status or 'Запрос по источнику не отправлялся' in status:
+            return 'Нет'
+        else:
+            return 'Да'
+    except (AttributeError, TypeError, IndexError) as _ex:
+        logging.info(_ex, exc_info=True)
+        return '-'
+
+
 def read_main_html(client_inn, object_inn):
     try:
         soup = BeautifulSoup(read_main_page(client_inn, object_inn), 'html.parser')
@@ -543,28 +601,49 @@ def read_main_html(client_inn, object_inn):
         'Санкции': sanctions(soup),
         'Черный список': 'Информация по источнику отсутствует',
         'URL_Delta': get_url_delta(soup),
+        'Менее 3х лет (да_нет)': period_of_activity(soup),  # for seller table
+        'Убыточность (да_нет)': unprofitability(financial_statements(soup)),  # for seller table
+        'Недостоверность сведений (да_нет)': inaccuracy_of_information(soup),  # for seller table
+        'Массовый адрес (да_нет)': mass_address(soup),  # for seller table
+        'Экстремизм (да_нет)': extremism(soup),  # for seller table
     }
 
+    with open('main_info.json', 'a', encoding='utf-8') as file:
+        json.dump(general_description_of_the_company, file, ensure_ascii=False, indent=3)
+        file.write('\n')
+        file.write('\n')
+        file.write('=' * 70)
+        file.write('\n')
+        file.write('\n')
 
-    # with open('for_test.json', 'a', encoding='utf-8') as file:
-    #     json.dump(general_description_of_the_company, file, ensure_ascii=False, indent=3)
-    #     file.write('\n')
-    #     file.write('\n')
-    #     file.write('=' * 70)
-    #     file.write('\n')
-    #     file.write('\n')
     return general_description_of_the_company
 
-# read_main_html('1684000880', '1635010074')
-# read_main_html('1684000880', '1635011046')
-# read_main_html('1684000880', '1661065440')
-# read_main_html('1684000880', '1684000880')
-# read_main_html('1684000880', '1659189303')
-# read_main_html('1684000880', '5257208909')
-# read_main_html('1684000880', '1655099271')
-# read_main_html('1684000880', '1655443020')
-# read_main_html('1684000880', '1659110896')
-# read_main_html('1684000880', '5258064400')
-# read_main_html('1684000880', '7203519669')
-# read_main_html('1684000880', '7729588182')
-# sys.exit()
+
+def ind_passport(soup):
+    pass
+
+
+
+def read_main_html_individual(client_inn, object_inn):
+    try:
+        soup = BeautifulSoup(read_main_page(client_inn, object_inn), 'html.parser')
+    except FileNotFoundError as _ex:
+        logging.info(_ex, exc_info=True)
+        raise _ex
+
+    general_description_of_an_individual = {
+        'Паспортные данные': full_name_company(soup),
+        'Дата рождения': short_name_company(soup),
+        'Гражданство': company_status(soup),
+        'ИНН': company_inn_kpp_ogrn_okpo(soup, 'ИНН:'),
+        'ФИО': company_inn_kpp_ogrn_okpo(soup, 'КПП:'),
+        'Статус': company_inn_kpp_ogrn_okpo(soup, 'ОГРН:'),
+        'ОКВЭД': company_inn_kpp_ogrn_okpo(soup, 'ОГРН:'),
+        'Адрес регистрации': company_inn_kpp_ogrn_okpo(soup, 'ОГРН:'),
+        'Является руководителем': company_inn_kpp_ogrn_okpo(soup, 'ОГРН:'),
+        'Является учредителем': company_inn_kpp_ogrn_okpo(soup, 'ОГРН:'),
+        'Являлся руководителем': company_inn_kpp_ogrn_okpo(soup, 'ОГРН:'),
+        'Являлся учредителем': company_inn_kpp_ogrn_okpo(soup, 'ОГРН:'),
+    }
+
+    return general_description_of_an_individual

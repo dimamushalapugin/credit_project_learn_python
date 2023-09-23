@@ -91,3 +91,11 @@ class Seller(db.Model):
 
     def __repr__(self):
         return f'Seller {self.id}, {self.seller_name}: {self.seller_inn}'
+
+    @staticmethod
+    def check_in_base(seller_inn):
+        new_seller = Seller.query.filter(
+            Seller.seller_inn == seller_inn).first()
+        if new_seller:
+            return 'Да'
+        return 'Нет'

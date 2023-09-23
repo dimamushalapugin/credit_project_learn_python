@@ -141,7 +141,7 @@
                             var clientInnInput = document.querySelector('input[name="client_inn"]');
                             var clientInnValue = clientInnInput.value;
                             // Отправляем POST-запрос на сервер
-                            fetch("{{ url_for('risk.parsing_dir_name') }}", {
+                            fetch("#", {
                                 method: 'POST',
                                 body: JSON.stringify({ client_inn: clientInnValue }), // Отправляем ИНН в теле запроса
                                 headers: {

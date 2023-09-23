@@ -1,5 +1,3 @@
-import sys
-import time
 from datetime import datetime as dt
 
 from webapp.config import PATH_FOR_HTML_PAGES, URL_DELTA
@@ -34,7 +32,7 @@ def download_delta_page(driver, data, client_inn, object_inn):
             "w",
             encoding="utf-8") as file:
         file.write(html)
-    time.sleep(3)
+    driver.implicitly_wait(3)
     driver.close()
     logging.info(f"Возвращаемся обратно на главную страницу компании")
     driver.switch_to.window(driver.window_handles[1])
