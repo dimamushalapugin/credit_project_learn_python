@@ -404,11 +404,12 @@ def history(soup):
     return elements
 
 
+# TODO: Переделать на JSON
 def financial_statements(soup):
-    fin_list = []
+    fin = {}
 
     for year in [2022, 2021, 2020]:
-        indicators = {}
+        fin[year] = {}
         try:
             for element in soup.find('div', class_='financial-info', id=f'y_{year}'
                                      ).find_all('span', class_='cards__block-line'):
@@ -621,7 +622,6 @@ def read_main_html(client_inn, object_inn):
 
 def ind_passport(soup):
     pass
-
 
 
 def read_main_html_individual(client_inn, object_inn):
