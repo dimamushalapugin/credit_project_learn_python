@@ -5,6 +5,7 @@
     <title>Риск заключения</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="icon" href="{{ url_for('static', filename='images/favicon.png') }}" type="image/png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 
 </head>
 <body>
@@ -18,13 +19,18 @@
                         <li class="list-group-item">
                             {% if item.name.endswith('.xlsx') %}
                                 <a href="{{ url_for('risk.download', filename=item.name, folder_path=item.path) }}"
-                                   class="text-primary">
-                                    {{ item.name }}
+                                   class="text-primary text-decoration-none">
+                                    <i class="fa-regular fa-file-excel"></i> {{ item.name }}
+                                </a>
+                            {% elif item.name.endswith('.html') %}
+                                <a href=""
+                                   class="text-secondary text-decoration-none">
+                                    <i class="fa-brands fa-html5 fa-lg" style="color: #9da7b9;"></i> {{ item.name }}
                                 </a>
                             {% else %}
                                 <a href="{{ url_for('risk.risk_conclusion_folder', folder_path=item.path) }}"
-                                   class="text-secondary">
-                                    {{ item.name }}
+                                   class="text-secondary text-decoration-none">
+                                    <i class="fa-regular fa-folder"></i> {{ item.name }}
                                 </a>
                             {% endif %}
                         </li>

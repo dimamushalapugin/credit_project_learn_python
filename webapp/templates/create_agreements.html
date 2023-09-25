@@ -92,7 +92,7 @@
                 <div class="card-body">
                     <form action="{{ url_for('manager.create_application') }}" method="POST">
                         <div class="mb-3">
-                            <h5 class="card-header"><i class="fa-solid fa-circle-info fa-xs"></i> ИНН лизингополучателя
+                            <h5 class="card-header"><i class="fa-solid fa-circle-info fa-xs" style="color: #8f8f8f;"></i> ИНН лизингополучателя
                             </h5>
                         </div>
                         <div class="input-group input-group-sm mb-3">
@@ -111,7 +111,7 @@
                     <form action="{{ url_for('manager.create_agreement') }}" method="POST">
                         <div class="mb-3">
                             <div class="mb-3">
-                                <h5 class="card-header"><i class="fa-solid fa-circle-info fa-xs"></i> Заполнение ДЛ</h5>
+                                <h5 class="card-header"><i class="fa-solid fa-circle-info fa-xs" style="color: #8f8f8f;"></i> Заполнение ДЛ</h5>
                             </div>
                             <div class="mb-3">
                                 <label>Введите ИНН лизингополучателя</label>
@@ -198,7 +198,7 @@
                         </div>
                         <div class="mb-3">
                             <div class="mb-3">
-                                <h5 class="card-header"><i class="fa-solid fa-circle-info fa-xs"></i> Заявка по клиенту
+                                <h5 class="card-header"><i class="fa-solid fa-circle-info fa-xs" style="color: #8f8f8f;"></i> Заявка по клиенту
                                 </h5>
                             </div>
                             <input type="file" class="form-control form-control-sm" id="applicationFileInput"
@@ -207,7 +207,7 @@
                         </div>
                         <div class="mb-5">
                             <div class="mb-3">
-                                <h5 class="card-header"><i class="fa-solid fa-circle-info fa-xs"></i> График к ДЛ</h5>
+                                <h5 class="card-header"><i class="fa-solid fa-circle-info fa-xs" style="color: #8f8f8f;"></i> График к ДЛ</h5>
                             </div>
                             <input type="file" class="form-control form-control-sm" id="graphicFileInput"
                                    name="uploaded_graphic"
@@ -278,7 +278,7 @@
                         <li class="list-group-item">
                             <a href="{{ url_for('manager.agreements_folder', folder_path=folder_name) }}"
                                class="btn btn-light btn-sm">
-                                <i class="fa-regular fa-folder"></i> {{ folder_name }}
+                                <i class="fa-regular fa-folder" style="color: #6b6b6b;"></i> {{ folder_name }}
                             </a>
                         </li>
                         {% endfor %}

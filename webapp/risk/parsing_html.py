@@ -404,7 +404,6 @@ def history(soup):
     return elements
 
 
-# TODO: Переделать на JSON
 def financial_statements(soup):
     fin = {}
 
@@ -416,27 +415,22 @@ def financial_statements(soup):
                 try:
                     find_element = element.get_text(strip=True).split('—')
                     if element.find('i', class_='link-up'):
-                        indicators[find_element[0].strip()] = find_element[1].strip().removesuffix(
-                            element.find('i', class_='link-up').get_text(strip=True))
+                        fin[year].setdefault(find_element[0].strip(), find_element[1].strip().removesuffix(
+                            element.find('i', class_='link-up').get_text(strip=True)))
                     elif element.find('i', class_='link-down'):
-                        indicators[find_element[0].strip()] = find_element[1].strip().removesuffix(
-                            element.find('i', class_='link-down').get_text(strip=True))
+                        fin[year].setdefault(find_element[0].strip(), find_element[1].strip().removesuffix(
+                            element.find('i', class_='link-down').get_text(strip=True)))
                     else:
-                        indicators[find_element[0].strip()] = find_element[1].strip()
+                        fin[year].setdefault(find_element[0].strip(), find_element[1].strip())
                 except (AttributeError, TypeError, IndexError) as _ex:
                     logging.info('Ошибка в фин. показателях')
                     logging.info(_ex, exc_info=True)
 
-            fin_list.append(
-                {
-                    year: indicators
-                }
-            )
         except (AttributeError, TypeError, IndexError) as _ex:
             logging.info(f'Нет информации по фин. показателям за {year}')
             logging.info(_ex, exc_info=True)
 
-    return fin_list
+    return fin
 
 
 def taxes_and_fees(soup):
