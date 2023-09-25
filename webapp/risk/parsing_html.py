@@ -168,8 +168,8 @@ def additional_activities(soup) -> List[str]:
         return ['-']
 
 
-def founders_physical(soup) -> List[dict]:
-    list_of_founders = []
+def founders_physical(soup) -> dict:
+    founders = {}
 
     try:
         elements = soup.find('table',
@@ -178,7 +178,7 @@ def founders_physical(soup) -> List[dict]:
     except AttributeError as _ex:
         logging.info(_ex, exc_info=True)
         logging.info(f'Нет учредителей физ. лиц')
-        return []
+        return {}
 
     try:  # get director INN
         director_inn = director_inn_egrul(soup)[1]
@@ -188,6 +188,7 @@ def founders_physical(soup) -> List[dict]:
 
     try:
         for num, element in enumerate(elements, start=1):
+            founders[num] = {}
             percent = element.find('td').get_text(strip=True) if element.find('td') else ''
             egrul = element.find(
                 'div', class_='division').find('span', class_='cards__column-small').get_text(strip=True
@@ -221,27 +222,24 @@ def founders_physical(soup) -> List[dict]:
                                                                                   ) if element.find(
                 'div', class_='division').find('div', class_='link-red') else ''
 
-            list_of_founders.append({
-                'number': num,
-                'percent': percent,
-                'egrul': egrul,  # формат 'ЕГРЮЛ 13.09.2013'
-                'href': href,  # формат '/summary/person/3866936-163501570209'
-                'name': name,
-                'sum': sum_,
-                'inn': inn,  # формат 'ИНН 163501570209'
-                'mass founder': mass_founder,  # смотрит есть ли красный линк у учредителя
-                # (Пример red-link: По данным ФНС является массовым учредителем.'
-                'director': director_inn == inn  # сравнение ИНН учредителя с ИНН директора
-            })
-        return list_of_founders
+            founders[num].setdefault('percent', percent)
+            founders[num].setdefault('egrul', egrul)
+            founders[num].setdefault('href', href)
+            founders[num].setdefault('full_name', name)
+            founders[num].setdefault('sum', sum_)
+            founders[num].setdefault('inn', inn)
+            founders[num].setdefault('mass_founder', mass_founder)
+            founders[num].setdefault('director', director_inn == inn)
+
+        return founders
 
     except (AttributeError, TypeError, IndexError) as _ex:
         logging.info(_ex, exc_info=True)
-        return []
+        return {}
 
 
-def founders_legal(soup) -> List[dict]:
-    list_of_founders = []
+def founders_legal(soup) -> dict:
+    founders = {}
 
     try:
         elements = soup.find('table',
@@ -249,10 +247,11 @@ def founders_legal(soup) -> List[dict]:
                              ).find_all('tr')
     except AttributeError as _ex:
         logging.info(f'Нет учредителей юр. лиц')
-        return []
+        return {}
 
     try:
         for num, element in enumerate(elements, start=1):
+            founders[num] = {}
             percent = element.find('td').get_text(strip=True) if element.find('td') else ''
             try:
                 sum_ = re.sub(r'\s+', ' ',
@@ -321,23 +320,21 @@ def founders_legal(soup) -> List[dict]:
                                                                                   ) if element.find(
                 'div', class_='division').find('div', class_='link-red') else ''
 
-            list_of_founders.append({
-                'number': num,
-                'percent': percent,
-                'egrul': egrul,  # формат 'ЕГРЮЛ 13.09.2013'
-                'href': href,  # формат '/summary/company/5468450-1655087607'
-                'name': name,
-                'sum': sum_,
-                'inn': inn,  # формат 'ИНН 163501570209'
-                'red-link': red_link,  # смотрит есть ли красный линк (негатив) у учредителя юр лица
-                'ogrn': ogrn,  # формат 'ОГРН ...'
-                'status': status
-            })
-        return list_of_founders
+            founders[num].setdefault('percent', percent)
+            founders[num].setdefault('egrul', egrul)
+            founders[num].setdefault('href', href)
+            founders[num].setdefault('name', name)
+            founders[num].setdefault('sum', sum_)
+            founders[num].setdefault('inn', inn)
+            founders[num].setdefault('red_link', red_link)
+            founders[num].setdefault('ogrn', ogrn)
+            founders[num].setdefault('status', status)
+
+        return founders
 
     except (AttributeError, TypeError, IndexError) as _ex:
         logging.info(_ex, exc_info=True)
-        return []
+        return {}
 
 
 def blocked_current_accounts(soup):
@@ -513,7 +510,7 @@ def period_of_activity(soup):
 
 def unprofitability(fin_func):
     try:
-        if fin_func[0][2022]['Чистая прибыль'].startswith('-'):
+        if fin_func[2022]['Чистая прибыль'].startswith('-'):
             return 'Да'
         else:
             return 'Нет'
