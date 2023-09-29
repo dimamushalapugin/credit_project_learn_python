@@ -1,7 +1,7 @@
 import os
 from flask import Blueprint, flash, render_template, redirect, request, url_for, send_from_directory, jsonify, Response
 
-from webapp.parsing_egrul import get_dir_name, get_customer_name
+from webapp.parsing_egrul import get_dir_name
 from webapp.user.auth_utils import admin_required
 from webapp.risk.new_create_risk_conclusion import create_conclusion
 
