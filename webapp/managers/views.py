@@ -1,11 +1,10 @@
 import os
-# from dadata import Dadata
 
 from flask import Blueprint, flash, render_template, redirect, request, url_for, send_from_directory, jsonify, send_file
 from flask_login import login_required
 
 from webapp.managers.parser_for_application import start_filling_application, start_filling_agreement
-from webapp.config import APPLICATION_PATH, DADATA_TOKEN
+from webapp.config import APPLICATION_PATH
 
 blueprint = Blueprint('manager', __name__, url_prefix='/managers')
 
