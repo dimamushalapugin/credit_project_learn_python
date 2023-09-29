@@ -8,8 +8,6 @@ from webapp.managers.parser_for_application import start_filling_application, st
 from webapp.config import APPLICATION_PATH, DADATA_TOKEN
 
 blueprint = Blueprint('manager', __name__, url_prefix='/managers')
-application_path = ''
-graphic_path = ''
 
 
 # TODO:
@@ -63,7 +61,7 @@ def create_xlsx_file(data):
     return start_filling_application(data['client_inn'], APPLICATION_PATH)
 
 
-def create_docx_file(data):
+def create_docx_file(data, application_path, graphic_path):
     path_application = application_path.replace('/', '\\')
     path_graphic = graphic_path.replace('/', '\\')
     return start_filling_agreement(data['client_inn'], path_application, path_graphic, data['signatory'],
@@ -73,9 +71,15 @@ def create_docx_file(data):
 
 @blueprint.route('/create_xlsx', methods=['POST'])
 def create_agreement():
+    application_filename = request.form['uploaded_application']
+    graphic_filename = request.form['uploaded_graphic']
+
+    application_path = os.path.join('webapp/static/agreement_templates', application_filename)
+    graphic_path = os.path.join('webapp/static/agreement_templates', graphic_filename)
+
     try:
         data = request.form
-        file_name = create_docx_file(data)
+        file_name = create_docx_file(data, application_path, graphic_path)
         os.remove(application_path.replace('/', '\\'))
         os.remove(graphic_path.replace('/', '\\'))
         flash(f'Файлы успешно созданы и загружены', 'success')
@@ -89,7 +93,6 @@ def create_agreement():
 
 @blueprint.route('/upload_files', methods=['POST'])
 def upload_files():
-    global application_path, graphic_path
     uploaded_application = request.files['uploaded_application']
     uploaded_graphic = request.files['uploaded_graphic']
 
