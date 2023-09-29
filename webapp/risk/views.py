@@ -14,6 +14,8 @@ def get_folder_names(folder_path):
     if os.path.exists(absolute_folder_path) and os.path.isdir(absolute_folder_path):
         folder_names = [item for item in os.listdir(absolute_folder_path) if
                         os.path.isdir(os.path.join(absolute_folder_path, item))]
+        folder_names.sort(key=lambda x: os.path.getmtime(os.path.join(absolute_folder_path, x)), reverse=True)
+
     return folder_names
 
 

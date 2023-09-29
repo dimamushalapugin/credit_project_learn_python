@@ -148,9 +148,9 @@ def unscrupulous_seller(soup):
         return '-'
 
 
-def read_delta_html(client_inn, object_inn):
+def read_delta_html(client_inn, object_inn, short_name):
     try:
-        soup = BeautifulSoup(read_delta_page(client_inn, object_inn), 'html.parser')
+        soup = BeautifulSoup(read_delta_page(client_inn, object_inn, short_name), 'html.parser')
     except FileNotFoundError as _ex:
         logging.info(_ex, exc_info=True)
         raise _ex
