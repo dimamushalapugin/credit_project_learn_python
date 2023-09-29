@@ -69,5 +69,3 @@ def delete_user(user_id):
         db.session.commit()
 
     return redirect(url_for('user.list_of_users'))
-
-

@@ -10,10 +10,6 @@ from webapp.config import APPLICATION_PATH, DADATA_TOKEN
 blueprint = Blueprint('manager', __name__, url_prefix='/managers')
 
 
-# TODO:
-#  1. Нужно добавить название компании перед ИНН. Названия брать из БД
-#  (если в базе нет, то через API Dadata парсить название компании).
-#  2. Нужно добавить поиск по названию/ИНН
 def get_folder_names(folder_path):
     folder_names = []
     absolute_folder_path = os.path.join('webapp', folder_path)
@@ -21,9 +17,6 @@ def get_folder_names(folder_path):
         folder_names = [item for item in os.listdir(absolute_folder_path) if
                         os.path.isdir(os.path.join(absolute_folder_path, item))]
         folder_names.sort(key=lambda x: os.path.getmtime(os.path.join(absolute_folder_path, x)), reverse=True)
-
-    # dadata = Dadata(DADATA_TOKEN)
-    # folder_names = [f"{dadata.find_by_id('party', inn)[0]['data']['name']['short_with_opf']} {inn}"for inn in folder_names]
 
     return folder_names
 
