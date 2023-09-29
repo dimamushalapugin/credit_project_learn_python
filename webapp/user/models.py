@@ -26,8 +26,12 @@ class User(db.Model, UserMixin):
     def is_manager(self):
         return self.role == 'manager'
 
+    @property
+    def is_risk(self):
+        return self.role == 'risk'
+
     def __repr__(self):
-        return f'User {self.id}, {self.login}'
+        return f'Пользователь: {self.login}'
 
     def delete(self):
         db.session.delete(self)
