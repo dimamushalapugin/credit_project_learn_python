@@ -23,7 +23,7 @@ def process_login():
         if user and user.check_password(form.password.data):
             login_user(user, remember=form.remember_me.data)
             flash('Вы вошли на сайт', 'success')
-            print(f'Пользователь: {current_user} зашел на сайт.')
+            print(f'{current_user} зашел на сайт.')
             if current_user.is_manager:
                 return redirect(url_for('manager.managers_page'))
             return redirect(url_for('payment.list_of_all_payments'))
