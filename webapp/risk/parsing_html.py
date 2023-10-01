@@ -946,7 +946,7 @@ def read_main_html_individual(client_inn, object_inn, short_name):
         'Должник': ind_debtor()
     }
 
-    with open('physic_info.json', 'a', encoding='utf-8') as file:
+    with open(f'physic_info {object_inn}.json', 'a', encoding='utf-8') as file:
         json.dump(general_description_of_an_individual, file, ensure_ascii=False, indent=3)
         file.write('\n')
         file.write('\n')
