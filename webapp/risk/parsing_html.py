@@ -599,7 +599,7 @@ def read_main_html(client_inn, object_inn, short_name):
         'Экстремизм (да_нет)': extremism(soup),  # for seller table
     }
 
-    with open('main_info.json', 'a', encoding='utf-8') as file:
+    with open(f'main_info {object_inn}.json', 'a', encoding='utf-8') as file:
         json.dump(general_description_of_the_company, file, ensure_ascii=False, indent=3)
         file.write('\n')
         file.write('\n')
@@ -920,6 +920,16 @@ def read_main_html_individual(client_inn, object_inn, short_name):
             debtor = '-'
         return debtor
 
+    def ind_inaccuracy_of_information():
+        try:
+            if 'недостоверн' in soup.find(
+                    'div', class_='cards__column cards__column-first').get_text(' ', strip=True).lower():
+                return 'Да'
+            else:
+                return 'Нет'
+        except (AttributeError, TypeError, IndexError):
+            return '-'
+
     general_description_of_an_individual = {
         'Паспортные_данные': ind_main_profile('Паспорт:'),
         'Дата_рождения': ind_main_profile('Дата рождения:'),
@@ -943,7 +953,8 @@ def read_main_html_individual(client_inn, object_inn, short_name):
         'Особые_реестры': ind_especially_reestr(),
         'РНП': ind_reestr_np(),
         'Паспорт_РФ': ind_passport(),
-        'Должник': ind_debtor()
+        'Должник': ind_debtor(),
+        'Недостоверность сведений (да_нет)': ind_inaccuracy_of_information(),
     }
 
     with open(f'physic_info {object_inn}.json', 'a', encoding='utf-8') as file:

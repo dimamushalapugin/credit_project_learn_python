@@ -45,14 +45,14 @@ def read_pages_for_table_individual(seller_inn, info_first):
         'Данные о контрагенте': 'Нет',
         'Ликвидация': '',
         'Банкротства': '',
-        'Реорганизация': '',
-        'Недостоверности сведений': '',
+        'Реорганизация': 'Нет',
+        'Недостоверности сведений': info_first['Недостоверность сведений (да_нет)'],
         'Совпадение ИНН': 'Нет',
         'Менее 3 лет': '',
         'Ответчик': '',
         'Сообщения о банкротстве': '',
         'Исполнительные производства (более 100 тыс. руб.)': '',
-        'Убыточность': '',
+        'Убыточность': 'Нет',
         'Адрес массовой регистрации': '',
         'Массовый руководитель': '',
         'Налоговая задолженность': '',
@@ -66,7 +66,7 @@ def read_pages_for_table_individual(seller_inn, info_first):
         'История в ЛКМБ': Seller.check_in_base(seller_inn)
     }
 
-    with open('seller_table_info.json', 'a', encoding='utf-8') as file:
+    with open(f'seller_table_info {seller_inn}.json', 'a', encoding='utf-8') as file:
         json.dump(info_table, file, ensure_ascii=False, indent=3)
         file.write('\n')
         file.write('\n')
