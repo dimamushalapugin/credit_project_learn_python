@@ -40,6 +40,7 @@ def read_pages_for_table(seller_inn, info_first, info_delta):
     return info_table
 
 
+# TODO: Нужно сделать таблицу по продавцу для ИП/КФХ
 def read_pages_for_table_individual(seller_inn, info_first):
     info_table = {
         'Данные о контрагенте': 'Нет',
