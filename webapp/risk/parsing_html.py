@@ -939,7 +939,6 @@ def read_main_html_individual(client_inn, object_inn, short_name):
         except (AttributeError, TypeError):
             date_of_reg = None
 
-        logging.info(date_of_reg)
         if date_of_reg is not None:
             try:
                 reg_comp_seller = dt.strptime(date_of_reg, '%d.%m.%Y')
