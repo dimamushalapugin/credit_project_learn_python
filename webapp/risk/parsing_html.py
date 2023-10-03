@@ -509,8 +509,11 @@ def period_of_activity(soup):
 
 def unprofitability(fin_func):
     try:
-        if fin_func[2022]['Чистая прибыль'].startswith('-'):
-            return 'Да'
+        if fin_func.get(2022):
+            if fin_func[2022].get('Чистая прибыль', '').startswith('-'):
+                return 'Да'
+            else:
+                return 'Нет'
         else:
             return 'Нет'
     except (AttributeError, TypeError, IndexError) as _ex:
@@ -949,7 +952,7 @@ def read_main_html_individual(client_inn, object_inn, short_name):
             date_of_reg = \
                 soup.find('div', class_='cards__column cards__column-first').find_all('table', class_='cards__data')[
                     1].find_all('td')[1].get_text(' ', strip=True)
-        except (AttributeError, TypeError):
+        except Exception:
             date_of_reg = None
 
         if date_of_reg is not None:
@@ -960,7 +963,7 @@ def read_main_html_individual(client_inn, object_inn, short_name):
                     return 'Нет'
                 else:
                     return 'Да'
-            except (AttributeError, TypeError, IndexError):
+            except Exception:
                 return '-'
         else:
             return '-'
@@ -990,9 +993,6 @@ def read_main_html_individual(client_inn, object_inn, short_name):
             return 'Нет'
 
     def ind_liquid():
-        logging.info(soup.find('div', class_='cards__column cards__column-first').find_all('table',
-                                                                                      class_='cards__data')[
-                    1].find('td', string='Статус').find_next('td').get_text(' ', strip=True))
         try:
             if soup.find('div', class_='cards__column cards__column-first').find_all('table',
                                                                                       class_='cards__data')[
@@ -1027,6 +1027,26 @@ def read_main_html_individual(client_inn, object_inn, short_name):
         except (AttributeError, TypeError, IndexError):
             return 'Нет'
 
+    def ind_fssp():
+        try:
+            fssp = ' '.join(
+                soup.find('div', class_='card card-nopadding external-35 attached'
+                          ).find('div', class_='card-section').find('span').get_text(' ', strip=True).split())
+            match = re.search(r'(\d+)\s+руб(?:л[ей|я])', fssp)
+            if match:
+                number = int(match.group(1))
+                return 'Нет' if 100_000 > number else 'Да'
+            if 'Информация по данному источнику отсутствует' in fssp:
+                return 'Нет'
+            elif 'Запрос по источнику не отправлялся' in fssp:
+                return '-'
+            else:
+                return 'Да'
+        except (AttributeError, TypeError):
+            logging.info('Не удалось получить информацию по арбитражным делам')
+            fssp = '-'
+        return fssp
+
     general_description_of_an_individual = {
         'Паспортные_данные': ind_main_profile('Паспорт:'),
         'Дата_рождения': ind_main_profile('Дата рождения:'),
@@ -1058,7 +1078,8 @@ def read_main_html_individual(client_inn, object_inn, short_name):
         'Сообщения о банкротстве (да_нет)': ind_bankrupt_notices(),
         'Ликвидация (да_нет)': ind_liquid(),
         'Банкротство (да_нет)': ind_bankrupt(),
-        'Ответчик (да_нет)': ind_arbitr()
+        'Ответчик (да_нет)': ind_arbitr(),
+        'ФССП более 100 (да_нет)': ind_fssp()
     }
 
     with open(f'physic_info {object_inn}.json', 'a', encoding='utf-8') as file:

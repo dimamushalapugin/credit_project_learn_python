@@ -68,7 +68,7 @@ def search_client(client_inn):
                 driver.find_element(By.XPATH, "//a[@class='header-nav__link card-title__link']").click()
             case _:
                 logging.info(f'[!] Проверьте корректность ИНН. ИНН: {client_inn}')
-                raise Exception('[!] Проверьте корректность ИНН')
+                raise Exception('Проверьте корректность ИНН')
     except Exception as _ex:
         logging.info(_ex, exc_info=True)
         raise _ex

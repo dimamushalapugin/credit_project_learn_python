@@ -1,4 +1,6 @@
 import os
+import re
+
 from flask import Blueprint, flash, render_template, redirect, request, url_for, send_from_directory, jsonify, Response
 
 from webapp.parsing_egrul import get_dir_name
@@ -42,7 +44,13 @@ def risk_conclusion_folder(folder_path):
 
 
 def create_xlsx_file(data):
-    return create_conclusion(data['client_inn'], data['seller_inn'])
+    pattern = r"^\d{10}$|^\d{12}$"
+    if re.match(pattern, data['client_inn']) and re.match(pattern, data['seller_inn']):
+        create_conclusion(data['client_inn'], data['seller_inn'])
+        return True
+    else:
+        flash('Проверьте корректность ИНН.', 'info')
+        return False
 
 
 @blueprint.route('/create_xlsx', methods=['POST'])
@@ -50,8 +58,11 @@ def create_risk_conclusion():
     try:
         data = request.form
         file_name = create_xlsx_file(data)
-        flash(f'Файл успешно создан', 'success')
-        return redirect(url_for('risk.risk_page', file_name=file_name))
+        if file_name:
+            flash(f'Файл успешно создан', 'success')
+            return redirect(url_for('risk.risk_page', file_name=file_name))
+        else:
+            return redirect(url_for('risk.risk_page', file_name=file_name))
     except Exception as e:
         flash(str(e), 'error')
         return redirect(url_for('risk.risk_page'))
