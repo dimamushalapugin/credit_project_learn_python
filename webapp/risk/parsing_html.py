@@ -789,6 +789,17 @@ def read_main_html_individual(client_inn, object_inn, short_name):
             arbitrary = '-'
         return arbitrary
 
+    def ind_arbit_cases_ip():
+        try:
+            arbitrary = ' '.join(
+                soup.find('div', class_='card card-nopadding',
+                          attrs={'data-element': 'local-arbitr'}).find('div', class_='card-section').get_text(
+                    ' ', strip=True).split())
+        except (AttributeError, TypeError):
+            logging.info('Не удалось получить информацию по арбитражным делам')
+            arbitrary = '-'
+        return arbitrary
+
     def ind_tax_debts():
         try:
             tax = ' '.join(
@@ -935,7 +946,9 @@ def read_main_html_individual(client_inn, object_inn, short_name):
 
     def ind_period_of_activity():
         try:
-            date_of_reg = soup.find('div', class_='cards__column cards__column-first').find_all('table', class_='cards__data')[1].find_all('td')[1].get_text(' ', strip=True)
+            date_of_reg = \
+                soup.find('div', class_='cards__column cards__column-first').find_all('table', class_='cards__data')[
+                    1].find_all('td')[1].get_text(' ', strip=True)
         except (AttributeError, TypeError):
             date_of_reg = None
 
@@ -952,6 +965,68 @@ def read_main_html_individual(client_inn, object_inn, short_name):
         else:
             return '-'
 
+    def ind_mass_address():
+        try:
+            if soup.find('h3', class_='cards__subtitle', string='Адрес регистрации:').find_next('div',
+                                                                                                class_='cards__column_block').find(
+                    'p', class_='link-red'):
+                return 'Да'
+            else:
+                return 'Нет'
+        except (AttributeError, TypeError):
+            logging.info('Адрес не массовый')
+            return 'Нет'
+
+    def ind_bankrupt_notices():
+        try:
+            if soup.find('div', class_='card card-nopadding',
+                         attrs={'data-element': 'local-bankrupt'}).find('div', class_='card-section').get_text(
+                strip=True, separator=' ') in ['Информация не найдена', 'Информация по источнику отсутствует',
+                                               'Информация по данному источнику отсутствует', 'Запрос обрабатывается']:
+                return 'Нет'
+            else:
+                return 'Да'
+        except (AttributeError, TypeError, IndexError):
+            return 'Нет'
+
+    def ind_liquid():
+        logging.info(soup.find('div', class_='cards__column cards__column-first').find_all('table',
+                                                                                      class_='cards__data')[
+                    1].find('td', string='Статус').find_next('td').get_text(' ', strip=True))
+        try:
+            if soup.find('div', class_='cards__column cards__column-first').find_all('table',
+                                                                                      class_='cards__data')[
+                    1].find('td', string='Статус').find_next('td').get_text(' ', strip=True) == 'Индивидуальный предприниматель прекратил деятельность в связи с принятием им соответствующего решения':
+                return 'Да'
+            else:
+                return 'Нет'
+        except (AttributeError, TypeError):
+            return 'Нет'
+
+    def ind_bankrupt():
+        try:
+            if 'банкрот' in soup.find('div', class_='cards__column cards__column-first').find_all('table',
+                                                                                      class_='cards__data')[
+                    1].find('td', string='Статус').find_next('td').get_text(' ', strip=True).lower():
+                return 'Да'
+            else:
+                return 'Нет'
+        except (AttributeError, TypeError):
+            return 'Нет'
+
+    def ind_arbitr():
+        try:
+            list_arbitr = soup.find('div', class_='card card-nopadding', attrs={'data-element': 'local-arbitr'}).find_all('a')
+        except (AttributeError, TypeError, IndexError):
+            return 'Нет'
+        try:
+            for elem in list_arbitr:
+                if 'ответчик' == elem.get_text(' ', strip=True).lower():
+                    return 'Да'
+            return 'Нет'
+        except (AttributeError, TypeError, IndexError):
+            return 'Нет'
+
     general_description_of_an_individual = {
         'Паспортные_данные': ind_main_profile('Паспорт:'),
         'Дата_рождения': ind_main_profile('Дата рождения:'),
@@ -963,6 +1038,7 @@ def read_main_html_individual(client_inn, object_inn, short_name):
         'Имя_налог_органа': ind_tax_authority(),
         'История_руководства': ind_is_dir_or_founder_history(),
         'Арбитражные_дела': ind_arbit_cases(),
+        'Арбитражные_дела ИП': ind_arbit_cases_ip(),
         'Налог_задолж': ind_tax_debts(),
         'Заблок_счета': ind_blocked_acc(),
         'ФССП_ФЛ': ind_fssp_fl(),
@@ -978,6 +1054,11 @@ def read_main_html_individual(client_inn, object_inn, short_name):
         'Должник': ind_debtor(),
         'Недостоверность сведений (да_нет)': ind_inaccuracy_of_information(),
         'Менее 3 лет (да_нет)': ind_period_of_activity(),
+        'Массовый адрес (да_нет)': ind_mass_address(),
+        'Сообщения о банкротстве (да_нет)': ind_bankrupt_notices(),
+        'Ликвидация (да_нет)': ind_liquid(),
+        'Банкротство (да_нет)': ind_bankrupt(),
+        'Ответчик (да_нет)': ind_arbitr()
     }
 
     with open(f'physic_info {object_inn}.json', 'a', encoding='utf-8') as file:
