@@ -621,15 +621,17 @@ def read_main_html_individual(client_inn, object_inn, short_name):
         try:
             status = soup.find('table', class_='cards__data contact_info').find('td', string=title).find_next(
                 'td').get_text(' ', strip=True)
+            logging.info(status)
             return status
         except (AttributeError, TypeError):
-            logging.info('Не прожата кнопка для получения инфы по паспорту и тд.')
+            logging.info(f'Не прожата кнопка для получения инфы по паспорту и тд. {title}')
             return '-'
 
     def ind_fio():
         try:
             status = ' '.join(soup.find('h2', class_='cards__company').find('span'
                                                                             ).get_text(' ', strip=True).split())
+            logging.info(status)
             return status
         except (AttributeError, TypeError):
             logging.info('Не удалось получить ФИО')
@@ -720,6 +722,7 @@ def read_main_html_individual(client_inn, object_inn, short_name):
                 except (AttributeError, TypeError):
                     status = '-'
                     info[num].setdefault('Статус', status)
+
         return info
 
     def ind_address():
@@ -930,6 +933,26 @@ def read_main_html_individual(client_inn, object_inn, short_name):
         except (AttributeError, TypeError, IndexError):
             return '-'
 
+    def ind_period_of_activity():
+        try:
+            date_of_reg = soup.find('div', class_='cards__column cards__column-first').find_all('table', class_='cards__data')[1].find_all('td')[1].get_text(' ', strip=True)
+        except (AttributeError, TypeError):
+            date_of_reg = None
+
+        logging.info(date_of_reg)
+        if date_of_reg is not None:
+            try:
+                reg_comp_seller = dt.strptime(date_of_reg, '%d.%m.%Y')
+                cur_date_seller = dt.strptime(dt.now().strftime('%d.%m.%Y'), '%d.%m.%Y')
+                if relativedelta(cur_date_seller, reg_comp_seller).years >= 3:
+                    return 'Нет'
+                else:
+                    return 'Да'
+            except (AttributeError, TypeError, IndexError):
+                return '-'
+        else:
+            return '-'
+
     general_description_of_an_individual = {
         'Паспортные_данные': ind_main_profile('Паспорт:'),
         'Дата_рождения': ind_main_profile('Дата рождения:'),
@@ -955,6 +978,7 @@ def read_main_html_individual(client_inn, object_inn, short_name):
         'Паспорт_РФ': ind_passport(),
         'Должник': ind_debtor(),
         'Недостоверность сведений (да_нет)': ind_inaccuracy_of_information(),
+        'Менее 3 лет (да_нет)': ind_period_of_activity(),
     }
 
     with open(f'physic_info {object_inn}.json', 'a', encoding='utf-8') as file:
