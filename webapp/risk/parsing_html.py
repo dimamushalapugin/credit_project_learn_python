@@ -972,7 +972,7 @@ def read_main_html_individual(client_inn, object_inn, short_name):
         try:
             if soup.find('h3', class_='cards__subtitle', string='Адрес регистрации:').find_next('div',
                                                                                                 class_='cards__column_block').find(
-                    'p', class_='link-red'):
+                'p', class_='link-red'):
                 return 'Да'
             else:
                 return 'Нет'
@@ -995,8 +995,9 @@ def read_main_html_individual(client_inn, object_inn, short_name):
     def ind_liquid():
         try:
             if soup.find('div', class_='cards__column cards__column-first').find_all('table',
-                                                                                      class_='cards__data')[
-                    1].find('td', string='Статус').find_next('td').get_text(' ', strip=True) == 'Индивидуальный предприниматель прекратил деятельность в связи с принятием им соответствующего решения':
+                                                                                     class_='cards__data')[
+                1].find('td', string='Статус').find_next('td').get_text(' ',
+                                                                        strip=True) == 'Индивидуальный предприниматель прекратил деятельность в связи с принятием им соответствующего решения':
                 return 'Да'
             else:
                 return 'Нет'
@@ -1006,8 +1007,8 @@ def read_main_html_individual(client_inn, object_inn, short_name):
     def ind_bankrupt():
         try:
             if 'банкрот' in soup.find('div', class_='cards__column cards__column-first').find_all('table',
-                                                                                      class_='cards__data')[
-                    1].find('td', string='Статус').find_next('td').get_text(' ', strip=True).lower():
+                                                                                                  class_='cards__data')[
+                1].find('td', string='Статус').find_next('td').get_text(' ', strip=True).lower():
                 return 'Да'
             else:
                 return 'Нет'
@@ -1016,7 +1017,8 @@ def read_main_html_individual(client_inn, object_inn, short_name):
 
     def ind_arbitr():
         try:
-            list_arbitr = soup.find('div', class_='card card-nopadding', attrs={'data-element': 'local-arbitr'}).find_all('a')
+            list_arbitr = soup.find('div', class_='card card-nopadding',
+                                    attrs={'data-element': 'local-arbitr'}).find_all('a')
         except (AttributeError, TypeError, IndexError):
             return 'Нет'
         try:
@@ -1033,12 +1035,14 @@ def read_main_html_individual(client_inn, object_inn, short_name):
                 soup.find('div', class_='card card-nopadding external-35 attached'
                           ).find('div', class_='card-section').find('span').get_text(' ', strip=True).split())
             match = re.search(r'(\d+)\s+руб(?:л[ей|я])', fssp)
+            logging.info(fssp)
             if match:
+                logging.info('Попал в match')
                 number = int(match.group(1))
                 return 'Нет' if 100_000 > number else 'Да'
-            if 'Информация по данному источнику отсутствует' in fssp:
+            if 'Информация по данному источнику отсутствует' == fssp or 'Информация по источнику отсутствует' == fssp:
                 return 'Нет'
-            elif 'Запрос по источнику не отправлялся' in fssp:
+            elif 'Запрос по источнику не отправлялся' == fssp:
                 return '-'
             else:
                 return 'Да'
@@ -1046,6 +1050,60 @@ def read_main_html_individual(client_inn, object_inn, short_name):
             logging.info('Не удалось получить информацию по арбитражным делам')
             fssp = '-'
         return fssp
+
+    def ind_tax_debts_yes_or_no():
+        try:
+            tax = ind_tax_debts()
+            if '-' == tax or 'Информация по источнику отсутствует' == tax:
+                return 'Нет'
+            else:
+                return 'Да'
+        except (AttributeError, TypeError):
+            logging.info('Ошибка')
+            tax = '-'
+            return tax
+
+    def ind_blocked_acc_yes_or_no():
+        try:
+            blocked = ind_blocked_acc()
+            if 'Информация по источнику отсутствует' == blocked or '-' == blocked:
+                return 'Нет'
+            elif 'Запрос обрабатывается' == blocked:
+                return '-'
+            else:
+                return 'Да'
+        except (AttributeError, TypeError):
+            logging.info('Ошибка')
+            blocked = '-'
+            return blocked
+
+    def ind_reestr_np_yes_or_no():
+        try:
+            rnd = ind_reestr_np()
+            if 'Информация не найдена' == rnd or '-' == rnd:
+                return 'Нет'
+            else:
+                return 'Да'
+        except (AttributeError, TypeError):
+            logging.info('Ошибка')
+            rnd = '-'
+            return rnd
+
+    def ind_goverment_contracts_yes_or_no():
+        try:
+            gov = " ".join(
+                soup.find('div', class_='card card-nopadding', attrs={'data-element': 'local-state-contracts'}).find(
+                    'div', class_='card-section').get_text(' ', strip=True).split())
+        except (AttributeError, TypeError, IndexError):
+            return '-'
+        logging.info(gov)
+        try:
+            if 'Информация не найдена' == gov:
+                return 'Нет'
+            else:
+                return 'Да'
+        except (AttributeError, TypeError, IndexError):
+            return 'Нет'
 
     general_description_of_an_individual = {
         'Паспортные_данные': ind_main_profile('Паспорт:'),
@@ -1079,7 +1137,11 @@ def read_main_html_individual(client_inn, object_inn, short_name):
         'Ликвидация (да_нет)': ind_liquid(),
         'Банкротство (да_нет)': ind_bankrupt(),
         'Ответчик (да_нет)': ind_arbitr(),
-        'ФССП более 100 (да_нет)': ind_fssp()
+        'ФССП более 100 (да_нет)': ind_fssp(),
+        'Налоговая задолженность (да_нет)': ind_tax_debts_yes_or_no(),
+        'Заблокированные счета (да_нет)': ind_blocked_acc_yes_or_no(),
+        'РНД (да_нет)': ind_reestr_np_yes_or_no(),
+        'Гос контракты (да_нет)': ind_goverment_contracts_yes_or_no()
     }
 
     with open(f'physic_info {object_inn}.json', 'a', encoding='utf-8') as file:

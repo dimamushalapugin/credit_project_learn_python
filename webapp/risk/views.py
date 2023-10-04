@@ -45,9 +45,15 @@ def risk_conclusion_folder(folder_path):
 
 def create_xlsx_file(data):
     pattern = r"^\d{10}$|^\d{12}$"
+    print(data.get('factory'))
+    print(data.get('dealer'))
     if re.match(pattern, data['client_inn']) and re.match(pattern, data['seller_inn']):
-        create_conclusion(data['client_inn'], data['seller_inn'])
-        return True
+        try:
+            create_conclusion(data['client_inn'], data['seller_inn'], data.get('factory'), data.get('dealer'))
+            return True
+        except Exception:
+            flash('Вас выбили из Дельты', 'info')
+            raise ValueError('Ошибка')
     else:
         flash('Проверьте корректность ИНН.', 'info')
         return False

@@ -3,7 +3,7 @@ import json
 from webapp.payment.models import Seller
 
 
-def read_pages_for_table(seller_inn, info_first, info_delta):
+def read_pages_for_table(seller_inn, info_first, info_delta, is_factory, is_dealer):
     info_table = {
         'Данные о контрагенте': 'Нет',
         'Ликвидация': info_delta['Процесс ликвидации (да_нет)'],
@@ -24,8 +24,8 @@ def read_pages_for_table(seller_inn, info_first, info_delta):
         'Черный список ЦБ': 'Нет',
         'Гос. контракты': info_delta['Госконтракты (да_нет)'],
         'Недобросовестные поставщики': info_delta['Недобросовестный поставщик (да_нет)'],
-        'Завод-изготовитель': 'Чек лист мб',
-        'Дилер/дистрибьютор': 'Чек лист мб',
+        'Завод-изготовитель': 'Да' if is_factory == 'on' else 'Нет',
+        'Дилер/дистрибьютор': 'Да' if is_dealer == 'on' else 'Нет',
         'История в ЛКМБ': Seller.check_in_base(seller_inn)
     }
 
@@ -40,8 +40,7 @@ def read_pages_for_table(seller_inn, info_first, info_delta):
     return info_table
 
 
-# TODO: Нужно сделать таблицу по продавцу для ИП/КФХ
-def read_pages_for_table_individual(seller_inn, info_first):
+def read_pages_for_table_individual(seller_inn, info_first, is_factory, is_dealer):
     info_table = {
         'Данные о контрагенте': 'Нет',
         'Ликвидация': info_first['Ликвидация (да_нет)'],
@@ -55,15 +54,15 @@ def read_pages_for_table_individual(seller_inn, info_first):
         'Исполнительные производства (более 100 тыс. руб.)': info_first['ФССП более 100 (да_нет)'],
         'Убыточность': 'Нет',
         'Адрес массовой регистрации': info_first['Массовый адрес (да_нет)'],
-        'Массовый руководитель': '',
-        'Налоговая задолженность': '',
-        'Заблокированные расч. сч.': '',
-        'Экстремисткая деятельность': '',
+        'Массовый руководитель': 'Нет',
+        'Налоговая задолженность': info_first['Налоговая задолженность (да_нет)'],
+        'Заблокированные расч. сч.': info_first['Заблокированные счета (да_нет)'],
+        'Экстремисткая деятельность': 'Нет',
         'Черный список ЦБ': 'Нет',
-        'Гос. контракты': '',
-        'Недобросовестные поставщики': '',
-        'Завод-изготовитель': 'Чек лист мб',
-        'Дилер/дистрибьютор': 'Чек лист мб',
+        'Гос. контракты': info_first['Гос контракты (да_нет)'],
+        'Недобросовестные поставщики': info_first['РНД (да_нет)'],
+        'Завод-изготовитель': 'Да' if is_factory == 'on' else 'Нет',
+        'Дилер/дистрибьютор': 'Да' if is_dealer == 'on' else 'Нет',
         'История в ЛКМБ': Seller.check_in_base(seller_inn)
     }
 

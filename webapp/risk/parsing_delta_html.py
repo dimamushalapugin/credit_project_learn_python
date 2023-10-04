@@ -100,6 +100,8 @@ def blocked_account(soup):
         status_text = info_delta(soup, 'Заблокированные расчетные счета')
         if 'по счетам налогоплательщика нет' in status_text:
             return 'Нет'
+        elif '-' == status_text:
+            return '-'
         else:
             return 'Да'
     except (AttributeError, TypeError) as _ex:
@@ -117,6 +119,8 @@ def check_tax_debts(soup):
         if re.search(target_pattern, status_text) or re.search(
                 target_pattern2, status_text) or status_text == target_pattern3 or status_text == target_pattern4:
             return 'Нет'
+        elif '-' == status_text:
+            return '-'
         else:
             return 'Да'
     except (AttributeError, TypeError) as _ex:
