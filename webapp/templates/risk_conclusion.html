@@ -113,11 +113,11 @@
                 <form action="{{ url_for('risk.create_risk_conclusion') }}" method="POST">
                     <div class="form-group">
                         <label>ИНН лизингополучателя</label>
-                        <input type="text" name="client_inn" value="" class="form-control" required>
+                        <input type="text" name="client_inn" value="" id='client_inn' class="form-control" required>
                     </div>
                     <div class="form-group"><br>
                         <label>ИНН поставщика</label>
-                        <input type="text" name="seller_inn" value=""
+                        <input type="text" name="seller_inn" id="seller_inn" value=""
                                class="form-control" required><br>
                     </div>
                     <div class="form-check form-switch">
@@ -130,44 +130,38 @@
                         <label class="form-check-label" for="dealer">Поставщик является официальным
                             дилером/дистрибьютором ПЛ</label>
                     </div>
-                    <br>
-                    <div class="form-group">
-                        <button type="button" id="check-button" class="btn btn-primary btn-sm">
-                            Предпроверка
-                        </button>
-                    </div>
                     <div class="form-group"><br>
                         <button type="submit" id="submit-button" class="btn btn-primary btn-block">
-                            Проверка юр. лица
+                            Проверка лизингополучателя
                         </button>
                     </div>
                     <script>
-                        // Получаем ссылки на кнопки
-                        var checkButton = document.getElementById("check-button");
-                        var submitButton = document.getElementById("submit-button");
+                        // Получаем ссылки на кнопки и инпуты для файлов
+                            var clientINN= document.getElementById("client_inn");
+                            var sellerINN = document.getElementById("seller_inn");
+                            var submitButton = document.getElementById("submit-button");
 
-                        // Блокируем кнопку "Проверка юр. лица" при загрузке страницы
-                        submitButton.disabled = true;
+                            // Блокируем кнопку "Предпроверка" при загрузке страницы
+                            submitButton.disabled = true;
 
-                        checkButton.addEventListener("click", function() {
-                            var clientInnInput = document.querySelector('input[name="client_inn"]');
-                            var clientInnValue = clientInnInput.value;
-                            // Отправляем POST-запрос на сервер
-                            fetch("#", {
-                                method: 'POST',
-                                body: JSON.stringify({ client_inn: clientInnValue }), // Отправляем ИНН в теле запроса
-                                headers: {
-                                    'Content-Type': 'application/json'
+                            // Функция для проверки заполнения полей"
+                            function checkFilesUploaded() {
+                                var clientINNValue = clientINN.value;
+                                var sellerINNValue = sellerINN.value;
+
+                                if (/^\d+$/.test(clientINNValue) && /^\d+$/.test(sellerINNValue) &&
+                                    (clientINNValue.length === 10 || clientINNValue.length === 12) &&
+                                    (sellerINNValue.length === 10 || sellerINNValue.length === 12)) {
+                                    // Если оба поля соответствуют условиям, разблокируем кнопку "Проверка"
+                                    submitButton.disabled = false;
+                                } else {
+                                    // Если условия не выполняются, блокируем кнопку "Проверка"
+                                    submitButton.disabled = true;
                                 }
-                            })
-                            .then(response => response.json())
-                            .then(data => {
-                                console.log(data); // Обработка данных с сервера
-                            });
-
-                            submitButton.disabled = false; // Разблокируем кнопку "Проверка юр. лица"
-                            checkButton.disabled = true; // Блокируем кнопку "Чек"
-                        });
+                            }
+                        // Добавляем обработчики изменения полей
+                            clientINN.addEventListener("input", checkFilesUploaded);
+                            sellerINN.addEventListener("input", checkFilesUploaded);
                     </script>
                 </form>
             </div>
