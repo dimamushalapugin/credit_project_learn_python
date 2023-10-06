@@ -190,17 +190,26 @@ def founders_physical(soup) -> dict:
         for num, element in enumerate(elements, start=1):
             founders[num] = {}
             percent = element.find('td').get_text(strip=True) if element.find('td') else ''
-            egrul = element.find(
-                'div', class_='division').find('span', class_='cards__column-small').get_text(strip=True
-                                                                                              ) if element.find(
-                'div', class_='division').find('span', class_='cards__column-small') else ''
-            href = element.find(
-                'div', class_='division').find('a', class_='cards__column_block-link')['href'] if element.find(
-                'div', class_='division').find('a', class_='cards__column_block-link') else ''
-            name = element.find(
-                'div', class_='division').find('a', class_='cards__column_block-link').get_text(strip=True
-                                                                                                ) if element.find(
-                'div', class_='division').find('a', class_='cards__column_block-link') else ''
+            try:
+                egrul = element.find(
+                    'div', class_='division').find('span', class_='cards__column-small').get_text(strip=True
+                                                                                                  ) if element.find(
+                    'div', class_='division').find('span', class_='cards__column-small') else ''
+            except Exception:
+                egrul = ''
+            try:
+                href = element.find(
+                    'div', class_='division').find('a', class_='cards__column_block-link')['href'] if element.find(
+                    'div', class_='division').find('a', class_='cards__column_block-link') else ''
+            except Exception:
+                href = ''
+            try:
+                name = element.find(
+                    'div', class_='division').find('a', class_='cards__column_block-link').get_text(strip=True
+                                                                                                    ) if element.find(
+                    'div', class_='division').find('a', class_='cards__column_block-link') else ''
+            except Exception:
+                name = ''
             try:
                 sum_ = re.sub(r'\s+', ' ', element.find(
                     'div', class_='division').find_all(
@@ -323,7 +332,7 @@ def founders_legal(soup) -> dict:
             founders[num].setdefault('percent', percent)
             founders[num].setdefault('egrul', egrul)
             founders[num].setdefault('href', href)
-            founders[num].setdefault('name', name)
+            founders[num].setdefault('full_name', name)
             founders[num].setdefault('sum', sum_)
             founders[num].setdefault('inn', inn)
             founders[num].setdefault('red_link', red_link)
@@ -578,8 +587,7 @@ def read_main_html(client_inn, object_inn, short_name):
         'ПФР': pfr(soup),
         'ФСС': fss(soup),
         'ГЕНЕРАЛЬНЫЙ ДИРЕКТОР/ДИРЕКТОР': director_name(soup),
-        'ЕГРЮЛ/ИНН ДИРЕКТОРА': director_inn_egrul(soup),
-        'ССЫЛКА НА ДИРЕКТОРА': director_href(soup),
+        'ЕГРЮЛ/ИНН ДИРЕКТОРА': " ".join(director_inn_egrul(soup)),
         'УЧРЕДИТЕЛИ ЮЛ': founders_legal(soup),
         'УЧРЕДИТЕЛИ ФЛ': founders_physical(soup),
         'Уставный капитал': authorized_capital(soup),
@@ -587,6 +595,7 @@ def read_main_html(client_inn, object_inn, short_name):
         f'Доп. виды деятельности ({len(additional_activities(soup))})': '\n'.join(additional_activities(soup)),
         'Кол-во сотрудников': '\n'.join(count_of_members(soup)),
         'ИСТОРИЯ': history(soup),
+        'ССЫЛКА НА ДИРЕКТОРА': director_href(soup),
         'Финансы': financial_statements(soup),
         'Налоги и сборы': '\n'.join(taxes_and_fees(soup)),
         'Федресурс': federal_resource(soup),
@@ -1110,7 +1119,7 @@ def read_main_html_individual(client_inn, object_inn, short_name):
         'Дата_рождения': ind_main_profile('Дата рождения:'),
         'Гражданство': ind_main_profile('Страна гражданства:'),
         'ИНН': ind_main_profile('ИНН:'),
-        'ФИО': ind_fio(),
+        'Краткое наименование': ind_fio(),
         'Инфо_ИП': ind_entrepreneur(),
         'Адрес_регистрации': ind_address(),
         'Имя_налог_органа': ind_tax_authority(),
