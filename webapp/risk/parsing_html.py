@@ -348,8 +348,8 @@ def founders_legal(soup) -> dict:
 
 def blocked_current_accounts(soup):
     try:
-        return soup.find('div', class_='card card-nopadding external-111'
-                         ).find('div', class_='card-section').find('span').get_text(strip=True)
+        return " ".join(soup.find('div', class_='card card-nopadding external-111'
+                                  ).find('div', class_='card-section').find('span').get_text(strip=True).split())
     except (AttributeError, TypeError, IndexError) as _ex:
         logging.info(_ex, exc_info=True)
         return '-'
@@ -376,12 +376,25 @@ def tax_debts(soup) -> List[str]:
     try:
         link_red = soup.find(
             'div', class_='card card-nopadding', attrs={'data-element': 'local-reestr'}
-        ).find('p', class_='link-red').get_text(strip=True, separator=' ').replace('\n', ' ').replace('  ', '')
-        if 'По данным ФНС на дату' not in link_red:
-            links.append(link_red)
+        ).find_all('p', class_='link-red')
+        logging.info(link_red)
+        for elem in link_red:
+            if 'По данным ФНС на дату' not in " ".join(elem.get_text(strip=True, separator=' ').split()):
+                links.append(" ".join(elem.get_text(strip=True, separator=' ').split()))
+
     except (AttributeError, TypeError, IndexError) as _ex:
+        logging.info(_ex, exc_info=True)
         logging.info('Нет красного линка у компании по налогам')
 
+    try:
+        tax_arrears = ' '.join(soup.find(
+            'div', class_='card card-nopadding', attrs={'data-element': 'local-tax-penalty'}
+        ).find('div', class_='card-section').find('p').get_text(strip=True, separator=' ').split())
+        links.append(f'Налоговые недоимки: {tax_arrears}')
+    except (AttributeError, TypeError, IndexError) as _ex:
+        logging.info(_ex, exc_info=True)
+
+    logging.info(links)
     return links
 
 
