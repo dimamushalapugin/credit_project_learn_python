@@ -152,6 +152,25 @@ def unscrupulous_seller(soup):
         return '-'
 
 
+def rating_delta_number(soup):
+    try:
+        return soup.find(class_='analitik-rank-color-undef').get_text(strip=True, separator=' ')
+    except (AttributeError, TypeError) as _ex:
+        logging.info(_ex, exc_info=True)
+        return '-'
+
+
+def rating_delta_text(soup):
+    try:
+        if rating_delta_number(soup) == '0':
+            return f'Рейтинг компании согласно данным ООО "ЦИТ "Дельтаинком":\n{soup.find("p", class_="more-card__table_text").find_next("div", class_="red").get_text(strip=True, separator=" ")}'
+        else:
+            return f'Рейтинг компании согласно данным ООО "ЦИТ "Дельтаинком":\n{soup.find("p", class_="more-card__table_text").get_text(strip=True, separator=" ")}'
+    except (AttributeError, TypeError) as _ex:
+        logging.info(_ex, exc_info=True)
+        return '-'
+
+
 def read_delta_html(client_inn, object_inn, short_name):
     try:
         soup = BeautifulSoup(read_delta_page(client_inn, object_inn, short_name), 'html.parser')
@@ -177,6 +196,8 @@ def read_delta_html(client_inn, object_inn, short_name):
         'Исполнительные производства': info_delta(soup, 'Исполнительные производства'),
         'Дочерние компания': info_delta(soup, 'Наличие дочерних компаний'),
         'Реестр недобросовестнных поставщиков': info_delta(soup, 'Реестр недобросовестных поставщиков'),
+        'Рейтинг дельта номер': rating_delta_number(soup),
+        'Рейтинг дельта текст': rating_delta_text(soup),
         'Процесс банкротства (да_нет)': bankruptcy(soup, 'банкрот'),  # for seller table
         'Процесс ликвидации (да_нет)': bankruptcy(soup, 'ликвид') and bankruptcy(soup, 'недейств'),  # for seller table
         'Процесс реорганизации (да_нет)': bankruptcy(soup, 'реорг'),  # for seller table
