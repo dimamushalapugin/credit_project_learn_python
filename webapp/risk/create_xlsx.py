@@ -223,7 +223,20 @@ def create_xlsx_file(inn_client, inn_seller, main_client: dict, delta_client: di
         else:
             sheet[f'B{sheet.max_row}'].value = '-'
 
-    #  TODO: Доделать учредителей
+        # TODO: Доделать учредителей
+        try:
+            if main_client['УЧРЕДИТЕЛИ ФЛ']:
+                for num in founders_client:
+                    if len(founders_client[num]) > 2:
+                        sheet[f'A{sheet.max_row + 2}'].value = f'УЧРЕДИТЕЛЬ {num} {founders_client[num]["percent"]}'
+                        sheet[f'A{sheet.max_row + 1}'].value = founders_client[num]["full_name"]
+                    else:
+                        sheet[
+                            f'A{sheet.max_row + 2}'].value = f'УЧРЕДИТЕЛЬ {num} {founders_client[num]["percent"]} (ДИРЕКТОР)'
+                        sheet[f'A{sheet.max_row + 1}'].value = founders_client[num]["full_name"]
+                        sheet[f'A{sheet.max_row + 1}'].value = 'Проверка директора уже проведена'
+        except Exception as _ex:
+            logging.info(_ex, exc_info=True)
 
     logging.info("Сохраняем файл")
     wb.save(
