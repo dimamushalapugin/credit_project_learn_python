@@ -19,7 +19,8 @@ def create_xlsx_file(inn_client, inn_seller, main_client: dict, delta_client: di
 
     wb = openpyxl.Workbook()
     sheet = wb.active
-    sheet['A1'].value = f'Риск заключение по {main_client["Краткое наименование"]} на {dt.today().strftime(f"%d.%m.%Y")}'
+    sheet[
+        'A1'].value = f'Риск заключение по {main_client["Краткое наименование"]} на {dt.today().strftime(f"%d.%m.%Y")}'
 
     sheet[f'A{sheet.max_row + 1}'].value = '1. Общее описание Лизингополучателя'
 
@@ -43,7 +44,8 @@ def create_xlsx_file(inn_client, inn_seller, main_client: dict, delta_client: di
                     try:
                         logging.info(main_client.get(name))
                         for num in main_client.get(name):
-                            some_list.append(f'{num}) {main_client.get(name).get(num).get("percent")} {main_client.get(name).get(num).get("sum")} {main_client.get(name).get(num).get("full_name")} {main_client.get(name).get(num).get("inn")} {main_client.get(name).get(num).get("egrul")}')
+                            some_list.append(
+                                f'{num}) {main_client.get(name).get(num).get("percent")} {main_client.get(name).get(num).get("sum")} {main_client.get(name).get(num).get("full_name")} {main_client.get(name).get(num).get("inn")} {main_client.get(name).get(num).get("egrul")}')
                     except TypeError:
                         logging.info("Попал в except")
                     sheet[f'A{sheet.max_row + 1}'].value = name
@@ -56,6 +58,45 @@ def create_xlsx_file(inn_client, inn_seller, main_client: dict, delta_client: di
                     sheet[f'A{sheet.max_row + 1}'].value = name
                     sheet[f'B{sheet.max_row}'].value = '-'
 
-    logging.info("Сохраняем файл")
-    wb.save(fr"{PATH_FOR_HTML_PAGES}/{short_name} ИНН {inn_client}/{dt.today().strftime(f'%d.%m.%Y')}/Риск заключение {inn_client}.xlsx")
+        sheet[f'A{sheet.max_row + 2}'].value = '2. Анализ деятельности'
+        sheet[f'A{sheet.max_row + 1}'].value = delta_client['Рейтинг дельта номер']
+        sheet[f'B{sheet.max_row}'].value = delta_client['Рейтинг дельта текст']
+        sheet[f'A{sheet.max_row + 1}'].value = 'Рейтинг'
+        sheet[f'B{sheet.max_row}'].value = 'Описание'
+        delta_rating_dict = {'100': 'Благонадежность  предприятия очень высокая.',
+                             '90': 'Вероятность благонадежности предприятия высокая.',
+                             '80': 'У предприятия имеется один или несколько признаков неблагонадежности.',
+                             '70': 'У предприятия имеется несколько признаков неблагонадежности',
+                             '50-60': 'Взаимодействие с данной фирмой может быть сопряжено со средней степенью риска.',
+                             '40': 'Взаимодействие с данной фирмой может быть сопряжено с высокой степенью риска.',
+                             '0-30': 'Сотрудничество с данной компанией нежелательно'}
 
+        for key, value in delta_rating_dict.items():
+            sheet[f'A{sheet.max_row + 1}'].value = key
+            sheet[f'B{sheet.max_row}'].value = value
+
+        #  TODO: Нужно сделать, чтобы начинался цикл по индексу
+        sheet[f'A{sheet.max_row + 2}'].value = 'Анализ регистрационных данных'
+        for index, (key, value) in enumerate(delta_client.items()):
+            if index == 5:
+                break
+            sheet[f'A{sheet.max_row + 1}'].value = key
+            sheet[f'B{sheet.max_row}'].value = value
+
+        sheet[f'A{sheet.max_row + 2}'].value = 'Анализ директоров/учредителей'
+        for index, (key, value) in enumerate(delta_client.items(), start=5):
+            if index == 9:
+                break
+            sheet[f'A{sheet.max_row + 1}'].value = key
+            sheet[f'B{sheet.max_row}'].value = value
+
+        sheet[f'A{sheet.max_row + 2}'].value = 'Анализ деятельности'
+        for index, (key, value) in enumerate(delta_client.items(), start=9):
+            if index == 17:
+                break
+            sheet[f'A{sheet.max_row + 1}'].value = key
+            sheet[f'B{sheet.max_row}'].value = value
+
+    logging.info("Сохраняем файл")
+    wb.save(
+        fr"{PATH_FOR_HTML_PAGES}/{short_name} ИНН {inn_client}/{dt.today().strftime(f'%d.%m.%Y')}/Риск заключение {inn_client}.xlsx")
