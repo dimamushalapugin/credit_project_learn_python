@@ -75,7 +75,6 @@ def create_xlsx_file(inn_client, inn_seller, main_client: dict, delta_client: di
             sheet[f'A{sheet.max_row + 1}'].value = key
             sheet[f'B{sheet.max_row}'].value = value
 
-        #  TODO: Нужно сделать, чтобы начинался цикл по индексу
         sheet[f'A{sheet.max_row + 2}'].value = 'Анализ регистрационных данных'
         for index, (key, value) in enumerate(delta_client.items()):
             if index == 5:
@@ -84,18 +83,147 @@ def create_xlsx_file(inn_client, inn_seller, main_client: dict, delta_client: di
             sheet[f'B{sheet.max_row}'].value = value
 
         sheet[f'A{sheet.max_row + 2}'].value = 'Анализ директоров/учредителей'
-        for index, (key, value) in enumerate(delta_client.items(), start=5):
+        for index, (key, value) in enumerate(delta_client.items()):
             if index == 9:
+                break
+            if index >= 5:
+                sheet[f'A{sheet.max_row + 1}'].value = key
+                sheet[f'B{sheet.max_row}'].value = value
+
+        sheet[f'A{sheet.max_row + 2}'].value = 'Анализ деятельности'
+        for index, (key, value) in enumerate(delta_client.items()):
+            if index == 17:
+                break
+            if index >= 9:
+                sheet[f'A{sheet.max_row + 1}'].value = key
+                sheet[f'B{sheet.max_row}'].value = value
+
+        sheet[f'A{sheet.max_row + 2}'].value = 'ФИНАНСОВЫЕ ПОКАЗАТЕЛИ'
+        columns_list = ['B', 'C', 'D']
+        columns_list_index = 0
+        num_for_values = -5
+
+        try:
+            if main_client['Финансы'].get(2022):
+                sheet[f'A{sheet.max_row + 1}'].value = 'НАИМЕНОВАНИЕ'
+                sheet[f'A{sheet.max_row + 1}'].value = 'Баланс'
+                sheet[f'A{sheet.max_row + 1}'].value = 'Выручка'
+                sheet[f'A{sheet.max_row + 1}'].value = 'Обязательства'
+                sheet[f'A{sheet.max_row + 1}'].value = 'Чистая прибыль'
+                sheet[f'A{sheet.max_row + 1}'].value = 'Капитал и резервы'
+                sheet[f'A{sheet.max_row + 1}'].value = 'Основные средства'
+                for key in main_client['Финансы']:
+                    sheet[f'{columns_list[columns_list_index]}{sheet.max_row - 6}'].value = key
+                    for indicators, values in main_client['Финансы'][key].items():
+                        sheet[f'{columns_list[columns_list_index]}{sheet.max_row + num_for_values}'].value = values
+                        num_for_values += 1
+                    num_for_values = -5
+                    columns_list_index += 1
+            else:
+                sheet[f'A{sheet.max_row + 1}'].value = 'Отсутствуют финансовые показатели'
+        except Exception:
+            sheet[f'A{sheet.max_row + 1}'].value = '-'
+
+        sheet[f'A{sheet.max_row + 2}'].value = 'НАЛОГИ И СБОРЫ'
+        sheet[f'B{sheet.max_row}'].value = main_client['Налоги и сборы']
+
+        sheet[f'A{sheet.max_row + 2}'].value = 'АФФИЛИРОВАННЫЕ И СВЯЗАННЫЕ ЛИЦА'
+        sheet[f'A{sheet.max_row + 1}'].value = ''
+
+        sheet[f'A{sheet.max_row + 2}'].value = 'СУЩЕСТВЕННЫЕ ФАКТЫ ПО ДАННЫМ ФЕДРЕСУРСА'
+        sheet[f'A{sheet.max_row + 1}'].value = main_client['Федресурс']
+
+        sheet[f'A{sheet.max_row + 2}'].value = 'СВЕДЕНИЯ ИЗ РЕЕСТРА ЗАЛОГОВ'
+        sheet[f'A{sheet.max_row + 1}'].value = main_client['Реестр залогов']
+
+        sheet[f'A{sheet.max_row + 2}'].value = 'РОСФИНМОНИТОРИНГ(ТЕРРОРИСТИЧЕСКИЕ ОРГАНИЗАЦИИ)'
+        sheet[f'A{sheet.max_row + 1}'].value = main_client['Росфинмониторинг']
+
+        sheet[f'A{sheet.max_row + 2}'].value = 'САНКЦИИ США, ЕС, КАНАДЫ (ЮЛ)'
+        sheet[f'A{sheet.max_row + 1}'].value = main_client['Санкции']
+
+        sheet[f'A{sheet.max_row + 2}'].value = 'ЧЕРНЫЙ СПИСОК ЦБ РФ (ЮЛ)'
+        sheet[f'A{sheet.max_row + 1}'].value = main_client['Черный список']
+
+        logging.info("Запуск процесса записи информации про директора/учредителей в xslx файл")
+        sheet[f'A{sheet.max_row + 2}'].value = '3. Анализ директора/учредителей'
+        sheet[f'A{sheet.max_row + 1}'].value = '3.1. ДИРЕКТОР/ГЕН. ДИРЕКТОР'
+        sheet[f'A{sheet.max_row + 1}'].value = director_client['Краткое наименование']
+        sheet[f'A{sheet.max_row + 1}'].value = ''
+
+        for index, (key, value) in enumerate(director_client.items()):
+            if index == 4:  # Кол-во итераций
                 break
             sheet[f'A{sheet.max_row + 1}'].value = key
             sheet[f'B{sheet.max_row}'].value = value
 
-        sheet[f'A{sheet.max_row + 2}'].value = 'Анализ деятельности'
-        for index, (key, value) in enumerate(delta_client.items(), start=9):
-            if index == 17:
+        sheet[f'A{sheet.max_row + 2}'].value = 'Регистрация в качестве индивидуального предпринимателя:'
+        if director_client['Инфо_ИП']:
+            for num in director_client['Инфо_ИП']:
+                for key, value in director_client['Инфо_ИП'][num].items():
+                    sheet[f'A{sheet.max_row + 1}'].value = key
+                    sheet[f'B{sheet.max_row}'].value = value
+                sheet[f'A{sheet.max_row + 1}'].value = ''
+        else:
+            sheet[f'A{sheet.max_row + 1}'].value = 'Информация отсутствует'
+            sheet[f'A{sheet.max_row + 1}'].value = ''
+
+        sheet[f'A{sheet.max_row + 1}'].value = 'Адрес регистрации:'
+        sheet[f'B{sheet.max_row}'].value = director_client['Адрес_регистрации']
+
+        sheet[f'A{sheet.max_row + 2}'].value = 'Информация о регистрирующем органе:'
+        sheet[f'B{sheet.max_row}'].value = director_client['Имя_налог_органа']
+
+        sheet[f'A{sheet.max_row + 2}'].value = 'Является руководителем:'
+        sheet[f'B{sheet.max_row}'].value = 'Является учредителем:'
+        sheet[f'A{sheet.max_row + 1}'].value = director_client['История_руководства']['Является руководителем']
+        sheet[f'B{sheet.max_row}'].value = director_client['История_руководства']['Является учредителем']
+        sheet[f'A{sheet.max_row + 1}'].value = 'Являлся руководителем:'
+        sheet[f'B{sheet.max_row}'].value = 'Являлся учредителем:'
+        sheet[f'A{sheet.max_row + 1}'].value = director_client['История_руководства']['Являлся руководителем']
+        sheet[f'B{sheet.max_row}'].value = director_client['История_руководства']['Являлся учредителем']
+
+        for index, (key, value) in enumerate(director_client.items()):
+            if index == 24:  # Кол-во итераций
                 break
-            sheet[f'A{sheet.max_row + 1}'].value = key
-            sheet[f'B{sheet.max_row}'].value = value
+            if index >= 9:
+                sheet[f'A{sheet.max_row + 2}'].value = key
+                sheet[f'A{sheet.max_row + 1}'].value = value
+
+        sheet[f'A{sheet.max_row + 2}'].value = '3.2. УЧРЕДИТЕЛИ:'
+        sheet[f'A{sheet.max_row + 1}'].value = 'Учредители ЮЛ'
+
+        founders_list_ul = []
+        name_ul = "УЧРЕДИТЕЛИ ЮЛ"
+        try:
+            for num in main_client.get(name_ul):
+                founders_list_ul.append(
+                    f'{num}) {main_client.get(name_ul).get(num).get("percent")} {main_client.get(name_ul).get(num).get("sum")} {main_client.get(name_ul).get(num).get("full_name")} {main_client.get(name_ul).get(num).get("inn")} {main_client.get(name_ul).get(num).get("egrul")}')
+        except TypeError as _ex:
+            logging.info("Попал в except")
+            logging.info(_ex, exc_info=True)
+        if len(founders_list_ul) > 0:
+            sheet[f'B{sheet.max_row}'].value = "\n".join(founders_list_ul)
+        else:
+            sheet[f'B{sheet.max_row}'].value = '-'
+
+        sheet[f'A{sheet.max_row + 2}'].value = 'Учредители ФЛ'
+
+        founders_list_fl = []
+        name_fl = "УЧРЕДИТЕЛИ ФЛ"
+        try:
+            for num in main_client.get(name_fl):
+                founders_list_fl.append(
+                    f'{num}) {main_client.get(name_fl).get(num).get("percent")} {main_client.get(name_fl).get(num).get("sum")} {main_client.get(name_fl).get(num).get("full_name")} {main_client.get(name_fl).get(num).get("inn")} {main_client.get(name_fl).get(num).get("egrul")}')
+        except TypeError as _ex:
+            logging.info("Попал в except")
+            logging.info(_ex, exc_info=True)
+        if len(founders_list_fl) > 0:
+            sheet[f'B{sheet.max_row}'].value = "\n".join(founders_list_fl)
+        else:
+            sheet[f'B{sheet.max_row}'].value = '-'
+
+    #  TODO: Доделать учредителей
 
     logging.info("Сохраняем файл")
     wb.save(

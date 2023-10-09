@@ -154,7 +154,7 @@ def unscrupulous_seller(soup):
 
 def rating_delta_number(soup):
     try:
-        return soup.find(class_='analitik-rank-color-undef').get_text(strip=True, separator=' ')
+        return soup.find('td', class_='more-card__analitik-rank').find('span').get_text(strip=True, separator=' ')
     except (AttributeError, TypeError) as _ex:
         logging.info(_ex, exc_info=True)
         return '-'
