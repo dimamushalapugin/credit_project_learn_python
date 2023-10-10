@@ -1,10 +1,11 @@
 import os
 
 from flask import Blueprint, flash, render_template, redirect, request, url_for, send_from_directory, jsonify, send_file
-from flask_login import login_required
+from flask_login import login_required, current_user
 
 from webapp.managers.parser_for_application import start_filling_application, start_filling_agreement
 from webapp.config import APPLICATION_PATH
+from webapp.risk.logger import logging
 
 blueprint = Blueprint('manager', __name__, url_prefix='/managers')
 
@@ -46,6 +47,7 @@ def agreements_folder(folder_path):
 def download(filename):
     folder_path = request.args.get('folder_path')
     real_path = os.path.join('static', 'agreements', folder_path).replace('\\', '/').replace(f"/{filename}", '')
+    logging.info(f"{current_user} скачивает файл {filename}'")
     return send_from_directory(real_path, filename, as_attachment=True)
 
 
@@ -64,6 +66,7 @@ def create_docx_file(data, application_path, graphic_path):
 
 @blueprint.route('/create_xlsx', methods=['POST'])
 def create_agreement():
+    logging.info(f"{current_user} Нажал на кнопку 'Создать ДЛ'")
     application_filename = request.form['uploaded_application']
     graphic_filename = request.form['uploaded_graphic']
 
@@ -115,6 +118,7 @@ def download_application(file_path, filename):
 
 @blueprint.route('/create_application', methods=['POST'])
 def create_application():
+    logging.info(f"{current_user} Нажал на кнопку 'Создать заявку'")
     try:
         data = request.form
         file_path = create_xlsx_file(data)

@@ -2,10 +2,12 @@ import os
 import re
 
 from flask import Blueprint, flash, render_template, redirect, request, url_for, send_from_directory, jsonify, Response
+from flask_login import current_user
 
 from webapp.parsing_egrul import get_dir_name
 from webapp.user.auth_utils import admin_required
 from webapp.risk.new_create_risk_conclusion import create_conclusion
+from webapp.risk.logger import logging
 
 blueprint = Blueprint('risk', __name__, url_prefix='/risk')
 
@@ -45,8 +47,6 @@ def risk_conclusion_folder(folder_path):
 
 def create_xlsx_file(data):
     pattern = r"^\d{10}$|^\d{12}$"
-    print(data.get('factory'))
-    print(data.get('dealer'))
     if re.match(pattern, data['client_inn']) and re.match(pattern, data['seller_inn']):
         try:
             create_conclusion(data['client_inn'], data['seller_inn'], data.get('factory'), data.get('dealer'))
@@ -61,6 +61,7 @@ def create_xlsx_file(data):
 
 @blueprint.route('/create_xlsx', methods=['POST'])
 def create_risk_conclusion():
+    logging.info(f"{current_user} Нажал на кнопку 'Создать риск-заключение'")
     try:
         data = request.form
         file_name = create_xlsx_file(data)
@@ -78,6 +79,7 @@ def create_risk_conclusion():
 def download(filename):
     folder_path = request.args.get('folder_path')
     real_path = os.path.join('static', 'files', folder_path).replace('\\', '/').replace(f"/{filename}", '')
+    logging.info(f"{current_user} скачивает файл: {filename}")
     return send_from_directory(real_path, filename, as_attachment=True)
 
 
