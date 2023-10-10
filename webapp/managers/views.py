@@ -50,7 +50,8 @@ def download(filename):
 
 
 def create_xlsx_file(data):
-    return start_filling_application(data['client_inn'], APPLICATION_PATH)
+    return start_filling_application(data['client_inn'], APPLICATION_PATH, data['seller_inn1'], data['seller_inn2'],
+                                     data['seller_inn3'], data['seller_inn4'])
 
 
 def create_docx_file(data, application_path, graphic_path):
