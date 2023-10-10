@@ -93,10 +93,11 @@
                     <form action="{{ url_for('manager.create_application') }}" method="POST">
                         <div class="mb-3">
                             <h5 class="card-header"><i class="fa-solid fa-circle-info fa-xs"
-                                                       style="color: #8f8f8f;"></i> ИНН лизингополучателя
+                                                       style="color: #8f8f8f;"></i> Заполнение заявки
                             </h5>
                         </div>
                         <div class="input-group input-group-sm mb-3">
+                            <label>Введите ИНН лизингополучателя</label>
                             <input type="text" name="client_inn" value="" class="form-control" required>
                         </div>
                         <div class="mb-3">
