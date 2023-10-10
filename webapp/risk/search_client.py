@@ -33,6 +33,12 @@ def update_page(client_inn, driver):
 
     try:
         driver.find_element(By.XPATH,
+                            "//span[@class='cards__column_block-link cards__column_more-link cards_founders cards_founders_fl appear']").click()
+    except NoSuchElementException:
+        logging.info('Отсутствует раскрыть список')
+
+    try:
+        driver.find_element(By.XPATH,
                             "//span[@class='cards__column_block-link cards__column_more-link directors_history_person appear']").click()
     except NoSuchElementException:
         logging.info('Отсутствует раскрыть список')

@@ -14,7 +14,7 @@ from webapp.risk.models import Okved
 def full_name_company(soup):
     try:
         return soup.find('p', class_='cards__text cards__text-margin').get_text(strip=True)
-    except (AttributeError, TypeError) as _ex:
+    except Exception as _ex:
         logging.info(_ex, exc_info=True)
         return '-'
 
@@ -22,21 +22,23 @@ def full_name_company(soup):
 def short_name_company(soup):
     try:
         return soup.find('h2', class_='cards__company').find('span').get_text(strip=True)
-    except (AttributeError, TypeError) as _ex:
+    except Exception as _ex:
         logging.info(_ex, exc_info=True)
         return '-'
 
 
 def company_status(soup):
-    if soup.find('span', class_='cards__status cards__status-green') is not None:
-        return soup.find('span', class_='cards__status cards__status-green').get_text(strip=True).replace(
-            'По данным ФНС:', '')
-    elif soup.find('span', class_='cards__status cards__status-red') is not None:
-        return soup.find('span', class_='cards__status cards__status-red').get_text(strip=True).replace(
-            'По данным ФНС:', '')
+    try:
+        if soup.find('span', class_='cards__status cards__status-green') is not None:
+            return soup.find('span', class_='cards__status cards__status-green').get_text(strip=True).replace(
+                'По данным ФНС:', '')
+        elif soup.find('span', class_='cards__status cards__status-red') is not None:
+            return soup.find('span', class_='cards__status cards__status-red').get_text(strip=True).replace(
+                'По данным ФНС:', '')
 
-    logging.info('Не удалось получить СТАТУС компании')
-    return '-'
+    except Exception as _ex:
+        logging.info(_ex, exc_info=True)
+        return '-'
 
 
 def company_inn_kpp_ogrn_okpo(soup, kpp_inn_okpo):
@@ -47,7 +49,7 @@ def company_inn_kpp_ogrn_okpo(soup, kpp_inn_okpo):
         try:
             if len(cells) == 2 and kpp_inn_okpo in cells[0].get_text(strip=True):
                 return cells[1].get_text(strip=True)
-        except (AttributeError, TypeError) as _ex:
+        except Exception as _ex:
             logging.info(_ex, exc_info=True)
             return '-'
 
@@ -56,24 +58,28 @@ def company_inn_kpp_ogrn_okpo(soup, kpp_inn_okpo):
 
 
 def date_of_registration(soup):
-    elements = soup.find_all('h3', class_='cards__subtitle')
+    try:
+        elements = soup.find_all('h3', class_='cards__subtitle')
 
-    for element in elements:
-        if "Дата регистрации:" in element.get_text():
-            date_element = element.find('span')
-            if date_element:
-                registration_date = date_element.get_text(strip=True)
-                return registration_date
+        for element in elements:
+            if "Дата регистрации:" in element.get_text():
+                date_element = element.find('span')
+                if date_element:
+                    registration_date = date_element.get_text(strip=True)
+                    return registration_date
 
-    else:
-        logging.info(f'Не удалось получить ДАТА РЕГИСТРАЦИИ компании')
+        else:
+            logging.info(f'Не удалось получить ДАТА РЕГИСТРАЦИИ компании')
+            return '-'
+    except Exception as _ex:
+        logging.info(_ex, exc_info=True)
         return '-'
 
 
 def legal_address(soup):
     try:
         return soup.find('span', class_='find_address cards__column_block-link').get_text(strip=True)
-    except (AttributeError, TypeError) as _ex:
+    except Exception as _ex:
         logging.info(_ex, exc_info=True)
         return '-'
 
@@ -81,7 +87,7 @@ def legal_address(soup):
 def pfr(soup):
     try:
         return soup.find('tr', title='Пенсионный фонд России').find_all('td')[1].get_text(strip=True)
-    except (AttributeError, TypeError, IndexError) as _ex:
+    except Exception as _ex:
         logging.info(_ex, exc_info=True)
         return '-'
 
@@ -89,7 +95,7 @@ def pfr(soup):
 def fss(soup):
     try:
         return soup.find('tr', title='Social Insurance Fund').find_all('td')[1].get_text(strip=True)
-    except (AttributeError, TypeError, IndexError) as _ex:
+    except Exception as _ex:
         logging.info(_ex, exc_info=True)
         return '-'
 
@@ -98,7 +104,7 @@ def director_name(soup):
     try:
         return soup.find('div', 'cards__text cards__text-top').find('a', class_='cards__column_block-link').get_text(
             strip=True)
-    except (AttributeError, TypeError, IndexError) as _ex:
+    except Exception as _ex:
         logging.info(_ex, exc_info=True)
         return '-'
 
@@ -106,7 +112,7 @@ def director_name(soup):
 def director_href(soup):
     try:
         return soup.find('div', 'cards__text cards__text-top').find('a', class_='cards__column_block-link')['href']
-    except (AttributeError, TypeError, IndexError) as _ex:
+    except Exception as _ex:
         logging.info(_ex, exc_info=True)
         return '-'
 
@@ -115,27 +121,31 @@ def director_inn_egrul(soup) -> List[str]:
     try:
         elements = soup.find('div', 'cards__text cards__text-top').find_all('span', class_='cards__column-small')
         return [element.get_text() for element in elements]
-    except (AttributeError, TypeError, IndexError) as _ex:
+    except Exception as _ex:
         logging.info(_ex, exc_info=True)
         return ['-']
 
 
 def authorized_capital(soup):
-    elements = soup.find('div', class_='cards__column cards__column-first').find_all('div',
-                                                                                     class_='cards__column_block')
-    text = ''
-    pattern = r'(\d[\d\s]+руб\.)'
+    try:
+        elements = soup.find('div', class_='cards__column cards__column-first').find_all('div',
+                                                                                         class_='cards__column_block')
+        text = ''
+        pattern = r'(\d[\d\s]+руб\.)'
 
-    for element in elements:
-        if 'Уставный капитал' in element.get_text(strip=True):
-            text = element.get_text(strip=True, separator=' ').removeprefix('Уставный капитал: ')
+        for element in elements:
+            if 'Уставный капитал' in element.get_text(strip=True):
+                text = element.get_text(strip=True, separator=' ').removeprefix('Уставный капитал: ')
 
-    match = re.search(pattern, text)
+        match = re.search(pattern, text)
 
-    if match:
-        return match.group(1)
-    else:
-        logging.info(f'Не удалось получить УСТАВНЫЙ КАПИТАЛ компании')
+        if match:
+            return match.group(1)
+        else:
+            logging.info(f'Не удалось получить УСТАВНЫЙ КАПИТАЛ компании')
+            return '-'
+    except Exception as _ex:
+        logging.info(_ex, exc_info=True)
         return '-'
 
 
@@ -143,7 +153,7 @@ def main_activity(soup):
     try:
         code = soup.find('table', class_='cards__data-small').find_all('tr')[0].find('td').get_text(strip=True)
         return Okved.return_okved_name(code)
-    except (AttributeError, TypeError, IndexError) as _ex:
+    except Exception as _ex:
         logging.info(_ex, exc_info=True)
         return '-'
 
@@ -153,7 +163,7 @@ def temporary_func(soup):  # Временная функция для прове
         return soup.find(
             'span', class_='cards__column_block-link cards__column_more-link appear'
         ).find_previous('table', class_='cards__data cards__data-small').find('td').get_text(strip=True)
-    except (AttributeError, TypeError, IndexError) as _ex:
+    except Exception as _ex:
         logging.info(_ex, exc_info=True)
         return ['-']
 
@@ -163,7 +173,7 @@ def additional_activities(soup) -> List[str]:
         elements = soup.find('table', class_='cards__data-small cards__data-nomargin cards__column_hidden').find_all(
             'tr')
         return [element.get_text(strip=True, separator=' ') for element in elements]
-    except (AttributeError, TypeError, IndexError) as _ex:
+    except Exception as _ex:
         logging.info(_ex, exc_info=True)
         return ['-']
 
@@ -175,14 +185,14 @@ def founders_physical(soup) -> dict:
         elements = soup.find('table',
                              class_='cards__data cards__data-small cards__data-border founder-table founder-table-fl'
                              ).find_all('tr')
-    except AttributeError as _ex:
+    except Exception as _ex:
         logging.info(_ex, exc_info=True)
         logging.info(f'Нет учредителей физ. лиц')
         return {}
 
     try:  # get director INN
         director_inn = director_inn_egrul(soup)[1]
-    except (AttributeError, TypeError, IndexError) as _ex:
+    except Exception as _ex:
         logging.info(_ex, exc_info=True)
         director_inn = None
 
@@ -216,7 +226,7 @@ def founders_physical(soup) -> dict:
                     'span', class_='cards__column-small')[1].get_text(strip=True)) if element.find(
                     'div', class_='division').find_all(
                     'span', class_='cards__column-small')[1] else ''
-            except IndexError:
+            except Exception:
                 sum_ = ''
             try:
                 inn = element.find(
@@ -224,7 +234,7 @@ def founders_physical(soup) -> dict:
                                                        )[2].get_text(strip=True) if element.find(
                     'div', class_='division').find_all(
                     'span', class_='cards__column-small')[2] else ''
-            except IndexError:
+            except Exception:
                 inn = ''
             mass_founder = element.find(
                 'div', class_='division').find('div', class_='link-red').get_text(strip=True
@@ -242,7 +252,7 @@ def founders_physical(soup) -> dict:
 
         return founders
 
-    except (AttributeError, TypeError, IndexError) as _ex:
+    except Exception as _ex:
         logging.info(_ex, exc_info=True)
         return {}
 
@@ -254,7 +264,8 @@ def founders_legal(soup) -> dict:
         elements = soup.find('table',
                              class_='cards__data cards__data-small cards__data-border founder-table founder-table-ul'
                              ).find_all('tr')
-    except AttributeError as _ex:
+    except Exception as _ex:
+        logging.info(_ex, exc_info=True)
         logging.info(f'Нет учредителей юр. лиц')
         return {}
 
@@ -341,7 +352,7 @@ def founders_legal(soup) -> dict:
 
         return founders
 
-    except (AttributeError, TypeError, IndexError) as _ex:
+    except Exception as _ex:
         logging.info(_ex, exc_info=True)
         return {}
 
@@ -350,7 +361,7 @@ def blocked_current_accounts(soup):
     try:
         return " ".join(soup.find('div', class_='card card-nopadding external-111'
                                   ).find('div', class_='card-section').find('span').get_text(strip=True).split())
-    except (AttributeError, TypeError, IndexError) as _ex:
+    except Exception as _ex:
         logging.info(_ex, exc_info=True)
         return '-'
 
@@ -370,7 +381,8 @@ def tax_debts(soup) -> List[str]:
             'div', class_='card card-nopadding', attrs={'data-element': 'local-reestr'}
         ).find('p', class_='link-orange').get_text(strip=True, separator=' ').replace('\n', ' ').replace('  ', '')
         links.append(link_orange)
-    except (AttributeError, TypeError, IndexError) as _ex:
+    except Exception as _ex:
+        logging.info(_ex, exc_info=True)
         logging.info('Нет оранжевого линка у компании по налогам')
 
     try:
@@ -382,7 +394,7 @@ def tax_debts(soup) -> List[str]:
             if 'По данным ФНС на дату' not in " ".join(elem.get_text(strip=True, separator=' ').split()):
                 links.append(" ".join(elem.get_text(strip=True, separator=' ').split()))
 
-    except (AttributeError, TypeError, IndexError) as _ex:
+    except Exception as _ex:
         logging.info(_ex, exc_info=True)
         logging.info('Нет красного линка у компании по налогам')
 
@@ -391,7 +403,7 @@ def tax_debts(soup) -> List[str]:
             'div', class_='card card-nopadding', attrs={'data-element': 'local-tax-penalty'}
         ).find('div', class_='card-section').find('p').get_text(strip=True, separator=' ').split())
         links.append(f'Налоговые недоимки: {tax_arrears}')
-    except (AttributeError, TypeError, IndexError) as _ex:
+    except Exception as _ex:
         logging.info(_ex, exc_info=True)
 
     logging.info(links)
@@ -402,7 +414,7 @@ def count_of_members(soup) -> List[str]:
     members_list = []
     try:
         elements = soup.find('div', class_='card card-nopadding', attrs={'data-element': 'local-reestr'}).find_all('p')
-    except (AttributeError, TypeError, IndexError) as _ex:
+    except Exception as _ex:
         logging.info(_ex, exc_info=True)
         return ['-']
     for element in elements:
@@ -416,7 +428,7 @@ def history(soup):
         elements = soup.find('div', class_='card-wrapper'
                              ).get_text(strip=True, separator='|').replace('\n', ' '
                                                                            ).replace('  ', '').replace('|', '\n')
-    except (AttributeError, TypeError, IndexError) as _ex:
+    except Exception as _ex:
         logging.info(_ex, exc_info=True)
         return 'Отсутствует какая-либо история изменений'
 
@@ -445,7 +457,7 @@ def financial_statements(soup):
                     logging.info('Ошибка в фин. показателях')
                     logging.info(_ex, exc_info=True)
 
-        except (AttributeError, TypeError, IndexError) as _ex:
+        except Exception as _ex:
             logging.info(f'Нет информации по фин. показателям за {year}')
             logging.info(_ex, exc_info=True)
 
@@ -465,7 +477,7 @@ def taxes_and_fees(soup):
         except (AttributeError, TypeError, IndexError) as _ex:
             logging.info(_ex, exc_info=True)
 
-    except (AttributeError, TypeError, IndexError) as _ex:
+    except Exception as _ex:
         logging.info(_ex, exc_info=True)
         return []
 
@@ -474,7 +486,7 @@ def federal_resource(soup):
     try:
         return soup.find('div', class_='card card-nopadding external-217').find('div', class_='card-section').get_text(
             strip=True, separator=' ').removesuffix('Подробнее').strip()
-    except (AttributeError, TypeError, IndexError) as _ex:
+    except Exception as _ex:
         logging.info(_ex, exc_info=True)
         return '-'
 
@@ -483,7 +495,7 @@ def register_of_pledges(soup):
     try:
         return soup.find('div', class_='card card-nopadding external-157').find('div', class_='card-section').get_text(
             strip=True, separator=' ').removesuffix('Подробнее').removesuffix('Предыдущие данные').strip()
-    except (AttributeError, TypeError, IndexError) as _ex:
+    except Exception as _ex:
         logging.info(_ex, exc_info=True)
         return '-'
 
@@ -492,7 +504,7 @@ def rosfinmonitoring(soup):
     try:
         return soup.find('div', class_='card card-nopadding external-142 attached'
                          ).find('div', class_='card-section').get_text(strip=True, separator=' ')
-    except (AttributeError, TypeError, IndexError) as _ex:
+    except Exception as _ex:
         logging.info(_ex, exc_info=True)
         return '-'
 
@@ -502,7 +514,7 @@ def sanctions(soup):
         return soup.find('div', class_='card card-nopadding',
                          attrs={'data-element': 'local-sanction'}).find('div', class_='card-section').get_text(
             strip=True, separator=' ')
-    except (AttributeError, TypeError, IndexError) as _ex:
+    except Exception as _ex:
         logging.info(_ex, exc_info=True)
         return '-'
 
@@ -511,7 +523,7 @@ def get_url_delta(soup):
     try:
         return soup.find('div', class_='card card-nopadding',
                          attrs={'data-element': 'local-analitic'}).find('a', class_="cards__column_block-link")['href']
-    except (AttributeError, TypeError, IndexError) as _ex:
+    except Exception as _ex:
         logging.info(_ex, exc_info=True)
         return '-'
 
@@ -524,7 +536,7 @@ def period_of_activity(soup):
             return 'Нет'
         else:
             return 'Да'
-    except (AttributeError, TypeError, IndexError) as _ex:
+    except Exception as _ex:
         logging.info(_ex, exc_info=True)
         return '-'
 
@@ -538,7 +550,7 @@ def unprofitability(fin_func):
                 return 'Нет'
         else:
             return 'Нет'
-    except (AttributeError, TypeError, IndexError) as _ex:
+    except Exception as _ex:
         logging.info(_ex, exc_info=True)
         return '-'
 
@@ -550,7 +562,7 @@ def inaccuracy_of_information(soup):
             return 'Да'
         else:
             return 'Нет'
-    except (AttributeError, TypeError, IndexError) as _ex:
+    except Exception as _ex:
         logging.info(_ex, exc_info=True)
         return '-'
 
@@ -561,7 +573,7 @@ def mass_address(soup):
             return 'Да'
         else:
             return 'Нет'
-    except (AttributeError, TypeError, IndexError) as _ex:
+    except Exception as _ex:
         logging.info(_ex, exc_info=True)
         return '-'
 
@@ -573,7 +585,7 @@ def extremism(soup):
             return 'Нет'
         else:
             return 'Да'
-    except (AttributeError, TypeError, IndexError) as _ex:
+    except Exception as _ex:
         logging.info(_ex, exc_info=True)
         return '-'
 
@@ -581,7 +593,7 @@ def extremism(soup):
 def read_main_html(client_inn, object_inn, short_name):
     try:
         soup = BeautifulSoup(read_main_page(client_inn, object_inn, short_name), 'html.parser')
-    except FileNotFoundError as _ex:
+    except Exception as _ex:
         logging.info(_ex, exc_info=True)
         raise _ex
 
@@ -648,7 +660,8 @@ def read_main_html_individual(client_inn, object_inn, short_name):
                 'td').get_text(' ', strip=True)
             logging.info(status)
             return status
-        except (AttributeError, TypeError):
+        except Exception as _ex:
+            logging.info(_ex, exc_info=True)
             logging.info(f'Не прожата кнопка для получения инфы по паспорту и тд. {title}')
             return '-'
 
@@ -658,7 +671,8 @@ def read_main_html_individual(client_inn, object_inn, short_name):
                                                                             ).get_text(' ', strip=True).split())
             logging.info(status)
             return status
-        except (AttributeError, TypeError):
+        except Exception as _ex:
+            logging.info(_ex, exc_info=True)
             logging.info('Не удалось получить ФИО')
             return '-'
 
@@ -668,7 +682,8 @@ def read_main_html_individual(client_inn, object_inn, short_name):
                 soup.find('div',
                           class_='cards__column-container cards__column-container-first'
                           ).find_all('td', string='ОГРНИП:'))
-        except (AttributeError, TypeError):
+        except Exception as _ex:
+            logging.info(_ex, exc_info=True)
             len_ornip = 0
             logging.info('Нет данных по истории ИП/КФХ')
 
@@ -683,7 +698,8 @@ def read_main_html_individual(client_inn, object_inn, short_name):
                                                                                               class_='cards__data')[
                             num].find_all('td')[1].get_text(' ', strip=True)
                     info[num].setdefault('Дата регистрации ИП', date_of_reg)
-                except (AttributeError, TypeError):
+                except Exception as _ex:
+                    logging.info(_ex, exc_info=True)
                     date_of_reg = '-'
                     info[num].setdefault('Дата регистрации ИП', date_of_reg)
 
@@ -694,7 +710,8 @@ def read_main_html_individual(client_inn, object_inn, short_name):
                             num].find('td', string='Дата прекращения деятельности:'
                                       ).find_next('td').get_text(' ', strip=True)
                     info[num].setdefault('Дата ликвидации ИП', date_of_liquidation)
-                except (AttributeError, TypeError):
+                except Exception as _ex:
+                    logging.info(_ex, exc_info=True)
                     date_of_liquidation = '-'
                     info[num].setdefault('Дата ликвидации ИП', date_of_liquidation)
 
@@ -704,7 +721,8 @@ def read_main_html_individual(client_inn, object_inn, short_name):
                                                                                               class_='cards__data')[
                             num].find('td', string='ОГРНИП:').find_next('td').get_text(' ', strip=True)
                     info[num].setdefault('ОГРНИП', ogrnip)
-                except (AttributeError, TypeError):
+                except Exception as _ex:
+                    logging.info(_ex, exc_info=True)
                     ogrnip = '-'
                     info[num].setdefault('ОГРНИП', ogrnip)
 
@@ -718,7 +736,8 @@ def read_main_html_individual(client_inn, object_inn, short_name):
                             num].find('td', string='ОКВЭД:').find_next('td').next_element.strip()
                     info[num].setdefault('Основной ОКВЭД', main_okved_value)
 
-                except (AttributeError, TypeError):
+                except Exception as _ex:
+                    logging.info(_ex, exc_info=True)
                     info[num].setdefault('Основной ОКВЭД', main_okved_value)
 
                 try:
@@ -726,7 +745,8 @@ def read_main_html_individual(client_inn, object_inn, short_name):
                         soup.find('div', class_='cards__column cards__column-first').find_all('table',
                                                                                               class_='cards__data')[
                             num].find('td', string='ОКВЭД:').find_next('td').find_all_next('td')
-                except (AttributeError, TypeError):
+                except Exception as _ex:
+                    logging.info(_ex, exc_info=True)
                     info[num].setdefault('Дополнительные ОКВЭД', add_okveds_values)
 
                 add_okveds_list = []
@@ -744,7 +764,8 @@ def read_main_html_individual(client_inn, object_inn, short_name):
                                                                                               class_='cards__data')[
                             num].find('td', string='Статус').find_next('td').get_text(' ', strip=True)
                     info[num].setdefault('Статус', status)
-                except (AttributeError, TypeError):
+                except Exception as _ex:
+                    logging.info(_ex, exc_info=True)
                     status = '-'
                     info[num].setdefault('Статус', status)
 
@@ -757,7 +778,8 @@ def read_main_html_individual(client_inn, object_inn, short_name):
                                 ).find_next('div', class_='cards__column_block').get_text(
                 ' ', strip=True).replace('посмотреть на карте', '')
             return address
-        except (AttributeError, TypeError):
+        except Exception as _ex:
+            logging.info(_ex, exc_info=True)
             logging.info('Нет удалось получить информацию по адресу регистрации')
             return '-'
 
@@ -765,7 +787,8 @@ def read_main_html_individual(client_inn, object_inn, short_name):
         try:
             authority = soup.find('p', class_='cards__text cards__text-top').get_text('\n', strip=True)
             return authority
-        except (AttributeError, TypeError):
+        except Exception as _ex:
+            logging.info(_ex, exc_info=True)
             logging.info('Не удалось получить информацию по наименованию налогового органа')
             return '-'
 
@@ -775,7 +798,8 @@ def read_main_html_individual(client_inn, object_inn, short_name):
             is_director = soup.find('div', class_='cards-directors'
                                     ).find_all('div', class_='company_more_info')
             info['Является руководителем'] = '\n'.join([el.get_text(' ', strip=True) for el in is_director])
-        except (AttributeError, TypeError):
+        except Exception as _ex:
+            logging.info(_ex, exc_info=True)
             info['Является руководителем'] = '-'
 
         try:
@@ -783,14 +807,16 @@ def read_main_html_individual(client_inn, object_inn, short_name):
                 'table',
                 class_='cards__data cards__data-small cards__data-border founder-table cards-founders').find_all('tr')
             info['Является учредителем'] = '\n'.join([el.get_text(' ', strip=True) for el in is_founder])
-        except (AttributeError, TypeError):
+        except Exception as _ex:
+            logging.info(_ex, exc_info=True)
             info['Является учредителем'] = '-'
 
         try:
             was_director = soup.find('div', class_='directors-history'
                                      ).find_all('div', class_='company_more_info')
             info['Являлся руководителем'] = '\n'.join([el.get_text(' ', strip=True) for el in was_director])
-        except (AttributeError, TypeError):
+        except Exception as _ex:
+            logging.info(_ex, exc_info=True)
             info['Являлся руководителем'] = '-'
 
         try:
@@ -799,7 +825,8 @@ def read_main_html_individual(client_inn, object_inn, short_name):
                 class_='founders-history cards__data cards__data-small cards__data-border founder-table').find_all(
                 'tr')
             info['Являлся учредителем'] = '\n'.join([el.get_text(' ', strip=True) for el in was_founder])
-        except (AttributeError, TypeError):
+        except Exception as _ex:
+            logging.info(_ex, exc_info=True)
             info['Являлся учредителем'] = '-'
 
         return info
@@ -809,7 +836,8 @@ def read_main_html_individual(client_inn, object_inn, short_name):
             arbitrary = ' '.join(
                 soup.find('div', class_='card card-nopadding external-139'
                           ).find('div', class_='card-section').find('span').get_text(' ', strip=True).split())
-        except (AttributeError, TypeError):
+        except Exception as _ex:
+            logging.info(_ex, exc_info=True)
             logging.info('Не удалось получить информацию по арбитражным делам')
             arbitrary = '-'
         return arbitrary
@@ -820,7 +848,8 @@ def read_main_html_individual(client_inn, object_inn, short_name):
                 soup.find('div', class_='card card-nopadding',
                           attrs={'data-element': 'local-arbitr'}).find('div', class_='card-section').get_text(
                     ' ', strip=True).split())
-        except (AttributeError, TypeError):
+        except Exception as _ex:
+            logging.info(_ex, exc_info=True)
             logging.info('Не удалось получить информацию по арбитражным делам')
             arbitrary = '-'
         return arbitrary
@@ -830,7 +859,8 @@ def read_main_html_individual(client_inn, object_inn, short_name):
             tax = ' '.join(
                 soup.find('div', class_='card card-nopadding external-125'
                           ).find('div', class_='card-section').find('span').get_text(' ', strip=True).split())
-        except (AttributeError, TypeError):
+        except Exception as _ex:
+            logging.info(_ex, exc_info=True)
             logging.info('Не удалось получить информацию по налоговой задолженности')
             tax = '-'
         return tax
@@ -840,7 +870,8 @@ def read_main_html_individual(client_inn, object_inn, short_name):
             blocked = ' '.join(
                 soup.find('div', class_='card card-nopadding external-114'
                           ).find('div', class_='card-section').find('span').get_text(' ', strip=True).split())
-        except (AttributeError, TypeError):
+        except Exception as _ex:
+            logging.info(_ex, exc_info=True)
             logging.info('Не удалось получить информацию по забл. расч. счетам')
             blocked = '-'
         return blocked
@@ -851,7 +882,8 @@ def read_main_html_individual(client_inn, object_inn, short_name):
                 soup.find('div', class_='card card-nopadding external-35 attached').find('div',
                                                                                          class_='card-section').find(
                     'span').get_text(' ', strip=True).split())
-        except (AttributeError, TypeError):
+        except Exception as _ex:
+            logging.info(_ex, exc_info=True)
             logging.info('Не удалось получить информацию по ФССП ФЛ')
             fssp = '-'
         return fssp
@@ -861,7 +893,8 @@ def read_main_html_individual(client_inn, object_inn, short_name):
             reestr = ' '.join(
                 soup.find('div', class_='card card-nopadding external-158').find('div', class_='card-section').find(
                     'span').get_text(' ', strip=True).split())
-        except (AttributeError, TypeError):
+        except Exception as _ex:
+            logging.info(_ex, exc_info=True)
             logging.info('Не удалось получить информацию по реестрам залогов')
             reestr = '-'
         return reestr
@@ -871,7 +904,8 @@ def read_main_html_individual(client_inn, object_inn, short_name):
             fed = ' '.join(
                 soup.find('div', class_='card card-nopadding external-218').find('div', class_='card-section').find(
                     'span').get_text(' ', strip=True).split())
-        except (AttributeError, TypeError):
+        except Exception as _ex:
+            logging.info(_ex, exc_info=True)
             logging.info('Не удалось получить информацию по Фед Ресурсу')
             fed = '-'
         return fed
@@ -881,7 +915,8 @@ def read_main_html_individual(client_inn, object_inn, short_name):
             narcos = ' '.join(
                 soup.find('div', class_='card card-nopadding external-117').find('div', class_='card-section').find(
                     'span').get_text(' ', strip=True).split())
-        except (AttributeError, TypeError):
+        except Exception as _ex:
+            logging.info(_ex, exc_info=True)
             logging.info('Не удалось получить информацию по ГНК')
             narcos = '-'
         return narcos
@@ -891,7 +926,8 @@ def read_main_html_individual(client_inn, object_inn, short_name):
             ros = ' '.join(
                 soup.find('div', class_='card card-nopadding external-143').find('div', class_='card-section').find(
                     'span').get_text(' ', strip=True).split())
-        except (AttributeError, TypeError):
+        except Exception as _ex:
+            logging.info(_ex, exc_info=True)
             logging.info('Не удалось получить информацию по РОСФИНМОН')
             ros = '-'
         return ros
@@ -902,7 +938,8 @@ def read_main_html_individual(client_inn, object_inn, short_name):
                 soup.find('div', class_='card card-nopadding',
                           attrs={'data-element': 'local-sanction'}).find('div', class_='card-section').get_text(
                     ' ', strip=True).split())
-        except (AttributeError, TypeError):
+        except Exception as _ex:
+            logging.info(_ex, exc_info=True)
             logging.info('Не удалось получить информацию по санкциям')
             usa = '-'
         return usa
@@ -912,7 +949,8 @@ def read_main_html_individual(client_inn, object_inn, short_name):
             just = ' '.join(
                 soup.find('div', class_='card card-nopadding external-164').find('div', class_='card-section').find(
                     'span').get_text(' ', strip=True).split())
-        except (AttributeError, TypeError):
+        except Exception as _ex:
+            logging.info(_ex, exc_info=True)
             logging.info('Не удалось получить информацию по Правосудие')
             just = '-'
         return just
@@ -923,7 +961,8 @@ def read_main_html_individual(client_inn, object_inn, short_name):
                 soup.find('div', class_='card card-nopadding',
                           attrs={'data-element': 'local-reestr'}).find('div', class_='card-section').get_text(
                     ' ', strip=True).split())
-        except (AttributeError, TypeError):
+        except Exception as _ex:
+            logging.info(_ex, exc_info=True)
             logging.info('Не удалось получить информацию по особым реестрам')
             especially = '-'
         return especially
@@ -934,7 +973,8 @@ def read_main_html_individual(client_inn, object_inn, short_name):
                 soup.find('div', class_='card card-nopadding',
                           attrs={'data-element': 'local-rnp'}).find('div', class_='card-section').get_text(
                     ' ', strip=True).split())
-        except (AttributeError, TypeError):
+        except Exception as _ex:
+            logging.info(_ex, exc_info=True)
             logging.info('Не удалось получить информацию по РНП')
             unscrupulous = '-'
         return unscrupulous
@@ -944,7 +984,8 @@ def read_main_html_individual(client_inn, object_inn, short_name):
             passport = ' '.join(
                 soup.find('div', class_='card card-nopadding external-175').find('div', class_='card-section').find(
                     'span').get_text(' ', strip=True).split())
-        except (AttributeError, TypeError):
+        except Exception as _ex:
+            logging.info(_ex, exc_info=True)
             logging.info('Не удалось получить информацию по паспорту РФ')
             passport = '-'
         return passport
@@ -954,7 +995,8 @@ def read_main_html_individual(client_inn, object_inn, short_name):
             debtor = ' '.join(
                 soup.find('div', class_='card card-nopadding external-50').find('div', class_='card-section').find(
                     'span').get_text(' ', strip=True).split())
-        except (AttributeError, TypeError):
+        except Exception as _ex:
+            logging.info(_ex, exc_info=True)
             logging.info('Не удалось получить информацию по Должнику')
             debtor = '-'
         return debtor
@@ -966,7 +1008,8 @@ def read_main_html_individual(client_inn, object_inn, short_name):
                 return 'Да'
             else:
                 return 'Нет'
-        except (AttributeError, TypeError, IndexError):
+        except Exception as _ex:
+            logging.info(_ex, exc_info=True)
             return '-'
 
     def ind_period_of_activity():
@@ -974,7 +1017,8 @@ def read_main_html_individual(client_inn, object_inn, short_name):
             date_of_reg = \
                 soup.find('div', class_='cards__column cards__column-first').find_all('table', class_='cards__data')[
                     1].find_all('td')[1].get_text(' ', strip=True)
-        except Exception:
+        except Exception as _ex:
+            logging.info(_ex, exc_info=True)
             date_of_reg = None
 
         if date_of_reg is not None:
@@ -985,7 +1029,8 @@ def read_main_html_individual(client_inn, object_inn, short_name):
                     return 'Нет'
                 else:
                     return 'Да'
-            except Exception:
+            except Exception as _ex:
+                logging.info(_ex, exc_info=True)
                 return '-'
         else:
             return '-'
@@ -998,7 +1043,8 @@ def read_main_html_individual(client_inn, object_inn, short_name):
                 return 'Да'
             else:
                 return 'Нет'
-        except (AttributeError, TypeError):
+        except Exception as _ex:
+            logging.info(_ex, exc_info=True)
             logging.info('Адрес не массовый')
             return 'Нет'
 
@@ -1011,7 +1057,8 @@ def read_main_html_individual(client_inn, object_inn, short_name):
                 return 'Нет'
             else:
                 return 'Да'
-        except (AttributeError, TypeError, IndexError):
+        except Exception as _ex:
+            logging.info(_ex, exc_info=True)
             return 'Нет'
 
     def ind_liquid():
@@ -1023,7 +1070,8 @@ def read_main_html_individual(client_inn, object_inn, short_name):
                 return 'Да'
             else:
                 return 'Нет'
-        except (AttributeError, TypeError):
+        except Exception as _ex:
+            logging.info(_ex, exc_info=True)
             return 'Нет'
 
     def ind_bankrupt():
@@ -1034,21 +1082,24 @@ def read_main_html_individual(client_inn, object_inn, short_name):
                 return 'Да'
             else:
                 return 'Нет'
-        except (AttributeError, TypeError):
+        except Exception as _ex:
+            logging.info(_ex, exc_info=True)
             return 'Нет'
 
     def ind_arbitr():
         try:
             list_arbitr = soup.find('div', class_='card card-nopadding',
                                     attrs={'data-element': 'local-arbitr'}).find_all('a')
-        except (AttributeError, TypeError, IndexError):
+        except Exception as _ex:
+            logging.info(_ex, exc_info=True)
             return 'Нет'
         try:
             for elem in list_arbitr:
                 if 'ответчик' == elem.get_text(' ', strip=True).lower():
                     return 'Да'
             return 'Нет'
-        except (AttributeError, TypeError, IndexError):
+        except Exception as _ex:
+            logging.info(_ex, exc_info=True)
             return 'Нет'
 
     def ind_fssp():
@@ -1068,7 +1119,8 @@ def read_main_html_individual(client_inn, object_inn, short_name):
                 return '-'
             else:
                 return 'Да'
-        except (AttributeError, TypeError):
+        except Exception as _ex:
+            logging.info(_ex, exc_info=True)
             logging.info('Не удалось получить информацию по арбитражным делам')
             fssp = '-'
         return fssp
@@ -1080,7 +1132,8 @@ def read_main_html_individual(client_inn, object_inn, short_name):
                 return 'Нет'
             else:
                 return 'Да'
-        except (AttributeError, TypeError):
+        except Exception as _ex:
+            logging.info(_ex, exc_info=True)
             logging.info('Ошибка')
             tax = '-'
             return tax
@@ -1094,7 +1147,8 @@ def read_main_html_individual(client_inn, object_inn, short_name):
                 return '-'
             else:
                 return 'Да'
-        except (AttributeError, TypeError):
+        except Exception as _ex:
+            logging.info(_ex, exc_info=True)
             logging.info('Ошибка')
             blocked = '-'
             return blocked
@@ -1106,7 +1160,8 @@ def read_main_html_individual(client_inn, object_inn, short_name):
                 return 'Нет'
             else:
                 return 'Да'
-        except (AttributeError, TypeError):
+        except Exception as _ex:
+            logging.info(_ex, exc_info=True)
             logging.info('Ошибка')
             rnd = '-'
             return rnd
@@ -1116,7 +1171,8 @@ def read_main_html_individual(client_inn, object_inn, short_name):
             gov = " ".join(
                 soup.find('div', class_='card card-nopadding', attrs={'data-element': 'local-state-contracts'}).find(
                     'div', class_='card-section').get_text(' ', strip=True).split())
-        except (AttributeError, TypeError, IndexError):
+        except Exception as _ex:
+            logging.info(_ex, exc_info=True)
             return '-'
         logging.info(gov)
         try:
@@ -1124,7 +1180,8 @@ def read_main_html_individual(client_inn, object_inn, short_name):
                 return 'Нет'
             else:
                 return 'Да'
-        except (AttributeError, TypeError, IndexError):
+        except Exception as _ex:
+            logging.info(_ex, exc_info=True)
             return 'Нет'
 
     general_description_of_an_individual = {
