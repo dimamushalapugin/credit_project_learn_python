@@ -473,13 +473,16 @@ def taxes_and_fees(soup):
         try:
             for element in elements:
                 taxes_list.append(element.get_text(strip=True, separator=' ').replace('\n', ' ').replace('  ', ''))
-            return taxes_list
+            if len(taxes_list) > 0:
+                return taxes_list
+            else:
+                return ['Информация не найдена']
         except (AttributeError, TypeError, IndexError) as _ex:
             logging.info(_ex, exc_info=True)
 
     except Exception as _ex:
         logging.info(_ex, exc_info=True)
-        return []
+        return ['-']
 
 
 def federal_resource(soup):
@@ -590,6 +593,17 @@ def extremism(soup):
         return '-'
 
 
+def affiliated_companies(soup):
+    try:
+        return " ".join(soup.find('div', class_='card card-nopadding',
+                                  attrs={'data-element': 'local-founded-companies'}).find('div',
+                                                                                          class_='card-section').get_text(
+            ' ', strip=True).split())
+    except Exception as _ex:
+        logging.info(_ex, exc_info=True)
+        return '-'
+
+
 def read_main_html(client_inn, object_inn, short_name):
     try:
         soup = BeautifulSoup(read_main_page(client_inn, object_inn, short_name), 'html.parser')
@@ -622,6 +636,7 @@ def read_main_html(client_inn, object_inn, short_name):
         'ИСТОРИЯ': history(soup),
         'ССЫЛКА НА ДИРЕКТОРА': director_href(soup),
         'Финансы': financial_statements(soup),
+        'Дочерние организации': affiliated_companies(soup),
         'Налоги и сборы': '\n'.join(taxes_and_fees(soup)),
         'Федресурс': federal_resource(soup),
         'Реестр залогов': register_of_pledges(soup),

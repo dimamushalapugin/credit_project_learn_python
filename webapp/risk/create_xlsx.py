@@ -22,6 +22,46 @@ def create_xlsx_file(inn_client, inn_seller, main_client: dict, delta_client: di
     sheet[
         'A1'].value = f'Риск заключение по {main_client["Краткое наименование"]} на {dt.today().strftime(f"%d.%m.%Y")}'
 
+    def write_user(data):
+        for index, (key, value) in enumerate(data.items()):
+            if index == 4:  # Кол-во итераций
+                break
+            sheet[f'A{sheet.max_row + 1}'].value = key
+            sheet[f'B{sheet.max_row}'].value = value
+
+        sheet[f'A{sheet.max_row + 2}'].value = 'Регистрация в качестве индивидуального предпринимателя:'
+        if data['Инфо_ИП']:
+            for num in data['Инфо_ИП']:
+                for key, value in data['Инфо_ИП'][num].items():
+                    sheet[f'A{sheet.max_row + 1}'].value = key
+                    sheet[f'B{sheet.max_row}'].value = value
+                sheet[f'A{sheet.max_row + 1}'].value = ''
+        else:
+            sheet[f'A{sheet.max_row + 1}'].value = 'Информация отсутствует'
+            sheet[f'A{sheet.max_row + 1}'].value = ''
+
+        sheet[f'A{sheet.max_row + 1}'].value = 'Адрес регистрации:'
+        sheet[f'B{sheet.max_row}'].value = data['Адрес_регистрации']
+
+        sheet[f'A{sheet.max_row + 2}'].value = 'Информация о регистрирующем органе:'
+        sheet[f'B{sheet.max_row}'].value = data['Имя_налог_органа']
+
+        sheet[f'A{sheet.max_row + 2}'].value = 'Является руководителем:'
+        sheet[f'B{sheet.max_row}'].value = 'Является учредителем:'
+        sheet[f'A{sheet.max_row + 1}'].value = data['История_руководства']['Является руководителем']
+        sheet[f'B{sheet.max_row}'].value = data['История_руководства']['Является учредителем']
+        sheet[f'A{sheet.max_row + 1}'].value = 'Являлся руководителем:'
+        sheet[f'B{sheet.max_row}'].value = 'Являлся учредителем:'
+        sheet[f'A{sheet.max_row + 1}'].value = data['История_руководства']['Являлся руководителем']
+        sheet[f'B{sheet.max_row}'].value = data['История_руководства']['Являлся учредителем']
+
+        for index, (key, value) in enumerate(data.items()):
+            if index == 24:  # Кол-во итераций
+                break
+            if index >= 9:
+                sheet[f'A{sheet.max_row + 2}'].value = key
+                sheet[f'A{sheet.max_row + 1}'].value = value
+
     sheet[f'A{sheet.max_row + 1}'].value = '1. Общее описание Лизингополучателя'
 
     """Если клиент Юр. лицо, то попадаем в if"""
@@ -121,8 +161,12 @@ def create_xlsx_file(inn_client, inn_seller, main_client: dict, delta_client: di
                     columns_list_index += 1
             else:
                 sheet[f'A{sheet.max_row + 1}'].value = 'Отсутствуют финансовые показатели'
-        except Exception:
+        except Exception as _ex:
+            logging.info(_ex, exc_info=True)
             sheet[f'A{sheet.max_row + 1}'].value = '-'
+
+        sheet[f'A{sheet.max_row + 2}'].value = 'ДОЧЕРНИЕ ОРГАНИЗАЦИИ'
+        sheet[f'B{sheet.max_row}'].value = main_client['Дочерние организации']
 
         sheet[f'A{sheet.max_row + 2}'].value = 'НАЛОГИ И СБОРЫ'
         sheet[f'B{sheet.max_row}'].value = main_client['Налоги и сборы']
@@ -150,46 +194,6 @@ def create_xlsx_file(inn_client, inn_seller, main_client: dict, delta_client: di
         sheet[f'A{sheet.max_row + 1}'].value = '3.1. ДИРЕКТОР/ГЕН. ДИРЕКТОР'
         sheet[f'A{sheet.max_row + 1}'].value = director_client['Краткое наименование']
         sheet[f'A{sheet.max_row + 1}'].value = ''
-
-        def write_user(data):
-            for index, (key, value) in enumerate(data.items()):
-                if index == 4:  # Кол-во итераций
-                    break
-                sheet[f'A{sheet.max_row + 1}'].value = key
-                sheet[f'B{sheet.max_row}'].value = value
-
-            sheet[f'A{sheet.max_row + 2}'].value = 'Регистрация в качестве индивидуального предпринимателя:'
-            if data['Инфо_ИП']:
-                for num in data['Инфо_ИП']:
-                    for key, value in data['Инфо_ИП'][num].items():
-                        sheet[f'A{sheet.max_row + 1}'].value = key
-                        sheet[f'B{sheet.max_row}'].value = value
-                    sheet[f'A{sheet.max_row + 1}'].value = ''
-            else:
-                sheet[f'A{sheet.max_row + 1}'].value = 'Информация отсутствует'
-                sheet[f'A{sheet.max_row + 1}'].value = ''
-
-            sheet[f'A{sheet.max_row + 1}'].value = 'Адрес регистрации:'
-            sheet[f'B{sheet.max_row}'].value = data['Адрес_регистрации']
-
-            sheet[f'A{sheet.max_row + 2}'].value = 'Информация о регистрирующем органе:'
-            sheet[f'B{sheet.max_row}'].value = data['Имя_налог_органа']
-
-            sheet[f'A{sheet.max_row + 2}'].value = 'Является руководителем:'
-            sheet[f'B{sheet.max_row}'].value = 'Является учредителем:'
-            sheet[f'A{sheet.max_row + 1}'].value = data['История_руководства']['Является руководителем']
-            sheet[f'B{sheet.max_row}'].value = data['История_руководства']['Является учредителем']
-            sheet[f'A{sheet.max_row + 1}'].value = 'Являлся руководителем:'
-            sheet[f'B{sheet.max_row}'].value = 'Являлся учредителем:'
-            sheet[f'A{sheet.max_row + 1}'].value = data['История_руководства']['Являлся руководителем']
-            sheet[f'B{sheet.max_row}'].value = data['История_руководства']['Являлся учредителем']
-
-            for index, (key, value) in enumerate(data.items()):
-                if index == 24:  # Кол-во итераций
-                    break
-                if index >= 9:
-                    sheet[f'A{sheet.max_row + 2}'].value = key
-                    sheet[f'A{sheet.max_row + 1}'].value = value
 
         write_user(director_client)
 
@@ -230,20 +234,29 @@ def create_xlsx_file(inn_client, inn_seller, main_client: dict, delta_client: di
             if main_client['УЧРЕДИТЕЛИ ФЛ']:
                 for num in founders_client:
                     if len(founders_client[num]) > 2:
-                        sheet[f'A{sheet.max_row + 2}'].value = f'УЧРЕДИТЕЛЬ {num} {founders_client[num]["percent"]}'
+                        sheet[f'A{sheet.max_row + 1}'].value = f'УЧРЕДИТЕЛЬ {num} {founders_client[num]["percent"]}'
                         sheet[f'A{sheet.max_row + 1}'].value = founders_client[num]["full_name"]
                         sheet[f'A{sheet.max_row + 1}'].value = ''
                         write_user(founders_client[num])
                         sheet[f'A{sheet.max_row + 1}'].value = ''
                     else:
                         sheet[
-                            f'A{sheet.max_row + 2}'].value = f'УЧРЕДИТЕЛЬ {num} {founders_client[num]["percent"]} (ДИРЕКТОР)'
+                            f'A{sheet.max_row + 1}'].value = f'УЧРЕДИТЕЛЬ {num} {founders_client[num]["percent"]} (ДИРЕКТОР)'
                         sheet[f'A{sheet.max_row + 1}'].value = founders_client[num]["full_name"]
                         sheet[f'A{sheet.max_row + 1}'].value = 'Проверка директора уже проведена'
                         sheet[f'A{sheet.max_row + 1}'].value = ''
 
         except Exception as _ex:
             logging.info(_ex, exc_info=True)
+
+    else:
+        logging.info('Клиент ИП/КФХ. Идет заполнение файла...')
+        sheet[f'A{sheet.max_row + 1}'].value = main_client['Краткое наименование']
+        sheet[f'A{sheet.max_row + 1}'].value = ''
+        write_user(main_client)
+
+    # sheet[f'A{sheet.max_row + 1}'].value = '4. Анализ продавца(ов)'
+
 
     logging.info("Сохраняем файл")
     wb.save(
