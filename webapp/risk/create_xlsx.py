@@ -252,15 +252,22 @@ def create_xlsx_file(inn_client, inn_seller, main_client: dict, delta_client: di
 
     else:
         logging.info('Клиент ИП/КФХ. Идет заполнение файла...')
-        sheet[f'A{sheet.max_row + 1}'].value = main_client['Краткое наименование']
+        sheet[f'A{sheet.max_row + 1}'].value = main_seller['Краткое наименование']
         sheet[f'A{sheet.max_row + 1}'].value = ''
-        write_user(main_client)
+        write_user(main_seller)
 
     logging.info('Заполнение информации о продавце')
     sheet[f'A{sheet.max_row + 2}'].value = '4. Анализ продавца(ов)'
     try:
         if inn_client != inn_seller:
-            write_company(main_seller, delta_seller)
+            if inn_seller == 10:
+                write_company(main_seller, delta_seller)
+                sheet[f'A{sheet.max_row + 1}'].value = ''
+            else:
+                sheet[f'A{sheet.max_row + 1}'].value = main_seller['Краткое наименование']
+                sheet[f'A{sheet.max_row + 1}'].value = ''
+                write_user(main_seller)
+
             sheet[f'A{sheet.max_row + 2}'].value = f'ЧЕК-ЛИСТ {main_seller["Краткое наименование"]}'
             for key, value in last_table_seller.items():
                 sheet[f'A{sheet.max_row + 1}'].value = key

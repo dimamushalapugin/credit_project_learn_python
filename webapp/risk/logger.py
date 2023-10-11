@@ -11,7 +11,7 @@ logging.basicConfig(handlers=(file_log, console_out), level=logging.INFO,
                     datefmt='%d.%m.%Y %H:%M:%S')
 
 formatter = logging.Formatter(
-    "\033%(asctime)s - (%(filename)s).%(funcName)s(%(lineno)d) - %(message)s\033",
+    "%(asctime)s - (%(filename)s).%(funcName)s(%(lineno)d) - %(message)s",
     datefmt='%H:%M:%S')
 console_out.setFormatter(formatter)
 
