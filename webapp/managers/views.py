@@ -78,6 +78,7 @@ def create_agreement():
         file_name = create_docx_file(data, application_path, graphic_path)
         os.remove(application_path.replace('/', '\\'))
         os.remove(graphic_path.replace('/', '\\'))
+        logging.info(f"({current_user}) Файлы успешно созданы и загружены")
         flash(f'Файлы успешно созданы и загружены', 'success')
         return redirect(url_for('manager.managers_page', file_name=file_name))
     except Exception as e:
