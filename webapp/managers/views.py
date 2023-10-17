@@ -61,7 +61,7 @@ def create_docx_file(data, application_path, graphic_path):
     path_graphic = graphic_path.replace('/', '\\')
     return start_filling_agreement(data['client_inn'], path_application, path_graphic, data['signatory'],
                                    data['investor'], data['currency'], data['insurant'], data['graph'], data['pl'],
-                                   data['number_dl'], data['seller_inn'])
+                                   data['number_dl'], data['seller_inn'], data['type_pl'])
 
 
 @blueprint.route('/create_xlsx', methods=['POST'])
