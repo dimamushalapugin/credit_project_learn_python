@@ -443,7 +443,7 @@ def start_filling_agreement(inn_leasee, path_application, path_graphic, signator
         # print(sheet_zayavlenie['C7'].value)
         address_leasee = sheet_zayavlenie['E7'].value
         # print(sheet_zayavlenie['E7'].value)
-
+        print('19190090')
         for number in range(24, sheet_zayavlenie.max_row + 2):
             if sheet_zayavlenie[
                 f'B{number}'].value == 'Место эксплуатации предмета лизинга (для автотранспорта место стоянки/хранения) полный фактический адрес:':
@@ -488,16 +488,17 @@ def start_filling_agreement(inn_leasee, path_application, path_graphic, signator
         #     f"Здесь брать название поставщика {seller_title}, ИНН поставщика {inn_seller_list2} и адрес поставщика {seller_address}")
 
         # читаем страницу Анкета Стр.1
+        print('191')
         sheet_anketa_1_list = wb['Анкета Стр.1']
         ogrn_leasee = sheet_anketa_1_list['F7'].value
         # print(sheet_anketa_1_list['F7'].value)
-        okato_leasee = sheet_anketa_1_list['H5'].value
+        okato_leasee = sheet_anketa_1_list['H7'].value
         # print(sheet_anketa_1_list['H7'].value)
-        okpo_leasee = sheet_anketa_1_list['J5'].value
+        okpo_leasee = sheet_anketa_1_list['J7'].value
         # print(sheet_anketa_1_list['J7'].value)
-        date_regist = sheet_anketa_1_list['E6'].value
+        date_regist = sheet_anketa_1_list['E8'].value
         # print(sheet_anketa_1_list['E8'].value)
-        ustav_capital = sheet_anketa_1_list['J7'].value
+        ustav_capital = sheet_anketa_1_list['J9'].value
         # print(sheet_anketa_1_list['J9'].value)
         full_krakt_name_leasee = sheet_anketa_1_list[f'A6'].value
         # print(sheet_anketa_1_list[f'A6'].value)
@@ -530,6 +531,7 @@ def start_filling_agreement(inn_leasee, path_application, path_graphic, signator
         application_name = fr'{dir_path}\Заявка с заключением {inn_leasee}.xlsx'
         wb.save(application_name)
 
+
     leader_leasee = ''
     vikup = ''
     vigodo = ''
@@ -561,34 +563,56 @@ def start_filling_agreement(inn_leasee, path_application, path_graphic, signator
             doverka_ustav_list = 'Доверенности от «17» марта 2020 года, удостоверенной Мальченковой  Евгенией Николаевной, нотариусом Казанского нотариального округа Республики Татарстан, зарегистрированной в реестре нотариальных действий за № 16/64-н/16-2020-7-317(бланк 16 АА 5665323)'
             deystvuysh_list = 'действующей'
         if leader_leasee.upper() == 'директор'.upper():
-            leader_leasee_rod_padezh = 'в лице Директора'
-        if leader_leasee.upper() == 'генеральный директор'.upper():
-            leader_leasee_rod_padezh = 'в лице Генерального директора'
+            leader_leasee_rod_padezh = 'Директора'
+        elif leader_leasee.upper() == 'генеральный директор'.upper():
+            leader_leasee_rod_padezh = 'Генерального директора'
         else:
             leader_leasee_rod_padezh = ''
 
         # запускается функция по замене ФИО подписанта лизингополучателя
         put_padezh_podpisant = ''
 
-        def rod_padezh_fio_leader():
-            nonlocal put_padezh_podpisant
+        def rod_padezh_fio_leader(fio):
             secret = "2c54bab544f947c975525ab452d014492122e52b"
             dadata = Dadata(DADATA_TOKEN, secret)
-            put_padezh_podpisant = dadata.clean("name", fio_leader)
+            put_padezh_podpisant = dadata.clean("name", fio)
+            print(put_padezh_podpisant)
+            return put_padezh_podpisant
             # print(f" Здесь пол М или Ж: Итого {put_padezh_podpisant['gender']}")
             # print(f" Здесь родительный падеж подписанта: Итого {put_padezh_podpisant['result_genitive']}")
-        if leader_leasee_rod_padezh == False:
-            rod_padezh_fio_leader()
+
+        print('19101')
+        rod_padezh_fio_leader = rod_padezh_fio_leader(fio_leader)
+        try:
+            put_padezh_podpisant_rg = rod_padezh_fio_leader['result_genitive']
+        except:
+            put_padezh_podpisant_rg = ''
+        print(f'123 {put_padezh_podpisant_rg}')
         doverka_ustav_leasee = 'Устава'
-        if full_name_leasee in ['Индивидуальный предприниматель', 'хозяйства']:
-            doverka_ustav_leasee = f'Свидетельства о государственной регистрации физического лица в качестве индивидуального предпринимателя серия __ № _________ от {date_regist}, ОГРНИП {ogrn_leasee}'
-        deystvuysh_list_leasee = 'действующей' if put_padezh_podpisant['result_genitive'] == 'М' else 'действующего'
+        for elem in full_name_leasee.split():
+            if elem in ['Индивидуальный', 'предприниматель', 'хозяйства']:
+                doverka_ustav_leasee = f'Свидетельства о государственной регистрации физического лица в качестве индивидуального предпринимателя серия __ № _________ от {date_regist}, ОГРНИП {ogrn_leasee}'
+
+        deystvuysh_list_leasee = 'действующей'
+        try:
+            if rod_padezh_fio_leader['gender'] == 'М':
+                deystvuysh_list_leasee = 'действующего'
+                if result[0]['data']['opf']['short'] in ['ИП', 'КФХ', 'ГКФХ']:
+                    deystvuysh_list_leasee = 'действующий'
+                imenyemoe = 'именуемый'
+        except:
+            try:
+                if result[0]['data']['opf']['short'] in ['ИП', 'КФХ', 'ГКФХ']:
+                    deystvuysh_list_leasee = 'действующая'
+            except:
+                deystvuysh_list_leasee = 'действующей'
+            imenyemoe = 'именуемая'
         # deystvuysh_list_leasee = 'действующей' if fio_leader.split()[0][-1].lower() == 'а' else 'действующего'
         if investor in ['ПАО «МКБ»', 'ООО «ЛКМБ-РТ»']:
             vigodo = 'Лизингодатель'
         else:
             vigodo = investor
-
+        print('1912132')
         r_chet_lkmb = ''
         bank_rekv_lkmb = ''
         kor_chet_lkmb = ''
@@ -649,6 +673,7 @@ def start_filling_agreement(inn_leasee, path_application, path_graphic, signator
                       'юани': 'юанях', 'юаней': 'юанях', 'долларов США': 'долларах США'}
         # print(currency)
         # print(wr_rub_usd)
+        print('1910')
         leader_leasee_pod = leader_leasee
         inn_kpp1 = 'ИНН/КПП'
         ogrnip = ''
@@ -656,7 +681,10 @@ def start_filling_agreement(inn_leasee, path_application, path_graphic, signator
             inn_kpp1 = 'ИНН'
             ogrnip = f'ОГРНИП {ogrn_leasee}'
             leader_leasee_pod = ''
-
+            put_padezh_podpisant_rg = ''
+        else:
+            imenyemoe = 'именуемое'
+        print(f'123213 {put_padezh_podpisant_rg}')
         currency_test = 'рублей'
         vikup = '1000'
         pl_entry = predmet_lizinga[int(pl)]
@@ -679,7 +707,7 @@ def start_filling_agreement(inn_leasee, path_application, path_graphic, signator
             punkt_7_8 = ''
 
         suma_dann = ''
-
+        print('191919')
         def chislo_propis():
             nonlocal suma_dann
             suma_chislo = price_entry
@@ -737,7 +765,7 @@ def start_filling_agreement(inn_leasee, path_application, path_graphic, signator
                     return "Неверный формат числа"
 
             suma_dann = number_to_words(str(suma_chislo))
-            # print(f'01010 {suma_dann}')
+            print(f'01010 {suma_dann}')
 
         chislo_propis()
 
@@ -750,7 +778,7 @@ def start_filling_agreement(inn_leasee, path_application, path_graphic, signator
             sheet = book[vybor_grafic_list]
             summa_dog_leas = sheet['F7'].value
 
-            # print(type(f'Сумма дл{summa_dog_leas}'))
+            print(type(f'Сумма дл{summa_dog_leas}'))
 
             def number_to_words(summa_dog_leas):
                 try:
@@ -818,12 +846,12 @@ def start_filling_agreement(inn_leasee, path_application, path_graphic, signator
                      "{{ inn_kpp_leasee }}", "{{ address_leasee }}", "{{ formatted_name_leader_leasee }}",
                      "{{ rekvizit_leasee_bank }}", "{{ rekvizit_leasee_shet }}",
                      "{{ rekvizit_leasee_cs_shet }}", "{{ rekvizit_leasee_bik }}", "{{ deystvuysh_list_leasee }}",
-                     "{{ put_padezh_podpisant }}", "{{ leader_leasee_rod_padezh }}", "{{ pl_entry }}",
+                     "{{ put_padezh_podpisant_rg }}", "{{ leader_leasee_rod_padezh }}", "{{ pl_entry }}",
                      "{{ price_entry }}",
                      "{{ number_dl }}", "{{ currency_test }}", "{{ suma_dann[0] }}", "{{ dt.today().day }}",
                      "{{ months[dt.today().month] }}", "{{ dt.today().year }}", "{{ punkt_4_6 }}",
                      "{{ summa_dog_leas }}", "{{ punkt_7_8 }}", "{{ inn_kpp1 }}", "{{ ogrnip }}",
-                     "{{ leader_leasee_pod }}"]
+                     "{{ leader_leasee_pod }}", "{{ imenyemoe }}"]
         # ,
         new_words = [str(a_lkmb), str(lkmb_podpisant), str(preambula_dolj_lkmb), str(preambula_fio_lkmb),
                      str(deystvuysh_list),
@@ -838,13 +866,13 @@ def start_filling_agreement(inn_leasee, path_application, path_graphic, signator
                      str(rekvizit_leasee_bank),
                      str(rekvizit_leasee_shet), str(rekvizit_leasee_cs_shet),
                      str(rekvizit_leasee_bik), str(deystvuysh_list_leasee),
-                     str(put_padezh_podpisant['result_genitive']),
+                     str(put_padezh_podpisant_rg),
                      str(leader_leasee_rod_padezh),
                      str(pl_entry), f'{price_entry:,.2f}'.replace(',', ' ').replace('.', ','), str(number_dl),
                      str(currency_test), str(suma_dann),
                      str(dt.today().day),
                      str(months[dt.today().month]), str(dt.today().year), str(punkt_4_6), str(suma_dann_dl),
-                     str(punkt_7_8), str(inn_kpp1), str(ogrnip), str(leader_leasee_pod)]
+                     str(punkt_7_8), str(inn_kpp1), str(ogrnip), str(leader_leasee_pod), str(imenyemoe)]
 
         # создание ДЛ
         def replace_words_in_docx(docx_file, old_words, new_words):
@@ -854,7 +882,7 @@ def start_filling_agreement(inn_leasee, path_application, path_graphic, signator
                 for i in range(len(old_words)):
                     if old_words[i] in paragraph.text:
                         paragraph.text = paragraph.text.replace(old_words[i], str(new_words[i]))
-                        # print(new_words[i])
+                        print(new_words[i])
                         # print(f'_____ {i=}')
 
             for table in doc.tables:
@@ -884,7 +912,10 @@ def start_filling_agreement(inn_leasee, path_application, path_graphic, signator
             doc.save(fr"{dir_path}\ДЛ {inn_leasee}.docx")
 
         # print('1231')
-        replace_words_in_docx(r"webapp\static\agreement_templates\ШАБЛОН ООО_АО.docx", old_words, new_words)
+        if result[0]['data']['opf']['short'] in ['ИП', 'ГКФХ', 'КФХ']:
+            replace_words_in_docx(r"webapp\static\agreement_templates\ШАБЛОН ИП_КФХ.docx", old_words, new_words)
+        else:
+            replace_words_in_docx(r"webapp\static\agreement_templates\ШАБЛОН ООО_АО.docx", old_words, new_words)
         change_font(fr"{dir_path}\ДЛ {inn_leasee}.docx", "Times New Roman")
 
     def grafic_punkty(inn_leasee, path_application, path_graphic, signatory, investor, currency_list, who_is_insure,
