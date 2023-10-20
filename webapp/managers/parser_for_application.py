@@ -704,7 +704,7 @@ def start_filling_agreement(inn_leasee, path_application, path_graphic, signator
                 'исполнять свое обязательство по договору лизинга Залогодержателю. При этом уведомление направляется любым из',
                 'способов, определенных договором залога.'])
         else:
-            punkt_7_8 = ''
+            punkt_7_8 = 'УДАЛИТЬ'
 
         suma_dann = ''
         print('191919')
@@ -1281,6 +1281,10 @@ def start_filling_agreement(inn_leasee, path_application, path_graphic, signator
                                'Лизингополучателем выкупные платежи возвращению не подлежат, а удерживаются ' \
                                'в качестве штрафа.':
                     doc.element.body.remove(run._element)
+
+        for run in doc.paragraphs:
+            if run.text == 'УДАЛИТЬ':
+                doc.element.body.remove(run._element)
 
         if who_is_insure == 'ООО «ЛКМБ-РТ»':
             for run in doc.paragraphs:
