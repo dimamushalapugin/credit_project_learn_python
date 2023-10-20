@@ -911,17 +911,22 @@ def start_filling_agreement(inn_leasee, path_application, path_graphic, signator
 
             doc.save(fr"{dir_path}\ДЛ {inn_leasee}.docx")
 
-        # print('1231')
-        if result[0]['data']['opf']['short'] in ['ИП', 'ГКФХ', 'КФХ']:
-            replace_words_in_docx(r"webapp\static\agreement_templates\ШАБЛОН ИП_КФХ.docx", old_words, new_words)
+        if len(inn_leasee) == 12:
+            if type_pl == 'Авто/Спецтехника (ПТС, ПСМ)':
+                replace_words_in_docx(r"webapp\static\agreement_templates\ШАБЛОН ИП_КФХ.docx", old_words, new_words)
+            else:
+                replace_words_in_docx(r"webapp\static\agreement_templates\ШАБЛОН ИП_КФХ (обор).docx", old_words, new_words)
         else:
-            replace_words_in_docx(r"webapp\static\agreement_templates\ШАБЛОН ООО_АО.docx", old_words, new_words)
+            if type_pl == 'Авто/Спецтехника (ПТС, ПСМ)':
+                replace_words_in_docx(r"webapp\static\agreement_templates\ШАБЛОН ООО_АО.docx", old_words, new_words)
+            else:
+                replace_words_in_docx(r"webapp\static\agreement_templates\ШАБЛОН ООО_АО (обор).docx", old_words, new_words)
+
         change_font(fr"{dir_path}\ДЛ {inn_leasee}.docx", "Times New Roman")
 
     def grafic_punkty(inn_leasee, path_application, path_graphic, signatory, investor, currency_list, who_is_insure,
                       grafic):
-        # print(input_raschet_path)
-        # print(grafic)
+
         try:
             book = openpyxl.load_workbook(input_raschet_path, data_only=True)
             sheet = book[grafic]
