@@ -10,6 +10,7 @@ from webapp.risk.logger import logging
 blueprint = Blueprint('manager', __name__, url_prefix='/managers')
 
 
+#  TODO: Нужно переделать логику кнопки "Предпроверка" в create_agreements.html
 def get_folder_names(folder_path):
     folder_names = []
     absolute_folder_path = os.path.join('webapp', folder_path)

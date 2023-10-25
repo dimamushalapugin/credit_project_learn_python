@@ -66,7 +66,7 @@
 </svg>
 <div class="container">
     <div class="row">
-        <div class="col-md-3 offset-md-0"><br>
+        <div class="col-md-auto"><br>
             {% with messages = get_flashed_messages(category_filter=["error"]) %}
             {% if messages %}
             <div class="alert alert-danger d-flex align-items-center" role="alert">
@@ -166,7 +166,7 @@
                 </form>
             </div>
         </div>
-        <div class="col-md-5 mt-4">
+        <div class="col-md-auto"><br>
             <div class="card">
                 <div class="card-body">
                     <h3 class="card-title">Риск заключения</h3>
