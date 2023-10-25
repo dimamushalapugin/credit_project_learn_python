@@ -123,8 +123,10 @@ celerybeat.pid
 # Environments
 .env
 .venv
+.env_new
 env/
 venv/
+env_new/
 ENV/
 env.bak/
 venv.bak/
@@ -166,3 +168,4 @@ webapp/config.py
 /logs/
 /webapp/risk/okveds.xlsx
 /webapp/sellers.xlsx
+/env_new/
