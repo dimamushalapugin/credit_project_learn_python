@@ -142,7 +142,7 @@
             <form action="{{ url_for('manager.create_agreement') }}" method="POST">
                 <div class="card border-light mb-3">
                     <div class="row">
-                        <div class="col-6">
+                        <div class="col-12">
                             <div class="card border-light mb-3" id="main_fields" style="display: none;">
                                 <div class="card-body">
                                     <div class="mb-3">
@@ -225,19 +225,13 @@
                                         <label>Выберите тип предмета лизинга</label>
                                         <select class="form-select form-select-sm" name="type_pl"
                                                 aria-label=".form-select-sm example"
-                                                required>
+                                                required id ="typeSelect">
                                             <option selected></option>
                                             <option value='Авто/Спецтехника (ПТС, ПСМ)'>Авто/Спецтехника (ПТС, ПСМ)
                                             </option>
                                             <option value='Оборудование'>Оборудование</option>
                                         </select>
                                     </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-6">
-                            <div class="card border-light mb-3" id="app_fields" style="display: none;">
-                                <div class="card-body">
                                     <div class="mb-3">
                                         <div class="mb-3">
                                             <h5 class="card-header"><i class="fa-solid fa-paperclip fa-xs"
@@ -308,7 +302,7 @@
                                                                        style="color: #8f8f8f;"></i> Поля для ДКП</h5>
                                         </div>
                                         <div class="mb-3">
-                                            <label>Выберите тип предмета лизинга (новый или Б/У)</label>
+                                            <label>Тип предмета лизинга (новый или Б/У)</label>
                                             <select class="form-select form-select-sm" name="type_pl_new_or_not"
                                                     aria-label=".form-select-sm example" required>
                                                 <option selected></option>
@@ -342,14 +336,84 @@
                                             </select>
                                         </div>
                                         <div class="mb-3">
-                                            <label>Подписание в Диадок</label>
+                                            <label>Способ подписания договора</label>
                                             <select class="form-select form-select-sm" name="diadok"
                                                     aria-label=".form-select-sm example" required>
+                                                <option selected></option>
+                                                <option value="diadok">Диадок</option>
+                                                <option value="ecp">ЭЦП</option>
+                                                <option value="live">Живая подпись</option>
+                                            </select>
+                                        </div>
+                                        <div class="mb-3" style="display: none;">
+                                            <label>Необходимость пуско-наладочных работ</label>
+                                            <select class="form-select form-select-sm" name="pnr"
+                                                    aria-label=".form-select-sm example" required id="pnr">
                                                 <option selected></option>
                                                 <option value="Да">Да</option>
                                                 <option value="Нет">Нет</option>
                                             </select>
                                         </div>
+                                        <div class="mb-3" style="display: none;">
+                                            <label>Необходимость подготовки помещения</label>
+                                            <select class="form-select form-select-sm" name="house"
+                                                    aria-label=".form-select-sm example" required id="house">
+                                                <option selected></option>
+                                                <option value="Да">Да</option>
+                                                <option value="Нет">Нет</option>
+                                            </select>
+                                        </div>
+                                        <div class="mb-3" style="display: none;">
+                                            <label>Необходимость обучения персонала</label>
+                                            <select class="form-select form-select-sm" name="learn"
+                                                    aria-label=".form-select-sm example" required id="learn">
+                                                <option selected></option>
+                                                <option value="Да">Да</option>
+                                                <option value="Нет">Нет</option>
+                                            </select>
+                                        </div>
+                                        <script>
+                                        // Получаем ссылку на выпадающий список и дополнительные поля
+                                        const typeSelect = document.getElementById("typeSelect");
+                                        const pnrFields = document.getElementById("pnr");
+                                        const houseFields = document.getElementById("house");
+                                        const learnFields = document.getElementById("learn");
+
+                                        // Добавляем слушатель события изменения выбора
+                                        typeSelect.addEventListener("change", function() {
+                                            if (typeSelect.value === "Оборудование") {
+                                                pnrFields.style.display = "block";
+                                                enableFields(pnrFields);
+                                                houseFields.style.display = "block";
+                                                enableFields(houseFields);
+                                                learnFields.style.display = "block";
+                                                enableFields(learnFields);
+                                            } else {
+                                                pnrFields.style.display = "none";
+                                                disableFields(pnrFields);
+                                                houseFields.style.display = "none";
+                                                disableFields(houseFields);
+                                                learnFields.style.display = "none";
+                                                disableFields(learnFields);
+                                            }
+                                        });
+
+                                        // Функция для отключения элементов и добавления атрибута disabled
+                                        function disableFields(container) {
+                                            const inputs = container.querySelectorAll("input, select, textarea");
+                                            inputs.forEach(input => {
+                                                input.disabled = true;
+                                            });
+                                        }
+
+                                        // Функция для включения элементов и удаления атрибута disabled
+                                        function enableFields(container) {
+                                            const inputs = container.querySelectorAll("input, select, textarea");
+                                            inputs.forEach(input => {
+                                                input.disabled = false;
+                                            });
+                                        }
+                                        </script>
                                     </div>
                                 </div>
                             </div>
