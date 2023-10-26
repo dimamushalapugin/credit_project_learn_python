@@ -221,17 +221,12 @@
                                             <option value='3'>ПЛ №4</option>
                                         </select>
                                     </div>
-                                    <div class="mb-3">
-                                        <label>Выберите тип предмета лизинга</label>
-                                        <select class="form-select form-select-sm" name="type_pl"
-                                                aria-label=".form-select-sm example"
-                                                required id ="typeSelect">
-                                            <option selected></option>
-                                            <option value='Авто/Спецтехника (ПТС, ПСМ)'>Авто/Спецтехника (ПТС, ПСМ)
-                                            </option>
-                                            <option value='Оборудование'>Оборудование</option>
-                                        </select>
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" role="switch" id="typeSelect"
+                                               name="typeSelect">
+                                        <label class="form-check-label" for="typeSelect">Оборудование</label>
                                     </div>
+                                    <br>
                                     <div class="mb-3">
                                         <div class="mb-3">
                                             <h5 class="card-header"><i class="fa-solid fa-paperclip fa-xs"
@@ -345,75 +340,33 @@
                                                 <option value="live">Живая подпись</option>
                                             </select>
                                         </div>
-                                        <div class="mb-3" style="display: none;">
-                                            <label>Необходимость пуско-наладочных работ</label>
-                                            <select class="form-select form-select-sm" name="pnr"
-                                                    aria-label=".form-select-sm example" required id="pnr">
-                                                <option selected></option>
-                                                <option value="Да">Да</option>
-                                                <option value="Нет">Нет</option>
-                                            </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card border-light mb-3" id="dop_fields" style="display: none;">
+                                <div class="card-body">
+                                    <div class="mb-3">
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" role="switch"
+                                                   id="pnr"
+                                                   name="pnr">
+                                            <label class="form-check-label" for="typeSelect">Необходимость
+                                                пуско-наладочных работ</label>
                                         </div>
-                                        <div class="mb-3" style="display: none;">
-                                            <label>Необходимость подготовки помещения</label>
-                                            <select class="form-select form-select-sm" name="house"
-                                                    aria-label=".form-select-sm example" required id="house">
-                                                <option selected></option>
-                                                <option value="Да">Да</option>
-                                                <option value="Нет">Нет</option>
-                                            </select>
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" role="switch"
+                                                   id="house"
+                                                   name="house">
+                                            <label class="form-check-label" for="typeSelect">Необходимость подготовки
+                                                помещения</label>
                                         </div>
-                                        <div class="mb-3" style="display: none;">
-                                            <label>Необходимость обучения персонала</label>
-                                            <select class="form-select form-select-sm" name="learn"
-                                                    aria-label=".form-select-sm example" required id="learn">
-                                                <option selected></option>
-                                                <option value="Да">Да</option>
-                                                <option value="Нет">Нет</option>
-                                            </select>
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" role="switch"
+                                                   id="learn"
+                                                   name="learn">
+                                            <label class="form-check-label" for="typeSelect">Необходимость обучения
+                                                персонала</label>
                                         </div>
-                                        <script>
-                                        // Получаем ссылку на выпадающий список и дополнительные поля
-                                        const typeSelect = document.getElementById("typeSelect");
-                                        const pnrFields = document.getElementById("pnr");
-                                        const houseFields = document.getElementById("house");
-                                        const learnFields = document.getElementById("learn");
-
-                                        // Добавляем слушатель события изменения выбора
-                                        typeSelect.addEventListener("change", function() {
-                                            if (typeSelect.value === "Оборудование") {
-                                                pnrFields.style.display = "block";
-                                                enableFields(pnrFields);
-                                                houseFields.style.display = "block";
-                                                enableFields(houseFields);
-                                                learnFields.style.display = "block";
-                                                enableFields(learnFields);
-                                            } else {
-                                                pnrFields.style.display = "none";
-                                                disableFields(pnrFields);
-                                                houseFields.style.display = "none";
-                                                disableFields(houseFields);
-                                                learnFields.style.display = "none";
-                                                disableFields(learnFields);
-                                            }
-                                        });
-
-                                        // Функция для отключения элементов и добавления атрибута disabled
-                                        function disableFields(container) {
-                                            const inputs = container.querySelectorAll("input, select, textarea");
-                                            inputs.forEach(input => {
-                                                input.disabled = true;
-                                            });
-                                        }
-
-                                        // Функция для включения элементов и удаления атрибута disabled
-                                        function enableFields(container) {
-                                            const inputs = container.querySelectorAll("input, select, textarea");
-                                            inputs.forEach(input => {
-                                                input.disabled = false;
-                                            });
-                                        }
-                                        </script>
                                     </div>
                                 </div>
                             </div>
@@ -509,7 +462,8 @@
             const dlFields = document.getElementById("dl_fields");
             const dkpFields = document.getElementById("dkp_fields");
             const mainFields = document.getElementById("main_fields");
-            const appFields = document.getElementById("app_fields");
+            const typeSelect = document.getElementById("typeSelect");
+            const dopFields = document.getElementById("dop_fields");
 
             // Добавляем слушатели событий на чекбоксы
             checkDl.addEventListener("change", function() {
@@ -530,8 +484,22 @@
                 } else {
                     dkpFields.style.display = "none";
                     disableFields(dkpFields);
+                    dopFields.style.display = "none";
+                    disableFields(dopFields);
                 }
                 updateMainAndAppFields();
+                updateDopFields();
+            });
+
+            // Добавляем слушатель события изменения выбора
+            typeSelect.addEventListener("change", function() {
+                if (typeSelect.checked) {
+                    dopFields.style.display = "block";
+                    enableFields(dopFields);
+                } else {
+                    dopFields.style.display = "none";
+                    disableFields(dopFields);
+                }
             });
 
             function updateMainAndAppFields() {
@@ -545,6 +513,16 @@
                     disableFields(mainFields);
                     appFields.style.display = "none";
                     disableFields(appFields);
+                }
+            }
+
+            function updateDopFields() {
+                if (typeSelect.checked) {
+                    dopFields.style.display = "block";
+                    enableFields(dopFields);
+                } else {
+                    dopFields.style.display = "none";
+                    disableFields(dopFields);
                 }
             }
 
