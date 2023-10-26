@@ -481,24 +481,26 @@
                 if (checkDkp.checked) {
                     dkpFields.style.display = "block";
                     enableFields(dkpFields);
+                    updateDopFields();
                 } else {
                     dkpFields.style.display = "none";
                     disableFields(dkpFields);
-                    dopFields.style.display = "none";
-                    disableFields(dopFields);
+                    updateDopFields();
                 }
                 updateMainAndAppFields();
-                updateDopFields();
+
             });
 
             // Добавляем слушатель события изменения выбора
             typeSelect.addEventListener("change", function() {
-                if (typeSelect.checked) {
+                if (typeSelect.checked && checkDkp.checked) {
                     dopFields.style.display = "block";
                     enableFields(dopFields);
+                    updateDopFields();
                 } else {
                     dopFields.style.display = "none";
                     disableFields(dopFields);
+                    updateDopFields();
                 }
             });
 
@@ -517,7 +519,7 @@
             }
 
             function updateDopFields() {
-                if (typeSelect.checked) {
+                if (typeSelect.checked && checkDkp.checked) {
                     dopFields.style.display = "block";
                     enableFields(dopFields);
                 } else {
