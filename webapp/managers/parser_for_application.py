@@ -912,12 +912,12 @@ def start_filling_agreement(inn_leasee, path_application, path_graphic, signator
             doc.save(fr"{dir_path}\ДЛ {inn_leasee}.docx")
 
         if len(inn_leasee) == 12:
-            if type_pl == 'Авто/Спецтехника (ПТС, ПСМ)':
+            if type_pl != 'on':
                 replace_words_in_docx(r"webapp\static\agreement_templates\ШАБЛОН ИП_КФХ.docx", old_words, new_words)
             else:
                 replace_words_in_docx(r"webapp\static\agreement_templates\ШАБЛОН ИП_КФХ (обор).docx", old_words, new_words)
         else:
-            if type_pl == 'Авто/Спецтехника (ПТС, ПСМ)':
+            if type_pl != 'on':
                 replace_words_in_docx(r"webapp\static\agreement_templates\ШАБЛОН ООО_АО.docx", old_words, new_words)
             else:
                 replace_words_in_docx(r"webapp\static\agreement_templates\ШАБЛОН ООО_АО (обор).docx", old_words, new_words)
