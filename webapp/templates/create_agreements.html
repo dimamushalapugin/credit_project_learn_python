@@ -308,7 +308,7 @@
                                         <div class="mb-3">
                                             <label>Порядок оплаты (через пробел, например: 20 80)</label>
                                             <div class="input-group input-group-sm mb-3">
-                                                <input type="text" name="client_inn" value="" class="form-control"
+                                                <input type="text" name="payment_order" value="" class="form-control"
                                                        required disabled>
                                             </div>
                                         </div>
@@ -335,9 +335,9 @@
                                             <select class="form-select form-select-sm" name="diadok"
                                                     aria-label=".form-select-sm example" required disabled>
                                                 <option selected></option>
-                                                <option value="diadok">Диадок</option>
-                                                <option value="ecp">ЭЦП</option>
-                                                <option value="live">Живая подпись</option>
+                                                <option value="диадок">Диадок</option>
+                                                <option value="эцп">ЭЦП</option>
+                                                <option value="живая">Живая подпись</option>
                                             </select>
                                         </div>
                                     </div>
@@ -346,26 +346,32 @@
                             <div class="card border-light mb-3" id="dop_fields" style="display: none;">
                                 <div class="card-body">
                                     <div class="mb-3">
-                                        <div class="form-check form-switch">
-                                            <input class="form-check-input" type="checkbox" role="switch"
-                                                   id="pnr"
-                                                   name="pnr">
-                                            <label class="form-check-label" for="typeSelect">Необходимость
-                                                пуско-наладочных работ</label>
+                                        <div class="mb-3">
+                                            <label>Необходимость пуско-наладочных работ</label>
+                                            <select class="form-select form-select-sm" name="pnr"
+                                                    aria-label=".form-select-sm example" required disabled>
+                                                <option selected></option>
+                                                <option value="Да">Да</option>
+                                                <option value="Нет">Нет</option>
+                                            </select>
                                         </div>
-                                        <div class="form-check form-switch">
-                                            <input class="form-check-input" type="checkbox" role="switch"
-                                                   id="house"
-                                                   name="house">
-                                            <label class="form-check-label" for="typeSelect">Необходимость подготовки
-                                                помещения</label>
+                                        <div class="mb-3">
+                                            <label>Необходимость подготовки помещения</label>
+                                            <select class="form-select form-select-sm" name="house"
+                                                    aria-label=".form-select-sm example" required disabled>
+                                                <option selected></option>
+                                                <option value="Да">Да</option>
+                                                <option value="Нет">Нет</option>
+                                            </select>
                                         </div>
-                                        <div class="form-check form-switch">
-                                            <input class="form-check-input" type="checkbox" role="switch"
-                                                   id="learn"
-                                                   name="learn">
-                                            <label class="form-check-label" for="typeSelect">Необходимость обучения
-                                                персонала</label>
+                                        <div class="mb-3">
+                                            <label>Необходимость обучения персонала</label>
+                                            <select class="form-select form-select-sm" name="learn"
+                                                    aria-label=".form-select-sm example" required disabled>
+                                                <option selected></option>
+                                                <option value="Да">Да</option>
+                                                <option value="Нет">Нет</option>
+                                            </select>
                                         </div>
                                     </div>
                                 </div>
@@ -416,8 +422,8 @@
 
                                         // Функция для проверки загрузки обоих файлов и разблокировки кнопки "Предпроверка"
                                         function checkFilesUploaded() {
-                                            if (applicationFileInput.files.length > 0) {
-                                                // Если оба файла загружены, разблокируем кнопку "Предпроверка"
+                                            if (applicationFileInput.files.length > 0 && (!checkDl.checked || graphicFileInput.files.length > 0)) {
+                                                // Если оба файла загружены или флажок не выбран, разблокируем кнопку "Предпроверка"
                                                 checkButton.disabled = false;
                                             }
                                         }
@@ -465,14 +471,17 @@
             const typeSelect = document.getElementById("typeSelect");
             const dopFields = document.getElementById("dop_fields");
 
+
             // Добавляем слушатели событий на чекбоксы
             checkDl.addEventListener("change", function() {
                 if (checkDl.checked) {
                     dlFields.style.display = "block";
                     enableFields(dlFields);
+                    updateCheckButtonDl();
                 } else {
                     dlFields.style.display = "none";
                     disableFields(dlFields);
+                    updateCheckButtonDl();
                 }
                 updateMainAndAppFields();
             });
@@ -482,13 +491,14 @@
                     dkpFields.style.display = "block";
                     enableFields(dkpFields);
                     updateDopFields();
+                    updateCheckButtonDkp();
                 } else {
                     dkpFields.style.display = "none";
                     disableFields(dkpFields);
                     updateDopFields();
+                    updateCheckButtonDkp();
                 }
                 updateMainAndAppFields();
-
             });
 
             // Добавляем слушатель события изменения выбора
@@ -525,6 +535,22 @@
                 } else {
                     dopFields.style.display = "none";
                     disableFields(dopFields);
+                }
+            }
+
+            function updateCheckButtonDl() {
+                if (checkDl.checked && (applicationFileInput.files.length > 0 && graphicFileInput.files.length > 0)) {
+                    checkButton.disabled = false;
+                } else {
+                    checkButton.disabled = true;
+                }
+            }
+
+            function updateCheckButtonDkp() {
+                if (checkDkp.checked && (applicationFileInput.files.length > 0)) {
+                    checkButton.disabled = false;
+                } else {
+                    checkButton.disabled = true;
                 }
             }
 
