@@ -62,53 +62,86 @@ def create_docx_file(data, application_path, graphic_path):
     path_graphic = graphic_path.replace('/', '\\')
     return start_filling_agreement(data['client_inn'], path_application, path_graphic, data['signatory'],
                                    data['investor'], data['currency'], data['insurant'], data['graph'], data['pl'],
-                                   data['number_dl'], data['seller_inn'], data['type_pl'])
+                                   data['number_dl'], data['seller_inn'], data.get('typeSelect'))
+
+
+def create_dl():
+    logging.info(f"{current_user} Нажал на кнопку 'Создать ДЛ'")
+    # application_filename = request.form['uploaded_application']
+    # graphic_filename = request.form['uploaded_graphic']
+    #
+    # application_path = os.path.join('webapp/static/agreement_templates', application_filename)
+    # if graphic_filename is not None:
+    #     graphic_path = os.path.join('webapp/static/agreement_templates', graphic_filename)
+    # else:
+    #     graphic_path = None
+    #
+    # try:
+    #     data = request.form
+    #     file_name = create_docx_file(data, application_path, graphic_path)
+    #     os.remove(application_path.replace('/', '\\'))
+    #     os.remove(graphic_path.replace('/', '\\'))
+    #     logging.info(f"({current_user}) Файлы успешно созданы и загружены")
+    #     flash(f'Файлы успешно созданы и загружены', 'success')
+    #     return redirect(url_for('manager.managers_page', file_name=file_name))
+    # except Exception as e:
+    #     flash(str(e), 'error')
+    #     os.remove(application_path.replace('/', '\\'))
+    #     os.remove(graphic_path.replace('/', '\\'))
+    #     return redirect(url_for('manager.managers_page'))
+
+
+def create_dkp():
+    logging.info(f"{current_user} Нажал на кнопку 'Создать ДКП'")
 
 
 @blueprint.route('/create_xlsx', methods=['POST'])
 def create_agreement():
-    logging.info(f"{current_user} Нажал на кнопку 'Создать ДЛ'")
-    application_filename = request.form['uploaded_application']
-    graphic_filename = request.form['uploaded_graphic']
-
-    application_path = os.path.join('webapp/static/agreement_templates', application_filename)
-    graphic_path = os.path.join('webapp/static/agreement_templates', graphic_filename)
-
-    try:
-        data = request.form
-        file_name = create_docx_file(data, application_path, graphic_path)
-        os.remove(application_path.replace('/', '\\'))
-        os.remove(graphic_path.replace('/', '\\'))
-        logging.info(f"({current_user}) Файлы успешно созданы и загружены")
-        flash(f'Файлы успешно созданы и загружены', 'success')
-        return redirect(url_for('manager.managers_page', file_name=file_name))
-    except Exception as e:
-        flash(str(e), 'error')
-        os.remove(application_path.replace('/', '\\'))
-        os.remove(graphic_path.replace('/', '\\'))
-        return redirect(url_for('manager.managers_page'))
+    data = request.form
+    logging.info(f"{current_user} ДЛ - {data.get('check_dl')}, ДКП - {data.get('check_dkp')}")
+    if data.get('check_dl') == 'on' and data.get('check_dkp') == 'on':
+        create_dl()
+        create_dkp()
+    elif data.get('check_dl') == 'on':
+        create_dl()
+    else:
+        create_dkp()
+    return redirect(url_for('manager.managers_page'))
 
 
 @blueprint.route('/upload_files', methods=['POST'])
 def upload_files():
     uploaded_application = request.files['uploaded_application']
-    uploaded_graphic = request.files['uploaded_graphic']
+    uploaded_graphic = request.files.get('uploaded_graphic')
 
-    if not uploaded_application or not uploaded_graphic:
-        return flash('Загрузите оба файла', 'info')
-
-    if not (uploaded_application.filename.endswith(('.xlsx', '.xlsm')) and uploaded_graphic.filename.endswith(
-            ('.xlsx', '.xlsm'))):
-        return flash('Неправильный формат файла. Поддерживаются только .xlsx и .xlsm файлы.', 'error')
+    if uploaded_graphic is not None:
+        if not (uploaded_application.filename.endswith(('.xlsx', '.xlsm')) and uploaded_graphic.filename.endswith(
+                ('.xlsx', '.xlsm'))):
+            return flash('Неправильный формат файла. Поддерживаются только .xlsx и .xlsm файлы.', 'error')
+    else:
+        if not uploaded_application.filename.endswith(('.xlsx', '.xlsm')):
+            return flash('Неправильный формат файла. Поддерживаются только .xlsx и .xlsm файлы.', 'error')
 
     application_filename = uploaded_application.filename
-    graphic_filename = uploaded_graphic.filename
+    if uploaded_graphic is not None:
+        graphic_filename = uploaded_graphic.filename
+    else:
+        graphic_filename = None
+
+    logging.info(f"{current_user} ({graphic_filename=})")
 
     application_path = os.path.join('webapp/static/agreement_templates', application_filename)
-    graphic_path = os.path.join('webapp/static/agreement_templates', graphic_filename)
+    if uploaded_graphic is not None:
+        graphic_path = os.path.join('webapp/static/agreement_templates', graphic_filename)
+    else:
+        graphic_path = None
+    logging.info(f"{current_user} ({graphic_path=})")
 
     uploaded_application.save(application_path)
-    uploaded_graphic.save(graphic_path)
+
+    if uploaded_graphic is not None:
+        uploaded_graphic.save(graphic_path)
+
     return jsonify({'message': 'Файлы успешно загружены и сохранены.'})
 
 

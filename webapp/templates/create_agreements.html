@@ -255,7 +255,7 @@
                                     <div class="mb-3">
                                         <label>Выберите страхователя</label>
                                         <select class="form-select form-select-sm" name="insurant"
-                                                aria-label=".form-select-sm example" required>
+                                                aria-label=".form-select-sm example" required disabled>
                                             <option selected></option>
                                             <option value="ООО «ЛКМБ-РТ»">ООО «ЛКМБ-РТ»</option>
                                             <option value="Лизингополучатель">Лизингополучатель</option>
@@ -269,7 +269,7 @@
                                         <label>Выберите график платежей</label>
                                         <select class="form-select form-select-sm" name="graph"
                                                 aria-label=".form-select-sm example"
-                                                required>
+                                                required disabled>
                                             <option selected></option>
                                             <option value="Аннуитет">Аннуитет</option>
                                             <option value="Регрессив">Регрессив</option>
@@ -283,7 +283,7 @@
                                         </div>
                                         <input type="file" class="form-control form-control-sm" id="graphicFileInput"
                                                name="uploaded_graphic"
-                                               required>
+                                               required disabled>
                                     </div>
                                 </div>
                             </div>
@@ -299,7 +299,7 @@
                                         <div class="mb-3">
                                             <label>Тип предмета лизинга (новый или Б/У)</label>
                                             <select class="form-select form-select-sm" name="type_pl_new_or_not"
-                                                    aria-label=".form-select-sm example" required>
+                                                    aria-label=".form-select-sm example" required disabled>
                                                 <option selected></option>
                                                 <option value="used">Б/У</option>
                                                 <option value="new">Новый</option>
@@ -309,13 +309,13 @@
                                             <label>Порядок оплаты (через пробел, например: 20 80)</label>
                                             <div class="input-group input-group-sm mb-3">
                                                 <input type="text" name="client_inn" value="" class="form-control"
-                                                       required>
+                                                       required disabled>
                                             </div>
                                         </div>
                                         <div class="mb-3">
                                             <label>Место отгрузки ПЛ</label>
                                             <select class="form-select form-select-sm" name="place"
-                                                    aria-label=".form-select-sm example" required>
+                                                    aria-label=".form-select-sm example" required disabled>
                                                 <option selected></option>
                                                 <option value="продавец">По месту рег. продавца</option>
                                                 <option value="лп">По месту рег. ЛП</option>
@@ -324,7 +324,7 @@
                                         <div class="mb-3">
                                             <label>Подписание актов приема-передачи</label>
                                             <select class="form-select form-select-sm" name="acts"
-                                                    aria-label=".form-select-sm example" required>
+                                                    aria-label=".form-select-sm example" required disabled>
                                                 <option selected></option>
                                                 <option value="склад">В момент отгрузки со склада продавца</option>
                                                 <option value="эксплуатация">По месту эксплуатации</option>
@@ -333,7 +333,7 @@
                                         <div class="mb-3">
                                             <label>Способ подписания договора</label>
                                             <select class="form-select form-select-sm" name="diadok"
-                                                    aria-label=".form-select-sm example" required>
+                                                    aria-label=".form-select-sm example" required disabled>
                                                 <option selected></option>
                                                 <option value="diadok">Диадок</option>
                                                 <option value="ecp">ЭЦП</option>
@@ -416,7 +416,7 @@
 
                                         // Функция для проверки загрузки обоих файлов и разблокировки кнопки "Предпроверка"
                                         function checkFilesUploaded() {
-                                            if (applicationFileInput.files.length > 0 && graphicFileInput.files.length > 0) {
+                                            if (applicationFileInput.files.length > 0) {
                                                 // Если оба файла загружены, разблокируем кнопку "Предпроверка"
                                                 checkButton.disabled = false;
                                             }
