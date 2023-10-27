@@ -4,6 +4,7 @@ from flask import Blueprint, flash, render_template, redirect, request, url_for,
 from flask_login import login_required, current_user
 
 from webapp.managers.parser_for_application import start_filling_application, start_filling_agreement
+from webapp.managers.parser_for_dkp import start_filling_agreement_dkp
 from webapp.config import APPLICATION_PATH
 from webapp.risk.logger import logging
 
@@ -65,34 +66,57 @@ def create_docx_file(data, application_path, graphic_path):
                                    data['number_dl'], data['seller_inn'], data.get('typeSelect'))
 
 
+#  TODO: Доделать функцию start_filling_agreement_dkp
+def create_docx_file_dkp(data, application_path):
+    path_application = application_path.replace('/', '\\')
+    return start_filling_agreement_dkp(data['client_inn'], path_application, data['signatory'],
+                                       data['investor'], data['currency'], data['insurant'], data['graph'], data['pl'],
+                                       data['number_dl'], data['seller_inn'], data.get('typeSelect'))
+
+
 def create_dl():
     logging.info(f"{current_user} Нажал на кнопку 'Создать ДЛ'")
-    # application_filename = request.form['uploaded_application']
-    # graphic_filename = request.form['uploaded_graphic']
-    #
-    # application_path = os.path.join('webapp/static/agreement_templates', application_filename)
-    # if graphic_filename is not None:
-    #     graphic_path = os.path.join('webapp/static/agreement_templates', graphic_filename)
-    # else:
-    #     graphic_path = None
-    #
-    # try:
-    #     data = request.form
-    #     file_name = create_docx_file(data, application_path, graphic_path)
-    #     os.remove(application_path.replace('/', '\\'))
-    #     os.remove(graphic_path.replace('/', '\\'))
-    #     logging.info(f"({current_user}) Файлы успешно созданы и загружены")
-    #     flash(f'Файлы успешно созданы и загружены', 'success')
-    #     return redirect(url_for('manager.managers_page', file_name=file_name))
-    # except Exception as e:
-    #     flash(str(e), 'error')
-    #     os.remove(application_path.replace('/', '\\'))
-    #     os.remove(graphic_path.replace('/', '\\'))
-    #     return redirect(url_for('manager.managers_page'))
+    application_filename = request.form['uploaded_application']
+    graphic_filename = request.form['uploaded_graphic']
+
+    application_path = os.path.join('webapp/static/agreement_templates', application_filename)
+    if graphic_filename is not None:
+        graphic_path = os.path.join('webapp/static/agreement_templates', graphic_filename)
+    else:
+        graphic_path = None
+
+    try:
+        data = request.form
+        file_name = create_docx_file(data, application_path, graphic_path)
+        os.remove(application_path.replace('/', '\\'))
+        os.remove(graphic_path.replace('/', '\\'))
+        logging.info(f"({current_user}) Файлы успешно созданы и загружены")
+        flash(f'Файлы успешно созданы и загружены', 'success')
+        return redirect(url_for('manager.managers_page', file_name=file_name))
+    except Exception as e:
+        flash(str(e), 'error')
+        os.remove(application_path.replace('/', '\\'))
+        os.remove(graphic_path.replace('/', '\\'))
+        return redirect(url_for('manager.managers_page'))
 
 
+#  TODO: Доделать функцию create_dkp. Изменить логику удаления файлов
 def create_dkp():
     logging.info(f"{current_user} Нажал на кнопку 'Создать ДКП'")
+    application_filename = request.form['uploaded_application']
+    application_path = os.path.join('webapp/static/agreement_templates', application_filename)
+
+    try:
+        data = request.form
+        file_name = create_docx_file_dkp(data, application_path)
+        os.remove(application_path.replace('/', '\\'))
+        logging.info(f"({current_user}) Файлы успешно созданы и загружены")
+        flash(f'Файлы успешно созданы и загружены', 'success')
+        return redirect(url_for('manager.managers_page', file_name=file_name))
+    except Exception as e:
+        flash(str(e), 'error')
+        os.remove(application_path.replace('/', '\\'))
+        return redirect(url_for('manager.managers_page'))
 
 
 @blueprint.route('/create_xlsx', methods=['POST'])
