@@ -49,7 +49,7 @@ def agreements_folder(folder_path):
 def download(filename):
     folder_path = request.args.get('folder_path')
     real_path = os.path.join('static', 'agreements', folder_path).replace('\\', '/').replace(f"/{filename}", '')
-    logging.info(f"{current_user} скачивает файл {filename}'")
+    logging.info(f"({current_user}) скачивает файл {filename}'")
     return send_from_directory(real_path, filename, as_attachment=True)
 
 
@@ -66,70 +66,113 @@ def create_docx_file(data, application_path, graphic_path):
                                    data['number_dl'], data['seller_inn'], data.get('typeSelect'))
 
 
-#  TODO: Доделать функцию start_filling_agreement_dkp
 def create_docx_file_dkp(data, application_path):
     path_application = application_path.replace('/', '\\')
-    return start_filling_agreement_dkp(data['client_inn'], path_application, data['signatory'],
-                                       data['investor'], data['currency'], data['insurant'], data['graph'], data['pl'],
-                                       data['number_dl'], data['seller_inn'], data.get('typeSelect'))
+    return start_filling_agreement_dkp(path_application, data['client_inn'], data['seller_inn'],
+                                       data['number_dl'], data['signatory'], data['investor'], data['currency'],
+                                       data['pl'], data.get('typeSelect'), data['type_pl_new_or_not'],
+                                       data['payment_order'], data['place'], data['acts'], data['diadok'],
+                                       data.get('pnr'), data.get('house'), data.get('learn'))
 
 
 def create_dl():
-    logging.info(f"{current_user} Нажал на кнопку 'Создать ДЛ'")
-    application_filename = request.form['uploaded_application']
-    graphic_filename = request.form['uploaded_graphic']
-
-    application_path = os.path.join('webapp/static/agreement_templates', application_filename)
-    if graphic_filename is not None:
+    logging.info(f"({current_user}) Нажал на кнопку 'Создать ДЛ'")
+    try:
+        application_filename = request.form['uploaded_application']
+        graphic_filename = request.form['uploaded_graphic']
+        application_path = os.path.join('webapp/static/agreement_templates', application_filename)
         graphic_path = os.path.join('webapp/static/agreement_templates', graphic_filename)
-    else:
-        graphic_path = None
+    except Exception as ex:
+        logging.info(ex, exc_info=True)
+        logging.info(f"({current_user}) Ошибка!")
+        raise ex
 
     try:
         data = request.form
         file_name = create_docx_file(data, application_path, graphic_path)
-        os.remove(application_path.replace('/', '\\'))
-        os.remove(graphic_path.replace('/', '\\'))
         logging.info(f"({current_user}) Файлы успешно созданы и загружены")
-        flash(f'Файлы успешно созданы и загружены', 'success')
+        flash(f'ДЛ успешно создан и загружен', 'success')
         return redirect(url_for('manager.managers_page', file_name=file_name))
-    except Exception as e:
-        flash(str(e), 'error')
-        os.remove(application_path.replace('/', '\\'))
-        os.remove(graphic_path.replace('/', '\\'))
-        return redirect(url_for('manager.managers_page'))
+    except Exception as ex:
+        logging.info(ex, exc_info=True)
+        logging.info(f"({current_user}) Ошибка!")
+        raise ex
 
 
-#  TODO: Доделать функцию create_dkp. Изменить логику удаления файлов
 def create_dkp():
-    logging.info(f"{current_user} Нажал на кнопку 'Создать ДКП'")
-    application_filename = request.form['uploaded_application']
-    application_path = os.path.join('webapp/static/agreement_templates', application_filename)
+    logging.info(f"({current_user}) Нажал на кнопку 'Создать ДКП'")
+    try:
+        application_filename = request.form['uploaded_application']
+        application_path = os.path.join('webapp/static/agreement_templates', application_filename)
+    except Exception as ex:
+        logging.info(ex, exc_info=True)
+        logging.info(f"({current_user}) Ошибка!")
+        raise ex
 
     try:
         data = request.form
         file_name = create_docx_file_dkp(data, application_path)
-        os.remove(application_path.replace('/', '\\'))
         logging.info(f"({current_user}) Файлы успешно созданы и загружены")
-        flash(f'Файлы успешно созданы и загружены', 'success')
+        flash(f'ДКП успешно создан и загружен', 'success')
         return redirect(url_for('manager.managers_page', file_name=file_name))
-    except Exception as e:
-        flash(str(e), 'error')
-        os.remove(application_path.replace('/', '\\'))
-        return redirect(url_for('manager.managers_page'))
+    except Exception as ex:
+        logging.info(ex, exc_info=True)
+        logging.info(f"({current_user}) Ошибка!")
+        raise ex
 
 
 @blueprint.route('/create_xlsx', methods=['POST'])
 def create_agreement():
     data = request.form
-    logging.info(f"{current_user} ДЛ - {data.get('check_dl')}, ДКП - {data.get('check_dkp')}")
+    logging.info(f"({current_user}) ДЛ - {data.get('check_dl')}, ДКП - {data.get('check_dkp')}")
+    try:
+        if data.get('check_dl') == 'on':
+            application_filename = request.form['uploaded_application']
+            graphic_filename = request.form['uploaded_graphic']
+            application_path = os.path.join('webapp/static/agreement_templates', application_filename)
+            graphic_path = os.path.join('webapp/static/agreement_templates', graphic_filename)
+        else:
+            application_filename = request.form['uploaded_application']
+            application_path = os.path.join('webapp/static/agreement_templates', application_filename)
+            graphic_path = None
+
+    except Exception as ex:
+        logging.info(ex, exc_info=True)
+        flash('Ошибка при получении прикрепленных файлов', 'error')
+        return redirect(url_for('manager.managers_page'))
+
     if data.get('check_dl') == 'on' and data.get('check_dkp') == 'on':
-        create_dl()
-        create_dkp()
+        try:
+            create_dl()
+            create_dkp()
+            return redirect(url_for('manager.managers_page'))
+        except Exception:
+            flash('Ошибка при создании договора. Проверьте правильность прикрепляемых файлов', 'error')
+            return redirect(url_for('manager.managers_page'))
+        finally:
+            os.remove(application_path.replace('/', '\\'))
+            os.remove(graphic_path.replace('/', '\\'))
+            return redirect(url_for('manager.managers_page'))
+
     elif data.get('check_dl') == 'on':
-        create_dl()
+        try:
+            create_dl()
+            return redirect(url_for('manager.managers_page'))
+        except Exception as e:
+            flash(str(e), 'error')
+            return redirect(url_for('manager.managers_page'))
+        finally:
+            os.remove(application_path.replace('/', '\\'))
+            os.remove(graphic_path.replace('/', '\\'))
+            return redirect(url_for('manager.managers_page'))
     else:
-        create_dkp()
+        try:
+            create_dkp()
+        except Exception as e:
+            flash(str(e), 'error')
+        finally:
+            os.remove(application_path.replace('/', '\\'))
+
     return redirect(url_for('manager.managers_page'))
 
 
@@ -152,14 +195,11 @@ def upload_files():
     else:
         graphic_filename = None
 
-    logging.info(f"{current_user} ({graphic_filename=})")
-
     application_path = os.path.join('webapp/static/agreement_templates', application_filename)
     if uploaded_graphic is not None:
         graphic_path = os.path.join('webapp/static/agreement_templates', graphic_filename)
     else:
         graphic_path = None
-    logging.info(f"{current_user} ({graphic_path=})")
 
     uploaded_application.save(application_path)
 
@@ -177,7 +217,7 @@ def download_application(file_path, filename):
 
 @blueprint.route('/create_application', methods=['POST'])
 def create_application():
-    logging.info(f"{current_user} Нажал на кнопку 'Создать заявку'")
+    logging.info(f"({current_user}) Нажал на кнопку 'Создать заявку'")
     try:
         data = request.form
         file_path = create_xlsx_file(data)
