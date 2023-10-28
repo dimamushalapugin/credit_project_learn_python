@@ -22,6 +22,14 @@ def create_xlsx_file(inn_client, inn_seller, main_client: dict, delta_client: di
     sheet = wb.active
     sheet[
         'A1'].value = f'Риск заключение по {main_client["Краткое наименование"]} на {dt.today().strftime(f"%d.%m.%Y")}'
+    try:
+        sheet_name1 = wb.sheetnames[0]  # берем название первого листа
+        wb.create_sheet(title='Дир Учр Пор')
+        wb.create_sheet(title='Продавец')
+        wb.create_sheet(title='Предмет лизинга')
+        wb[sheet_name1].title = 'Лизингополучатель'  # дали новое название первому листу
+    except Exception as _ex:
+        logging.info(_ex, exc_info=True)
 
     def write_user(data):
         for index, (key, value) in enumerate(data.items()):
