@@ -478,12 +478,13 @@
                     dlFields.style.display = "block";
                     enableFields(dlFields);
                     updateCheckButtonDl();
+                    updateMainAndAppFields();
                 } else {
                     dlFields.style.display = "none";
                     disableFields(dlFields);
                     updateCheckButtonDl();
+                    updateMainAndAppFields();
                 }
-                updateMainAndAppFields();
             });
 
             checkDkp.addEventListener("change", function() {
@@ -492,13 +493,14 @@
                     enableFields(dkpFields);
                     updateDopFields();
                     updateCheckButtonDkp();
+                    updateMainAndAppFields();
                 } else {
                     dkpFields.style.display = "none";
                     disableFields(dkpFields);
                     updateDopFields();
                     updateCheckButtonDkp();
+                    updateMainAndAppFields();
                 }
-                updateMainAndAppFields();
             });
 
             // Добавляем слушатель события изменения выбора
@@ -518,13 +520,9 @@
                 if (checkDl.checked || checkDkp.checked) {
                     mainFields.style.display = "block";
                     enableFields(mainFields);
-                    appFields.style.display = "block";
-                    enableFields(appFields);
                 } else {
                     mainFields.style.display = "none";
                     disableFields(mainFields);
-                    appFields.style.display = "none";
-                    disableFields(appFields);
                 }
             }
 
