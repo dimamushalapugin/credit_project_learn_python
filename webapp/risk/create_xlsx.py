@@ -166,13 +166,22 @@ def create_xlsx_file(inn_client, inn_seller, main_client: dict, delta_client: di
         sheet[f'B{sheet.max_row}'].value = data['Налоги и сборы']
 
         sheet[f'A{sheet.max_row + 2}'].value = 'АФФИЛИРОВАННЫЕ И СВЯЗАННЫЕ ЛИЦА'
-        sheet[f'A{sheet.max_row + 1}'].value = ''
+        for _ in range(10):
+            sheet[f'A{sheet.max_row + 1}'].value = ''
+
+        sheet[f'A{sheet.max_row + 2}'].value = 'Проверка аффилированных компаний'
+        for _ in range(10):
+            sheet[f'A{sheet.max_row + 1}'].value = ''
 
         sheet[f'A{sheet.max_row + 2}'].value = 'СУЩЕСТВЕННЫЕ ФАКТЫ ПО ДАННЫМ ФЕДРЕСУРСА'
         sheet[f'A{sheet.max_row + 1}'].value = data['Федресурс']
+        for _ in range(10):
+            sheet[f'A{sheet.max_row + 1}'].value = ''
 
         sheet[f'A{sheet.max_row + 2}'].value = 'СВЕДЕНИЯ ИЗ РЕЕСТРА ЗАЛОГОВ'
         sheet[f'A{sheet.max_row + 1}'].value = data['Реестр залогов']
+        for _ in range(10):
+            sheet[f'A{sheet.max_row + 1}'].value = ''
 
         sheet[f'A{sheet.max_row + 2}'].value = 'РОСФИНМОНИТОРИНГ(ТЕРРОРИСТИЧЕСКИЕ ОРГАНИЗАЦИИ)'
         sheet[f'A{sheet.max_row + 1}'].value = data['Росфинмониторинг']
@@ -182,6 +191,23 @@ def create_xlsx_file(inn_client, inn_seller, main_client: dict, delta_client: di
 
         sheet[f'A{sheet.max_row + 2}'].value = 'ЧЕРНЫЙ СПИСОК ЦБ РФ (ЮЛ)'
         sheet[f'A{sheet.max_row + 1}'].value = data['Черный список']
+
+        sheet[f'A{sheet.max_row + 2}'].value = 'СВЕДЕНИЯ ИЗ СМИ'
+        sheet[f'A{sheet.max_row + 1}'].value = 'Информация по данному источнику отсутствует'
+
+        sheet[f'A{sheet.max_row + 2}'].value = 'САЙТ В СЕТИ ИНТЕРНЕТ'
+        sheet[f'A{sheet.max_row + 1}'].value = 'Информация по данному источнику отсутствует'
+
+        sheet[f'A{sheet.max_row + 2}'].value = 'СОЦИАЛЬНЫЕ СЕТИ'
+        sheet[f'A{sheet.max_row + 1}'].value = 'Информация по данному источнику отсутствует'
+
+        sheet[f'A{sheet.max_row + 2}'].value = 'ЛИЗИНГ'
+        for _ in range(10):
+            sheet[f'A{sheet.max_row + 1}'].value = ''
+
+        sheet[f'A{sheet.max_row + 2}'].value = 'АНАЛИЗ ДОГОВОРОВ С КОНТРАГЕНТАМИ'
+        for _ in range(10):
+            sheet[f'A{sheet.max_row + 1}'].value = ''
 
     sheet[f'A{sheet.max_row + 1}'].value = '1. Общее описание Лизингополучателя'
 
