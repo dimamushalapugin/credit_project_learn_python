@@ -220,6 +220,12 @@ def create_xlsx_file(inn_client, inn_seller, main_client: dict, delta_client: di
         sheet[f'A{sheet.max_row + 2}'].value = 'СОЦИАЛЬНЫЕ СЕТИ'
         sheet[f'A{sheet.max_row + 1}'].value = 'Информация по данному источнику отсутствует'
 
+    sheet[f'A{sheet.max_row + 1}'].value = '1. Общее описание Лизингополучателя'
+
+    """Если клиент Юр. лицо, то попадаем в if"""
+    if len(inn_client) == 10:
+        logging.info('Клиент юр. лицо. Идет заполнение файла...')
+        write_company(main_client, delta_client)
         sheet[f'A{sheet.max_row + 2}'].value = 'ЛИЗИНГ'
         for _ in range(20):
             sheet[f'A{sheet.max_row + 1}'].value = ''
@@ -229,13 +235,6 @@ def create_xlsx_file(inn_client, inn_seller, main_client: dict, delta_client: di
             sheet[f'A{sheet.max_row + 1}'].value = ''
 
         sheet[f'A{sheet.max_row + 2}'].value = 'АРБИТРАЖНЫЕ ДЕЛА'
-
-    sheet[f'A{sheet.max_row + 1}'].value = '1. Общее описание Лизингополучателя'
-
-    """Если клиент Юр. лицо, то попадаем в if"""
-    if len(inn_client) == 10:
-        logging.info('Клиент юр. лицо. Идет заполнение файла...')
-        write_company(main_client, delta_client)
 
         logging.info("Запуск процесса записи информации про директора/учредителей в xslx файл")
         sheet = wb['Дир Учр Пор']
@@ -309,7 +308,7 @@ def create_xlsx_file(inn_client, inn_seller, main_client: dict, delta_client: di
 
     logging.info('Заполнение информации о продавце')
     sheet = wb['Продавец']
-    sheet[f'A{sheet.max_row}'].value = f'4. Анализ продавца {main_seller["Краткое наименование"]}'
+    sheet[f'A{sheet.max_row}'].value = f'3. Анализ продавца {main_seller["Краткое наименование"]}'
     try:
         if inn_client != inn_seller:
             if len(inn_seller) == 10:
@@ -326,10 +325,52 @@ def create_xlsx_file(inn_client, inn_seller, main_client: dict, delta_client: di
             for key, value in last_table_seller.items():
                 sheet[f'A{sheet.max_row + 1}'].value = key
                 sheet[f'B{sheet.max_row}'].value = value
+
+            sheet[f'A{sheet.max_row + 2}'].value = 'ПРОВЕРКА НА ДОЛЖНУЮ ОСТМОТРИТЕЛЬНОСТЬ'
+            for _ in range(20):
+                sheet[f'A{sheet.max_row + 1}'].value = ''
+            sheet[f'A{sheet.max_row + 2}'].value = 'ИСПОЛНИТЕЛЬНЫЕ ПРОИЗВОДСТВА'
+            for _ in range(20):
+                sheet[f'A{sheet.max_row + 1}'].value = ''
+            sheet[f'A{sheet.max_row + 2}'].value = 'АРБИТРАЖНЫЕ ДЕЛА'
+
+
+
         else:
             sheet[f'A{sheet.max_row + 1}'].value = 'Возвратный лизинг. Проверка лизингополучателя уже проведена'
     except Exception as _ex:
         logging.info(_ex, exc_info=True)
+
+    sheet = wb['Предмет лизинга']
+    sheet[f'A{sheet.max_row}'].value = '4. Анализ предмета лизинга'
+    sheet[f'A{sheet.max_row + 2}'].value = 'НАИМЕНОВАНИЕ'
+    sheet[f'A{sheet.max_row + 1}'].value = 'ГОД ВЫПУСКА, СОСТОЯНИЕ'
+    for _ in range(20):
+        sheet[f'A{sheet.max_row + 1}'].value = ''
+    sheet[f'A{sheet.max_row + 1}'].value = 'СТОИМОСТЬ ПРЕДМЕТА ЛИЗИНГА'
+    sheet[f'A{sheet.max_row + 1}'].value = ''
+    sheet[f'A{sheet.max_row + 1}'].value = 'Стоимость предмета лизинга соответствует среднерыночной цене.'
+    sheet[f'A{sheet.max_row + 1}'].value = '(на основании сравнительного анализа аналогичного имущества в общедоступных источниках)'
+    sheet[f'A{sheet.max_row + 2}'].value = 'ЛИКВИДНОСТЬ'
+    sheet[f'A{sheet.max_row + 1}'].value = 'Высокая/ Средняя / Низкая/ Безнадежная'
+    for _ in range(7):
+        sheet[f'A{sheet.max_row + 1}'].value = ''
+    sheet[f'A{sheet.max_row + 1}'].value = 'ПРАВОУСТАНАВЛИВАЮЩИЕ ДОКУМЕНТЫ'
+    sheet[f'A{sheet.max_row + 1}'].value = '1. Договор купли-продажи'
+    sheet[f'B{sheet.max_row}'].value = 'Да/ Нет (ПЛ новый)/ Нет'
+    sheet[f'A{sheet.max_row + 1}'].value = '2. Акт примема-передачи'
+    sheet[f'B{sheet.max_row}'].value = 'Да/ Нет (ПЛ новый)/ Нет'
+    sheet[f'A{sheet.max_row + 1}'].value = '3. ПТС/ ПСМ'
+    sheet[f'B{sheet.max_row}'].value = 'Да/ Нет (ПЛ новый)/ Нет'
+    sheet[f'A{sheet.max_row + 2}'].value = 'ПРОВЕРКА ПО ДАННЫМ САЙТА  ГИБДД/ МИНСЕЛЬХОЗ'
+    sheet[f'A{sheet.max_row + 1}'].value = 'Существенная негативная информация не обнаружена/ обнаружена'
+    for _ in range(20):
+        sheet[f'A{sheet.max_row + 1}'].value = ''
+    sheet[f'A{sheet.max_row + 2}'].value = 'ПРОВЕРКА ПО ДАННЫМ РЕЕСТРА ЗАЛОГОВ ФНП/ФЕДРЕСУРС'
+    sheet[f'A{sheet.max_row + 1}'].value = 'Существенная негативная информация не обнаружена/ обнаружена'
+    for _ in range(20):
+        sheet[f'A{sheet.max_row + 1}'].value = ''
+    sheet[f'A{sheet.max_row + 1}'].value = 'ПРОВЕРКА ДЕЙСТВИТЕЛЬНОСТИ ЭПТС'
 
     logging.info(f"Сохраняем файл. Created by {current_user}")
     wb.save(
