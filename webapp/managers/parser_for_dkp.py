@@ -29,7 +29,8 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
     9. equipment_or_not: Оборудование (чек-лист) | values = ["on", None]. |
                   В зависимости от выбора, может быть одним из values. Вывод: "on"
                   | Может быть None, если чек-лист не прожат
-    10. pl_new_or_not: Предмет лизинга Б/У или Новый | values = ["used", "new"]. |
+    10. pl_new_or_not: Предмет лизинга Б/У с гарантией, Б/У без гарантии или Новый
+                       | values = ["used", "used_with_garantee", "new"]. |
                        В зависимости от выбора, может быть один из values. Вывод: "used"
                        | Не может быть None )
     11. payment_order: Порядок оплаты поставщику

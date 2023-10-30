@@ -505,11 +505,11 @@ def register_of_pledges(soup):
 
 def rosfinmonitoring(soup):
     try:
-        return soup.find('div', class_='card card-nopadding external-142 attached'
+        return soup.find('div', class_='card card-nopadding external-142'
                          ).find('div', class_='card-section').get_text(strip=True, separator=' ')
     except Exception as _ex:
         logging.info(_ex, exc_info=True)
-        return '-'
+        return 'Информация по источнику отсутствует'
 
 
 def sanctions(soup):
@@ -519,7 +519,7 @@ def sanctions(soup):
             strip=True, separator=' ')
     except Exception as _ex:
         logging.info(_ex, exc_info=True)
-        return '-'
+        return 'Информация по источнику отсутствует'
 
 
 def get_url_delta(soup):

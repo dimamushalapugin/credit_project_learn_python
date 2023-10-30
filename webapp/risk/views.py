@@ -81,8 +81,3 @@ def download(filename):
     real_path = os.path.join('static', 'files', folder_path).replace('\\', '/').replace(f"/{filename}", '')
     logging.info(f"{current_user} скачивает файл: {filename}")
     return send_from_directory(real_path, filename, as_attachment=True)
-
-
-@blueprint.route('/get_dir_name', methods=['POST'])
-def parsing_dir_name(client_inn):
-    return get_dir_name(client_inn)
