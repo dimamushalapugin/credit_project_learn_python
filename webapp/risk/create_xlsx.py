@@ -312,14 +312,12 @@ def create_xlsx_file(inn_client, inn_seller, main_client: dict, delta_client: di
     sheet[f'A{sheet.max_row}'].value = f'4. Анализ продавца {main_seller["Краткое наименование"]}'
     try:
         if inn_client != inn_seller:
-            if inn_seller == 10:
+            if len(inn_seller) == 10:
                 logging.info("Продавец юр. лицо")
-                logging.info(f"ИНН продавца: {inn_seller}")
                 write_company(main_seller, delta_seller)
                 sheet[f'A{sheet.max_row + 1}'].value = ''
             else:
                 logging.info("Продавец ИП/КФХ")
-                logging.info(f"ИНН продавца: {inn_seller}")
                 sheet[f'A{sheet.max_row + 1}'].value = main_seller['Краткое наименование']
                 sheet[f'A{sheet.max_row + 1}'].value = ''
                 write_user(main_seller)
