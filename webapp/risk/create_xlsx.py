@@ -74,10 +74,10 @@ def create_xlsx_file(inn_client, inn_seller, main_client: dict, delta_client: di
         for index, (key, value) in enumerate(data.items()):
             if index == 24:  # Кол-во итераций
                 break
-            if index >= 9:
+            if 13 > index >= 9:
                 sheet[f'A{sheet.max_row + 2}'].value = key
                 sheet[f'A{sheet.max_row + 1}'].value = value
-            if index >= 13:
+            if 16 > index >= 13:
                 sheet[f'A{sheet.max_row + 2}'].value = key
                 sheet[f'A{sheet.max_row + 1}'].value = value
                 for _ in range(20):
@@ -313,6 +313,9 @@ def create_xlsx_file(inn_client, inn_seller, main_client: dict, delta_client: di
         sheet[f'A{sheet.max_row + 1}'].value = main_client['Краткое наименование']
         sheet[f'A{sheet.max_row + 1}'].value = ''
         write_user(main_client)
+        sheet = wb['Дир Учр Пор']
+        sheet[f'A{sheet.max_row}'].value = '2. Анализ директора/учредителя (ей) Лизингополучателя / поручителя(ей)'
+        sheet[f'A{sheet.max_row + 1}'].value = 'Лизингополучатель ИП/КФХ, проверка уже проведена'
 
     logging.info('Заполнение информации о продавце')
     sheet = wb['Продавец']
@@ -337,7 +340,7 @@ def create_xlsx_file(inn_client, inn_seller, main_client: dict, delta_client: di
                 sheet[f'A{sheet.max_row + 1}'].value = key
                 sheet[f'B{sheet.max_row}'].value = value
 
-            sheet[f'A{sheet.max_row + 2}'].value = 'ПРОВЕРКА НА ДОЛЖНУЮ ОСТМОТРИТЕЛЬНОСТЬ'
+            sheet[f'A{sheet.max_row + 3}'].value = 'ПРОВЕРКА НА ДОЛЖНУЮ ОСТМОТРИТЕЛЬНОСТЬ'
             for _ in range(20):
                 sheet[f'A{sheet.max_row + 1}'].value = ''
             sheet[f'A{sheet.max_row + 2}'].value = 'ИСПОЛНИТЕЛЬНЫЕ ПРОИЗВОДСТВА'

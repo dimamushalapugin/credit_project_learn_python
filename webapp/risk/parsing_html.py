@@ -651,14 +651,6 @@ def read_main_html(client_inn, object_inn, short_name):
         'Экстремизм (да_нет)': extremism(soup),  # for seller table
     }
 
-    with open(f'main_info {object_inn}.json', 'a', encoding='utf-8') as file:
-        json.dump(general_description_of_the_company, file, ensure_ascii=False, indent=3)
-        file.write('\n')
-        file.write('\n')
-        file.write('=' * 70)
-        file.write('\n')
-        file.write('\n')
-
     return general_description_of_the_company
 
 
@@ -1237,13 +1229,5 @@ def read_main_html_individual(client_inn, object_inn, short_name):
         'РНД (да_нет)': ind_reestr_np_yes_or_no(),
         'Гос контракты (да_нет)': ind_goverment_contracts_yes_or_no()
     }
-
-    with open(f'physic_info {object_inn}.json', 'a', encoding='utf-8') as file:
-        json.dump(general_description_of_an_individual, file, ensure_ascii=False, indent=3)
-        file.write('\n')
-        file.write('\n')
-        file.write('=' * 70)
-        file.write('\n')
-        file.write('\n')
 
     return general_description_of_an_individual
