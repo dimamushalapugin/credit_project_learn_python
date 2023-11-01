@@ -196,7 +196,7 @@ def create_xlsx_file(inn_client, inn_seller, main_client: dict, delta_client: di
         for _ in range(20):
             sheet[f'A{sheet.max_row + 1}'].value = ''
 
-        sheet[f'A{sheet.max_row + 2}'].value = 'Проверка аффилированных компаний'
+        sheet[f'A{sheet.max_row + 2}'].value = 'ПРОВЕРКА АФФИЛИРОВАННЫХ КОМПАНИЙ'
         for _ in range(20):
             sheet[f'A{sheet.max_row + 1}'].value = ''
 
@@ -246,7 +246,7 @@ def create_xlsx_file(inn_client, inn_seller, main_client: dict, delta_client: di
 
         logging.info("Запуск процесса записи информации про директора/учредителей в xslx файл")
         sheet = wb['Дир Учр Пор']
-        sheet[f'A{sheet.max_row}'].value = '2. Анализ директора/учредителя (ей) Лизингополучателя / поручителя(ей)'
+        sheet[f'A{sheet.max_row}'].value = '2. Анализ директора/учредителя (ей) / поручителя(ей)'
         sheet[f'A{sheet.max_row + 1}'].value = '2.1. ДИРЕКТОР/ГЕН. ДИРЕКТОР'
         sheet[f'A{sheet.max_row + 1}'].value = director_client['Краткое наименование']
         sheet[f'A{sheet.max_row + 1}'].value = ''
