@@ -41,6 +41,7 @@ def company_status(soup):
         return '-'
 
 
+#  TODO: Нужно переделать
 def company_inn_kpp_ogrn_okpo(soup, kpp_inn_okpo):
     rows = soup.find('table', class_='cards__data').find_all('tr')
 

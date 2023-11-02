@@ -355,32 +355,32 @@ def create_xlsx_file(inn_client, inn_seller, main_client: dict, delta_client: di
 
     sheet = wb['Предмет лизинга']
     sheet[f'A{sheet.max_row}'].value = '4. Анализ предмета лизинга'
-    sheet[f'A{sheet.max_row + 2}'].value = 'НАИМЕНОВАНИЕ'
+    sheet[f'A{sheet.max_row + 2}'].value = 'НАИМЕНОВАНИЕ ПЛ'
     sheet[f'A{sheet.max_row + 1}'].value = 'ГОД ВЫПУСКА, СОСТОЯНИЕ'
     for _ in range(20):
         sheet[f'A{sheet.max_row + 1}'].value = ''
     sheet[f'A{sheet.max_row + 1}'].value = 'СТОИМОСТЬ ПРЕДМЕТА ЛИЗИНГА'
     sheet[f'A{sheet.max_row + 1}'].value = ''
-    sheet[f'A{sheet.max_row + 1}'].value = 'Стоимость предмета лизинга соответствует среднерыночной цене.'
+    sheet[f'A{sheet.max_row + 1}'].value = 'Стоимость предмета лизинга соответствует среднерыночной цене'
     sheet[
         f'A{sheet.max_row + 1}'].value = '(на основании сравнительного анализа аналогичного имущества в общедоступных источниках)'
     sheet[f'A{sheet.max_row + 2}'].value = 'ЛИКВИДНОСТЬ'
-    sheet[f'A{sheet.max_row + 1}'].value = 'Высокая/ Средняя / Низкая/ Безнадежная'
+    sheet[f'A{sheet.max_row + 1}'].value = 'Высокая/Средняя/Низкая/Безнадежная'
     for _ in range(7):
         sheet[f'A{sheet.max_row + 1}'].value = ''
     sheet[f'A{sheet.max_row + 1}'].value = 'ПРАВОУСТАНАВЛИВАЮЩИЕ ДОКУМЕНТЫ'
     sheet[f'A{sheet.max_row + 1}'].value = '1. Договор купли-продажи'
-    sheet[f'B{sheet.max_row}'].value = 'Да/ Нет (ПЛ новый)/ Нет'
+    sheet[f'B{sheet.max_row}'].value = 'Да/Нет (ПЛ новый)/Нет'
     sheet[f'A{sheet.max_row + 1}'].value = '2. Акт примема-передачи'
-    sheet[f'B{sheet.max_row}'].value = 'Да/ Нет (ПЛ новый)/ Нет'
-    sheet[f'A{sheet.max_row + 1}'].value = '3. ПТС/ ПСМ'
-    sheet[f'B{sheet.max_row}'].value = 'Да/ Нет (ПЛ новый)/ Нет'
-    sheet[f'A{sheet.max_row + 2}'].value = 'ПРОВЕРКА ПО ДАННЫМ САЙТА  ГИБДД/ МИНСЕЛЬХОЗ'
-    sheet[f'A{sheet.max_row + 1}'].value = 'Существенная негативная информация не обнаружена/ обнаружена'
+    sheet[f'B{sheet.max_row}'].value = 'Да/Нет (ПЛ новый)/Нет'
+    sheet[f'A{sheet.max_row + 1}'].value = '3. ПТС/ПСМ'
+    sheet[f'B{sheet.max_row}'].value = 'Да/Нет (ПЛ новый)/Нет'
+    sheet[f'A{sheet.max_row + 2}'].value = 'ПРОВЕРКА ПО ДАННЫМ САЙТА ГИБДД/МИНСЕЛЬХОЗ'
+    sheet[f'A{sheet.max_row + 1}'].value = 'Существенная негативная информация не обнаружена/обнаружена'
     for _ in range(20):
         sheet[f'A{sheet.max_row + 1}'].value = ''
     sheet[f'A{sheet.max_row + 2}'].value = 'ПРОВЕРКА ПО ДАННЫМ РЕЕСТРА ЗАЛОГОВ ФНП/ФЕДРЕСУРС'
-    sheet[f'A{sheet.max_row + 1}'].value = 'Существенная негативная информация не обнаружена/ обнаружена'
+    sheet[f'A{sheet.max_row + 1}'].value = 'Существенная негативная информация не обнаружена/обнаружена'
     for _ in range(20):
         sheet[f'A{sheet.max_row + 1}'].value = ''
     sheet[f'A{sheet.max_row + 1}'].value = 'ПРОВЕРКА ДЕЙСТВИТЕЛЬНОСТИ ЭПТС'

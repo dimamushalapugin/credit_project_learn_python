@@ -57,14 +57,6 @@ def read_pages_for_table(seller_inn, info_first, info_delta, is_factory, is_deal
         logging.info(_ex, exc_info=True)
         raise Exception('Проблема с таблицей Продавца')
 
-    with open('seller_table_info.json', 'a', encoding='utf-8') as file:
-        json.dump(info_table, file, ensure_ascii=False, indent=3)
-        file.write('\n')
-        file.write('\n')
-        file.write('=' * 70)
-        file.write('\n')
-        file.write('\n')
-
     return info_table
 
 
