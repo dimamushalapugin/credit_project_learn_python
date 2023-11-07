@@ -1,5 +1,4 @@
 import re
-import json
 
 from datetime import datetime as dt
 from dateutil.relativedelta import relativedelta
@@ -41,7 +40,6 @@ def company_status(soup):
         return '-'
 
 
-#  TODO: Нужно переделать
 def company_inn_kpp_ogrn_okpo(soup, kpp_inn_okpo):
     rows = soup.find(class_='cards__data').find_all('tr')
 
@@ -152,21 +150,12 @@ def authorized_capital(soup):
 
 def main_activity(soup):
     try:
-        code = soup.find('table', class_='cards__data-small').find_all('tr')[0].find('td').get_text(strip=True)
+        code = soup.find(class_='cards__data cards__data-small').find('td').get_text(strip=True)
+        logging.info(Okved.return_okved_name(code))
         return Okved.return_okved_name(code)
     except Exception as _ex:
         logging.info(_ex, exc_info=True)
         return '-'
-
-
-def temporary_func(soup):  # Временная функция для проверки кода ОКВЭД
-    try:
-        return soup.find(
-            'span', class_='cards__column_block-link cards__column_more-link appear'
-        ).find_previous('table', class_='cards__data cards__data-small').find('td').get_text(strip=True)
-    except Exception as _ex:
-        logging.info(_ex, exc_info=True)
-        return ['-']
 
 
 def additional_activities(soup) -> List[str]:
@@ -631,7 +620,7 @@ def read_main_html(client_inn, object_inn, short_name):
         'УЧРЕДИТЕЛИ ЮЛ': founders_legal(soup),
         'УЧРЕДИТЕЛИ ФЛ': founders_physical(soup),
         'Уставный капитал': authorized_capital(soup),
-        'Основной вид деятельности': temporary_func(soup),
+        'Основной вид деятельности': main_activity(soup),
         f'Доп. виды деятельности ({len(additional_activities(soup))})': '\n'.join(additional_activities(soup)),
         'Кол-во сотрудников': '\n'.join(count_of_members(soup)),
         'ИСТОРИЯ': history(soup),

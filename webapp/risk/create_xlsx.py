@@ -3,7 +3,9 @@ import openpyxl
 from datetime import datetime as dt
 from flask_login import current_user
 
+from webapp.risk.design_xlsx import main_design
 from webapp.risk.logger import logging
+from webapp.risk.models import Okved
 from webapp.config import PATH_FOR_HTML_PAGES
 
 
@@ -98,7 +100,7 @@ def create_xlsx_file(inn_client, inn_seller, main_client: dict, delta_client: di
             if index == 22:  # Кол-во итераций. Заканчивается на "ИСТОРИЯ"
                 break
             match value:
-                case str():
+                case str() | Okved():
                     sheet[f'A{sheet.max_row + 1}'].value = name
                     sheet[f'B{sheet.max_row}'].value = value
                 case dict():
@@ -115,6 +117,8 @@ def create_xlsx_file(inn_client, inn_seller, main_client: dict, delta_client: di
                     else:
                         sheet[f'B{sheet.max_row}'].value = '-'
                 case _:
+                    logging.info(type(value))
+                    logging.info(value)
                     logging.info(f"{index} {name}: {value} (other)")
                     sheet[f'A{sheet.max_row + 1}'].value = name
                     sheet[f'B{sheet.max_row}'].value = '-'
@@ -314,7 +318,7 @@ def create_xlsx_file(inn_client, inn_seller, main_client: dict, delta_client: di
         sheet[f'A{sheet.max_row + 1}'].value = ''
         write_user(main_client)
         sheet = wb['Дир Учр Пор']
-        sheet[f'A{sheet.max_row}'].value = '2. Анализ директора/учредителя (ей) Лизингополучателя / поручителя(ей)'
+        sheet[f'A{sheet.max_row}'].value = '2. Анализ директора/учредителя (ей)/поручителя(ей)'
         sheet[f'A{sheet.max_row + 1}'].value = 'Лизингополучатель ИП/КФХ, проверка уже проведена'
 
     logging.info('Заполнение информации о продавце')
@@ -384,7 +388,9 @@ def create_xlsx_file(inn_client, inn_seller, main_client: dict, delta_client: di
     for _ in range(20):
         sheet[f'A{sheet.max_row + 1}'].value = ''
     sheet[f'A{sheet.max_row + 1}'].value = 'ПРОВЕРКА ДЕЙСТВИТЕЛЬНОСТИ ЭПТС'
-
     logging.info(f"Сохраняем файл. Created by {current_user}")
     wb.save(
         fr"{PATH_FOR_HTML_PAGES}/{short_name} ИНН {inn_client}/{dt.today().strftime(f'%d.%m.%Y')}/Риск заключение {inn_client}.xlsx")
+
+    logging.info(f"({current_user}). Запускаем оформеление дизайна xlsx")
+    main_design(fr"{PATH_FOR_HTML_PAGES}/{short_name} ИНН {inn_client}/{dt.today().strftime(f'%d.%m.%Y')}/Риск заключение {inn_client}.xlsx")
