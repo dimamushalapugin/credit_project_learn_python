@@ -211,12 +211,4 @@ def read_delta_html(client_inn, object_inn, short_name):
         'Недобросовестный поставщик (да_нет)': unscrupulous_seller(soup),  # for seller table
     }
 
-    with open(f'delta_info {object_inn}.json', 'a', encoding='utf-8') as file:
-        json.dump(delta_description_of_the_company, file, ensure_ascii=False, indent=3)
-        file.write('\n')
-        file.write('\n')
-        file.write('=' * 70)
-        file.write('\n')
-        file.write('\n')
-
     return delta_description_of_the_company

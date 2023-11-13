@@ -1,5 +1,6 @@
 import os
 import re
+import time
 
 from flask import Blueprint, flash, render_template, redirect, request, url_for, send_from_directory, jsonify, Response
 from flask_login import current_user
@@ -62,9 +63,13 @@ def create_xlsx_file(data):
 @blueprint.route('/create_xlsx', methods=['POST'])
 def create_risk_conclusion():
     logging.info(f"{current_user} Нажал на кнопку 'Создать риск-заключение'")
+    start_time = time.perf_counter()
     try:
         data = request.form
         file_name = create_xlsx_file(data)
+        end_time = time.perf_counter()
+        execution_time = end_time - start_time
+        logging.info(f"({current_user}) Риск-заключение создалось за: {execution_time:.1f} сек.")
         if file_name:
             flash(f'Файл успешно создан', 'success')
             return redirect(url_for('risk.risk_page', file_name=file_name))
