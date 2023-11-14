@@ -113,6 +113,8 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
     else:
         punkt_8_3 = ''
 
+    currency_list = 'Рубль'
+    kurs = 'Обычная оплата'  # еще возможна МОсбиржа  или валюта по ЦБ
     type_currency = ''
     equivalent_currency = ''
     if currency == 'Рубль':
@@ -141,6 +143,9 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
 
     quantity_payment_order()
 
+    currency = 'Рубль'
+    if currency == 'Рубль':
+        type_currency = 'рублей'
     from num2words import num2words
     suma_chislo = '20'
 
@@ -164,18 +169,74 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
 
             # формируем итоговую строку
             if int(integer_part) in [1, 21, 31, 41, 51, 61, 71, 81, 91] and decimal_part == '00':
-                punkt_2_3_1_numb_pr = f'{integer_words} процент'
+                punkt_2_3_1_numb_pr12345 = f'{integer_words} процент'
             elif int(integer_part) in [5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 25, 26, 27, 28, 29,
                                        30, 35, 36, 37, 38, 38, 40, 45, 46, 47, 48, 49, 50, 55, 56, 57, 58, 59, 60, 65,
                                        66, 67, 68, 69, 70, 75, 76, 77, 78, 79, 80, 85, 86, 87, 88, 89, 90, 95, 96, 97,
                                        98, 99] and decimal_part == '00':
-                punkt_2_3_1_numb_pr = f'{integer_words} процентов'
+                punkt_2_3_1_numb_pr12345 = f'{integer_words} процентов'
             elif int(integer_part) in [2, 3, 4, 22, 23, 24, 32, 33, 34, 42, 43, 44, 52, 53, 54, 62, 63, 64, 72, 73, 74,
                                        82, 83, 84, 92, 93, 94] and decimal_part == '00':
-                punkt_2_3_1_numb_pr = f'{integer_words} процента'
+                punkt_2_3_1_numb_pr12345 = f'{integer_words} процента'
             else:
-                punkt_2_3_1_numb_pr = f'{integer_words} целых {decimal_words} сотых процентов'
-            return punkt_2_3_1_numb_pr
+                punkt_2_3_1_numb_pr12345 = f'{integer_words} целых {decimal_words} сотых процентов'
+            return punkt_2_3_1_numb_pr12345
+        except ValueError:
+            return "Неверный формат числа"
+
+    def number_to_words(suma_chislo123):
+        try:
+            # Разбиваем строку на целую и десятичную часть
+            suma_chislo123 = str(round(float(suma_chislo123), 2)).replace(',', '.') if \
+                str(round(float(suma_chislo123), 2)).replace(',', '.')[-3] == '.' else str(
+                round(float(suma_chislo123), 2)).replace(',', '.') + '0'
+            parts = suma_chislo123.split(".")
+            integer_part = parts[0]
+            decimal_part = parts[1] if len(parts) > 1 else "00"
+
+            # Преобразуем целую часть в число прописью
+            integer_words = num2words(int(integer_part), lang='ru')
+
+            # Определяем правильную форму для "рублей"
+            if 10 < float(integer_part) % 100 < 20:
+                valute_rub = "рублей"
+            elif float(integer_part) % 10 == 1:
+                valute_rub = "рубль"
+            elif 1 < float(integer_part) % 10 < 5:
+                valute_rub = "рубля"
+            else:
+                valute_rub = "рублей"
+
+            # Преобразуем десятичную часть в число прописью
+            if currency_list == 'Рубль':
+                decimal_words = num2words(int(decimal_part), lang='ru', to='currency', currency='RUB')
+            # elif currency_list == 'Китайский юань':
+            #     decimal_words = num2words(int(decimal_part), lang='ru', to='currency', currency='CNY')
+            # elif currency_list == 'Доллар США':
+            #     decimal_words = num2words(int(decimal_part), lang='ru', to='currency', currency='USD')
+            else:
+                decimal_words = num2words(int(decimal_part), lang='ru')
+
+            # Определяем правильную форму для "копеек"
+            if 10 < float(decimal_part) % 100 < 20:
+                valute_copeyka = "копеек"
+            elif float(decimal_part) % 10 == 1:
+                valute_copeyka = "копейка"
+            elif 1 < float(decimal_part) % 10 <= 4:
+                valute_copeyka = "копейки"
+            else:
+                valute_copeyka = "копеек"
+
+            # Формируем итоговую строку
+            # if currency_list == 'Рубль':
+            suma_dann1 = ((f"{integer_words} {decimal_words}".strip().replace('ноль рублей', '').replace(',', '')
+                           .replace('копеек', 'сотых')).replace('копейка', 'сотая')
+                          .replace('копейки', 'сотые'))
+            # elif currency_list == 'Китайский юань':
+            #     suma_dann1 = f"{integer_words} целых {decimal_words} сотых китайских юаней"
+            # elif currency_list == 'Доллар США':
+            #     suma_dann1 = f"{integer_words} целых {decimal_words} сотых долларов США"
+            return suma_dann1
         except ValueError:
             return "Неверный формат числа"
 
@@ -195,11 +256,24 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
     punkt_2_3_3_numb_pr = ''
     punkt_2_3_4_numb_pr = ''
     punkt_2_3_5_numb_pr = ''
+    payment_1 = ''
+    payment_2 = ''
+    payment_3 = ''
+    payment_4 = ''
+    payment_5 = ''
+    payment_1_propis = ''
+    payment_2_propis = ''
+    payment_3_propis = ''
+    payment_4_propis = ''
+    payment_5_propis = ''
     "информация по платежам, пункт 2.3"
     if len(payment_order.split(' ')) == 1:
         punkt_2_3_1_pay = 'Окончательный'
         punkt_2_3_1_num = payment_order.split(' ')[0]
         punkt_2_3_1_numb_pr = percent_to_word(str(punkt_2_3_1_num))
+        payment_1 = round((float(suma_chislo) * float(payment_order.split(' ')[0])) / 100, 2)
+        payment_1_propis = number_to_words(payment_1)
+        payment_1 = payment_1 if str(payment_1)[-3] == '.' else str(payment_1) + '0'
     elif len(payment_order.split(' ')) == 2:
         punkt_2_3_1_pay = 'Первый'
         punkt_2_3_2_pay = 'Окончательный'
@@ -207,6 +281,12 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
         punkt_2_3_2_num = payment_order.split(' ')[1]
         punkt_2_3_1_numb_pr = percent_to_word(str(punkt_2_3_1_num))
         punkt_2_3_2_numb_pr = percent_to_word(str(punkt_2_3_2_num))
+        payment_1 = round((float(suma_chislo) * float(payment_order.split(' ')[0])) / 100, 2)
+        payment_2 = round((float(suma_chislo) * float(payment_order.split(' ')[1])) / 100, 2)
+        payment_1_propis = number_to_words(payment_1)
+        payment_2_propis = number_to_words(payment_2)
+        payment_1 = payment_1 if str(payment_1)[-3] == '.' else str(payment_1) + '0'
+        payment_2 = payment_2 if str(payment_2)[-3] == '.' else str(payment_2) + '0'
     elif len(payment_order.split(' ')) == 3:
         punkt_2_3_1_pay = 'Первый'
         punkt_2_3_2_pay = 'Второй'
@@ -217,6 +297,15 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
         punkt_2_3_1_numb_pr = percent_to_word(str(punkt_2_3_1_num))
         punkt_2_3_2_numb_pr = percent_to_word(str(punkt_2_3_2_num))
         punkt_2_3_3_numb_pr = percent_to_word(str(punkt_2_3_3_num))
+        payment_1 = round((float(suma_chislo) * float(payment_order.split(' ')[0])) / 100, 2)
+        payment_2 = round((float(suma_chislo) * float(payment_order.split(' ')[1])) / 100, 2)
+        payment_3 = round((float(suma_chislo) * float(payment_order.split(' ')[2])) / 100, 2)
+        payment_1_propis = number_to_words(payment_1)
+        payment_2_propis = number_to_words(payment_2)
+        payment_3_propis = number_to_words(payment_3)
+        payment_1 = payment_1 if str(payment_1)[-3] == '.' else str(payment_1) + '0'
+        payment_2 = payment_2 if str(payment_2)[-3] == '.' else str(payment_2) + '0'
+        payment_3 = payment_3 if str(payment_3)[-3] == '.' else str(payment_3) + '0'
     elif len(payment_order.split(' ')) == 4:
         punkt_2_3_1_pay = 'Первый'
         punkt_2_3_2_pay = 'Второй'
@@ -230,6 +319,18 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
         punkt_2_3_2_numb_pr = percent_to_word(str(punkt_2_3_2_num))
         punkt_2_3_3_numb_pr = percent_to_word(str(punkt_2_3_3_num))
         punkt_2_3_4_numb_pr = percent_to_word(str(punkt_2_3_4_num))
+        payment_1 = round((float(suma_chislo) * float(payment_order.split(' ')[0])) / 100, 2)
+        payment_2 = round((float(suma_chislo) * float(payment_order.split(' ')[1])) / 100, 2)
+        payment_3 = round((float(suma_chislo) * float(payment_order.split(' ')[2])) / 100, 2)
+        payment_4 = round((float(suma_chislo) * float(payment_order.split(' ')[3])) / 100, 2)
+        payment_1_propis = number_to_words(payment_1)
+        payment_2_propis = number_to_words(payment_2)
+        payment_3_propis = number_to_words(payment_3)
+        payment_4_propis = number_to_words(payment_4)
+        payment_1 = payment_1 if str(payment_1)[-3] == '.' else str(payment_1) + '0'
+        payment_2 = payment_2 if str(payment_2)[-3] == '.' else str(payment_2) + '0'
+        payment_3 = payment_3 if str(payment_3)[-3] == '.' else str(payment_3) + '0'
+        payment_4 = payment_4 if str(payment_4)[-3] == '.' else str(payment_4) + '0'
     elif len(payment_order.split(' ')) == 5:
         punkt_2_3_1_pay = 'Первый'
         punkt_2_3_2_pay = 'Второй'
@@ -246,8 +347,32 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
         punkt_2_3_3_numb_pr = percent_to_word(str(punkt_2_3_3_num))
         punkt_2_3_4_numb_pr = percent_to_word(str(punkt_2_3_4_num))
         punkt_2_3_5_numb_pr = percent_to_word(str(punkt_2_3_5_num))
-    # print(punkt_2_3_1_pay, punkt_2_3_2_pay, punkt_2_3_3_pay, punkt_2_3_4_pay, punkt_2_3_5_pay)
-    # print(punkt_2_3_1_num, punkt_2_3_2_num, punkt_2_3_3_num, punkt_2_3_4_num, punkt_2_3_5_num)
+        payment_1 = round((float(suma_chislo) * float(payment_order.split(' ')[0])) / 100, 2)
+        payment_2 = round((float(suma_chislo) * float(payment_order.split(' ')[1])) / 100, 2)
+        payment_3 = round((float(suma_chislo) * float(payment_order.split(' ')[2])) / 100, 2)
+        payment_4 = round((float(suma_chislo) * float(payment_order.split(' ')[3])) / 100, 2)
+        payment_5 = round((float(suma_chislo) * float(payment_order.split(' ')[4])) / 100, 2)
+        payment_1_propis = number_to_words(payment_1)
+        payment_2_propis = number_to_words(payment_2)
+        payment_3_propis = number_to_words(payment_3)
+        payment_4_propis = number_to_words(payment_4)
+        payment_5_propis = number_to_words(payment_5)
+        payment_1 = payment_1 if str(payment_1)[-3] == '.' else str(payment_1) + '0'
+        payment_2 = payment_2 if str(payment_2)[-3] == '.' else str(payment_2) + '0'
+        payment_3 = payment_3 if str(payment_3)[-3] == '.' else str(payment_3) + '0'
+        payment_4 = payment_4 if str(payment_4)[-3] == '.' else str(payment_4) + '0'
+        payment_5 = payment_5 if str(payment_5)[-3] == '.' else str(payment_5) + '0'
+    # print(f'01010 {punkt_2_3_1_numb_pr}')
+    # print(f'01010 {punkt_2_3_2_numb_pr}')
+    # print(f'01010 {punkt_2_3_3_numb_pr}')
+    # print(f'01010 {punkt_2_3_4_numb_pr}')
+    # print(f'01010 {punkt_2_3_5_numb_pr}')
+    # print(payment_order)
+    # print(payment_1)
+    # print(payment_2)
+    # print(payment_3)
+    # print(payment_4)
+    # print(payment_5)
 
     print(f'01010 {punkt_2_3_1_numb_pr}')
     print(f'01010 {punkt_2_3_2_numb_pr}')
@@ -262,11 +387,15 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
                      "{{ punkt_4_7_1 }}",
                      "{{ punkt_5_3 }}", "{{ punkt_6_4 }}", "{{ punkt_8_3 }}", "{{ punkt_2_3_1_pay }}",
                      "{{ punkt_2_3_2_pay }}",
-                     "{{ punkt_2_3_3_pay }}", "{{ punkt_2_3_4_pay }}", "{{ punkt_2_3_5_pay }}", "{{ punkt_2_3_1_num }}"
-        , "{{ punkt_2_3_2_num }}", "{{ punkt_2_3_3_num }}", "{{ punkt_2_3_4_num }}", "{{ punkt_2_3_5_num }}",
+                     "{{ punkt_2_3_3_pay }}", "{{ punkt_2_3_4_pay }}", "{{ punkt_2_3_5_pay }}", "{{ punkt_2_3_1_num }}",
+                     "{{ punkt_2_3_2_num }}", "{{ punkt_2_3_3_num }}", "{{ punkt_2_3_4_num }}", "{{ punkt_2_3_5_num }}",
                      "{{ punkt_2_3_1_numb_pr }}", "{{ punkt_2_3_2_numb_pr }}", "{{ punkt_2_3_3_numb_pr }}",
                      "{{ punkt_2_3_4_numb_pr }}",
-                     "{{ punkt_2_3_5_numb_pr }}"]
+                     "{{ punkt_2_3_5_numb_pr }}", "{{ payment_1 }}", "{{ payment_2 }}", "{{ payment_3 }}",
+                     "{{ payment_4 }}",
+                     "{{ payment_5 }}", "{{ payment_1_propis }}", "{{ payment_2_propis }}", "{{ payment_3_propis }}",
+                     "{{ payment_4_propis }}", "{{ payment_5_propis }}", "{{ type_currency }}",
+                     "{{ equivalent_currency }}"]
 
     new_words_dkp = [str(new_old_pl), str(pb_vizor), str(identif_punkt_3_1_1), str(identif_punkt_3_1_3),
                      str(punkt_3_1_9),
@@ -279,7 +408,9 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
         , str(punkt_2_3_2_num), str(punkt_2_3_3_num), str(punkt_2_3_4_num), str(punkt_2_3_5_num),
                      str(punkt_2_3_1_numb_pr), str(punkt_2_3_2_numb_pr), str(punkt_2_3_3_numb_pr),
                      str(punkt_2_3_4_numb_pr)
-        , str(punkt_2_3_5_numb_pr)]
+        , str(punkt_2_3_5_numb_pr), str(payment_1), str(payment_2), str(payment_3), str(payment_4), str(payment_5),
+                     str(payment_1_propis), str(payment_2_propis), str(payment_3_propis), str(payment_4_propis),
+                     str(payment_5_propis), str(type_currency), str(equivalent_currency)]
     def replace_words_in_dkp(docx_file, old_words_dkp, new_words_dkp):
         doc = Document(docx_file)
 
@@ -481,6 +612,86 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
                                         'По всем вопросам, не оговоренным настоящим разделом Договора, Стороны руководствуются Гражданским кодексом РФ, Налоговым кодексом РФ, Федеральным законом от 06.04.2011 №63-ФЗ «Об электронной подписи», Федеральным законом от 06.11.2011 №402—ФЗ «О бухгалтерском учете» и иными действующими нормативно-правовыми актами РФ.',
                                         '8.9. Стороны соглашаются осуществлять документооборот при исполнении настоящего Договора в электронном виде по телекоммуникационным каналам связи, в том числе через систему оператора электронного документооборота «Диадок» (далее - Диадок) с использованием квалифицированной электронной подписи уполномоченного стороной лица. На каждом электронном документе (сообщении), отправляемом через Диадок, автоматически проставляется отметка о передаче документа с указанием даты и времени. Электронные документы, подписанные квалифицированной электронной подписью, признаются электронными документами, равнозначными документам на бумажном носителе, подписанными собственноручной подписью и заверенным печатью, за исключением случая, если федеральными законами или принимаемыми в соответствии с ними нормативными правовыми актами установлено требование о необходимости составления документа исключительно на бумажном носителе. Сторона обязана подписать документ в электронно-цифровом формате не позднее 2(двух) рабочих дней с даты выставления его другой Стороной договора. В случае неполучения Стороной подтверждения подписания выставленного документа, такой документ считается подписанным другой Стороной в указанный срок.']:
                     doc.element.body.remove(run._element)
+
+        if kurs == 'Обычная оплата':
+            for run in doc.paragraphs:
+
+                if run.text.strip() in [
+                    '2.3. Оплата суммы договора производится в рублях по курсу обмена валют ЦБ РФ на день платежа на расчетный счет Продавца и осуществляется в следующем порядке:',
+                    '2.3. Оплата суммы договора производится в рублях по средневзвешенному курсу до 4-х знаков после запятой CNY/RUB (Китайский юань / Российский рубль) ПАО «Московская Биржа» (https://www.moex.com/ru/issue/CNYRUB_TOM/CETS) предшествующего дня на расчетный счет Продавца и осуществляется в следующем порядке:',
+                    '2.4. Сторонами, на следующий рабочий день, после дня оплаты, производится пересчет полученной суммы оплаты в рублях по средневзвешенному курсу CNY/RUB (Китайский юань / Российский рубль) ПАО «Московская Биржа» (https://www.moex.com/ru/issue/CNYRUB_TOM/CETS), действующему на день оплаты.',
+                    'По возникшей разнице в юанях будет производиться перерасчет между Покупателем и Продавцом, в следующем порядке:',
+                    '- если, средневзвешенный курс, определенный на день оплаты выше, чем курс, по которому Покупатель производил оплату, то Покупатель обязан в течение 1 рабочего дня доплатить Продавцу разницу;',
+                    '- если средневзвешенный курс, определенный на день оплаты ниже, чем курс, по которому Покупатель производил оплату, то Продавец обязан в течение 1 рабочего дня вернуть Покупателю разницу.',
+                    'Пересчет суммы оплаты в рублях производится только единоразово в рабочий день, следующий за днем оплаты.',
+                    'Требование   настоящего  пункта,  связанное  с  возможным переносом  срока  оплаты,  не  являются  основанием  для  признания оплаты Предмета лизинга Покупателем с просрочкой и не может служить основанием для привлечения Покупателя  к  ответственности.']:
+                    doc.element.body.remove(run._element)
+        elif kurs == 'moex':
+            for run in doc.paragraphs:
+                if run.text.strip() in [
+                    f'2.3. Оплата суммы договора производится в {type_currency} и осуществляется в следующем порядке:',
+                    '2.3. Оплата суммы договора производится в рублях по курсу обмена валют ЦБ РФ на день платежа на расчетный счет Продавца и осуществляется в следующем порядке:',
+                    '2.4. Платеж считается произведенным в момент списания денежных средств с расчетного счета Покупателя.']:
+                    doc.element.body.remove(run._element)
+        else:
+            for run in doc.paragraphs:
+                if run.text.strip() in [
+                    f'2.3. Оплата суммы договора производится в {type_currency} и осуществляется в следующем порядке:',
+                    '2.3. Оплата суммы договора производится в рублях по средневзвешенному курсу до 4-х знаков после запятой CNY/RUB (Китайский юань / Российский рубль) ПАО «Московская Биржа» (https://www.moex.com/ru/issue/CNYRUB_TOM/CETS) предшествующего дня на расчетный счет Продавца и осуществляется в следующем порядке:',
+                    '2.4. Сторонами, на следующий рабочий день, после дня оплаты, производится пересчет полученной суммы оплаты в рублях по средневзвешенному курсу CNY/RUB (Китайский юань / Российский рубль) ПАО «Московская Биржа» (https://www.moex.com/ru/issue/CNYRUB_TOM/CETS), действующему на день оплаты.',
+                    'По возникшей разнице в юанях будет производиться перерасчет между Покупателем и Продавцом, в следующем порядке:',
+                    '- если, средневзвешенный курс, определенный на день оплаты выше, чем курс, по которому Покупатель производил оплату, то Покупатель обязан в течение 1 рабочего дня доплатить Продавцу разницу;',
+                    '- если средневзвешенный курс, определенный на день оплаты ниже, чем курс, по которому Покупатель производил оплату, то Продавец обязан в течение 1 рабочего дня вернуть Покупателю разницу.',
+                    'Пересчет суммы оплаты в рублях производится только единоразово в рабочий день, следующий за днем оплаты.',
+                    'Требование   настоящего  пункта,  связанное  с  возможным переносом  срока  оплаты,  не  являются  основанием  для  признания оплаты Предмета лизинга Покупателем с просрочкой и не может служить основанием для привлечения Покупателя  к  ответственности.'
+                    ]:
+                    doc.element.body.remove(run._element)
+
+        if len(payment_order.split(' ')) == 1:
+            for run in doc.paragraphs:
+                if run.text.strip() in [
+                    f'2.3.1. {punkt_2_3_1_pay} платеж в размере {punkt_2_3_1_num}% ({punkt_2_3_1_numb_pr}) от стоимости предмета лизинга, что составляет сумму {equivalent_currency} {payment_1} ({payment_1_propis}) {type_currency}, в т.ч. НДС 20%, в течение 15 (пятнадцати) рабочих дней с момента перечисления Лизингополучателем первоначального платежа Покупателю по договору лизинга, а также после выставления Продавцом счета на оплату.',
+                    f'2.3.2. {punkt_2_3_2_pay} платеж в размере {punkt_2_3_2_num}% ({punkt_2_3_2_numb_pr}) от стоимости предмета лизинга, что составляет сумму {equivalent_currency} {payment_2} ({payment_2_propis}) {type_currency}, в т.ч. НДС 20%, в течение 7 (семи) рабочих дней с момента получения уведомления о готовности предмета лизинга к отгрузке согласно п.3.1.1 и после выставления Продавцом счета на оплату.',
+                    f'2.3.3. {punkt_2_3_3_pay} платеж в размере {punkt_2_3_3_num}% ({punkt_2_3_3_numb_pr}) от стоимости предмета лизинга, что составляет сумму {equivalent_currency} {payment_3} ({payment_3_propis}) {type_currency}, в т.ч. НДС 20%, в течение 7 (семи) рабочих дней после выставления Продавцом счета на оплату.',
+                    f'2.3.4. {punkt_2_3_4_pay} платеж в размере {punkt_2_3_4_num}% ({punkt_2_3_4_numb_pr}) от стоимости предмета лизинга, что составляет сумму {equivalent_currency} {payment_4} ({payment_4_propis}) {type_currency}, в т.ч. НДС 20%, в течение 7 (семи) рабочих дней после выставления Продавцом счета на оплату.',
+                    f'2.3.5. {punkt_2_3_5_pay} платеж в размере {punkt_2_3_5_num}% ({punkt_2_3_5_numb_pr}) от стоимости предмета лизинга, что составляет сумму {equivalent_currency} {payment_5} ({payment_5_propis}) {type_currency}, в т.ч. НДС 20%, в течение 7 (семи) рабочих дней после выставления Продавцом счета на оплату.']:
+                    print('1111111111')
+                    doc.element.body.remove(run._element)
+
+        elif len(payment_order.split(' ')) == 2:
+            for run in doc.paragraphs:
+                if run.text.strip() in [
+                    f'2.3.1. Оплата в размере {punkt_2_3_1_num}% ({punkt_2_3_1_numb_pr}) от стоимости предмета лизинга, что составляет сумму {equivalent_currency} {payment_1} ({payment_1_propis}) {type_currency}, в т.ч. НДС, в течение 15 (пятнадцати) рабочих дней с момента перечисления Лизингополучателем первоначального платежа Покупателю по договору лизинга,',
+                    'и в течение 7 (семи) рабочих дней с момента получения Покупателем уведомления Продавца о готовности предмета лизинга к отгрузке согласно п.3.1.1 и после выставления Продавцом счета на оплату.',
+                    f'2.3.3. {punkt_2_3_3_pay} платеж в размере {punkt_2_3_3_num}% ({punkt_2_3_3_numb_pr}) от стоимости предмета лизинга, что составляет сумму {equivalent_currency} {payment_3} ({payment_3_propis}) {type_currency}, в т.ч. НДС 20%, в течение 7 (семи) рабочих дней после выставления Продавцом счета на оплату.',
+                    f'2.3.4. {punkt_2_3_4_pay} платеж в размере {punkt_2_3_4_num}% ({punkt_2_3_4_numb_pr}) от стоимости предмета лизинга, что составляет сумму {equivalent_currency} {payment_4} ({payment_4_propis}) {type_currency}, в т.ч. НДС 20%, в течение 7 (семи) рабочих дней после выставления Продавцом счета на оплату.',
+                    f'2.3.5. {punkt_2_3_5_pay} платеж в размере {punkt_2_3_5_num}% ({punkt_2_3_5_numb_pr}) от стоимости предмета лизинга, что составляет сумму {equivalent_currency} {payment_5} ({payment_5_propis}) {type_currency}, в т.ч. НДС 20%, в течение 7 (семи) рабочих дней после выставления Продавцом счета на оплату.'
+                    ]:
+                    doc.element.body.remove(run._element)
+        elif len(payment_order.split(' ')) == 3:
+            for run in doc.paragraphs:
+                if run.text.strip() in [
+                    f'2.3.1. Оплата в размере {punkt_2_3_1_num}% ({punkt_2_3_1_numb_pr}) от стоимости предмета лизинга, что составляет сумму {equivalent_currency} {payment_1} ({payment_1_propis}) {type_currency}, в т.ч. НДС, в течение 15 (пятнадцати) рабочих дней с момента перечисления Лизингополучателем первоначального платежа Покупателю по договору лизинга,',
+                    'и в течение 7 (семи) рабочих дней с момента получения Покупателем уведомления Продавца о готовности предмета лизинга к отгрузке согласно п.3.1.1 и после выставления Продавцом счета на оплату.',
+                    f'2.3.4. {punkt_2_3_4_pay} платеж в размере {punkt_2_3_4_num}% ({punkt_2_3_4_numb_pr}) от стоимости предмета лизинга, что составляет сумму {equivalent_currency} {payment_4} ({payment_4_propis}) {type_currency}, в т.ч. НДС 20%, в течение 7 (семи) рабочих дней после выставления Продавцом счета на оплату.',
+                    f'2.3.5. {punkt_2_3_5_pay} платеж в размере {punkt_2_3_5_num}% ({punkt_2_3_5_numb_pr}) от стоимости предмета лизинга, что составляет сумму {equivalent_currency} {payment_5} ({payment_5_propis}) {type_currency}, в т.ч. НДС 20%, в течение 7 (семи) рабочих дней после выставления Продавцом счета на оплату.'
+                    ]:
+                    doc.element.body.remove(run._element)
+        elif len(payment_order.split(' ')) == 4:
+            for run in doc.paragraphs:
+                if run.text.strip() in [
+                    f'2.3.1. Оплата в размере {punkt_2_3_1_num}% ({punkt_2_3_1_numb_pr}) от стоимости предмета лизинга, что составляет сумму {equivalent_currency} {payment_1} ({payment_1_propis}) {type_currency}, в т.ч. НДС, в течение 15 (пятнадцати) рабочих дней с момента перечисления Лизингополучателем первоначального платежа Покупателю по договору лизинга,',
+                    'и в течение 7 (семи) рабочих дней с момента получения Покупателем уведомления Продавца о готовности предмета лизинга к отгрузке согласно п.3.1.1 и после выставления Продавцом счета на оплату.',
+                    f'2.3.5. {punkt_2_3_5_pay} платеж в размере {punkt_2_3_5_num}% ({punkt_2_3_5_numb_pr}) от стоимости предмета лизинга, что составляет сумму {equivalent_currency} {payment_5} ({payment_5_propis}) {type_currency}, в т.ч. НДС 20%, в течение 7 (семи) рабочих дней после выставления Продавцом счета на оплату.'
+                    ]:
+                    doc.element.body.remove(run._element)
+        else:
+            for run in doc.paragraphs:
+                if run.text.strip() in [
+                    f'2.3.1. Оплата в размере {punkt_2_3_1_num}% ({punkt_2_3_1_numb_pr}) от стоимости предмета лизинга, что составляет сумму {equivalent_currency} {payment_1} ({payment_1_propis}) {type_currency}, в т.ч. НДС, в течение 15 (пятнадцати) рабочих дней с момента перечисления Лизингополучателем первоначального платежа Покупателю по договору лизинга,',
+                    'и в течение 7 (семи) рабочих дней с момента получения Покупателем уведомления Продавца о готовности предмета лизинга к отгрузке согласно п.3.1.1 и после выставления Продавцом счета на оплату.']:
+                    doc.element.body.remove(run._element)
+
         doc.save(fr"ДКП {inn_client}.docx")
 
     replace_words_in_dkp(
