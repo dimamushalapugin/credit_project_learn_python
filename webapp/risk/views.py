@@ -5,7 +5,6 @@ import time
 from flask import Blueprint, flash, render_template, redirect, request, url_for, send_from_directory, jsonify, Response
 from flask_login import current_user
 
-from webapp.parsing_egrul import get_dir_name
 from webapp.user.auth_utils import admin_required
 from webapp.risk.new_create_risk_conclusion import create_conclusion
 from webapp.risk.logger import logging
