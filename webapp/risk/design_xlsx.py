@@ -1,5 +1,4 @@
 import openpyxl
-import time
 from openpyxl.styles import Alignment, PatternFill, Font
 
 

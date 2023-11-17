@@ -4,6 +4,7 @@ from datetime import datetime as dt
 from flask_login import current_user
 
 from webapp.risk.design_xlsx import main_design
+from webapp.risk.conditions_xlsx import main_conditions
 from webapp.risk.logger import logging
 from webapp.risk.models import Okved
 from webapp.config import PATH_FOR_HTML_PAGES
@@ -394,3 +395,4 @@ def create_xlsx_file(inn_client, inn_seller, main_client: dict, delta_client: di
 
     logging.info(f"({current_user}). Запускаем оформеление дизайна xlsx")
     main_design(fr"{PATH_FOR_HTML_PAGES}/{short_name} ИНН {inn_client}/{dt.today().strftime(f'%d.%m.%Y')}/Риск заключение {inn_client}.xlsx")
+    main_conditions(fr"{PATH_FOR_HTML_PAGES}/{short_name} ИНН {inn_client}/{dt.today().strftime(f'%d.%m.%Y')}/Риск заключение {inn_client}.xlsx")
