@@ -67,7 +67,7 @@ def delta_rating(sheet):
                 try:
                     if int(next_cell.value) >= 70:
                         next_cell.fill = color_green
-                    elif 50 <= int(next_cell.value) >= 60:
+                    elif int(next_cell.value) in [50, 60]:
                         next_cell.fill = color_orange
                     else:
                         next_cell.fill = color_red
