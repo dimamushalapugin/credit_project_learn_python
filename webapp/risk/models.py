@@ -13,7 +13,7 @@ class Okved(db.Model):
 
     @staticmethod
     def return_okved_name(okved_code: str):
-        return Okved.query.filter(Okved.code == okved_code).first()
+        return str(Okved.query.filter(Okved.code == okved_code).first())
 
 
 

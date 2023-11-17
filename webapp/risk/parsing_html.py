@@ -150,7 +150,8 @@ def authorized_capital(soup):
 
 def main_activity(soup):
     try:
-        code = soup.find(class_='cards__data cards__data-small').find('td').get_text(strip=True)
+        code = soup.find(class_='cards__column_block-link cards__column_more-link appear').parent.parent.parent.find(
+            'td').get_text(strip=True)
         logging.info(Okved.return_okved_name(code))
         return Okved.return_okved_name(code)
     except Exception as _ex:
