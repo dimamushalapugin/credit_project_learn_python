@@ -1,6 +1,5 @@
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-import time
 import openpyxl
 from docx import Document
 from docx.shared import Pt
