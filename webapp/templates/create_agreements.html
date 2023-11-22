@@ -196,13 +196,15 @@
                                             <option value="АО «СОЛИД БАНК»">АО «СОЛИД БАНК»</option>
                                             <option value="АО КБ «УРАЛ ФД»">АО КБ «УРАЛ ФД»</option>
                                             <option value="ИНВЕСТТОРГБАНК АО">ИНВЕСТТОРГБАНК АО</option>
+                                            <option value="ПАО СБЕРБАНК">ПАО СБЕРБАНК</option>
+                                            <option value="ПАО СОВКОМБАНК">ПАО СОВКОМБАНК</option>
                                             <option value="ООО «ЛКМБ-РТ»">ООО «ЛКМБ-РТ»</option>
                                         </select>
                                     </div>
                                     <div class="mb-3">
                                         <label>Выберите валюту</label>
                                         <select class="form-select form-select-sm" name="currency"
-                                                aria-label=".form-select-sm example" required>
+                                                aria-label=".form-select-sm example" id="currency" required>
                                             <option selected></option>
                                             <option value="Рубль">Рубль</option>
                                             <option value="Китайский юань">Китайский юань</option>
@@ -344,6 +346,21 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="card border-light mb-3" id="stock" style="display: none;">
+                                <div class="card-body">
+                                    <div class="mb-3">
+                                        <div class="mb-3">
+                                            <label>Способ оплаты (по курсу ЦБ или по Бирже)</label>
+                                            <select class="form-select form-select-sm" name="stock"
+                                                    aria-label=".form-select-sm example" required disabled>
+                                                <option selected></option>
+                                                <option value="ЦБ">ЦБ</option>
+                                                <option value="Биржа">Биржа</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                             <div class="card border-light mb-3" id="dop_fields" style="display: none;">
                                 <div class="card-body">
                                     <div class="mb-3">
@@ -471,7 +488,9 @@
             const mainFields = document.getElementById("main_fields");
             const typeSelect = document.getElementById("typeSelect");
             const dopFields = document.getElementById("dop_fields");
-
+            const stockEx = document.getElementById("stock");
+            const currency = document.getElementById("currency");
+            const stockSelect = document.querySelector('[name="stock"]');
 
             // Добавляем слушатели событий на чекбоксы
             checkDl.addEventListener("change", function() {
@@ -495,12 +514,14 @@
                     updateDopFields();
                     updateCheckButtonDkp();
                     updateMainAndAppFields();
+                    updateStock();
                 } else {
                     dkpFields.style.display = "none";
                     disableFields(dkpFields);
                     updateDopFields();
                     updateCheckButtonDkp();
                     updateMainAndAppFields();
+                    updateStock();
                 }
             });
 
@@ -515,6 +536,11 @@
                     disableFields(dopFields);
                     updateDopFields();
                 }
+            });
+
+            // Добавляем слушатель события для поля ЦБ или Биржа
+            currency.addEventListener("change", function () {
+                updateStock();
             });
 
             function updateMainAndAppFields() {
@@ -534,6 +560,16 @@
                 } else {
                     dopFields.style.display = "none";
                     disableFields(dopFields);
+                }
+            }
+            function updateStock() {
+                if ((currency.value === "Китайский юань" || currency.value === "Доллар США") && checkDkp.checked) {
+                    stockEx.style.display = "block";
+                    enableFields(stockEx)
+                } else {
+                    stockEx.style.display = "none";
+                    // Отключаем возможность выбора опций в блоке "stock"
+                    disableFields(stockEx);
                 }
             }
 
