@@ -284,7 +284,7 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
             equivalent_currency = 'в рублях, эквивалентную'
         return (new_old_pl, pb_vizor, identif_punkt_3_1_1, identif_punkt_3_1_3, punkt_3_1_9, punkt_3_3_3_key,
                 punkt_3_3_3_key2, punkt_3_1_6, punkt_3_3_7, punkt_8_2, pril_1_2, pril_1_3, punkt_4_7_1, punkt_5_3,
-                punkt_6_4, punkt_8_3, kurs, type_currency, equivalent_currency)
+                punkt_6_4, punkt_8_3, type_currency, equivalent_currency, kurs)
 
     def percent_to_word(number: str):
         try:
@@ -570,7 +570,8 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
         formatted_name_leader_seller = f'{last_name_dkp} {first_name_initial_dkp}.{patronymic_initial_dkp}.'
         address_seller_dkp = result_dkp[0]['data']['address']['unrestricted_value']
         ogrn_seller = result_dkp[0]['data']['ogrn']
-        return ip_or_kfh_dkp, inn_kpp_seller, ogrn_seller, leader_seller, formatted_name_leader_seller, fio_leader_seller
+        return (ip_or_kfh_dkp, inn_kpp_seller, ogrn_seller, leader_seller, formatted_name_leader_seller,
+                fio_leader_seller, address_seller_dkp)
 
     def seller_dkp_all():
         result_dkp = DADATA_BASE.find_by_id("party", inn_seller)
@@ -615,56 +616,57 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
         name_and_dover_seller = seller_dkp_all()
         deistv_sell = deistv_seller(info_about_seller, full_seller[-1])
 
-        old_words_dkp = ["{{ new_old_pl }}", "{{ pb_vizor }}", "{{ identif_punkt_3_1_1 }}",
-                         "{{ identif_punkt_3_1_3 }}", "{{ punkt_3_1_9 }}", "{{ punkt_3_3_3_key }}",
-                         "{{ punkt_3_3_3_key2 }}",
-                         "{{ punkt_3_1_6 }}", "{{ punkt_3_3_7 }}", "{{ punkt_8_2 }}", "{{ pril_1_2 }}",
-                         "{{ pril_1_3 }}",
-                         "{{ punkt_4_7_1 }}",
-                         "{{ punkt_5_3 }}", "{{ punkt_6_4 }}", "{{ punkt_8_3 }}", "{{ punkt_2_3_1_pay }}",
-                         "{{ punkt_2_3_2_pay }}",
-                         "{{ punkt_2_3_3_pay }}", "{{ punkt_2_3_4_pay }}", "{{ punkt_2_3_5_pay }}",
-                         "{{ punkt_2_3_1_num }}",
-                         "{{ punkt_2_3_2_num }}", "{{ punkt_2_3_3_num }}", "{{ punkt_2_3_4_num }}",
-                         "{{ punkt_2_3_5_num }}",
+        old_words_dkp = ["{{ new_old_pl }}", "{{ pb_vizor }}", "{{ identif_punkt_3_1_1 }}", "{{ identif_punkt_3_1_3 }}",
+                         "{{ punkt_3_1_9 }}", "{{ punkt_3_3_3_key }}", "{{ punkt_3_3_3_key2 }}", "{{ punkt_3_1_6 }}",
+                         "{{ punkt_3_3_7 }}", "{{ punkt_8_2 }}", "{{ pril_1_2 }}", "{{ pril_1_3 }}",
+                         "{{ punkt_4_7_1 }}", "{{ punkt_5_3 }}", "{{ punkt_6_4 }}", "{{ punkt_8_3 }}",
+                         "{{ type_currency }}", "{{ equivalent_currency }}", "{{ punkt_2_3_1_pay }}",
+                         "{{ punkt_2_3_2_pay }}", "{{ punkt_2_3_3_pay }}", "{{ punkt_2_3_4_pay }}",
+                         "{{ punkt_2_3_5_pay }}", "{{ punkt_2_3_1_num }}", "{{ punkt_2_3_2_num }}",
+                         "{{ punkt_2_3_3_num }}", "{{ punkt_2_3_4_num }}", "{{ punkt_2_3_5_num }}",
                          "{{ punkt_2_3_1_numb_pr }}", "{{ punkt_2_3_2_numb_pr }}", "{{ punkt_2_3_3_numb_pr }}",
-                         "{{ punkt_2_3_4_numb_pr }}",
-                         "{{ punkt_2_3_5_numb_pr }}", "{{ payment_1 }}", "{{ payment_2 }}", "{{ payment_3 }}",
-                         "{{ payment_4 }}",
-                         "{{ payment_5 }}", "{{ payment_1_propis }}", "{{ payment_2_propis }}",
-                         "{{ payment_3_propis }}",
-                         "{{ payment_4_propis }}", "{{ payment_5_propis }}", "{{ type_currency }}",
-                         "{{ equivalent_currency }}", "{{ full_name_seller }}", "{{ imenyemoe_dkp }}",
-                         "{{ leader_seller_rod_padezh }}", "{{ put_padezh_podpisant_seller }}",
+                         "{{ punkt_2_3_4_numb_pr }}", "{{ punkt_2_3_5_numb_pr }}", "{{ payment_1 }}", "{{ payment_2 }}",
+                         "{{ payment_3 }}", "{{ payment_4 }}", "{{ payment_5 }}", "{{ payment_1_propis }}",
+                         "{{ payment_2_propis }}", "{{ payment_3_propis }}", "{{ payment_4_propis }}",
+                         "{{ payment_5_propis }}", "{{ full_name_seller }}", "{{ imenyemoe_dkp }}",
+                         "{{ leader_seller_rod_padezh }}",
+                         "{{ put_padezh_podpisant_seller }}", # put_padezh_podpisant_seller пока непонятно что это
                          "{{ deystvuysh_list_seller }}", "{{ doverka_ustav_seller }}", "{{ FULL_KRAKT_NAME_SELLER }}",
-                         "{{ leader_seller_rod }}", "{{ formatted_name_leader_seller }}", "{{ address_seller_dkp }}",
-                         "{{ inn_kpp_seller }}", "{{ ogrn_seller }}"]
+                         "{{ leader_seller_rod }}", # leader_seller_rod пока непонятно что это
+                         "{{ formatted_name_leader_seller }}", "{{ address_seller_dkp }}",
+                         "{{ inn_kpp_seller }}", "{{ ogrn_seller }}",
+                         "{{ rekvizit_leasee_bik }}", "{{ rekvizit_leasee_cs_shet }}", "{{ rekvizit_leasee_shet }}",
+                         "{{ rekvizit_leasee_bank }}", "{{ main_activity_leasee }}", "{{ fio_leader }}",
+                         "{{ email_leasee }}", "{{ phone_leasee }}", "{{ full_krakt_name_leasee }}",
+                         "{{ ustav_capital }}", "{{ date_regist }}", "{{ okpo_leasee }}",
+                         "{{ okato_leasee }}", "{{ ogrn_leasee }}", "{{ inn_seller_list }}",
+                         "{{ price_predmet_lizinga }}", "{{ predmet_lizinga }}", "{{ formatted_name_leader_leasee }}",
+                         "{{ leader_leasee }}", "{{ address_leasee_expluatazia }}", "{{ address_leasee }}",
+                         "{{ inn_kpp_leasee }}", "{{ full_name_leasee }}", "{{ seller_title }}",
+                         "{{ inn_seller_list2 }}", "{{ seller_address }}"]
 
-        new_words_dkp = [str(new_old_pl), str(pb_vizor), str(identif_punkt_3_1_1), str(identif_punkt_3_1_3),
-                         str(punkt_3_1_9),
-                         str(punkt_3_3_3_key), str(punkt_3_3_3_key2), str(punkt_3_1_6), str(punkt_3_3_7),
-                         str(punkt_8_2),
-                         str(pril_1_2),
-                         str(pril_1_3), str(punkt_4_7_1), str(punkt_5_3), str(punkt_6_4), str(punkt_8_3),
-                         str(punkt_2_3_1_pay),
-                         str(punkt_2_3_2_pay), str(punkt_2_3_3_pay), str(punkt_2_3_4_pay), str(punkt_2_3_5_pay),
-                         str(punkt_2_3_1_num), str(punkt_2_3_2_num), str(punkt_2_3_3_num), str(punkt_2_3_4_num),
-                         str(punkt_2_3_5_num),
-                         str(punkt_2_3_1_numb_pr), str(punkt_2_3_2_numb_pr), str(punkt_2_3_3_numb_pr),
-                         str(punkt_2_3_4_numb_pr), str(punkt_2_3_5_numb_pr), str(payment_1), str(payment_2),
-                         str(payment_3),
-                         str(payment_4), str(payment_5), str(payment_1_propis), str(payment_2_propis),
-                         str(payment_3_propis), str(payment_4_propis), str(payment_5_propis), str(type_currency),
-                         str(equivalent_currency), str(name_and_dover_seller[0]), str(imenyemoe_dkp),
-                         str(leader_seller_rod_padezh),
-                         str(put_padezh_podpisant_seller), str(deystvuysh_list_seller), str(doverka_ustav_seller),
-                         str(leader_seller_rod), str(formatted_name_leader_seller), str(address_seller_dkp),
-                         str(inn_kpp_seller), str(ogrn_seller), rekvizit_leasee_bik, rekvizit_leasee_cs_shet,
-                         rekvizit_leasee_shet, rekvizit_leasee_bank, main_activity_leasee, fio_leader, email_leasee,
-                         phone_leasee, full_krakt_name_leasee, ustav_capital, date_regist, okpo_leasee, okato_leasee,
-                         ogrn_leasee, inn_seller_list, price_predmet_lizinga, predmet_lizinga,
-                         formatted_name_leader_leasee,
-                         leader_leasee, address_leasee_expluatazia, address_leasee, inn_kpp_leasee, full_name_leasee]
+        new_words_dkp = [str(eq_val[0]), str(eq_val[1]), str(eq_val[2]), str(eq_val[3]),str(eq_val[4]),
+                         str(eq_val[5]), str(eq_val[6]), str(eq_val[7]), str(eq_val[8]),str(eq_val[9]),
+                         str(eq_val[10]), str(eq_val[11]), str(eq_val[12]), str(eq_val[13]), str(eq_val[14]),
+                         str(eq_val[15]), str(eq_val[16]), str(eq_val[17]),
+                         str(payment_dkp[0]), str(payment_dkp[1]), str(payment_dkp[2]), str(payment_dkp[3]),
+                         str(payment_dkp[4]), str(payment_dkp[5]), str(payment_dkp[6]), str(payment_dkp[7]),
+                         str(payment_dkp[8]), str(payment_dkp[9]), str(payment_dkp[10]), str(payment_dkp[11]),
+                         str(payment_dkp[12]), str(payment_dkp[13]), str(payment_dkp[14]), str(payment_dkp[15]),
+                         str(payment_dkp[16]), str(payment_dkp[17]), str(payment_dkp[18]), str(payment_dkp[19]),
+                         str(payment_dkp[20]), str(payment_dkp[21]), str(payment_dkp[22]), str(payment_dkp[23]),
+                         str(payment_dkp[24]), str(name_and_dover_seller[0]), str(deistv_sell[1]),
+                         str(info_about_seller_director[1]),
+                         str(put_padezh_podpisant_seller), str(deistv_sell[0]),
+                         str(name_and_dover_seller[1]),
+                         str(leader_seller_rod), str(full_seller[4]), str(full_seller[6]),
+                         str(full_seller[1]), str(full_seller[2]),
+                         # сейчас пойдут данные из экселя
+                         data_xlsx[0], data_xlsx[1], data_xlsx[2],
+                         data_xlsx[3], data_xlsx[4], data_xlsx[5], data_xlsx[6], data_xlsx[7], data_xlsx[8],
+                         data_xlsx[9], data_xlsx[10], data_xlsx[11], data_xlsx[12], data_xlsx[13], data_xlsx[14],
+                         data_xlsx[15], data_xlsx[16], data_xlsx[17], data_xlsx[18], data_xlsx[19], data_xlsx[20],
+                         data_xlsx[21], data_xlsx[22], data_xlsx[23], data_xlsx[24], data_xlsx[25]]
 
     def replace_words_in_dkp(docx_file, old_words_dkp, new_words_dkp):
         doc = Document(docx_file)
@@ -958,7 +960,7 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
                     doc.element.body.remove(run._element)
 
         doc.save(fr"ДКП {inn_client}.docx")
-
-    replace_words_in_dkp(
-        rf'Z:\_Документы личные\Отдел анализа и контроля\Шалапугин Дмитрий\Портфель\Коды\ШАБЛОН ДКП АВТО ООО_АО.docx',
-        old_words_dkp, new_words_dkp)
+    #
+    # replace_words_in_dkp(
+    #     rf'Z:\_Документы личные\Отдел анализа и контроля\Шалапугин Дмитрий\Портфель\Коды\ШАБЛОН ДКП АВТО ООО_АО.docx',
+    #     old_words_dkp, new_words_dkp)
