@@ -4,7 +4,128 @@ from typing import Optional
 from docx import Document
 from num2words import num2words
 from webapp.config import DADATA_BASE
-from webapp.risk.logger import logging
+# from webapp.risk.logger import logging
+
+
+def read_xlsx_dkp(path_application):
+    """
+    :param path_application:
+    :return: 0: rekvizit_leasee_bik,
+             1: rekvizit_leasee_cs_shet
+             2: rekvizit_leasee_shet,
+             3: rekvizit_leasee_bank,
+             4: main_activity_leasee,
+             5: fio_leader,
+             6: email_leasee,
+             7: phone_leasee,
+             8: full_krakt_name_leasee,
+             9: ustav_capital,
+             10: date_regist,
+             11: okpo_leasee,
+             12: okato_leasee,
+             13: ogrn_leasee,
+             14: inn_seller_list,
+             15: price_predmet_lizinga,
+             16: predmet_lizinga,
+             17: formatted_name_leader_leasee,
+             18: leader_leasee,
+             19: address_leasee_expluatazia,
+             20: address_leasee,
+             21: inn_kpp_leasee, 22: full_name_leasee
+    """
+
+    # ip_or_kfh = 'Нет'
+    wb = openpyxl.load_workbook(fr'{path_application}')
+    # читаем страницу Заявление
+    sheet_zayavlenie = wb['Заявление']
+    full_name_leasee = sheet_zayavlenie['A6'].value
+    inn_kpp_leasee = sheet_zayavlenie['C7'].value
+    # if ip_or_kfh == 'Да':
+    #     inn_leasee = sheet_zayavlenie['C7'].value
+
+    formatted_name_leader_leasee = '-'
+    leader_leasee = '-'
+    address_leasee_expluatazia = '-'
+
+    address_leasee = sheet_zayavlenie['E7'].value
+    for number in range(24, sheet_zayavlenie.max_row + 2):
+        if sheet_zayavlenie[
+            f'B{number}'].value == (
+                'Место эксплуатации предмета лизинга (для автотранспорта место стоянки/хранения) '
+                'полный фактический адрес:'):
+            address_leasee_expluatazia = sheet_zayavlenie[f'A{number + 1}'].value
+        if sheet_zayavlenie[f'B{number}'].value == '(должность руководителя организации Заявителя)':
+            leader_leasee = sheet_zayavlenie[f'B{number - 1}'].value
+        if sheet_zayavlenie[f'H{number}'].value == '(расшифровка подписи)':
+            formatted_name_leader_leasee = sheet_zayavlenie[f'H{number - 1}'].value
+
+    predmet_lizinga = []
+    price_predmet_lizinga = []
+    inn_seller_list = []
+    for i in range(3, sheet_zayavlenie.max_row + 2):
+        if sheet_zayavlenie[f'B{i}'].value == 'Наименование, технические характеристики и описание':
+            number = i + 1
+            while sheet_zayavlenie[f'B{number}'].value != 'Итого':
+                number += 1
+                predmet_lizinga.append(sheet_zayavlenie[f'B{number - 1}'].value)
+                inn_seller_list.append(sheet_zayavlenie[f'E{number - 1}'].value)
+                price_predmet_lizinga.append(sheet_zayavlenie[f'I{number - 1}'].value)
+
+    seller_title = []
+    seller_address = []
+    inn_seller_list2 = []
+    for i in range(3, sheet_zayavlenie.max_row + 2):
+        if sheet_zayavlenie[f'B{i}'].value == 'Наименование поставщика':
+            number = i + 1
+            while sheet_zayavlenie[
+                f'A{number}'].value != (
+                    'и передать нашей организации/ индивидуальному предпринимателю в финансовую '
+                    'аренду (лизинг) следующее имущество:'):
+                number += 1
+                seller_title.append(sheet_zayavlenie[f'B{number - 1}'].value)
+                inn_seller_list2.append(sheet_zayavlenie[f'E{number - 1}'].value)
+                seller_address.append(sheet_zayavlenie[f'F{number - 1}'].value)
+
+    # читаем страницу Анкета Стр.1
+
+    sheet_anketa_1_list = wb['Анкета Стр.1']
+    ogrn_leasee = sheet_anketa_1_list['F7'].value
+    okato_leasee = sheet_anketa_1_list['H7'].value
+    okpo_leasee = sheet_anketa_1_list['J7'].value
+    date_regist = sheet_anketa_1_list['E8'].value
+    ustav_capital = sheet_anketa_1_list['J9'].value
+    full_krakt_name_leasee = sheet_anketa_1_list[f'A6'].value
+
+    phone_leasee = '-'
+    email_leasee = '-'
+    fio_leader = '-'
+    main_activity_leasee = '-'
+    rekvizit_leasee_bank = '-'
+    rekvizit_leasee_shet = '-'
+    rekvizit_leasee_cs_shet = '-'
+    rekvizit_leasee_bik = '-'
+
+    for number in range(8, sheet_anketa_1_list.max_row + 2):
+        if sheet_anketa_1_list[f'A{number}'].value == '1.8         Телефон:':
+            phone_leasee = sheet_anketa_1_list[f'C{number}'].value
+        if sheet_anketa_1_list[f'E{number}'].value == '1.9 Эл. почта:':
+            email_leasee = sheet_anketa_1_list[f'F{number}'].value
+        if sheet_anketa_1_list[f'B{number}'].value == 'ФИО:':
+            fio_leader = sheet_anketa_1_list[f'C{number}'].value
+        if sheet_anketa_1_list[f'B{number}'].value == 'ОКВЭД с расшифровкой:':
+            main_activity_leasee = sheet_anketa_1_list[f'E{number}'].value
+        if sheet_anketa_1_list[f'F{number}'].value == 'Банк:':
+            rekvizit_leasee_bank = sheet_anketa_1_list[f'G{number}'].value
+        if sheet_anketa_1_list[f'A{number}'].value == 'Р/с:':
+            rekvizit_leasee_shet = sheet_anketa_1_list[f'B{number}'].value
+            rekvizit_leasee_cs_shet = sheet_anketa_1_list[f'F{number}'].value
+            rekvizit_leasee_bik = sheet_anketa_1_list[f'I{number}'].value
+
+    return (rekvizit_leasee_bik, rekvizit_leasee_cs_shet, rekvizit_leasee_shet, rekvizit_leasee_bank,
+            main_activity_leasee, fio_leader, email_leasee, phone_leasee, full_krakt_name_leasee, ustav_capital,
+            date_regist, okpo_leasee, okato_leasee, ogrn_leasee, inn_seller_list, price_predmet_lizinga,
+            predmet_lizinga, formatted_name_leader_leasee, leader_leasee, address_leasee_expluatazia, address_leasee,
+            inn_kpp_leasee, full_name_leasee)
 
 
 def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_seller: str, numb_dl_dkp: str,
@@ -76,12 +197,16 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
             new_old_pl = 'бывшее в употреблении'
 
         if investor == 'АО «ПЕРВОУРАЛЬСКБАНК»':
-            pb_vizor = ', и для АО «Первоуральскбанк» - фотографии, идентифицирующие предмет лизинга (не менее 5 шт.), используя программный комплекс PB-visor'
+            pb_vizor = (', и для АО «Первоуральскбанк» - фотографии, '
+                        'идентифицирующие предмет лизинга (не менее 5 шт.), используя программный комплекс PB-visor')
         else:
             pb_vizor = ''
 
         if equipment_or_not is not None:
-            identif_punkt_3_1_1 = 'Предмету лизинга присваивается идентификационный номер, который  вместе с другими данными выбивается на металлическом шильдике (табличке), расположенном на предмете лизинга на видном месте. Этот номер вносится и в паспорт предмета лизинга.'
+            identif_punkt_3_1_1 = ('Предмету лизинга присваивается идентификационный номер, '
+                                   'который  вместе с другими данными выбивается на металлическом шильдике (табличке), '
+                                   'расположенном на предмете лизинга на видном месте. '
+                                   'Этот номер вносится и в паспорт предмета лизинга.')
             identif_punkt_3_1_3 = 'комплектом ключей зажигания и '
             punkt_3_1_9 = '3.1.6.'
             punkt_3_3_3_key = 'и комплекта ключей зажигания '
@@ -116,7 +241,9 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
             punkt_6_4 = ''
 
         if investor == 'ПАО «АК БАРС» БАНК':
-            punkt_8_3 = 'Вместе с тем, Продавец и Лизингополучатель дают согласие Покупателю на передачу в залог обязательственных прав с последующим залогом имущества по настоящему Договору.'
+            punkt_8_3 = ('Вместе с тем, Продавец и Лизингополучатель дают согласие '
+                         'Покупателю на передачу в залог обязательственных прав с '
+                         'последующим залогом имущества по настоящему Договору.')
         else:
             punkt_8_3 = ''
 
@@ -470,96 +597,9 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
             imenyemoe_dkp = 'именуемая'
         return deystvuysh_list_seller, imenyemoe_dkp
 
-        # Чтение заявки и анкеты
-
-    def read_xlsx_dkp():
-        ip_or_kfh = 'Нет'
-        wb = openpyxl.load_workbook(fr'{path_application}')
-        # читаем страницу Заявление
-        sheet_zayavlenie = wb['Заявление']
-        full_name_leasee = sheet_zayavlenie['A6'].value
-        inn_kpp_leasee = sheet_zayavlenie['C7'].value
-        if ip_or_kfh == 'Да':
-            inn_leasee = sheet_zayavlenie['C7'].value
-
-        address_leasee = sheet_zayavlenie['E7'].value
-        for number in range(24, sheet_zayavlenie.max_row + 2):
-            if sheet_zayavlenie[
-                f'B{number}'].value == (
-                    'Место эксплуатации предмета лизинга (для автотранспорта место стоянки/хранения) '
-                    'полный фактический адрес:'):
-                address_leasee_expluatazia = sheet_zayavlenie[f'A{number + 1}'].value
-            if sheet_zayavlenie[f'B{number}'].value == '(должность руководителя организации Заявителя)':
-                leader_leasee = sheet_zayavlenie[f'B{number - 1}'].value
-            if sheet_zayavlenie[f'H{number}'].value == '(расшифровка подписи)':
-                formatted_name_leader_leasee = sheet_zayavlenie[f'H{number - 1}'].value
-
-        predmet_lizinga = []
-        price_predmet_lizinga = []
-        inn_seller_list = []
-        for i in range(3, sheet_zayavlenie.max_row + 2):
-            if sheet_zayavlenie[f'B{i}'].value == 'Наименование, технические характеристики и описание':
-                number = i + 1
-                while sheet_zayavlenie[f'B{number}'].value != 'Итого':
-                    number += 1
-                    predmet_lizinga.append(sheet_zayavlenie[f'B{number - 1}'].value)
-                    inn_seller_list.append(sheet_zayavlenie[f'E{number - 1}'].value)
-                    price_predmet_lizinga.append(sheet_zayavlenie[f'I{number - 1}'].value)
-
-
-        seller_title = []
-        seller_address = []
-        inn_seller_list2 = []
-        for i in range(3, sheet_zayavlenie.max_row + 2):
-            if sheet_zayavlenie[f'B{i}'].value == 'Наименование поставщика':
-                number = i + 1
-                while sheet_zayavlenie[
-                    f'A{number}'].value != (
-                        'и передать нашей организации/ индивидуальному предпринимателю в финансовую '
-                        'аренду (лизинг) следующее имущество:'):
-                    number += 1
-                    seller_title.append(sheet_zayavlenie[f'B{number - 1}'].value)
-                    inn_seller_list2.append(sheet_zayavlenie[f'E{number - 1}'].value)
-                    seller_address.append(sheet_zayavlenie[f'F{number - 1}'].value)
-
-        # читаем страницу Анкета Стр.1
-
-        sheet_anketa_1_list = wb['Анкета Стр.1']
-        ogrn_leasee = sheet_anketa_1_list['F7'].value
-        okato_leasee = sheet_anketa_1_list['H7'].value
-        okpo_leasee = sheet_anketa_1_list['J7'].value
-        date_regist = sheet_anketa_1_list['E8'].value
-        ustav_capital = sheet_anketa_1_list['J9'].value
-        full_krakt_name_leasee = sheet_anketa_1_list[f'A6'].value
-
-        for number in range(8, sheet_anketa_1_list.max_row + 2):
-            if sheet_anketa_1_list[f'A{number}'].value == '1.8         Телефон:':
-                phone_leasee = sheet_anketa_1_list[f'C{number}'].value
-            if sheet_anketa_1_list[f'E{number}'].value == '1.9 Эл. почта:':
-                email_leasee = sheet_anketa_1_list[f'F{number}'].value
-            if sheet_anketa_1_list[f'B{number}'].value == 'ФИО:':
-                fio_leader = sheet_anketa_1_list[f'C{number}'].value
-            if sheet_anketa_1_list[f'B{number}'].value == 'ОКВЭД с расшифровкой:':
-                main_activity_leasee = sheet_anketa_1_list[f'E{number}'].value
-            if sheet_anketa_1_list[f'F{number}'].value == 'Банк:':
-                rekvizit_leasee_bank = sheet_anketa_1_list[f'G{number}'].value
-            if sheet_anketa_1_list[f'A{number}'].value == 'Р/с:':
-                rekvizit_leasee_shet = sheet_anketa_1_list[f'B{number}'].value
-                rekvizit_leasee_cs_shet = sheet_anketa_1_list[f'F{number}'].value
-                rekvizit_leasee_bik = sheet_anketa_1_list[f'I{number}'].value
-
-
-        return (rekvizit_leasee_bik, rekvizit_leasee_cs_shet, rekvizit_leasee_shet, rekvizit_leasee_bank,
-                main_activity_leasee, fio_leader, email_leasee, phone_leasee, full_krakt_name_leasee, ustav_capital,
-                date_regist, okpo_leasee, okato_leasee, ogrn_leasee, inn_seller_list, price_predmet_lizinga,
-                predmet_lizinga,
-                formatted_name_leader_leasee, leader_leasee, address_leasee_expluatazia, address_leasee,
-                inn_kpp_leasee, full_name_leasee)
-
     def replace():
-
         eq_val = equipment_valute()
-        data_xlsx = read_xlsx_dkp()  # все из xlsx
+        data_xlsx = read_xlsx_dkp(path_application)  # все из xlsx
         price_entry = data_xlsx[15]  # цена ПЛ
         payment_dkp = payment_for_dkp(price_entry)  # все для порядка оплаты
         info_about_seller = result_dadata()

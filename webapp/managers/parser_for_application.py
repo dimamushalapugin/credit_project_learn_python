@@ -430,8 +430,7 @@ def start_filling_agreement(inn_leasee, path_application, path_graphic, signator
         nonlocal formatted_name_leader_leasee, full_name_leasee, full_krakt_name_leasee, inn_kpp_leasee, address_leasee, address_leasee_expluatazia, leader_leasee, predmet_lizinga, inn_seller_list, price_predmet_lizinga, seller_title, inn_seller_list2, seller_address, ogrn_leasee, okato_leasee, okpo_leasee, date_regist, ustav_capital, phone_leasee, email_leasee, fio_leader, main_activity_leasee, rekvizit_leasee_bank, rekvizit_leasee_shet, rekvizit_leasee_cs_shet, rekvizit_leasee_bik
 
         ip_or_kfh = 'Нет'
-        wb = openpyxl.load_workbook(fr'{path_application}',
-                                    read_only=False)
+        wb = openpyxl.load_workbook(fr'{path_application}')
         # читаем страницу Заявление
         sheet_zayavlenie = wb['Заявление']
         full_name_leasee = sheet_zayavlenie['A6'].value
