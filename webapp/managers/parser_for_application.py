@@ -1,21 +1,20 @@
-from selenium import webdriver
-from selenium.webdriver.common.by import By
 import openpyxl
-from docx import Document
-from docx.shared import Pt
-from datetime import datetime as dt
 import docx
 import os
-from dadata import Dadata
 import datetime
 
+from docx import Document
+from dadata import Dadata
+from docx.shared import Pt
+from datetime import datetime as dt
 from selenium.webdriver.edge.options import Options
 from flask_login import current_user
-
 from webapp.risk.logger import logging
+from webapp.managers.parser_for_dkp import read_xlsx
 from num2words import num2words
-
 from webapp.config import DADATA_TOKEN
+from selenium import webdriver
+from selenium.webdriver.common.by import By
 
 
 def start_filling_application(inn_leasee, path_application, inn_seller1, inn_seller2, inn_seller3, inn_seller4):
@@ -426,109 +425,7 @@ def start_filling_agreement(inn_leasee, path_application, path_graphic, signator
     rekvizit_leasee_bik = ''
 
     # Чтение заявки и анкеты
-    def read_xlsx(inn_leasee, path_application):
-        nonlocal formatted_name_leader_leasee, full_name_leasee, full_krakt_name_leasee, inn_kpp_leasee, address_leasee, address_leasee_expluatazia, leader_leasee, predmet_lizinga, inn_seller_list, price_predmet_lizinga, seller_title, inn_seller_list2, seller_address, ogrn_leasee, okato_leasee, okpo_leasee, date_regist, ustav_capital, phone_leasee, email_leasee, fio_leader, main_activity_leasee, rekvizit_leasee_bank, rekvizit_leasee_shet, rekvizit_leasee_cs_shet, rekvizit_leasee_bik
-
-        ip_or_kfh = 'Нет'
-        wb = openpyxl.load_workbook(fr'{path_application}')
-        # читаем страницу Заявление
-        sheet_zayavlenie = wb['Заявление']
-        full_name_leasee = sheet_zayavlenie['A6'].value
-        inn_kpp_leasee = sheet_zayavlenie['C7'].value
-        if ip_or_kfh == 'Да':
-            inn_leasee = sheet_zayavlenie['C7'].value
-        # print(sheet_zayavlenie['A6'].value)
-        # print(sheet_zayavlenie['C7'].value)
-        address_leasee = sheet_zayavlenie['E7'].value
-        # print(sheet_zayavlenie['E7'].value)
-        print('19190090')
-        for number in range(24, sheet_zayavlenie.max_row + 2):
-            if sheet_zayavlenie[
-                f'B{number}'].value == 'Место эксплуатации предмета лизинга (для автотранспорта место стоянки/хранения) полный фактический адрес:':
-                address_leasee_expluatazia = sheet_zayavlenie[f'A{number + 1}'].value
-                # print(sheet_zayavlenie[f'A{number + 1}'].value)
-            if sheet_zayavlenie[f'B{number}'].value == '(должность руководителя организации Заявителя)':
-                leader_leasee = sheet_zayavlenie[f'B{number - 1}'].value
-                # print(sheet_zayavlenie[f'B{number - 1}'].value)
-            if sheet_zayavlenie[f'H{number}'].value == '(расшифровка подписи)':
-                formatted_name_leader_leasee = sheet_zayavlenie[f'H{number - 1}'].value
-                # print(sheet_zayavlenie[f'H{number - 1}'].value)
-
-        predmet_lizinga = []
-        price_predmet_lizinga = []
-        inn_seller_list = []
-        for i in range(3, sheet_zayavlenie.max_row + 2):
-            if sheet_zayavlenie[f'B{i}'].value == 'Наименование, технические характеристики и описание':
-                number = i + 1
-                while sheet_zayavlenie[f'B{number}'].value != 'Итого':
-                    # print(sheet[f'B{number}'].value)
-                    number += 1
-                    predmet_lizinga.append(sheet_zayavlenie[f'B{number - 1}'].value)
-                    inn_seller_list.append(sheet_zayavlenie[f'E{number - 1}'].value)
-                    price_predmet_lizinga.append(sheet_zayavlenie[f'I{number - 1}'].value)
-        # print(
-        #     f"Здесь брать предмет лизинга {predmet_lizinga}, ИНН поставщика {inn_seller_list} и цену {price_predmet_lizinga}")
-
-        seller_title = []
-        seller_address = []
-        inn_seller_list2 = []
-        for i in range(3, sheet_zayavlenie.max_row + 2):
-            if sheet_zayavlenie[f'B{i}'].value == 'Наименование поставщика':
-                number = i + 1
-                while sheet_zayavlenie[
-                    f'A{number}'].value != 'и передать нашей организации/ индивидуальному предпринимателю в финансовую аренду (лизинг) следующее имущество:':
-                    # print(sheet[f'B{number}'].value)
-                    number += 1
-                    seller_title.append(sheet_zayavlenie[f'B{number - 1}'].value)
-                    inn_seller_list2.append(sheet_zayavlenie[f'E{number - 1}'].value)
-                    seller_address.append(sheet_zayavlenie[f'F{number - 1}'].value)
-        # print(
-        #     f"Здесь брать название поставщика {seller_title}, ИНН поставщика {inn_seller_list2} и адрес поставщика {seller_address}")
-
-        # читаем страницу Анкета Стр.1
-        print('191')
-        sheet_anketa_1_list = wb['Анкета Стр.1']
-        ogrn_leasee = sheet_anketa_1_list['F7'].value
-        # print(sheet_anketa_1_list['F7'].value)
-        okato_leasee = sheet_anketa_1_list['H7'].value
-        # print(sheet_anketa_1_list['H7'].value)
-        okpo_leasee = sheet_anketa_1_list['J7'].value
-        # print(sheet_anketa_1_list['J7'].value)
-        date_regist = sheet_anketa_1_list['E8'].value
-        # print(sheet_anketa_1_list['E8'].value)
-        ustav_capital = sheet_anketa_1_list['J9'].value
-        # print(sheet_anketa_1_list['J9'].value)
-        full_krakt_name_leasee = sheet_anketa_1_list[f'A6'].value
-        # print(sheet_anketa_1_list[f'A6'].value)
-
-        for number in range(8, sheet_anketa_1_list.max_row + 2):
-            if sheet_anketa_1_list[f'A{number}'].value == '1.8         Телефон:':
-                phone_leasee = sheet_anketa_1_list[f'C{number}'].value
-                # print(sheet_anketa_1_list[f'C{number}'].value)
-            if sheet_anketa_1_list[f'E{number}'].value == '1.9 Эл. почта:':
-                email_leasee = sheet_anketa_1_list[f'F{number}'].value
-                # print(sheet_anketa_1_list[f'F{number}'].value)
-            if sheet_anketa_1_list[f'B{number}'].value == 'ФИО:':
-                fio_leader = sheet_anketa_1_list[f'C{number}'].value
-                # print(sheet_anketa_1_list[f'C{number}'].value)
-            if sheet_anketa_1_list[f'B{number}'].value == 'ОКВЭД с расшифровкой:':
-                main_activity_leasee = sheet_anketa_1_list[f'E{number}'].value
-                # print(sheet_anketa_1_list[f'E{number}'].value)
-            if sheet_anketa_1_list[f'F{number}'].value == 'Банк:':
-                rekvizit_leasee_bank = sheet_anketa_1_list[f'G{number}'].value
-                # print(sheet_anketa_1_list[f'G{number}'].value)
-            if sheet_anketa_1_list[f'A{number}'].value == 'Р/с:':
-                rekvizit_leasee_shet = sheet_anketa_1_list[f'B{number}'].value
-                # print(sheet_anketa_1_list[f'B{number}'].value)
-                rekvizit_leasee_cs_shet = sheet_anketa_1_list[f'F{number}'].value
-                # print(sheet_anketa_1_list[f'F{number}'].value)
-                rekvizit_leasee_bik = sheet_anketa_1_list[f'I{number}'].value
-                # print(sheet_anketa_1_list[f'I{number}'].value)
-
-        logging.info(f'({current_user}) Все данные успешно прочитаны')
-        application_name = fr'{dir_path}\Заявка с заключением {inn_leasee}.xlsx'
-        wb.save(application_name)
-
+    data_xlsx = read_xlsx(path_application)
 
     leader_leasee = ''
     vikup = ''
@@ -706,6 +603,7 @@ def start_filling_agreement(inn_leasee, path_application, path_graphic, signator
 
         suma_dann = ''
         print('191919')
+
         def chislo_propis():
             nonlocal suma_dann
             suma_chislo = price_entry
@@ -913,12 +811,14 @@ def start_filling_agreement(inn_leasee, path_application, path_graphic, signator
             if type_pl != 'on':
                 replace_words_in_docx(r"webapp\static\agreement_templates\ШАБЛОН ИП_КФХ.docx", old_words, new_words)
             else:
-                replace_words_in_docx(r"webapp\static\agreement_templates\ШАБЛОН ИП_КФХ (обор).docx", old_words, new_words)
+                replace_words_in_docx(r"webapp\static\agreement_templates\ШАБЛОН ИП_КФХ (обор).docx", old_words,
+                                      new_words)
         else:
             if type_pl != 'on':
                 replace_words_in_docx(r"webapp\static\agreement_templates\ШАБЛОН ООО_АО.docx", old_words, new_words)
             else:
-                replace_words_in_docx(r"webapp\static\agreement_templates\ШАБЛОН ООО_АО (обор).docx", old_words, new_words)
+                replace_words_in_docx(r"webapp\static\agreement_templates\ШАБЛОН ООО_АО (обор).docx", old_words,
+                                      new_words)
 
         change_font(fr"{dir_path}\ДЛ {inn_leasee}.docx", "Times New Roman")
 

@@ -3,11 +3,12 @@ import openpyxl
 from typing import Optional
 from docx import Document
 from num2words import num2words
+from flask_login import current_user
 from webapp.config import DADATA_BASE
-# from webapp.risk.logger import logging
+from webapp.risk.logger import logging
 
 
-def read_xlsx_dkp(path_application):
+def read_xlsx(path_application):
     """
     :param path_application:
     :return: 0: rekvizit_leasee_bik,
@@ -31,9 +32,12 @@ def read_xlsx_dkp(path_application):
              18: leader_leasee,
              19: address_leasee_expluatazia,
              20: address_leasee,
-             21: inn_kpp_leasee, 22: full_name_leasee
+             21: inn_kpp_leasee,
+             22: full_name_leasee,
+             23: seller_title,
+             24: inn_seller_list2,
+             25: seller_address
     """
-
     # ip_or_kfh = 'Нет'
     wb = openpyxl.load_workbook(fr'{path_application}')
     # читаем страницу Заявление
@@ -121,11 +125,13 @@ def read_xlsx_dkp(path_application):
             rekvizit_leasee_cs_shet = sheet_anketa_1_list[f'F{number}'].value
             rekvizit_leasee_bik = sheet_anketa_1_list[f'I{number}'].value
 
+    logging.info(f'({current_user}) Все данные успешно прочитаны')
+
     return (rekvizit_leasee_bik, rekvizit_leasee_cs_shet, rekvizit_leasee_shet, rekvizit_leasee_bank,
             main_activity_leasee, fio_leader, email_leasee, phone_leasee, full_krakt_name_leasee, ustav_capital,
             date_regist, okpo_leasee, okato_leasee, ogrn_leasee, inn_seller_list, price_predmet_lizinga,
             predmet_lizinga, formatted_name_leader_leasee, leader_leasee, address_leasee_expluatazia, address_leasee,
-            inn_kpp_leasee, full_name_leasee)
+            inn_kpp_leasee, full_name_leasee, seller_title, inn_seller_list2, seller_address)
 
 
 def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_seller: str, numb_dl_dkp: str,
@@ -188,6 +194,19 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
                | В зависимости от выбора, может быть один из values. Вывод: "Нет"
                | Может быть None | Если None значит ПЛ не оборудование
     """
+
+    #  TODO: Валидатор добавить ошибки
+    def quantity_payment_order():
+        summ = 0
+        for num in payment_order.split(' '):
+            summ += float(num)
+        print(summ)
+
+        if summ == 100:
+            print("Суммы равны 100")
+        else:
+            print(
+                "Суммы не равны 100, надо написать пользователю что он даун и не умеет считать! Flash должен выскочить")
 
     # 1
     def equipment_valute():
@@ -266,19 +285,6 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
         return (new_old_pl, pb_vizor, identif_punkt_3_1_1, identif_punkt_3_1_3, punkt_3_1_9, punkt_3_3_3_key,
                 punkt_3_3_3_key2, punkt_3_1_6, punkt_3_3_7, punkt_8_2, pril_1_2, pril_1_3, punkt_4_7_1, punkt_5_3,
                 punkt_6_4, punkt_8_3, kurs, type_currency, equivalent_currency)
-
-    #  TODO: Валидатор добавить ошибки
-    def quantity_payment_order():
-        summ = 0
-        for num in payment_order.split(' '):
-            summ += float(num)
-        print(summ)
-
-        if summ == 100:
-            print("Суммы равны 100")
-        else:
-            print(
-                "Суммы не равны 100, надо написать пользователю что он даун и не умеет считать! Flash должен выскочить")
 
     def percent_to_word(number: str):
         try:
@@ -599,7 +605,7 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
 
     def replace():
         eq_val = equipment_valute()
-        data_xlsx = read_xlsx_dkp(path_application)  # все из xlsx
+        data_xlsx = read_xlsx(path_application)  # все из xlsx
         price_entry = data_xlsx[15]  # цена ПЛ
         payment_dkp = payment_for_dkp(price_entry)  # все для порядка оплаты
         info_about_seller = result_dadata()
