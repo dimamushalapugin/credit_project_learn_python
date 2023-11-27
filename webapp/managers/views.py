@@ -71,7 +71,7 @@ def create_docx_file_dkp(data, application_path):
                                        data['number_dl'], data['signatory'], data['investor'], data['currency'],
                                        data['pl'], data.get('typeSelect'), data['type_pl_new_or_not'],
                                        data['payment_order'], data['place'], data['acts'], data['diadok'],
-                                       data.get('pnr'), data.get('house'), data.get('learn'))
+                                       data.get('pnr'), data.get('house'), data.get('learn'), data.get('stock'))
 
 
 def create_dl():
