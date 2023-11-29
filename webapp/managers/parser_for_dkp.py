@@ -624,9 +624,9 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
         # logging.info(f'{info_about_seller_director=}')
         full_seller = full_rekviti_seller(info_about_seller)
         # logging.info(f'{full_seller=}')
-        rod_padezh_seller = rod_padezh_fio_leader(full_seller[-1])  # full_seller[-1] - ФИО директора продавца
+        rod_padezh_seller = rod_padezh_fio_leader(full_seller[-2])  # full_seller[-1] - ФИО директора продавца
         name_and_dover_seller = seller_dkp_all()
-        deistv_sell = deistv_seller(info_about_seller, full_seller[-1])
+        deistv_sell = deistv_seller(info_about_seller, full_seller[-2])
 
         old_words_dkp = ["{{ new_old_pl }}", "{{ pb_vizor }}", "{{ identif_punkt_3_1_1 }}", "{{ identif_punkt_3_1_3 }}",
                          "{{ punkt_3_1_9 }}", "{{ punkt_3_3_3_key }}", "{{ punkt_3_3_3_key2 }}", "{{ punkt_3_1_6 }}",
