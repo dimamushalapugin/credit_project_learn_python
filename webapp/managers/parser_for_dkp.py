@@ -644,7 +644,7 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
                          "{{ leader_seller_rod_padezh }}",
                          "{{ put_padezh_podpisant_seller }}",
                          "{{ deystvuysh_list_seller }}", "{{ doverka_ustav_seller }}", "{{ FULL_KRAKT_NAME_SELLER }}",
-                         "{{ leader_seller_rod }}", # leader_seller_rod пока непонятно что это
+                         "{{ leader_seller_rod }}",
                          "{{ formatted_name_leader_seller }}", "{{ address_seller_dkp }}",
                          "{{ inn_kpp_seller }}", "{{ ogrn_seller }}",
                          "{{ rekvizit_leasee_bik }}", "{{ rekvizit_leasee_cs_shet }}", "{{ rekvizit_leasee_shet }}",
