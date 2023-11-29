@@ -532,6 +532,8 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
             leader_seller_rod_padezh = 'Директора'
         elif leader_seller.upper() == 'генеральный директор'.upper():
             leader_seller_rod_padezh = 'Генерального директора'
+        elif leader_seller.upper() == 'исполняющий обязанности директора'.upper():
+            leader_seller_rod_padezh = 'ИО директора'
         else:
             leader_seller_rod_padezh = ''
         leader_leasee_pod = leader_seller
@@ -640,7 +642,7 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
                          "{{ payment_2_propis }}", "{{ payment_3_propis }}", "{{ payment_4_propis }}",
                          "{{ payment_5_propis }}", "{{ full_name_seller }}", "{{ imenyemoe_dkp }}",
                          "{{ leader_seller_rod_padezh }}",
-                         "{{ put_padezh_podpisant_seller }}", # put_padezh_podpisant_seller пока непонятно что это
+                         "{{ put_padezh_podpisant_seller }}",
                          "{{ deystvuysh_list_seller }}", "{{ doverka_ustav_seller }}", "{{ FULL_KRAKT_NAME_SELLER }}",
                          "{{ leader_seller_rod }}", # leader_seller_rod пока непонятно что это
                          "{{ formatted_name_leader_seller }}", "{{ address_seller_dkp }}",
@@ -654,30 +656,6 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
                          "{{ leader_leasee }}", "{{ address_leasee_expluatazia }}", "{{ address_leasee }}",
                          "{{ inn_kpp_leasee }}", "{{ full_name_leasee }}", "{{ seller_title }}",
                          "{{ inn_seller_list2 }}", "{{ seller_address }}"]
-
-        print(f"1 {eq_val[0]=}")
-        print(f"2 {eq_val[1]=}")
-        print(f"3 {eq_val[2]=}")
-        print(f"4 {eq_val[3]=}")
-        print(f"5 {eq_val[4]=}")
-        print(f"6 {eq_val[5]=}")
-        print(f"7 {eq_val[6]=}")
-        print(f"8 {eq_val[7]=}")
-        print(f"9 {eq_val[8]=}")
-        print(f"10 {eq_val[9]=}")
-        print(f"11 {eq_val[10]=}")
-        print(f"12 {eq_val[11]=}")
-        print(f"13 {eq_val[12]=}")
-        print(f"14 {eq_val[13]=}")
-        print(f"15 {eq_val[14]=}")
-        print(f"16 {eq_val[15]=}")
-        print(f"17 {eq_val[16]=}")
-        print(f"18 {eq_val[17]=}")
-        print(f"19 {rod_padezh_seller=}")
-        print(f"20 {data_xlsx[0]=}")
-        print(f"21 {data_xlsx[1]=}")
-        print(f"23 {data_xlsx[2]=}")
-        print(f"24 {data_xlsx[14]=}")
 
         new_words_dkp = [str(eq_val[0]), str(eq_val[1]), str(eq_val[2]), str(eq_val[3]), str(eq_val[4]),
                          str(eq_val[5]), str(eq_val[6]), str(eq_val[7]), str(eq_val[8]), str(eq_val[9]),
@@ -702,7 +680,8 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
                          data_xlsx[15], data_xlsx[16], data_xlsx[17], data_xlsx[18], data_xlsx[19], data_xlsx[20],
                          data_xlsx[21], data_xlsx[22], data_xlsx[23], data_xlsx[24], data_xlsx[25]]
 
-
+        for old, new in zip(old_words_dkp, new_words_dkp):
+            print(f'{old}: {new}')
 
         return old_words_dkp, new_words_dkp
 
