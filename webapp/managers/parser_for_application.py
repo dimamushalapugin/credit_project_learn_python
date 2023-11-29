@@ -265,31 +265,31 @@ def start_filling_application(inn_leasee, path_application, inn_seller1, inn_sel
                                     read_only=False)
         # заполняем страницу Заявление
         sheet_zayavlenie = wb['Заявление']
-        sheet_zayavlenie['A6'].value = full_name_leasee
-        sheet_zayavlenie['C7'].value = inn_kpp_leasee
-        sheet_zayavlenie['B2'].value = dt.today().strftime(f"%d.%m.%Y")
+        sheet_zayavlenie['A5'].value = full_name_leasee
+        sheet_zayavlenie['D6'].value = inn_kpp_leasee
+        sheet_zayavlenie['B1'].value = dt.today().strftime(f"%d.%m.%Y")
         if ip_or_kfh == 'Да':
-            sheet_zayavlenie['C7'].value = inn_leasee
+            sheet_zayavlenie['D6'].value = inn_leasee
         # print(sheet_zayavlenie['A6'].value)
         # print(sheet_zayavlenie['C7'].value)
-        sheet_zayavlenie['E7'].value = address_leasee
+        sheet_zayavlenie['H6'].value = address_leasee
         # print(sheet_zayavlenie['E7'].value)
 
-        sheet_zayavlenie['B12'].value = krakt_name_seller1
-        sheet_zayavlenie['E12'].value = inn_seller1
-        sheet_zayavlenie['F12'].value = address_seller1
+        sheet_zayavlenie['A10'].value = krakt_name_seller1
+        sheet_zayavlenie['C11'].value = inn_seller1
+        sheet_zayavlenie['G11'].value = address_seller1
         if len(inn_seller2) >= 1 and inn_seller2 is not None:
-            sheet_zayavlenie['B13'].value = krakt_name_seller2
-            sheet_zayavlenie['E13'].value = inn_seller2
-            sheet_zayavlenie['F13'].value = address_seller2
+            sheet_zayavlenie['F12'].value = krakt_name_seller2
+            sheet_zayavlenie['C13'].value = inn_seller2
+            sheet_zayavlenie['G13'].value = address_seller2
         if len(inn_seller3) >= 1 and inn_seller3 is not None:
-            sheet_zayavlenie['B14'].value = krakt_name_seller3
-            sheet_zayavlenie['E14'].value = inn_seller3
-            sheet_zayavlenie['F14'].value = address_seller3
+            sheet_zayavlenie['A14'].value = krakt_name_seller3
+            sheet_zayavlenie['C15'].value = inn_seller3
+            sheet_zayavlenie['G15'].value = address_seller3
         if len(inn_seller4) >= 1 and inn_seller4 is not None:
-            sheet_zayavlenie['B15'].value = krakt_name_seller4
-            sheet_zayavlenie['E15'].value = inn_seller4
-            sheet_zayavlenie['F15'].value = address_seller4
+            sheet_zayavlenie['A16'].value = krakt_name_seller4
+            sheet_zayavlenie['C16'].value = inn_seller4
+            sheet_zayavlenie['G16'].value = address_seller4
 
         counter_1 = 24
         for number in range(25, sheet_zayavlenie.max_row + 2):
@@ -298,11 +298,11 @@ def start_filling_application(inn_leasee, path_application, inn_seller1, inn_sel
                 f'B{number}'].value == 'Место эксплуатации предмета лизинга (для автотранспорта место стоянки/хранения) полный фактический адрес:':
                 sheet_zayavlenie[f'A{number + 1}'].value = address_leasee
                 # print(sheet_zayavlenie[f'A{number + 1}'].value)
-            if sheet_zayavlenie[f'B{number}'].value == '(должность руководителя организации Заявителя)':
-                sheet_zayavlenie[f'B{number - 1}'].value = leader_leasee
+            if sheet_zayavlenie[f'A{number}'].value == '(должность руководителя организации Заявителя)':
+                sheet_zayavlenie[f'A{number - 1}'].value = leader_leasee
                 # print(sheet_zayavlenie[f'B{number - 1}'].value)
-            if sheet_zayavlenie[f'H{number}'].value == '(расшифровка подписи)':
-                sheet_zayavlenie[f'H{number - 1}'].value = formatted_name_leader_leasee
+            if sheet_zayavlenie[f'O{number}'].value == '(расшифровка подписи)':
+                sheet_zayavlenie[f'O{number - 1}'].value = formatted_name_leader_leasee
                 # print(sheet_zayavlenie[f'H{number - 1}'].value)
 
             # заполнение поручителей, автоматом поставил всех учредов
@@ -322,11 +322,11 @@ def start_filling_application(inn_leasee, path_application, inn_seller1, inn_sel
                 if sheet_zayavlenie[f'F{number}'].value == 'ИНН':
                     sheet_zayavlenie[f'F{number + 1}'].value = inn_leasee
                     # print(sheet_zayavlenie[f'F{number + 1}'].value)
-                if sheet_zayavlenie[f'B{number}'].value == '(должность руководителя организации Заявителя)':
+                if sheet_zayavlenie[f'A{number}'].value == '(должность руководителя организации Заявителя)':
                     if type_business == 'Индивидуальный предприниматель' or type_business == 'ИП':
-                        sheet_zayavlenie[f'B{number - 1}'].value = type_business
+                        sheet_zayavlenie[f'A{number - 1}'].value = type_business
                     else:
-                        sheet_zayavlenie[f'B{number - 1}'].value = 'Глава'
+                        sheet_zayavlenie[f'A{number - 1}'].value = 'Глава'
 
         # заполняем страницу Анкета Стр.1
         sheet_anketa_1_list = wb['Анкета Стр.1']
