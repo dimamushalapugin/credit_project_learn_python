@@ -1,5 +1,7 @@
 import openpyxl
+import os
 
+from datetime import datetime as dt
 from typing import Optional
 from docx import Document
 from num2words import num2words
@@ -129,8 +131,8 @@ def read_xlsx(path_application):
 
     return (rekvizit_leasee_bik, rekvizit_leasee_cs_shet, rekvizit_leasee_shet, rekvizit_leasee_bank,
             main_activity_leasee, fio_leader, email_leasee, phone_leasee, full_krakt_name_leasee, ustav_capital,
-            date_regist, okpo_leasee, okato_leasee, ogrn_leasee, inn_seller_list, price_predmet_lizinga,
-            predmet_lizinga, formatted_name_leader_leasee, leader_leasee, address_leasee_expluatazia, address_leasee,
+            date_regist, okpo_leasee, okato_leasee, ogrn_leasee, inn_seller_list[0], price_predmet_lizinga,
+            predmet_lizinga[0], formatted_name_leader_leasee, leader_leasee, address_leasee_expluatazia, address_leasee,
             inn_kpp_leasee, full_name_leasee, seller_title, inn_seller_list2, seller_address)
 
 
@@ -536,10 +538,12 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
         return leader_seller, leader_seller_rod_padezh, leader_leasee_pod
 
     def rod_padezh_fio_leader(fio):
-        return DADATA_BASE.clean(fio)
+        logging.info(f'({current_user}) {fio}')
+        logging.info(f'({current_user}) {DADATA_BASE.clean("name", fio)}')
+        return DADATA_BASE.clean("name", fio)
 
     def gender_seller(fio):
-        return DADATA_BASE.clean(fio)['gender']
+        return DADATA_BASE.clean("name", fio)['gender']
 
     def full_rekviti_seller(result_dkp):
         ip_or_kfh_dkp = 'Нет'
@@ -606,12 +610,18 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
 
     def replace():
         eq_val = equipment_valute()
+        logging.info(f'{eq_val=}')
         data_xlsx = read_xlsx(path_application)  # все из xlsx
-        price_entry = data_xlsx[15]  # цена ПЛ
+        logging.info(f'{data_xlsx=}')
+        price_entry = data_xlsx[15][0]  # цена ПЛ
+        logging.info(f'{price_entry=}')
         payment_dkp = payment_for_dkp(price_entry)  # все для порядка оплаты
         info_about_seller = result_dadata()
+        # logging.info(f'{info_about_seller=}')
         info_about_seller_director = some_info_seller(info_about_seller)
+        # logging.info(f'{info_about_seller_director=}')
         full_seller = full_rekviti_seller(info_about_seller)
+        # logging.info(f'{full_seller=}')
         rod_padezh_seller = rod_padezh_fio_leader(full_seller[-1])  # full_seller[-1] - ФИО директора продавца
         name_and_dover_seller = seller_dkp_all()
         deistv_sell = deistv_seller(info_about_seller, full_seller[-1])
@@ -645,8 +655,32 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
                          "{{ inn_kpp_leasee }}", "{{ full_name_leasee }}", "{{ seller_title }}",
                          "{{ inn_seller_list2 }}", "{{ seller_address }}"]
 
-        new_words_dkp = [str(eq_val[0]), str(eq_val[1]), str(eq_val[2]), str(eq_val[3]),str(eq_val[4]),
-                         str(eq_val[5]), str(eq_val[6]), str(eq_val[7]), str(eq_val[8]),str(eq_val[9]),
+        print(f"1 {eq_val[0]=}")
+        print(f"2 {eq_val[1]=}")
+        print(f"3 {eq_val[2]=}")
+        print(f"4 {eq_val[3]=}")
+        print(f"5 {eq_val[4]=}")
+        print(f"6 {eq_val[5]=}")
+        print(f"7 {eq_val[6]=}")
+        print(f"8 {eq_val[7]=}")
+        print(f"9 {eq_val[8]=}")
+        print(f"10 {eq_val[9]=}")
+        print(f"11 {eq_val[10]=}")
+        print(f"12 {eq_val[11]=}")
+        print(f"13 {eq_val[12]=}")
+        print(f"14 {eq_val[13]=}")
+        print(f"15 {eq_val[14]=}")
+        print(f"16 {eq_val[15]=}")
+        print(f"17 {eq_val[16]=}")
+        print(f"18 {eq_val[17]=}")
+        print(f"19 {rod_padezh_seller=}")
+        print(f"20 {data_xlsx[0]=}")
+        print(f"21 {data_xlsx[1]=}")
+        print(f"23 {data_xlsx[2]=}")
+        print(f"24 {data_xlsx[14]=}")
+
+        new_words_dkp = [str(eq_val[0]), str(eq_val[1]), str(eq_val[2]), str(eq_val[3]), str(eq_val[4]),
+                         str(eq_val[5]), str(eq_val[6]), str(eq_val[7]), str(eq_val[8]), str(eq_val[9]),
                          str(eq_val[10]), str(eq_val[11]), str(eq_val[12]), str(eq_val[13]), str(eq_val[14]),
                          str(eq_val[15]), str(eq_val[16]), str(eq_val[17]),
                          str(payment_dkp[0]), str(payment_dkp[1]), str(payment_dkp[2]), str(payment_dkp[3]),
@@ -657,9 +691,9 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
                          str(payment_dkp[20]), str(payment_dkp[21]), str(payment_dkp[22]), str(payment_dkp[23]),
                          str(payment_dkp[24]), str(name_and_dover_seller[0]), str(deistv_sell[1]),
                          str(info_about_seller_director[1]),
-                         str(put_padezh_podpisant_seller), str(deistv_sell[0]),
+                         str(rod_padezh_seller), str(deistv_sell[0]),
                          str(name_and_dover_seller[1]),
-                         str(leader_seller_rod), str(full_seller[4]), str(full_seller[6]),
+                         str(info_about_seller_director[0]), str(full_seller[4]), str(full_seller[6]),
                          str(full_seller[1]), str(full_seller[2]),
                          # сейчас пойдут данные из экселя
                          data_xlsx[0], data_xlsx[1], data_xlsx[2],
@@ -668,7 +702,17 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
                          data_xlsx[15], data_xlsx[16], data_xlsx[17], data_xlsx[18], data_xlsx[19], data_xlsx[20],
                          data_xlsx[21], data_xlsx[22], data_xlsx[23], data_xlsx[24], data_xlsx[25]]
 
+
+
+        return old_words_dkp, new_words_dkp
+
     def replace_words_in_dkp(docx_file, old_words_dkp, new_words_dkp):
+
+        eq_val = equipment_valute()
+        data_xlsx = read_xlsx(path_application)  # все из xlsx
+        price_entry = data_xlsx[15][0]
+        payment_dkp = payment_for_dkp(price_entry)  # все для порядка оплаты
+
         doc = Document(docx_file)
 
         for paragraph in doc.paragraphs:
@@ -750,7 +794,7 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
         if place == "продавец" and acts == 'эксплуатация':
             for run in doc.paragraphs:
                 if run.text.strip() in [
-                    f'4.1. Продавец передает Лизингополучателю, на основании выданной Покупателем доверенности,  предмет лизинга со своего склада по адресу: {{ address_seller_dkp }}. Продавец указывает местонахождение склада в уведомлении о готовности предмета лизинга к передаче. Местом поставки является склад Продавца. Транспортировка предмета лизинга до места эксплуатации предмета лизинга по адресу, указанному в п.1.7. настоящего договора, осуществляется за счет и силами Лизингополучателя со склада Продавца. Лизингополучатель обязуется застраховать предмет лизинга с момента отгрузки на время перевозки до момента поставки к месту эксплуатации.',
+                    f'4.1. Продавец передает Лизингополучателю, на основании выданной Покупателем доверенности,  предмет лизинга со своего склада по адресу: {address_seller_dkp}. Продавец указывает местонахождение склада в уведомлении о готовности предмета лизинга к передаче. Местом поставки является склад Продавца. Транспортировка предмета лизинга до места эксплуатации предмета лизинга по адресу, указанному в п.1.7. настоящего договора, осуществляется за счет и силами Лизингополучателя со склада Продавца. Лизингополучатель обязуется застраховать предмет лизинга с момента отгрузки на время перевозки до момента поставки к месту эксплуатации.',
                     '4.2. Датой поставки предмета лизинга считается дата подписания Продавцом, Покупателем и Лизингополучателем трехстороннего акта приема-передачи предмета лизинга по месту поставки.',
                     '4.3. Право собственности на поставляемый предмет лизинга переходит от Продавца к Покупателю со дня передачи предмета лизинга по товарной накладной и по акту приема-передачи в соответствии с условиями настоящего договора, а риск случайной гибели или случайного повреждения предмета лизинга, утраты, ущерба переходит от Продавца к Лизингополучателю со дня передачи предмета лизинга по месту отгрузки предмета лизинга со склада Продавца и подписания товарной накладной (ТОРГ-12) либо УПД.',
                     '4.1. Поставка предмета лизинга осуществляется за счет и силами Продавца до места эксплуатации предмета лизинга по адресу, указанному в п.1.7. настоящего договора.',
@@ -880,7 +924,7 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
                     '8.9. Стороны соглашаются осуществлять документооборот при исполнении настоящего Договора в электронном виде по телекоммуникационным каналам связи, в том числе через систему оператора электронного документооборота «Диадок» (далее - Диадок) с использованием квалифицированной электронной подписи уполномоченного стороной лица. На каждом электронном документе (сообщении), отправляемом через Диадок, автоматически проставляется отметка о передаче документа с указанием даты и времени. Электронные документы, подписанные квалифицированной электронной подписью, признаются электронными документами, равнозначными документам на бумажном носителе, подписанными собственноручной подписью и заверенным печатью, за исключением случая, если федеральными законами или принимаемыми в соответствии с ними нормативными правовыми актами установлено требование о необходимости составления документа исключительно на бумажном носителе. Сторона обязана подписать документ в электронно-цифровом формате не позднее 2(двух) рабочих дней с даты выставления его другой Стороной договора. В случае неполучения Стороной подтверждения подписания выставленного документа, такой документ считается подписанным другой Стороной в указанный срок.']:
                     doc.element.body.remove(run._element)
 
-        if kurs == 'Обычная оплата':
+        if eq_val[-1] == 'Обычная оплата':
             for run in doc.paragraphs:
 
                 if run.text.strip() in [
@@ -893,17 +937,17 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
                     'Пересчет суммы оплаты в рублях производится только единоразово в рабочий день, следующий за днем оплаты.',
                     'Требование   настоящего  пункта,  связанное  с  возможным переносом  срока  оплаты,  не  являются  основанием  для  признания оплаты Предмета лизинга Покупателем с просрочкой и не может служить основанием для привлечения Покупателя  к  ответственности.']:
                     doc.element.body.remove(run._element)
-        elif kurs == 'moex':
+        elif eq_val[-1] == 'moex':
             for run in doc.paragraphs:
                 if run.text.strip() in [
-                    f'2.3. Оплата суммы договора производится в {type_currency} и осуществляется в следующем порядке:',
+                    f'2.3. Оплата суммы договора производится в {eq_val[16]} и осуществляется в следующем порядке:',
                     '2.3. Оплата суммы договора производится в рублях по курсу обмена валют ЦБ РФ на день платежа на расчетный счет Продавца и осуществляется в следующем порядке:',
                     '2.4. Платеж считается произведенным в момент списания денежных средств с расчетного счета Покупателя.']:
                     doc.element.body.remove(run._element)
         else:
             for run in doc.paragraphs:
                 if run.text.strip() in [
-                    f'2.3. Оплата суммы договора производится в {type_currency} и осуществляется в следующем порядке:',
+                    f'2.3. Оплата суммы договора производится в {eq_val[16]} и осуществляется в следующем порядке:',
                     '2.3. Оплата суммы договора производится в рублях по средневзвешенному курсу до 4-х знаков после запятой CNY/RUB (Китайский юань / Российский рубль) ПАО «Московская Биржа» (https://www.moex.com/ru/issue/CNYRUB_TOM/CETS) предшествующего дня на расчетный счет Продавца и осуществляется в следующем порядке:',
                     '2.4. Сторонами, на следующий рабочий день, после дня оплаты, производится пересчет полученной суммы оплаты в рублях по средневзвешенному курсу CNY/RUB (Китайский юань / Российский рубль) ПАО «Московская Биржа» (https://www.moex.com/ru/issue/CNYRUB_TOM/CETS), действующему на день оплаты.',
                     'По возникшей разнице в юанях будет производиться перерасчет между Покупателем и Продавцом, в следующем порядке:',
@@ -917,50 +961,51 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
         if len(payment_order.split(' ')) == 1:
             for run in doc.paragraphs:
                 if run.text.strip() in [
-                    f'2.3.1. {punkt_2_3_1_pay} платеж в размере {punkt_2_3_1_num}% ({punkt_2_3_1_numb_pr}) от стоимости предмета лизинга, что составляет сумму {equivalent_currency} {payment_1} ({payment_1_propis}) {type_currency}, в т.ч. НДС 20%, в течение 15 (пятнадцати) рабочих дней с момента перечисления Лизингополучателем первоначального платежа Покупателю по договору лизинга, а также после выставления Продавцом счета на оплату.',
-                    f'2.3.2. {punkt_2_3_2_pay} платеж в размере {punkt_2_3_2_num}% ({punkt_2_3_2_numb_pr}) от стоимости предмета лизинга, что составляет сумму {equivalent_currency} {payment_2} ({payment_2_propis}) {type_currency}, в т.ч. НДС 20%, в течение 7 (семи) рабочих дней с момента получения уведомления о готовности предмета лизинга к отгрузке согласно п.3.1.1 и после выставления Продавцом счета на оплату.',
-                    f'2.3.3. {punkt_2_3_3_pay} платеж в размере {punkt_2_3_3_num}% ({punkt_2_3_3_numb_pr}) от стоимости предмета лизинга, что составляет сумму {equivalent_currency} {payment_3} ({payment_3_propis}) {type_currency}, в т.ч. НДС 20%, в течение 7 (семи) рабочих дней после выставления Продавцом счета на оплату.',
-                    f'2.3.4. {punkt_2_3_4_pay} платеж в размере {punkt_2_3_4_num}% ({punkt_2_3_4_numb_pr}) от стоимости предмета лизинга, что составляет сумму {equivalent_currency} {payment_4} ({payment_4_propis}) {type_currency}, в т.ч. НДС 20%, в течение 7 (семи) рабочих дней после выставления Продавцом счета на оплату.',
-                    f'2.3.5. {punkt_2_3_5_pay} платеж в размере {punkt_2_3_5_num}% ({punkt_2_3_5_numb_pr}) от стоимости предмета лизинга, что составляет сумму {equivalent_currency} {payment_5} ({payment_5_propis}) {type_currency}, в т.ч. НДС 20%, в течение 7 (семи) рабочих дней после выставления Продавцом счета на оплату.']:
-                    print('1111111111')
+                    f'2.3.1. {payment_dkp[0]} платеж в размере {payment_dkp[5]}% ({payment_dkp[10]}) от стоимости предмета лизинга, что составляет сумму {eq_val[-2]} {payment_dkp[15]} ({payment_dkp[20]}) {eq_val[-3]}, в т.ч. НДС 20%, в течение 15 (пятнадцати) рабочих дней с момента перечисления Лизингополучателем первоначального платежа Покупателю по договору лизинга, а также после выставления Продавцом счета на оплату.',
+                    f'2.3.2. {payment_dkp[1]} платеж в размере {payment_dkp[6]}% ({payment_dkp[11]}) от стоимости предмета лизинга, что составляет сумму {eq_val[-2]} {payment_dkp[16]} ({payment_dkp[21]}) {eq_val[-3]}, в т.ч. НДС 20%, в течение 7 (семи) рабочих дней с момента получения уведомления о готовности предмета лизинга к отгрузке согласно п.3.1.1 и после выставления Продавцом счета на оплату.',
+                    f'2.3.3. {payment_dkp[2]} платеж в размере {payment_dkp[7]}% ({payment_dkp[12]}) от стоимости предмета лизинга, что составляет сумму {eq_val[-2]} {payment_dkp[17]} ({payment_dkp[22]}) {eq_val[-3]}, в т.ч. НДС 20%, в течение 7 (семи) рабочих дней после выставления Продавцом счета на оплату.',
+                    f'2.3.4. {payment_dkp[3]} платеж в размере {payment_dkp[8]}% ({payment_dkp[13]}) от стоимости предмета лизинга, что составляет сумму {eq_val[-2]} {payment_dkp[18]} ({payment_dkp[23]}) {eq_val[-3]}, в т.ч. НДС 20%, в течение 7 (семи) рабочих дней после выставления Продавцом счета на оплату.',
+                    f'2.3.5. {payment_dkp[4]} платеж в размере {payment_dkp[9]}% ({payment_dkp[14]}) от стоимости предмета лизинга, что составляет сумму {eq_val[-2]} {payment_dkp[19]} ({payment_dkp[24]}) {eq_val[-3]}, в т.ч. НДС 20%, в течение 7 (семи) рабочих дней после выставления Продавцом счета на оплату.']:
                     doc.element.body.remove(run._element)
 
         elif len(payment_order.split(' ')) == 2:
             for run in doc.paragraphs:
                 if run.text.strip() in [
-                    f'2.3.1. Оплата в размере {punkt_2_3_1_num}% ({punkt_2_3_1_numb_pr}) от стоимости предмета лизинга, что составляет сумму {equivalent_currency} {payment_1} ({payment_1_propis}) {type_currency}, в т.ч. НДС, в течение 15 (пятнадцати) рабочих дней с момента перечисления Лизингополучателем первоначального платежа Покупателю по договору лизинга,',
+                    f'2.3.1. Оплата в размере {payment_dkp[5]}% ({payment_dkp[10]}) от стоимости предмета лизинга, что составляет сумму {eq_val[-2]} {payment_dkp[15]} ({payment_dkp[20]}) {eq_val[-3]}, в т.ч. НДС, в течение 15 (пятнадцати) рабочих дней с момента перечисления Лизингополучателем первоначального платежа Покупателю по договору лизинга,',
                     'и в течение 7 (семи) рабочих дней с момента получения Покупателем уведомления Продавца о готовности предмета лизинга к отгрузке согласно п.3.1.1 и после выставления Продавцом счета на оплату.',
-                    f'2.3.3. {punkt_2_3_3_pay} платеж в размере {punkt_2_3_3_num}% ({punkt_2_3_3_numb_pr}) от стоимости предмета лизинга, что составляет сумму {equivalent_currency} {payment_3} ({payment_3_propis}) {type_currency}, в т.ч. НДС 20%, в течение 7 (семи) рабочих дней после выставления Продавцом счета на оплату.',
-                    f'2.3.4. {punkt_2_3_4_pay} платеж в размере {punkt_2_3_4_num}% ({punkt_2_3_4_numb_pr}) от стоимости предмета лизинга, что составляет сумму {equivalent_currency} {payment_4} ({payment_4_propis}) {type_currency}, в т.ч. НДС 20%, в течение 7 (семи) рабочих дней после выставления Продавцом счета на оплату.',
-                    f'2.3.5. {punkt_2_3_5_pay} платеж в размере {punkt_2_3_5_num}% ({punkt_2_3_5_numb_pr}) от стоимости предмета лизинга, что составляет сумму {equivalent_currency} {payment_5} ({payment_5_propis}) {type_currency}, в т.ч. НДС 20%, в течение 7 (семи) рабочих дней после выставления Продавцом счета на оплату.'
+                    f'2.3.3. {payment_dkp[2]} платеж в размере {payment_dkp[7]}% ({payment_dkp[12]}) от стоимости предмета лизинга, что составляет сумму {eq_val[-2]} {payment_dkp[17]} ({payment_dkp[22]}) {eq_val[-3]}, в т.ч. НДС 20%, в течение 7 (семи) рабочих дней после выставления Продавцом счета на оплату.',
+                    f'2.3.4. {payment_dkp[3]} платеж в размере {payment_dkp[8]}% ({payment_dkp[13]}) от стоимости предмета лизинга, что составляет сумму {eq_val[-2]} {payment_dkp[18]} ({payment_dkp[23]}) {eq_val[-3]}, в т.ч. НДС 20%, в течение 7 (семи) рабочих дней после выставления Продавцом счета на оплату.',
+                    f'2.3.5. {payment_dkp[4]} платеж в размере {payment_dkp[9]}% ({payment_dkp[14]}) от стоимости предмета лизинга, что составляет сумму {eq_val[-2]} {payment_dkp[19]} ({payment_dkp[24]}) {eq_val[-3]}, в т.ч. НДС 20%, в течение 7 (семи) рабочих дней после выставления Продавцом счета на оплату.'
                 ]:
                     doc.element.body.remove(run._element)
         elif len(payment_order.split(' ')) == 3:
             for run in doc.paragraphs:
                 if run.text.strip() in [
-                    f'2.3.1. Оплата в размере {punkt_2_3_1_num}% ({punkt_2_3_1_numb_pr}) от стоимости предмета лизинга, что составляет сумму {equivalent_currency} {payment_1} ({payment_1_propis}) {type_currency}, в т.ч. НДС, в течение 15 (пятнадцати) рабочих дней с момента перечисления Лизингополучателем первоначального платежа Покупателю по договору лизинга,',
+                    f'2.3.1. Оплата в размере {payment_dkp[5]}% ({payment_dkp[10]}) от стоимости предмета лизинга, что составляет сумму {eq_val[-2]} {payment_dkp[15]} ({payment_dkp[20]}) {eq_val[-3]}, в т.ч. НДС, в течение 15 (пятнадцати) рабочих дней с момента перечисления Лизингополучателем первоначального платежа Покупателю по договору лизинга,',
                     'и в течение 7 (семи) рабочих дней с момента получения Покупателем уведомления Продавца о готовности предмета лизинга к отгрузке согласно п.3.1.1 и после выставления Продавцом счета на оплату.',
-                    f'2.3.4. {punkt_2_3_4_pay} платеж в размере {punkt_2_3_4_num}% ({punkt_2_3_4_numb_pr}) от стоимости предмета лизинга, что составляет сумму {equivalent_currency} {payment_4} ({payment_4_propis}) {type_currency}, в т.ч. НДС 20%, в течение 7 (семи) рабочих дней после выставления Продавцом счета на оплату.',
-                    f'2.3.5. {punkt_2_3_5_pay} платеж в размере {punkt_2_3_5_num}% ({punkt_2_3_5_numb_pr}) от стоимости предмета лизинга, что составляет сумму {equivalent_currency} {payment_5} ({payment_5_propis}) {type_currency}, в т.ч. НДС 20%, в течение 7 (семи) рабочих дней после выставления Продавцом счета на оплату.'
+                    f'2.3.4. {payment_dkp[3]} платеж в размере {payment_dkp[8]}% ({payment_dkp[13]}) от стоимости предмета лизинга, что составляет сумму {eq_val[-2]} {payment_dkp[18]} ({payment_dkp[23]}) {eq_val[-3]}, в т.ч. НДС 20%, в течение 7 (семи) рабочих дней после выставления Продавцом счета на оплату.',
+                    f'2.3.5. {payment_dkp[4]} платеж в размере {payment_dkp[9]}% ({payment_dkp[14]}) от стоимости предмета лизинга, что составляет сумму {eq_val[-2]} {payment_dkp[19]} ({payment_dkp[24]}) {eq_val[-3]}, в т.ч. НДС 20%, в течение 7 (семи) рабочих дней после выставления Продавцом счета на оплату.'
                 ]:
                     doc.element.body.remove(run._element)
         elif len(payment_order.split(' ')) == 4:
             for run in doc.paragraphs:
                 if run.text.strip() in [
-                    f'2.3.1. Оплата в размере {punkt_2_3_1_num}% ({punkt_2_3_1_numb_pr}) от стоимости предмета лизинга, что составляет сумму {equivalent_currency} {payment_1} ({payment_1_propis}) {type_currency}, в т.ч. НДС, в течение 15 (пятнадцати) рабочих дней с момента перечисления Лизингополучателем первоначального платежа Покупателю по договору лизинга,',
+                    f'2.3.1. Оплата в размере {payment_dkp[5]}% ({payment_dkp[10]}) от стоимости предмета лизинга, что составляет сумму {eq_val[-2]} {payment_dkp[15]} ({payment_dkp[20]}) {eq_val[-3]}, в т.ч. НДС, в течение 15 (пятнадцати) рабочих дней с момента перечисления Лизингополучателем первоначального платежа Покупателю по договору лизинга,',
                     'и в течение 7 (семи) рабочих дней с момента получения Покупателем уведомления Продавца о готовности предмета лизинга к отгрузке согласно п.3.1.1 и после выставления Продавцом счета на оплату.',
-                    f'2.3.5. {punkt_2_3_5_pay} платеж в размере {punkt_2_3_5_num}% ({punkt_2_3_5_numb_pr}) от стоимости предмета лизинга, что составляет сумму {equivalent_currency} {payment_5} ({payment_5_propis}) {type_currency}, в т.ч. НДС 20%, в течение 7 (семи) рабочих дней после выставления Продавцом счета на оплату.'
+                    f'2.3.5. {payment_dkp[4]} платеж в размере {payment_dkp[9]}% ({payment_dkp[14]}) от стоимости предмета лизинга, что составляет сумму {eq_val[-2]} {payment_dkp[19]} ({payment_dkp[24]}) {eq_val[-3]}, в т.ч. НДС 20%, в течение 7 (семи) рабочих дней после выставления Продавцом счета на оплату.'
                 ]:
                     doc.element.body.remove(run._element)
         else:
             for run in doc.paragraphs:
                 if run.text.strip() in [
-                    f'2.3.1. Оплата в размере {punkt_2_3_1_num}% ({punkt_2_3_1_numb_pr}) от стоимости предмета лизинга, что составляет сумму {equivalent_currency} {payment_1} ({payment_1_propis}) {type_currency}, в т.ч. НДС, в течение 15 (пятнадцати) рабочих дней с момента перечисления Лизингополучателем первоначального платежа Покупателю по договору лизинга,',
+                    f'2.3.1. Оплата в размере {payment_dkp[5]}% ({payment_dkp[10]}) от стоимости предмета лизинга, что составляет сумму {eq_val[-2]} {payment_dkp[15]} ({payment_dkp[20]}) {eq_val[-3]}, в т.ч. НДС, в течение 15 (пятнадцати) рабочих дней с момента перечисления Лизингополучателем первоначального платежа Покупателю по договору лизинга,',
                     'и в течение 7 (семи) рабочих дней с момента получения Покупателем уведомления Продавца о готовности предмета лизинга к отгрузке согласно п.3.1.1 и после выставления Продавцом счета на оплату.']:
                     doc.element.body.remove(run._element)
 
-        doc.save(fr"ДКП {inn_client}.docx")
-    #
-    # replace_words_in_dkp(
-    #     rf'Z:\_Документы личные\Отдел анализа и контроля\Шалапугин Дмитрий\Портфель\Коды\ШАБЛОН ДКП АВТО ООО_АО.docx',
-    #     old_words_dkp, new_words_dkp)
+        full_krakt_name_leasee = data_xlsx[8].replace('"', '')
+        dir_path = fr'webapp\static\agreements\{full_krakt_name_leasee} {inn_client}\{dt.today().strftime(f"%d.%m.%Y")}'
+        if not os.path.exists(dir_path):
+            os.makedirs(dir_path)
+        doc.save(fr"{dir_path}\ДКП {inn_client}.docx")
+
+    replace_words_in_dkp(r"webapp\static\agreement_templates\ШАБЛОН ДКП АВТО ООО_АО.docx", replace()[0], replace()[1])

@@ -12,7 +12,7 @@ from flask_login import current_user
 from webapp.risk.logger import logging
 from webapp.managers.parser_for_dkp import read_xlsx
 from num2words import num2words
-from webapp.config import DADATA_TOKEN
+from webapp.config import DADATA_TOKEN, DADATA_SECRET, DADATA_BASE
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 
@@ -54,8 +54,11 @@ def start_filling_application(inn_leasee, path_application, inn_seller1, inn_sel
         logging.info(f"({current_user}) Этап 2.")
         nonlocal ip_or_kfh, type_business, krakt_name_seller1, address_seller1, krakt_name_seller2, address_seller2, krakt_name_seller3, address_seller3, krakt_name_seller4, address_seller4, full_krakt_name_leasee, main_activity_leasee, ogrn_leasee, okpo_leasee, okato_leasee, date_regist, ustav_capital, inn_kpp_leasee, address_leasee, formatted_name_leader_leasee, fio_list, inn_list, dolya_list, full_name_leasee, leader_leasee, fio_leader, phone_leasee, email_leasee
 
+        logging.info(f"({inn_leasee})")
+
         dadata = Dadata(DADATA_TOKEN)
         result = dadata.find_by_id("party", inn_leasee)
+        logging.info(f"{result}")
 
         ip_or_kfh = 'Нет'
         if result[0]['data']['opf']['short'] in ['ИП', 'КФХ', 'ГКФХ']:
@@ -398,36 +401,39 @@ def start_filling_agreement(inn_leasee, path_application, path_graphic, signator
     if not os.path.exists(dir_path):
         os.makedirs(dir_path)
 
-    formatted_name_leader_leasee = ''
-    full_name_leasee = ''
-    full_krakt_name_leasee = ''
-    inn_kpp_leasee = ''
-    address_leasee = ''
-    address_leasee_expluatazia = ''
-    predmet_lizinga = ''
-    inn_seller_list = ''
-    price_predmet_lizinga = ''
-    seller_title = ''
-    inn_seller_list2 = ''
-    seller_address = ''
-    ogrn_leasee = ''
-    okato_leasee = ''
-    okpo_leasee = ''
-    date_regist = ''
-    ustav_capital = ''
-    phone_leasee = ''
-    email_leasee = ''
-    fio_leader = ''
-    main_activity_leasee = ''
-    rekvizit_leasee_bank = ''
-    rekvizit_leasee_shet = ''
-    rekvizit_leasee_cs_shet = ''
-    rekvizit_leasee_bik = ''
-
-    # Чтение заявки и анкеты
     data_xlsx = read_xlsx(path_application)
 
-    leader_leasee = ''
+    formatted_name_leader_leasee = data_xlsx[17]
+    full_name_leasee = data_xlsx[22]
+    full_krakt_name_leasee = data_xlsx[8]
+    inn_kpp_leasee = data_xlsx[21]
+    address_leasee = data_xlsx[20]
+    address_leasee_expluatazia = data_xlsx[19]
+    predmet_lizinga = data_xlsx[16]
+    inn_seller_list = data_xlsx[14]
+    price_predmet_lizinga = data_xlsx[15]
+    seller_title = data_xlsx[23]
+    inn_seller_list2 = data_xlsx[24]
+    seller_address = data_xlsx[25]
+    ogrn_leasee = data_xlsx[13]
+    okato_leasee = data_xlsx[12]
+    okpo_leasee = data_xlsx[11]
+    date_regist = data_xlsx[10]
+    ustav_capital = data_xlsx[9]
+    phone_leasee = data_xlsx[7]
+    email_leasee = data_xlsx[6]
+    fio_leader = data_xlsx[5]
+    main_activity_leasee = data_xlsx[4]
+    rekvizit_leasee_bank = data_xlsx[3]
+    rekvizit_leasee_shet = data_xlsx[2]
+    rekvizit_leasee_cs_shet = data_xlsx[1]
+    rekvizit_leasee_bik = data_xlsx[0]
+    leader_leasee = data_xlsx[18]
+
+    # Чтение заявки и анкеты
+
+
+
     vikup = ''
     vigodo = ''
 
@@ -468,16 +474,16 @@ def start_filling_agreement(inn_leasee, path_application, path_graphic, signator
         put_padezh_podpisant = ''
 
         def rod_padezh_fio_leader(fio):
-            secret = "2c54bab544f947c975525ab452d014492122e52b"
-            dadata = Dadata(DADATA_TOKEN, secret)
-            put_padezh_podpisant = dadata.clean("name", fio)
+            # dadata = Dadata(DADATA_TOKEN, DADATA_SECRET)
+            logging.info(f"({fio})")
+            put_padezh_podpisant = DADATA_BASE.clean("name", fio)
             print(put_padezh_podpisant)
             return put_padezh_podpisant
             # print(f" Здесь пол М или Ж: Итого {put_padezh_podpisant['gender']}")
             # print(f" Здесь родительный падеж подписанта: Итого {put_padezh_podpisant['result_genitive']}")
 
         print('19101')
-        rod_padezh_fio_leader = rod_padezh_fio_leader(fio_leader)
+        rod_padezh_fio_leader = rod_padezh_fio_leader(data_xlsx[5])
         try:
             put_padezh_podpisant_rg = rod_padezh_fio_leader['result_genitive']
         except:
@@ -1286,7 +1292,7 @@ def start_filling_agreement(inn_leasee, path_application, path_graphic, signator
 
     logging.info(f"({current_user}) ЗАПУСК READ XLSX")
 
-    read_xlsx(inn_leasee, path_application)  # читает эксель, после этого можно составлять ДЛ
+    read_xlsx(path_application)  # читает эксель, после этого можно составлять ДЛ
 
     logging.info(f'({current_user}) ЗАПУСК CREATE DL')
     create_dl_dkp(inn_leasee, path_application, path_graphic, signatory, investor, currency_list, who_is_insure,
