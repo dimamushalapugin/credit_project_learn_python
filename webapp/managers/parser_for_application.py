@@ -260,128 +260,134 @@ def start_filling_application(inn_leasee, path_application, inn_seller1, inn_sel
 
     def zapolnenie_zayvki_ankety(inn_leasee, path_application):
         logging.info(f"({current_user}) Этап 4.")
-        # сейчас будем заполнять заявку, вносить данные по лп
-        wb = openpyxl.load_workbook(rf'{path_application}',
-                                    read_only=False)
-        # заполняем страницу Заявление
-        sheet_zayavlenie = wb['Заявление']
-        sheet_zayavlenie['A5'].value = full_name_leasee
-        sheet_zayavlenie['D6'].value = inn_kpp_leasee
-        sheet_zayavlenie['B1'].value = dt.today().strftime(f"%d.%m.%Y")
-        if ip_or_kfh == 'Да':
-            sheet_zayavlenie['D6'].value = inn_leasee
-        # print(sheet_zayavlenie['A6'].value)
-        # print(sheet_zayavlenie['C7'].value)
-        sheet_zayavlenie['H6'].value = address_leasee
-        # print(sheet_zayavlenie['E7'].value)
-
-        sheet_zayavlenie['A10'].value = krakt_name_seller1
-        sheet_zayavlenie['C11'].value = inn_seller1
-        sheet_zayavlenie['G11'].value = address_seller1
-        if len(inn_seller2) >= 1 and inn_seller2 is not None:
-            sheet_zayavlenie['F12'].value = krakt_name_seller2
-            sheet_zayavlenie['C13'].value = inn_seller2
-            sheet_zayavlenie['G13'].value = address_seller2
-        if len(inn_seller3) >= 1 and inn_seller3 is not None:
-            sheet_zayavlenie['A14'].value = krakt_name_seller3
-            sheet_zayavlenie['C15'].value = inn_seller3
-            sheet_zayavlenie['G15'].value = address_seller3
-        if len(inn_seller4) >= 1 and inn_seller4 is not None:
-            sheet_zayavlenie['A16'].value = krakt_name_seller4
-            sheet_zayavlenie['C16'].value = inn_seller4
-            sheet_zayavlenie['G16'].value = address_seller4
-
-        counter_1 = 24
-        for number in range(25, sheet_zayavlenie.max_row + 2):
-            counter_1 += 1
-            if sheet_zayavlenie[
-                f'B{number}'].value == 'Место эксплуатации предмета лизинга (для автотранспорта место стоянки/хранения) полный фактический адрес:':
-                sheet_zayavlenie[f'A{number + 1}'].value = address_leasee
-                # print(sheet_zayavlenie[f'A{number + 1}'].value)
-            if sheet_zayavlenie[f'A{number}'].value == '(должность руководителя организации Заявителя)':
-                sheet_zayavlenie[f'A{number - 1}'].value = leader_leasee
-                # print(sheet_zayavlenie[f'B{number - 1}'].value)
-            if sheet_zayavlenie[f'O{number}'].value == '(расшифровка подписи)':
-                sheet_zayavlenie[f'O{number - 1}'].value = formatted_name_leader_leasee
-                # print(sheet_zayavlenie[f'H{number - 1}'].value)
-
-            # заполнение поручителей, автоматом поставил всех учредов
-            if ip_or_kfh != 'Да':
-                if sheet_zayavlenie[f'B{number}'].value == 'Наименование поручителя ⃰ ':
-                    for row_num, fio in enumerate(fio_list, start=1):
-                        sheet_zayavlenie.cell(row=row_num + counter_1, column=2, value=fio)
-                    # print(sheet_zayavlenie.cell(row=row_num + counter_1, column=2, value=fio).value)
-                if sheet_zayavlenie[f'F{number}'].value == 'ИНН':
-                    for row_num, inn in enumerate(inn_list, start=1):
-                        sheet_zayavlenie.cell(row=row_num + counter_1, column=6, value=inn)
-                    # print(sheet_zayavlenie.cell(row=row_num + counter_1, column=6, value=inn).value)
+        try:
+            # сейчас будем заполнять заявку, вносить данные по лп
+            wb = openpyxl.load_workbook(rf'{path_application}',
+                                        read_only=False)
+            # заполняем страницу Заявление
+            sheet_zayavlenie = wb['Заявление']
+            sheet_zayavlenie['A5'].value = full_name_leasee
+            sheet_zayavlenie['D6'].value = inn_kpp_leasee
+            sheet_zayavlenie['B1'].value = dt.today().strftime(f"%d.%m.%Y")
             if ip_or_kfh == 'Да':
-                if sheet_zayavlenie[f'B{number}'].value == 'Наименование поручителя ⃰ ':
-                    sheet_zayavlenie[f'B{number + 1}'].value = fio_leader
-                    # print(sheet_zayavlenie[f'B{number + 1}'].value)
-                if sheet_zayavlenie[f'F{number}'].value == 'ИНН':
-                    sheet_zayavlenie[f'F{number + 1}'].value = inn_leasee
-                    # print(sheet_zayavlenie[f'F{number + 1}'].value)
+                sheet_zayavlenie['D6'].value = inn_leasee
+            # print(sheet_zayavlenie['A6'].value)
+            # print(sheet_zayavlenie['C7'].value)
+            sheet_zayavlenie['H6'].value = address_leasee
+            # print(sheet_zayavlenie['E7'].value)
+
+            sheet_zayavlenie['A10'].value = krakt_name_seller1
+            sheet_zayavlenie['C11'].value = inn_seller1
+            sheet_zayavlenie['G11'].value = address_seller1
+            if len(inn_seller2) >= 1 and inn_seller2 is not None:
+                sheet_zayavlenie['A12'].value = krakt_name_seller2
+                sheet_zayavlenie['C13'].value = inn_seller2
+                sheet_zayavlenie['G13'].value = address_seller2
+            if len(inn_seller3) >= 1 and inn_seller3 is not None:
+                sheet_zayavlenie['A14'].value = krakt_name_seller3
+                sheet_zayavlenie['C15'].value = inn_seller3
+                sheet_zayavlenie['G15'].value = address_seller3
+            if len(inn_seller4) >= 1 and inn_seller4 is not None:
+                sheet_zayavlenie['A16'].value = krakt_name_seller4
+                sheet_zayavlenie['C17'].value = inn_seller4
+                sheet_zayavlenie['G17'].value = address_seller4
+
+            counter_1 = 24
+            for number in range(25, sheet_zayavlenie.max_row + 2):
+                counter_1 += 1
+                if sheet_zayavlenie[
+                    f'B{number}'].value == 'Место эксплуатации предмета лизинга (для автотранспорта место стоянки/хранения) полный фактический адрес:':
+                    sheet_zayavlenie[f'A{number + 1}'].value = address_leasee
+                    # print(sheet_zayavlenie[f'A{number + 1}'].value)
                 if sheet_zayavlenie[f'A{number}'].value == '(должность руководителя организации Заявителя)':
-                    if type_business == 'Индивидуальный предприниматель' or type_business == 'ИП':
-                        sheet_zayavlenie[f'A{number - 1}'].value = type_business
-                    else:
-                        sheet_zayavlenie[f'A{number - 1}'].value = 'Глава'
+                    sheet_zayavlenie[f'A{number - 1}'].value = leader_leasee
+                    # print(sheet_zayavlenie[f'B{number - 1}'].value)
+                if sheet_zayavlenie[f'O{number}'].value == '(расшифровка подписи)':
+                    sheet_zayavlenie[f'O{number - 1}'].value = formatted_name_leader_leasee
+                    # print(sheet_zayavlenie[f'H{number - 1}'].value)
 
-        # заполняем страницу Анкета Стр.1
-        sheet_anketa_1_list = wb['Анкета Стр.1']
-        sheet_anketa_1_list['F7'].value = ogrn_leasee
-        # print(sheet_anketa_1_list['F7'].value)
-        sheet_anketa_1_list['H7'].value = okato_leasee
-        # print(sheet_anketa_1_list['H7'].value)
-        sheet_anketa_1_list['J7'].value = okpo_leasee
-        # print(sheet_anketa_1_list['J7'].value)
-        sheet_anketa_1_list['E8'].value = date_regist
-        # print(sheet_anketa_1_list['E8'].value)
-        sheet_anketa_1_list['J9'].value = ustav_capital
-        # print(sheet_anketa_1_list['J9'].value)
-        sheet_anketa_1_list['A6'].value = full_krakt_name_leasee
-        # print(sheet_anketa_1_list['A6'].value)
+                # заполнение поручителей, автоматом поставил всех учредов
+                if ip_or_kfh != 'Да':
+                    if sheet_zayavlenie[f'B{number}'].value == 'Наименование поручителя ⃰ ':
+                        for row_num, fio in enumerate(fio_list, start=1):
+                            sheet_zayavlenie.cell(row=row_num + counter_1, column=2, value=fio)
+                        # print(sheet_zayavlenie.cell(row=row_num + counter_1, column=2, value=fio).value)
+                    if sheet_zayavlenie[f'J{number}'].value == 'ИНН':
+                        for row_num, inn in enumerate(inn_list, start=1):
+                            print(row_num, inn)
+                            print(counter_1)
+                            sheet_zayavlenie.cell(row=row_num + counter_1, column=3, value=inn)
+                        # print(sheet_zayavlenie.cell(row=row_num + counter_1, column=6, value=inn).value)
+                if ip_or_kfh == 'Да':
+                    if sheet_zayavlenie[f'B{number}'].value == 'Наименование поручителя ⃰ ':
+                        sheet_zayavlenie[f'B{number + 1}'].value = fio_leader
+                        # print(sheet_zayavlenie[f'B{number + 1}'].value)
+                    if sheet_zayavlenie[f'J{number}'].value == 'ИНН':
+                        sheet_zayavlenie[f'J{number + 1}'].value = inn_leasee
+                        # print(sheet_zayavlenie[f'F{number + 1}'].value)
+                    if sheet_zayavlenie[f'A{number}'].value == '(должность руководителя организации Заявителя)':
+                        if type_business == 'Индивидуальный предприниматель' or type_business == 'ИП':
+                            sheet_zayavlenie[f'A{number - 1}'].value = type_business
+                        else:
+                            sheet_zayavlenie[f'A{number - 1}'].value = 'Глава'
 
-        counter_2_anketa = 7
-        for number in range(8, sheet_anketa_1_list.max_row + 2):
-            counter_2_anketa += 1
-            # заполняем инфу по учредам, не более 4-х должно быть
-            if ip_or_kfh == 'Нет':
-                if sheet_anketa_1_list[
-                    f'B{number}'].value == 'полное наименование акционера/участника/члена/товарища с указанием организационно-правовой формы (полностью Ф.И.О. для физических лиц):':
-                    for row_num, fio in enumerate(fio_list, start=1):
-                        sheet_anketa_1_list.cell(row=row_num + counter_2_anketa + 1, column=2, value=fio)
-                    # print(sheet_anketa_1_list.cell(row=row_num + counter_2_anketa + 1, column=2, value=fio).value)
-                if sheet_anketa_1_list[f'G{number}'].value == 'ИНН':
-                    # print(counter_2_anketa)
-                    for row_num, inn in enumerate(inn_list, start=1):
-                        sheet_anketa_1_list.cell(row=row_num + counter_2_anketa + 1, column=7, value=inn)
-                    # print(sheet_anketa_1_list.cell(row=row_num + counter_2_anketa + 1, column=7, value=inn).value)
-                if sheet_anketa_1_list[f'I{number}'].value == 'доля в уставном капитале, в %':
-                    for row_num, dolya in enumerate(dolya_list, start=1):
-                        # dolya_value = float(dolya)
-                        sheet_anketa_1_list.cell(row=row_num + counter_2_anketa + 1, column=9, value=dolya)
-                    # print(sheet_anketa_1_list.cell(row=row_num + counter_2_anketa + 1, column=9).value)
+            # заполняем страницу Анкета Стр.1
+            sheet_anketa_1_list = wb['Анкета Стр.1']
+            sheet_anketa_1_list['F7'].value = ogrn_leasee
+            # print(sheet_anketa_1_list['F7'].value)
+            sheet_anketa_1_list['H7'].value = okato_leasee
+            # print(sheet_anketa_1_list['H7'].value)
+            sheet_anketa_1_list['J7'].value = okpo_leasee
+            # print(sheet_anketa_1_list['J7'].value)
+            sheet_anketa_1_list['E8'].value = date_regist
+            # print(sheet_anketa_1_list['E8'].value)
+            sheet_anketa_1_list['J9'].value = ustav_capital
+            # print(sheet_anketa_1_list['J9'].value)
+            sheet_anketa_1_list['A6'].value = full_krakt_name_leasee
+            # print(sheet_anketa_1_list['A6'].value)
 
-            if sheet_anketa_1_list[f'A{number}'].value == '1.8         Телефон:':
-                sheet_anketa_1_list[f'C{number}'].value = phone_leasee
-                # print(sheet_anketa_1_list[f'C{number}'].value)
-            if sheet_anketa_1_list[f'E{number}'].value == '1.9 Эл. почта:':
-                sheet_anketa_1_list[f'F{number}'].value = email_leasee
-                # print(sheet_anketa_1_list[f'F{number}'].value)
-            if sheet_anketa_1_list[f'B{number}'].value == 'ФИО:':
-                sheet_anketa_1_list[f'C{number}'].value = fio_leader
-                # print(sheet_anketa_1_list[f'C{number}'].value)
-            if sheet_anketa_1_list[f'B{number}'].value == 'ОКВЭД с расшифровкой:':
-                sheet_anketa_1_list[f'E{number}'].value = main_activity_leasee
-                # print(sheet_anketa_1_list[f'E{number}'].value)
+            counter_2_anketa = 7
+            for number in range(8, sheet_anketa_1_list.max_row + 2):
+                counter_2_anketa += 1
+                # заполняем инфу по учредам, не более 4-х должно быть
+                if ip_or_kfh == 'Нет':
+                    if sheet_anketa_1_list[
+                        f'B{number}'].value == 'полное наименование акционера/участника/члена/товарища с указанием организационно-правовой формы (полностью Ф.И.О. для физических лиц):':
+                        for row_num, fio in enumerate(fio_list, start=1):
+                            sheet_anketa_1_list.cell(row=row_num + counter_2_anketa + 1, column=2, value=fio)
+                        # print(sheet_anketa_1_list.cell(row=row_num + counter_2_anketa + 1, column=2, value=fio).value)
+                    if sheet_anketa_1_list[f'G{number}'].value == 'ИНН':
+                        # print(counter_2_anketa)
+                        for row_num, inn in enumerate(inn_list, start=1):
+                            sheet_anketa_1_list.cell(row=row_num + counter_2_anketa + 1, column=7, value=inn)
+                        # print(sheet_anketa_1_list.cell(row=row_num + counter_2_anketa + 1, column=7, value=inn).value)
+                    if sheet_anketa_1_list[f'I{number}'].value == 'доля в уставном капитале, в %':
+                        for row_num, dolya in enumerate(dolya_list, start=1):
+                            # dolya_value = float(dolya)
+                            sheet_anketa_1_list.cell(row=row_num + counter_2_anketa + 1, column=9, value=dolya)
+                        # print(sheet_anketa_1_list.cell(row=row_num + counter_2_anketa + 1, column=9).value)
 
-        application_filename = fr'{temporary_path}\Заявка с заключением {inn_leasee}.xlsx'
-        wb.save(application_filename)
-        application_filename_download = fr'{path_for_download}\Заявка с заключением {inn_leasee}.xlsx'
-        logging.info(f"({current_user}) Все успешно сохранилось!")
-        return application_filename_download
+                if sheet_anketa_1_list[f'A{number}'].value == '1.8         Телефон:':
+                    sheet_anketa_1_list[f'C{number}'].value = phone_leasee
+                    # print(sheet_anketa_1_list[f'C{number}'].value)
+                if sheet_anketa_1_list[f'E{number}'].value == '1.9 Эл. почта:':
+                    sheet_anketa_1_list[f'F{number}'].value = email_leasee
+                    # print(sheet_anketa_1_list[f'F{number}'].value)
+                if sheet_anketa_1_list[f'B{number}'].value == 'ФИО:':
+                    sheet_anketa_1_list[f'C{number}'].value = fio_leader
+                    # print(sheet_anketa_1_list[f'C{number}'].value)
+                if sheet_anketa_1_list[f'B{number}'].value == 'ОКВЭД с расшифровкой:':
+                    sheet_anketa_1_list[f'E{number}'].value = main_activity_leasee
+                    # print(sheet_anketa_1_list[f'E{number}'].value)
+
+            application_filename = fr'{temporary_path}\Заявка с заключением {inn_leasee}.xlsx'
+            wb.save(application_filename)
+            application_filename_download = fr'{path_for_download}\Заявка с заключением {inn_leasee}.xlsx'
+            logging.info(f"({current_user}) Все успешно сохранилось!")
+            return application_filename_download
+        except Exception as ex:
+            logging.info(ex, exc_info=True)
+            raise ValueError
 
     parser_info_leasee(inn_leasee)  # берет инфу из инета по лизингополучателю
     application_filename = zapolnenie_zayvki_ankety(inn_leasee,
@@ -431,8 +437,6 @@ def start_filling_agreement(inn_leasee, path_application, path_graphic, signator
     leader_leasee = data_xlsx[18]
 
     # Чтение заявки и анкеты
-
-
 
     vikup = ''
     vigodo = ''
