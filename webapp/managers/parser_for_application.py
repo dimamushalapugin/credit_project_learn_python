@@ -10,7 +10,7 @@ from datetime import datetime as dt
 from selenium.webdriver.edge.options import Options
 from flask_login import current_user
 from webapp.risk.logger import logging
-from webapp.managers.parser_for_dkp import read_xlsx
+from webapp.managers.parser_for_dkp import read_xlsx,identification_lkmb_rt
 from num2words import num2words
 from webapp.config import DADATA_TOKEN, DADATA_SECRET, DADATA_BASE
 from selenium import webdriver
@@ -512,10 +512,12 @@ def start_filling_agreement(inn_leasee, path_application, path_graphic, signator
                 deystvuysh_list_leasee = 'действующей'
             imenyemoe = 'именуемая'
         # deystvuysh_list_leasee = 'действующей' if fio_leader.split()[0][-1].lower() == 'а' else 'действующего'
+
         if investor in ['ПАО «МКБ»', 'ООО «ЛКМБ-РТ»']:
             vigodo = 'Лизингодатель'
         else:
             vigodo = investor
+
         print('1912132')
         r_chet_lkmb = ''
         bank_rekv_lkmb = ''
@@ -565,11 +567,11 @@ def start_filling_agreement(inn_leasee, path_application, path_graphic, signator
 
         currency = ''
         if currency_list == 'Рубль':
-            currency = 'рублей'
+            currency_test = 'рублей'
         elif currency_list == 'Китайский юань':
-            currency = 'юаней'
+            currency_test = 'юаней'
         elif currency_list == 'Доллар США':
-            currency = 'долларов США'
+            currency_test = 'долларов США'
 
         wr_rub_usd = {'рублей': 'рублях', 'доллары США': 'долларах США', 'ЕВРО': 'ЕВРО', 'юань': 'юанях',
                       'китайский юань': 'китайских юанях', 'рубль': 'рублях', 'доллары': 'долларах',
@@ -589,7 +591,6 @@ def start_filling_agreement(inn_leasee, path_application, path_graphic, signator
         else:
             imenyemoe = 'именуемое'
         print(f'123213 {put_padezh_podpisant_rg}')
-        currency_test = 'рублей'
         vikup = '1000'
         pl_entry = predmet_lizinga[int(pl)]
         price_entry = price_predmet_lizinga[int(pl)]

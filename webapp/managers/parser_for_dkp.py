@@ -139,6 +139,103 @@ def read_xlsx(path_application):
             inn_kpp_leasee, full_name_leasee)
 
 
+def identification_lkmb_rt(path_application: str, signatory: str, investor: str):
+    if signatory == 'Каюмов А. Д.':
+        a_lkmb = 'Директор'
+        lkmb_podpisant = 'Каюмов А. Д.'
+        preambula_dolj_lkmb = 'Директора'
+        preambula_fio_lkmb = 'Каюмова Айрата Дамировича'
+        doverka_ustav_list = 'Устава'
+        deystvuysh_list = 'действующего'
+    elif signatory == 'Габдрахманов Р. Р.':
+        a_lkmb = 'Заместитель директора'
+        lkmb_podpisant = 'Габдрахманов Р. Р.'
+        preambula_dolj_lkmb = 'Заместителя директора'
+        preambula_fio_lkmb = 'Габдрахманова Рината Рафаэлевича'
+        doverka_ustav_list = 'Доверенности от «17» марта 2020 года, удостоверенной Мальченковой  Евгенией Николаевной, нотариусом Казанского нотариального округа Республики Татарстан, зарегистрированной в реестре нотариальных действий за № 16/64-н/16-2020-7-317(бланк 16 АА 5665323)'
+        deystvuysh_list = 'действующего'
+    else:
+        a_lkmb = 'Заместитель директора по финансам'
+        lkmb_podpisant = 'Хасанова Д. Р.'
+        preambula_dolj_lkmb = 'Заместителя директора по финансам'
+        preambula_fio_lkmb = 'Хасановой Динары Ринатовны'
+        doverka_ustav_list = 'Доверенности от «17» марта 2020 года, удостоверенной Мальченковой  Евгенией Николаевной, нотариусом Казанского нотариального округа Республики Татарстан, зарегистрированной в реестре нотариальных действий за № 16/64-н/16-2020-7-317(бланк 16 АА 5665323)'
+        deystvuysh_list = 'действующей'
+
+    if investor.upper() == 'ПАО АКБ «МЕТАЛЛИНВЕСТБАНК»'.upper():
+        r_chet_lkmb = '40701810000990000052'
+        bank_rekv_lkmb = 'ПАО АКБ «МЕТАЛЛИНВЕСТБАНК»'
+        kor_chet_lkmb = '30101810300000000176'
+        bik_lkmb = '044525176'
+    elif investor.upper() == 'ПАО «МКБ»'.upper():
+        r_chet_lkmb = '40701810900760000034'
+        bank_rekv_lkmb = 'ПАО «МОСКОВСКИЙ КРЕДИТНЫЙ БАНК»'
+        kor_chet_lkmb = '30101810745250000659'
+        bik_lkmb = '044525659'
+    elif investor.upper() == 'АО «Инвестторгбанк»'.upper():
+        r_chet_lkmb = '40701810071010300002'
+        bank_rekv_lkmb = 'АО «Инвестторгбанк»'
+        kor_chet_lkmb = '30101810645250000267'
+        bik_lkmb = '044525267'
+    elif investor.upper() == 'АО «АЛЬФА-БАНК»'.upper():
+        r_chet_lkmb = '40701810129930000005'
+        bank_rekv_lkmb = 'ФИЛИАЛ «НИЖЕГОРОДСКИЙ» АО «АЛЬФА-БАНК»'
+        kor_chet_lkmb = '30101810200000000824'
+        bik_lkmb = '042202824'
+    elif investor.upper() == 'АО «ПЕРВОУРАЛЬСКБАНК»'.upper():
+        r_chet_lkmb = '40701810000010055037'
+        bank_rekv_lkmb = 'АО «ПЕРВОУРАЛЬСКБАНК»'
+        kor_chet_lkmb = '30101810565770000402'
+        bik_lkmb = '046577402'
+    elif investor.upper() == 'АО «СОЛИД БАНК»'.upper():
+        r_chet_lkmb = '40701810105040011167'
+        bank_rekv_lkmb = 'Московский филиал АО «СОЛИД БАНК»'
+        kor_chet_lkmb = '30101810845250000795'
+        bik_lkmb = '044525795'
+    elif investor.upper() == 'АО КБ «УРАЛ ФД»'.upper():
+        r_chet_lkmb = '40701810000000000962'
+        bank_rekv_lkmb = 'АО КБ «УРАЛ ФД»'
+        kor_chet_lkmb = '30101810800000000790'
+        bik_lkmb = '045773790'
+    elif investor.upper() == 'ПАО «Совкомбанк»'.upper():
+        r_chet_lkmb = 'ХХХХХХХХХХХХХХХХХХ'
+        bank_rekv_lkmb = 'ПАО «Совкомбанк»'
+        kor_chet_lkmb = 'ХХХХХХХХХХХХХХ'
+        bik_lkmb = 'ХХХХХХХХХХХХХХХХХХХ'
+    elif investor.upper() == 'ПАО «Сбербанк»'.upper():
+        r_chet_lkmb = 'ХХХХХХХХХХХХХХХХХХ'
+        bank_rekv_lkmb = 'ПАО «Сбербанк»'
+        kor_chet_lkmb = 'ХХХХХХХХХХХХХХ'
+        bik_lkmb = 'ХХХХХХХХХХХХХХХХХХХ'
+    else:
+        r_chet_lkmb = '40702810100020002464'
+        bank_rekv_lkmb = 'ПАО «АК БАРС» БАНК г. Казань'
+        kor_chet_lkmb = '30101810000000000805'
+        bik_lkmb = '049205805'
+    return (a_lkmb, lkmb_podpisant, preambula_dolj_lkmb, preambula_fio_lkmb, doverka_ustav_list, deystvuysh_list,
+            r_chet_lkmb, bank_rekv_lkmb, kor_chet_lkmb, bik_lkmb)
+
+
+def indentification_pl(currency_list: str):
+    currency_test = ''
+    if currency_list == 'Рубль':
+        currency_test = 'рублей'
+    elif currency_list == 'Китайский юань':
+        currency_test = 'юаней'
+    elif currency_list == 'Доллар США':
+        currency_test = 'долларов США'
+
+    return currency_test
+
+def identification_leasee():
+    if leader_leasee.upper() == 'директор'.upper():
+        leader_leasee_rod_padezh = 'Директора'
+    elif leader_leasee.upper() == 'генеральный директор'.upper():
+        leader_leasee_rod_padezh = 'Генерального директора'
+    else:
+        leader_leasee_rod_padezh = ''
+
+
 def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_seller: str, numb_dl_dkp: str,
                                 signatory: str, investor: str, currency: str, pl: str, equipment_or_not: Optional[str],
                                 pl_new_or_not: str, payment_order: str, place: str, acts: str, diadok: str,
@@ -511,20 +608,6 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
                 payment_2, payment_3, payment_4, payment_5, payment_1_propis, payment_2_propis, payment_3_propis,
                 payment_4_propis, payment_5_propis)
 
-    # def create_value_seller():
-    #     leader_seller = ''
-    #     imenyemoe_dkp = ''
-    #     leader_seller_rod_padezh = ''
-    #     put_padezh_podpisant_seller = ''
-    #     deystvuysh_list_seller = 'действующей'
-    #     doverka_ustav_seller = ''
-    #     leader_leasee_pod = ''
-    #     leader_seller_rod_padezh = ''
-    #     formatted_name_leader_seller = ''
-    #     return (
-    #         leader_seller, imenyemoe_dkp, leader_seller_rod_padezh, put_padezh_podpisant_seller, deystvuysh_list_seller,
-    #         doverka_ustav_seller, leader_leasee_pod, leader_seller_rod_padezh, formatted_name_leader_seller)
-
     def result_dadata():
         result_dkp = DADATA_BASE.find_by_id("party", inn_seller)
         return result_dkp
@@ -630,6 +713,8 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
         name_and_dover_seller = seller_dkp_all()
         deistv_sell = deistv_seller(info_about_seller, full_seller[-2])
         kratk_name_seller = result_dadata()[0]['data']['name']['short_with_opf']
+        ident_lkmb_rt = identification_lkmb_rt()
+        ident_pl = indentification_pl()
 
         old_words_dkp = ["{{ new_old_pl }}", "{{ pb_vizor }}", "{{ identif_punkt_3_1_1 }}", "{{ identif_punkt_3_1_3 }}",
                          "{{ punkt_3_1_9 }}", "{{ punkt_3_3_3_key }}", "{{ punkt_3_3_3_key2 }}", "{{ punkt_3_1_6 }}",
@@ -657,7 +742,12 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
                          "{{ okato_leasee }}", "{{ ogrn_leasee }}", "{{ inn_seller_list }}",
                          "{{ price_predmet_lizinga }}", "{{ predmet_lizinga }}", "{{ formatted_name_leader_leasee }}",
                          "{{ leader_leasee }}", "{{ address_leasee_expluatazia }}", "{{ address_leasee }}",
-                         "{{ inn_kpp_leasee }}", "{{ full_name_leasee }}"]
+                         "{{ inn_kpp_leasee }}", "{{ full_name_leasee }}",
+                         # ниже будет подписант и прочие данные ЛКМБ-РТ
+                         "{{ a_lkmb }}", "{{ lkmb_podpisant }}", "{{ preambula_dolj_lkmb }}",
+                         "{{ preambula_fio_lkmb }}", "{{ deystvuysh }}", "{{ doverka_ustav }}",
+                         "{{ r_chet_lkmb }}", "{{ bank_rekv_lkmb }}", "{{ kor_chet_lkmb }}", "{{ bik_lkmb }}",
+                         "{{ currency_test }}"]
 
         new_words_dkp = [str(eq_val[0]), str(eq_val[1]), str(eq_val[2]), str(eq_val[3]), str(eq_val[4]),
                          str(eq_val[5]), str(eq_val[6]), str(eq_val[7]), str(eq_val[8]), str(eq_val[9]),
@@ -679,7 +769,11 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
                          data_xlsx[3], data_xlsx[4], data_xlsx[5], data_xlsx[6], data_xlsx[7], data_xlsx[8],
                          data_xlsx[9], data_xlsx[10], data_xlsx[11], data_xlsx[12], data_xlsx[13], data_xlsx[14],
                          data_xlsx[15], data_xlsx[16], data_xlsx[17], data_xlsx[18], data_xlsx[19], data_xlsx[20],
-                         data_xlsx[21], data_xlsx[22]]
+                         data_xlsx[21], data_xlsx[22],
+                         # ниже будет подписант и прочие данные ЛКМБ-РТ
+                         ident_lkmb_rt[0], ident_lkmb_rt[1], ident_lkmb_rt[2], ident_lkmb_rt[3], ident_lkmb_rt[4],
+                         ident_lkmb_rt[5], ident_lkmb_rt[6], ident_lkmb_rt[7], ident_lkmb_rt[8], ident_lkmb_rt[9],
+                         ident_pl[0]]
 
         print(len(old_words_dkp))
         print(len(new_words_dkp))
