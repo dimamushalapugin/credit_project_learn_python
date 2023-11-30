@@ -652,7 +652,7 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
                          "{{ inn_kpp_seller }}", "{{ ogrn_seller }}",
                          "{{ rekvizit_leasee_bik }}", "{{ rekvizit_leasee_cs_shet }}", "{{ rekvizit_leasee_shet }}",
                          "{{ rekvizit_leasee_bank }}", "{{ main_activity_leasee }}", "{{ fio_leader }}",
-                         "{{ email_leasee }}", "{{ phone_leasee }}", "{{ full_krakt_name_leasee }}",
+                         "{{ email_leasee }}", "{{ phone_leasee }}", "{{ FULL_KRAKT_NAME_LEASEE }}",
                          "{{ ustav_capital }}", "{{ date_regist }}", "{{ okpo_leasee }}",
                          "{{ okato_leasee }}", "{{ ogrn_leasee }}", "{{ inn_seller_list }}",
                          "{{ price_predmet_lizinga }}", "{{ predmet_lizinga }}", "{{ formatted_name_leader_leasee }}",
@@ -704,7 +704,6 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
         for paragraph in doc.paragraphs:
             for i in range(len(old_words_dkp)):
                 if old_words_dkp[i] in paragraph.text:
-                    # print(f'{old_words_dkp[i]} меняем на {new_words_dkp[i]}')
                     paragraph.text = paragraph.text.replace(old_words_dkp[i], str(new_words_dkp[i]))
 
                     # print(f'_____ {i=}')
@@ -713,7 +712,6 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
             for row in table.rows:
                 for cell in row.cells:
                     for i in range(len(old_words_dkp)):
-                        logging.info(f'{old_words_dkp[i]} : {new_words_dkp[i]} : проверяем вот тут: {cell.text}')
                         if old_words_dkp[i] in cell.text:
                             cell.text = cell.text.replace(old_words_dkp[i], str(new_words_dkp[i]))
 
