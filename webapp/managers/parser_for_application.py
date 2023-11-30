@@ -314,9 +314,8 @@ def start_filling_application(inn_leasee, path_application, inn_seller1, inn_sel
                         # print(sheet_zayavlenie.cell(row=row_num + counter_1, column=2, value=fio).value)
                     if sheet_zayavlenie[f'J{number}'].value == 'ИНН':
                         for row_num, inn in enumerate(inn_list, start=1):
-                            print(row_num, inn)
-                            print(counter_1)
-                            sheet_zayavlenie.cell(row=row_num + counter_1, column=3, value=inn)
+                            sheet_zayavlenie.cell(row=row_num + counter_1, column=10, value=inn)
+
                         # print(sheet_zayavlenie.cell(row=row_num + counter_1, column=6, value=inn).value)
                 if ip_or_kfh == 'Да':
                     if sheet_zayavlenie[f'B{number}'].value == 'Наименование поручителя ⃰ ':
