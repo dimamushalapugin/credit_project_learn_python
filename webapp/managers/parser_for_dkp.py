@@ -1,5 +1,6 @@
 import openpyxl
 import os
+import ast
 
 from datetime import datetime as dt
 from typing import Optional
@@ -63,9 +64,9 @@ def read_xlsx(path_application):
         if sheet_zayavlenie[f'O{number}'].value == '(расшифровка подписи)':
             formatted_name_leader_leasee = sheet_zayavlenie[f'O{number - 1}'].value
 
-    predmet_lizinga = [sheet_zayavlenie['A10', 'A12', 'A14', 'A16'].value]
-    inn_seller_list = [sheet_zayavlenie['C11', 'C13', 'C15', 'C17'].value]
-    price_predmet_lizinga = [sheet_zayavlenie['P21', 'P22', 'P23', 'P24'].value]
+    predmet_lizinga = list(map(lambda x: sheet_zayavlenie[x].value, ['A10', 'A12', 'A14', 'A16']))
+    inn_seller_list = list(map(lambda x: sheet_zayavlenie[x].value, ['C11', 'C13', 'C15', 'C17']))
+    price_predmet_lizinga = list(map(lambda x: sheet_zayavlenie[x].value, ['P21', 'P22', 'P23', 'P24']))
 
     # predmet_lizinga = []
     # price_predmet_lizinga = []
@@ -544,7 +545,7 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
     def rod_padezh_fio_leader(fio):
         logging.info(f'({current_user}) {fio}')
         logging.info(f'({current_user}) {DADATA_BASE.clean("name", fio)}')
-        return DADATA_BASE.clean("name", fio)
+        return DADATA_BASE.clean("name", fio)['result_genitive']
 
     def gender_seller(fio):
         return DADATA_BASE.clean("name", fio)['gender']
@@ -616,19 +617,19 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
         eq_val = equipment_valute()
         logging.info(f'{eq_val=}')
         data_xlsx = read_xlsx(path_application)  # все из xlsx
-        logging.info(f'{data_xlsx=}')
         price_entry = data_xlsx[15][0]  # цена ПЛ
         logging.info(f'{price_entry=}')
         payment_dkp = payment_for_dkp(price_entry)  # все для порядка оплаты
         info_about_seller = result_dadata()
-        # logging.info(f'{info_about_seller=}')
+        logging.info(f'{info_about_seller=}')
         info_about_seller_director = some_info_seller(info_about_seller)
-        # logging.info(f'{info_about_seller_director=}')
+        logging.info(f'{info_about_seller_director=}')
         full_seller = full_rekviti_seller(info_about_seller)
-        # logging.info(f'{full_seller=}')
-        rod_padezh_seller = rod_padezh_fio_leader(full_seller[-2])  # full_seller[-1] - ФИО директора продавца
+        logging.info(f'{full_seller=}')
+        rod_padezh_seller = rod_padezh_fio_leader(full_seller[-2]) # full_seller[-1] - ФИО директора продавца
         name_and_dover_seller = seller_dkp_all()
         deistv_sell = deistv_seller(info_about_seller, full_seller[-2])
+        kratk_name_seller = result_dadata()[0]['data']['name']['short_with_opf']
 
         old_words_dkp = ["{{ new_old_pl }}", "{{ pb_vizor }}", "{{ identif_punkt_3_1_1 }}", "{{ identif_punkt_3_1_3 }}",
                          "{{ punkt_3_1_9 }}", "{{ punkt_3_3_3_key }}", "{{ punkt_3_3_3_key2 }}", "{{ punkt_3_1_6 }}",
@@ -671,15 +672,18 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
                          str(payment_dkp[24]), str(name_and_dover_seller[0]), str(deistv_sell[1]),
                          str(info_about_seller_director[1]),
                          str(rod_padezh_seller), str(deistv_sell[0]),
-                         str(name_and_dover_seller[1]),
+                         str(name_and_dover_seller[1]), kratk_name_seller,
                          str(info_about_seller_director[0]), str(full_seller[4]), str(full_seller[6]),
                          str(full_seller[1]), str(full_seller[2]),
-                         # сейчас пойдут данные из экселя
                          data_xlsx[0], data_xlsx[1], data_xlsx[2],
                          data_xlsx[3], data_xlsx[4], data_xlsx[5], data_xlsx[6], data_xlsx[7], data_xlsx[8],
                          data_xlsx[9], data_xlsx[10], data_xlsx[11], data_xlsx[12], data_xlsx[13], data_xlsx[14],
                          data_xlsx[15], data_xlsx[16], data_xlsx[17], data_xlsx[18], data_xlsx[19], data_xlsx[20],
                          data_xlsx[21], data_xlsx[22]]
+
+        print(len(old_words_dkp))
+        print(len(new_words_dkp))
+        print('ДЛИНА СПИСКОВ ВЫШЕ')
 
         for old, new in zip(old_words_dkp, new_words_dkp):
             print(f'{old}: {new}')
@@ -687,28 +691,31 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
         return old_words_dkp, new_words_dkp
 
     def replace_words_in_dkp(docx_file, old_words_dkp, new_words_dkp):
-
         eq_val = equipment_valute()
-        data_xlsx = read_xlsx(path_application)  # все из xlsx
+        data_xlsx = read_xlsx(path_application)
+        logging.info(f'{data_xlsx=}')
         price_entry = data_xlsx[15][0]
         payment_dkp = payment_for_dkp(price_entry)  # все для порядка оплаты
         info_about_seller = result_dadata()
+        kratk_name_seller = result_dadata()[0]['data']['name']['short_with_opf']
         full_seller = full_rekviti_seller(info_about_seller)
         doc = Document(docx_file)
 
         for paragraph in doc.paragraphs:
             for i in range(len(old_words_dkp)):
                 if old_words_dkp[i] in paragraph.text:
+                    # print(f'{old_words_dkp[i]} меняем на {new_words_dkp[i]}')
                     paragraph.text = paragraph.text.replace(old_words_dkp[i], str(new_words_dkp[i]))
-                    print(new_words_dkp[i])
+
                     # print(f'_____ {i=}')
 
         for table in doc.tables:
             for row in table.rows:
                 for cell in row.cells:
                     for i in range(len(old_words_dkp)):
+                        logging.info(f'{old_words_dkp[i]} : {new_words_dkp[i]} : проверяем вот тут: {cell.text}')
                         if old_words_dkp[i] in cell.text:
-                            cell.text = cell.text.replace(old_words_dkp[i], new_words_dkp[i])
+                            cell.text = cell.text.replace(old_words_dkp[i], str(new_words_dkp[i]))
 
         if pnr == 'Нет':
             for run in doc.paragraphs:
