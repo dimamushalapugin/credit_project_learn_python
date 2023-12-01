@@ -771,8 +771,8 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
                          data_xlsx[15], data_xlsx[16], data_xlsx[17], data_xlsx[18], data_xlsx[19], data_xlsx[20],
                          data_xlsx[21], data_xlsx[22],
                          # ниже будет подписант и прочие данные ЛКМБ-РТ
-                         ident_lkmb_rt[0], ident_lkmb_rt[1], ident_lkmb_rt[2], ident_lkmb_rt[3], ident_lkmb_rt[4],
-                         ident_lkmb_rt[5], ident_lkmb_rt[6], ident_lkmb_rt[7], ident_lkmb_rt[8], ident_lkmb_rt[9],
+                         ident_lkmb_rt[0], ident_lkmb_rt[1], ident_lkmb_rt[2], ident_lkmb_rt[3], ident_lkmb_rt[5],
+                         ident_lkmb_rt[4], ident_lkmb_rt[6], ident_lkmb_rt[7], ident_lkmb_rt[8], ident_lkmb_rt[9],
                          ident_pl[0]]
 
         print(len(old_words_dkp))
