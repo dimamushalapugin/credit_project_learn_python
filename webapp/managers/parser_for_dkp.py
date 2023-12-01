@@ -625,13 +625,6 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
         leader_leasee_pod = leader_seller
         return leader_seller, leader_seller_rod_padezh, leader_leasee_pod
 
-    def rod_padezh_fio_leader(fio):
-        logging.info(f'({current_user}) {fio}')
-        logging.info(f'({current_user}) {DADATA_BASE.clean("name", fio)}')
-        return DADATA_BASE.clean("name", fio)['result_genitive']
-
-    def gender_seller(fio):
-        return DADATA_BASE.clean("name", fio)['gender']
 
     def full_rekviti_seller(result_dkp):
         ip_or_kfh_dkp = 'Нет'
@@ -675,10 +668,10 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
                 doverka_ustav_seller = f'Свидетельства о государственной регистрации физического лица в качестве индивидуального предпринимателя серия __ № _________ от , ОГРНИП '
         return full_name_seller, doverka_ustav_seller
 
-    def deistv_seller(result_dkp, fio):
+    def deistv_seller(result_dkp, fio, gender):
         imenyemoe_dkp = 'именуемое'
         try:
-            if gender_seller(fio) == 'М':
+            if gender == 'М':
                 deystvuysh_list_seller = 'действующего'
                 if result_dkp[0]['data']['opf']['short'] in ['ИП', 'КФХ', 'ГКФХ']:
                     deystvuysh_list_seller = 'действующий'
@@ -708,10 +701,17 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
         info_about_seller_director = some_info_seller(info_about_seller)
         logging.info(f'{info_about_seller_director=}')
         full_seller = full_rekviti_seller(info_about_seller)
-        logging.info(f'{full_seller=}')
-        rod_padezh_seller = rod_padezh_fio_leader(full_seller[-2]) # full_seller[-1] - ФИО директора продавца
+        # dbase = DADATA_BASE.clean("name", full_seller[-2])
+        dbase = {'source': 'Ибнеев Рустем Шамилевич', 'result': 'Ибнеев Рустем Шамилевич',
+                 'result_genitive': 'Ибнеева Рустема Шамилевича', 'result_dative': 'Ибнееву Рустему Шамилевичу',
+                 'result_ablative': 'Ибнеевым Рустемом Шамилевичем', 'surname': 'Ибнеев', 'name': 'Рустем',
+                 'patronymic': 'Шамилевич', 'gender': 'М', 'qc': 0}  # mock
+
+        logging.info(f'{dbase=}')
+        rod_padezh_seller = dbase['result_genitive']
         name_and_dover_seller = seller_dkp_all()
-        deistv_sell = deistv_seller(info_about_seller, full_seller[-2])
+        what_gender = dbase['gender']
+        deistv_sell = deistv_seller(info_about_seller, full_seller[-2], what_gender)
         kratk_name_seller = result_dadata()[0]['data']['name']['short_with_opf']
         ident_lkmb_rt = identification_lkmb_rt(signatory, investor)
         ident_pl = indentification_pl(currency)
@@ -775,12 +775,9 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
                          ident_lkmb_rt[4], ident_lkmb_rt[6], ident_lkmb_rt[7], ident_lkmb_rt[8], ident_lkmb_rt[9],
                          ident_pl[0]]
 
-        print(len(old_words_dkp))
-        print(len(new_words_dkp))
-        print('ДЛИНА СПИСКОВ ВЫШЕ')
 
-        for old, new in zip(old_words_dkp, new_words_dkp):
-            print(f'{old}: {new}')
+        # for old, new in zip(old_words_dkp, new_words_dkp):
+        #     print(f'{old}: {new}')
 
         return old_words_dkp, new_words_dkp
 
