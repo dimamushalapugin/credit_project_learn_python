@@ -248,6 +248,10 @@ def create_xlsx_file(inn_client, inn_seller, main_client: dict, delta_client: di
             sheet[f'A{sheet.max_row + 1}'].value = ''
 
         sheet[f'A{sheet.max_row + 2}'].value = 'АРБИТРАЖНЫЕ ДЕЛА'
+        for _ in range(20):
+            sheet[f'A{sheet.max_row + 1}'].value = ''
+
+        sheet[f'A{sheet.max_row + 2}'].value = 'ИСПОЛНИТЕЛЬНЫЕ ПРОИЗВОДСТВА'
 
         logging.info("Запуск процесса записи информации про директора/учредителей в xslx файл")
         sheet = wb['Дир Учр Пор']
