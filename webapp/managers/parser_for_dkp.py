@@ -1,6 +1,5 @@
 import openpyxl
 import os
-import ast
 
 from datetime import datetime as dt
 from typing import Optional
@@ -139,7 +138,7 @@ def read_xlsx(path_application):
             inn_kpp_leasee, full_name_leasee)
 
 
-def identification_lkmb_rt(path_application: str, signatory: str, investor: str):
+def identification_lkmb_rt(signatory: str, investor: str):
     if signatory == 'Каюмов А. Д.':
         a_lkmb = 'Директор'
         lkmb_podpisant = 'Каюмов А. Д.'
@@ -227,7 +226,8 @@ def indentification_pl(currency_list: str):
 
     return currency_test
 
-def identification_leasee():
+
+def identification_leasee(leader_leasee):
     if leader_leasee.upper() == 'директор'.upper():
         leader_leasee_rod_padezh = 'Директора'
     elif leader_leasee.upper() == 'генеральный директор'.upper():
@@ -713,8 +713,8 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
         name_and_dover_seller = seller_dkp_all()
         deistv_sell = deistv_seller(info_about_seller, full_seller[-2])
         kratk_name_seller = result_dadata()[0]['data']['name']['short_with_opf']
-        ident_lkmb_rt = identification_lkmb_rt()
-        ident_pl = indentification_pl()
+        ident_lkmb_rt = identification_lkmb_rt(signatory, investor)
+        ident_pl = indentification_pl(currency)
 
         old_words_dkp = ["{{ new_old_pl }}", "{{ pb_vizor }}", "{{ identif_punkt_3_1_1 }}", "{{ identif_punkt_3_1_3 }}",
                          "{{ punkt_3_1_9 }}", "{{ punkt_3_3_3_key }}", "{{ punkt_3_3_3_key2 }}", "{{ punkt_3_1_6 }}",
