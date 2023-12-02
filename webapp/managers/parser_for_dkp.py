@@ -67,33 +67,6 @@ def read_xlsx(path_application):
     inn_seller_list = list(map(lambda x: sheet_zayavlenie[x].value, ['C11', 'C13', 'C15', 'C17']))
     price_predmet_lizinga = list(map(lambda x: sheet_zayavlenie[x].value, ['P21', 'P22', 'P23', 'P24']))
 
-    # predmet_lizinga = []
-    # price_predmet_lizinga = []
-    # inn_seller_list = []
-    # for i in range(3, sheet_zayavlenie.max_row + 2):
-    #     if sheet_zayavlenie[f'C{i}'].value == 'Наименование, технические характеристики и описание':
-    #         number = i + 1
-    #         while sheet_zayavlenie[f'C{number}'].value != 'Итого':
-    #             number += 1
-    #             predmet_lizinga.append(sheet_zayavlenie[f'B{number - 1}'].value)
-    #             inn_seller_list.append(sheet_zayavlenie[f'E{number - 1}'].value)
-    #             price_predmet_lizinga.append(sheet_zayavlenie[f'I{number - 1}'].value)
-
-    # seller_title = []
-    # seller_address = []
-    # inn_seller_list2 = []
-    # for i in range(3, sheet_zayavlenie.max_row + 2):
-    #     if sheet_zayavlenie[f'B{i}'].value == 'Наименование поставщика':
-    #         number = i + 1
-    #         while sheet_zayavlenie[
-    #             f'A{number}'].value != (
-    #                 'и передать нашей организации/ индивидуальному предпринимателю в финансовую '
-    #                 'аренду (лизинг) следующее имущество:'):
-    #             number += 1
-    #             seller_title.append(sheet_zayavlenie[f'B{number - 1}'].value)
-    #             inn_seller_list2.append(sheet_zayavlenie[f'E{number - 1}'].value)
-    #             seller_address.append(sheet_zayavlenie[f'F{number - 1}'].value)
-
     # читаем страницу Анкета Стр.1
 
     sheet_anketa_1_list = wb['Анкета Стр.1']
@@ -225,6 +198,63 @@ def indentification_pl(currency_list: str):
         currency_test = 'долларов США'
 
     return currency_test
+
+
+suma_chislo =
+def number_to_words(suma_chislo, currency_list: str):
+    try:
+        # Разбиваем строку на целую и десятичную часть
+        suma_chislo = str(round(float(suma_chislo), 2)).replace(',', '.') if \
+            str(round(float(suma_chislo), 2)).replace(',', '.')[-3] == '.' else str(
+            round(float(suma_chislo), 2)).replace(',', '.') + '0'
+        parts = suma_chislo.split(".")
+        integer_part = parts[0]
+        decimal_part = parts[1] if len(parts) > 1 else "00"
+
+        # Преобразуем целую часть в число прописью
+        integer_words = num2words(int(integer_part), lang='ru')
+
+        # Определяем правильную форму для "рублей"
+        if 10 < float(integer_part) % 100 < 20:
+            valute_rub = "рублей"
+        elif float(integer_part) % 10 == 1:
+            valute_rub = "рубль"
+        elif 1 < float(integer_part) % 10 < 5:
+            valute_rub = "рубля"
+        else:
+            valute_rub = "рублей"
+
+        # Преобразуем десятичную часть в число прописью
+        if currency_list == 'Рубль':
+            decimal_words = num2words(int(decimal_part), lang='ru', to='currency', currency='RUB')
+        else:
+            decimal_words = num2words(int(decimal_part), lang='ru')
+
+        # Определяем правильную форму для "копеек"
+        if 10 < float(decimal_part) % 100 < 20:
+            valute_copeyka = "копеек"
+        elif float(decimal_part) % 10 == 1:
+            valute_copeyka = "копейка"
+        elif 1 < float(decimal_part) % 10 <= 4:
+            valute_copeyka = "копейки"
+        else:
+            valute_copeyka = "копеек"
+
+        # Формируем итоговую строку
+        if currency_list == 'Рубль':
+            suma_dann = f"{integer_words} {valute_rub} {decimal_words}".strip().replace('ноль рублей',
+                                                                                        '').replace(' ,',
+                                                                                                    '')
+        elif currency_list == 'Китайский юань':
+            suma_dann = f"{integer_words} целых {decimal_words} сотых китайских юаней"
+        elif currency_list == 'Доллар США':
+            suma_dann = f"{integer_words} целых {decimal_words} сотых долларов США"
+        return suma_dann
+    except ValueError:
+        return "Неверный формат числа"
+
+suma_dann = number_to_words(str(suma_chislo))
+print(f'01010 {suma_dann}')
 
 
 def identification_leasee(leader_leasee):
@@ -716,6 +746,9 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
         ident_lkmb_rt = identification_lkmb_rt(signatory, investor)
         ident_pl = indentification_pl(currency)
 
+        months = {1: 'января', 2: 'февраля', 3: 'марта', 4: 'апреля', 5: 'мая', 6: 'июня',
+                  7: 'июля', 8: 'августа', 9: 'сентября', 10: 'октября', 11: 'ноября', 12: 'декабря'}
+
         old_words_dkp = ["{{ new_old_pl }}", "{{ pb_vizor }}", "{{ identif_punkt_3_1_1 }}", "{{ identif_punkt_3_1_3 }}",
                          "{{ punkt_3_1_9 }}", "{{ punkt_3_3_3_key }}", "{{ punkt_3_3_3_key2 }}", "{{ punkt_3_1_6 }}",
                          "{{ punkt_3_3_7 }}", "{{ punkt_8_2 }}", "{{ pril_1_2 }}", "{{ pril_1_3 }}",
@@ -739,15 +772,25 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
                          "{{ rekvizit_leasee_bank }}", "{{ main_activity_leasee }}", "{{ fio_leader }}",
                          "{{ email_leasee }}", "{{ phone_leasee }}", "{{ FULL_KRAKT_NAME_LEASEE }}",
                          "{{ ustav_capital }}", "{{ date_regist }}", "{{ okpo_leasee }}",
-                         "{{ okato_leasee }}", "{{ ogrn_leasee }}", "{{ inn_seller_list }}",
-                         "{{ price_predmet_lizinga }}", "{{ predmet_lizinga }}", "{{ formatted_name_leader_leasee }}",
+                         "{{ okato_leasee }}", "{{ ogrn_leasee }}",
+                         # ниже список скорее всего не нужен, надо попробовать убрать его
+                         "{{ inn_seller_list }}",
+                         #1 цена предмета лизинга, #2 предмет лизинга
+                         "{{ price_entry }}", "{{ pl_entry }}",
+                         "{{ formatted_name_leader_leasee }}",
                          "{{ leader_leasee }}", "{{ address_leasee_expluatazia }}", "{{ address_leasee }}",
                          "{{ inn_kpp_leasee }}", "{{ full_name_leasee }}",
                          # ниже будет подписант и прочие данные ЛКМБ-РТ
                          "{{ a_lkmb }}", "{{ lkmb_podpisant }}", "{{ preambula_dolj_lkmb }}",
                          "{{ preambula_fio_lkmb }}", "{{ deystvuysh }}", "{{ doverka_ustav }}",
                          "{{ r_chet_lkmb }}", "{{ bank_rekv_lkmb }}", "{{ kor_chet_lkmb }}", "{{ bik_lkmb }}",
-                         "{{ currency_test }}"]
+                         "{{ currency_test }}",
+                         # даты в ДКП
+                         "{{ dt.today().day }}", "{{ months[dt.today().month] }}", "{{ dt.today().year }}",
+                         "{{ number_dl }}",
+                         "{{ suma_dann[0] }}" # сумма прописью, не добавил
+
+                         ]
 
         new_words_dkp = [str(eq_val[0]), str(eq_val[1]), str(eq_val[2]), str(eq_val[3]), str(eq_val[4]),
                          str(eq_val[5]), str(eq_val[6]), str(eq_val[7]), str(eq_val[8]), str(eq_val[9]),
@@ -767,13 +810,21 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
                          str(full_seller[1]), str(full_seller[2]),
                          data_xlsx[0], data_xlsx[1], data_xlsx[2],
                          data_xlsx[3], data_xlsx[4], data_xlsx[5], data_xlsx[6], data_xlsx[7], data_xlsx[8],
-                         data_xlsx[9], data_xlsx[10], data_xlsx[11], data_xlsx[12], data_xlsx[13], data_xlsx[14],
-                         data_xlsx[15], data_xlsx[16], data_xlsx[17], data_xlsx[18], data_xlsx[19], data_xlsx[20],
+                         data_xlsx[9], data_xlsx[10], data_xlsx[11], data_xlsx[12], data_xlsx[13],
+                         # ниже ИНН поставщиков, цена и предмет лизинга
+                         data_xlsx[14],
+                         f'{data_xlsx[15]:,.2f}'.replace(',', ' ').replace('.', ','),
+                         data_xlsx[16],
+                         data_xlsx[17], data_xlsx[18], data_xlsx[19], data_xlsx[20],
                          data_xlsx[21], data_xlsx[22],
                          # ниже будет подписант и прочие данные ЛКМБ-РТ
                          ident_lkmb_rt[0], ident_lkmb_rt[1], ident_lkmb_rt[2], ident_lkmb_rt[3], ident_lkmb_rt[5],
                          ident_lkmb_rt[4], ident_lkmb_rt[6], ident_lkmb_rt[7], ident_lkmb_rt[8], ident_lkmb_rt[9],
-                         ident_pl[0]]
+                         ident_pl[0],
+                         # даты в ДКП
+                         str(dt.today().day), str(months[dt.today().month]), str(dt.today().year),
+                         str(numb_dl_dkp)
+                         ]
 
 
         # for old, new in zip(old_words_dkp, new_words_dkp):
