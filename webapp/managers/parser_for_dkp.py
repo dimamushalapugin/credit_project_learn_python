@@ -200,7 +200,6 @@ def indentification_pl(currency_list: str):
     return currency_test
 
 
-suma_chislo =
 def number_to_words(suma_chislo, currency_list: str):
     try:
         # Разбиваем строку на целую и десятичную часть
@@ -253,18 +252,17 @@ def number_to_words(suma_chislo, currency_list: str):
     except ValueError:
         return "Неверный формат числа"
 
-suma_dann = number_to_words(str(suma_chislo))
-print(f'01010 {suma_dann}')
-
-
 def identification_leasee(leader_leasee):
     if leader_leasee.upper() == 'директор'.upper():
         leader_leasee_rod_padezh = 'Директора'
     elif leader_leasee.upper() == 'генеральный директор'.upper():
         leader_leasee_rod_padezh = 'Генерального директора'
+    elif leader_leasee.upper() == 'исполняющий обязанности директора'.upper():
+        leader_leasee_rod_padezh = 'ИО директора'
     else:
         leader_leasee_rod_padezh = ''
-
+    leader_leasee_pod = leader_leasee
+    return leader_leasee_rod_padezh, leader_leasee_pod
 
 def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_seller: str, numb_dl_dkp: str,
                                 signatory: str, investor: str, currency: str, pl: str, equipment_or_not: Optional[str],
@@ -652,8 +650,8 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
             leader_seller_rod_padezh = 'ИО директора'
         else:
             leader_seller_rod_padezh = ''
-        leader_leasee_pod = leader_seller
-        return leader_seller, leader_seller_rod_padezh, leader_leasee_pod
+        leader_seller_pod = leader_seller
+        return leader_seller, leader_seller_rod_padezh, leader_seller_pod
 
 
     def full_rekviti_seller(result_dkp):
@@ -719,12 +717,22 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
             imenyemoe_dkp = 'именуемая'
         return deystvuysh_list_seller, imenyemoe_dkp
 
+    inn_leasee1 = read_xlsx(path_application)
+    def result_dadata_leasee():
+        result_dkp_leasee = DADATA_BASE.find_by_id("party", inn_leasee1)
+        return result_dkp_leasee
+
+
+
+
     def replace():
         eq_val = equipment_valute()
         logging.info(f'{eq_val=}')
         data_xlsx = read_xlsx(path_application)  # все из xlsx
         price_entry = data_xlsx[15][0]  # цена ПЛ
         logging.info(f'{price_entry=}')
+        suma_dann = number_to_words(price_entry)
+
         payment_dkp = payment_for_dkp(price_entry)  # все для порядка оплаты
         info_about_seller = result_dadata()
         logging.info(f'{info_about_seller=}')
@@ -745,6 +753,7 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
         kratk_name_seller = result_dadata()[0]['data']['name']['short_with_opf']
         ident_lkmb_rt = identification_lkmb_rt(signatory, investor)
         ident_pl = indentification_pl(currency)
+        id_ls = identification_leasee(data_xlsx[18])
 
         months = {1: 'января', 2: 'февраля', 3: 'марта', 4: 'апреля', 5: 'мая', 6: 'июня',
                   7: 'июля', 8: 'августа', 9: 'сентября', 10: 'октября', 11: 'ноября', 12: 'декабря'}
@@ -788,8 +797,9 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
                          # даты в ДКП
                          "{{ dt.today().day }}", "{{ months[dt.today().month] }}", "{{ dt.today().year }}",
                          "{{ number_dl }}",
-                         "{{ suma_dann[0] }}" # сумма прописью, не добавил
-
+                         "{{ suma_dann[0] }}",
+                         # данные по лизингополучателю
+                         "{{ leader_leasee_pod }}", "{{ leader_leasee_rod_padezh }}"
                          ]
 
         new_words_dkp = [str(eq_val[0]), str(eq_val[1]), str(eq_val[2]), str(eq_val[3]), str(eq_val[4]),
@@ -823,7 +833,9 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
                          ident_pl[0],
                          # даты в ДКП
                          str(dt.today().day), str(months[dt.today().month]), str(dt.today().year),
-                         str(numb_dl_dkp)
+                         str(numb_dl_dkp), str(suma_dann),
+                         # данные по лизингополучателю
+                         str(id_ls[1]), str(id_ls[0])
                          ]
 
 
