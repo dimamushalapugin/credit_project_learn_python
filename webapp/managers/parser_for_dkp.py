@@ -720,7 +720,53 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
     inn_leasee1 = read_xlsx(path_application)
     def result_dadata_leasee():
         result_dkp_leasee = DADATA_BASE.find_by_id("party", inn_leasee1)
+        if result_dkp_leasee[0]['data']['opf']['short'] in ['ИП', 'ГКФХ', 'КФХ']:
+            inn_kpp1 = 'ИНН'
+            put_padezh_podpisant_rg = ''
+        else:
+            imenyemoe = 'именуемое'
         return result_dkp_leasee
+
+    def rod_padezh_fio_leader(fio):
+        # dadata = Dadata(DADATA_TOKEN, DADATA_SECRET)
+        logging.info(f"({fio})")
+        put_padezh_podpisant = DADATA_BASE.clean("name", fio)
+        print(put_padezh_podpisant)
+        return put_padezh_podpisant
+
+    rod_padezh_fio_leader = rod_padezh_fio_leader(read_xlsx(path_application)[5])
+    ip_or_not = read_xlsx(path_application)
+    def addicted_info_leasee():
+        deystvuysh_list_leasee = 'действующей'
+        imenyemoe = 'именуемое'
+        try:
+            put_padezh_podpisant_rg = rod_padezh_fio_leader['result_genitive']
+        except:
+            put_padezh_podpisant_rg = ''
+        print(f'123 {put_padezh_podpisant_rg}')
+        doverka_ustav_leasee = 'Устава'
+        for elem in ip_or_not[22].split():
+            if elem in ['Индивидуальный', 'предприниматель', 'хозяйства']:
+                doverka_ustav_leasee = f'Свидетельства о государственной регистрации физического лица в качестве индивидуального предпринимателя серия __ № _________ от {date_regist}, ОГРНИП {ogrn_leasee}'
+
+        try:
+            if rod_padezh_fio_leader['gender'] == 'М':
+                deystvuysh_list_leasee = 'действующего'
+                if result_dadata_leasee()[0]['data']['opf']['short'] in ['ИП', 'КФХ', 'ГКФХ']:
+                    deystvuysh_list_leasee = 'действующий'
+                imenyemoe = 'именуемый'
+        except:
+            try:
+                if result_dadata_leasee()[0]['data']['opf']['short'] in ['ИП', 'КФХ', 'ГКФХ']:
+                    deystvuysh_list_leasee = 'действующая'
+            except:
+                deystvuysh_list_leasee = 'действующей'
+            imenyemoe = 'именуемая'
+        return put_padezh_podpisant_rg, deystvuysh_list_leasee, imenyemoe, doverka_ustav_leasee
+    выше надо закинуть в реплейс, это последние недостающие элементы
+
+
+
 
 
 
