@@ -10,7 +10,7 @@ from datetime import datetime as dt
 from selenium.webdriver.edge.options import Options
 from flask_login import current_user
 from webapp.risk.logger import logging
-from webapp.managers.parser_for_dkp import read_xlsx,identification_lkmb_rt
+from webapp.managers.parser_for_dkp import read_xlsx, identification_lkmb_rt
 from num2words import num2words
 from webapp.config import DADATA_TOKEN, DADATA_SECRET, DADATA_BASE
 from selenium import webdriver
@@ -407,6 +407,11 @@ def start_filling_agreement(inn_leasee, path_application, path_graphic, signator
         os.makedirs(dir_path)
 
     data_xlsx = read_xlsx(path_application)
+    for i in range(len(data_xlsx)):
+        print(f'#{i} -> {data_xlsx[i]}')
+
+    print(pl)
+    print(inn_seller)
 
     formatted_name_leader_leasee = data_xlsx[17]
     full_name_leasee = data_xlsx[22]
@@ -414,12 +419,9 @@ def start_filling_agreement(inn_leasee, path_application, path_graphic, signator
     inn_kpp_leasee = data_xlsx[21]
     address_leasee = data_xlsx[20]
     address_leasee_expluatazia = data_xlsx[19]
-    predmet_lizinga = data_xlsx[16]
-    inn_seller_list = data_xlsx[14]
+    predmet_lizinga = pl
+    inn_seller_list = inn_seller
     price_predmet_lizinga = data_xlsx[15]
-    seller_title = data_xlsx[23]
-    inn_seller_list2 = data_xlsx[24]
-    seller_address = data_xlsx[25]
     ogrn_leasee = data_xlsx[13]
     okato_leasee = data_xlsx[12]
     okpo_leasee = data_xlsx[11]
@@ -481,7 +483,13 @@ def start_filling_agreement(inn_leasee, path_application, path_graphic, signator
         def rod_padezh_fio_leader(fio):
             # dadata = Dadata(DADATA_TOKEN, DADATA_SECRET)
             logging.info(f"({fio})")
-            put_padezh_podpisant = DADATA_BASE.clean("name", fio)
+            # put_padezh_podpisant = DADATA_BASE.clean("name", fio)
+            put_padezh_podpisant = {'source': 'Ибнеев Рустем Шамилевич', 'result': 'Ибнеев Рустем Шамилевич',
+                                    'result_genitive': 'Ибнеева Рустема Шамилевича',
+                                    'result_dative': 'Ибнееву Рустему Шамилевичу',
+                                    'result_ablative': 'Ибнеевым Рустемом Шамилевичем', 'surname': 'Ибнеев',
+                                    'name': 'Рустем',
+                                    'patronymic': 'Шамилевич', 'gender': 'М', 'qc': 0}  # mock
             print(put_padezh_podpisant)
             return put_padezh_podpisant
             # print(f" Здесь пол М или Ж: Итого {put_padezh_podpisant['gender']}")
@@ -594,8 +602,11 @@ def start_filling_agreement(inn_leasee, path_application, path_graphic, signator
             imenyemoe = 'именуемое'
         print(f'123213 {put_padezh_podpisant_rg}')
         vikup = '1000'
-        pl_entry = predmet_lizinga[int(pl)]
-        price_entry = price_predmet_lizinga[int(pl)]
+        pl_entry = pl
+
+        # TODO: Нужно придумать как связать ПЛ и цену ПЛ (возможно добавить на сайт новое поле с выбором цены).
+        #  Пока цена берется по первому ПЛ, т.е. индекс 0
+        price_entry = price_predmet_lizinga[0]
         if vikup == '1000':
             punkt_4_6 = '4.6. Выкупная цена предмета лизинга составляет 1 000,00 (Одна тысяча) рублей, в том числе НДС.'
         else:
