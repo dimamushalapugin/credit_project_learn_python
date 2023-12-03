@@ -11,6 +11,7 @@
         gtag('config', 'G-KQX5FDFY5F');
 
     </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.5/xlsx.full.min.js"></script>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Создание договоров</title>
@@ -151,19 +152,32 @@
                                                                        style="color: #8f8f8f;"></i> Общие поля</h5>
                                         </div>
                                     </div>
+                                    <div class="mb-3 border border-1 border-info rounded p-2">
+                                        <label><i class="fa-solid fa-paperclip fa-xs"
+                                                  style="color: #8f8f8f;"></i> Заявка по клиенту</label>
+                                        <input type="file" class="form-control form-control-sm"
+                                               id="applicationFileInput"
+                                               name="uploaded_application"
+                                               required>
+                                    </div>
                                     <div class="mb-3">
                                         <label>Введите ИНН лизингополучателя</label>
                                         <div class="input-group input-group-sm mb-3">
                                             <input type="text" name="client_inn" value="" class="form-control"
+                                                   id="clientInn"
                                                    required>
                                         </div>
                                     </div>
                                     <div class="mb-3">
-                                        <label>Введите ИНН продавца</label>
-                                        <div class="input-group input-group-sm mb-3">
-                                            <input type="text" name="seller_inn" value="" class="form-control"
-                                                   required>
-                                        </div>
+                                        <label>Выберите ИНН продавца</label>
+                                        <select class="form-select form-select-sm" name="seller_inn"
+                                                aria-label=".form-select-sm example" id="sellerInn" required>
+                                            <option selected></option>
+                                            <option value='ИНН1'>-</option>
+                                            <option value='ИНН2'>-</option>
+                                            <option value='ИНН3'>-</option>
+                                            <option value='ИНН4'>-</option>
+                                        </select>
                                     </div>
                                     <div class="mb-3">
                                         <label>Введите номер ДЛ/ДКП</label>
@@ -227,18 +241,6 @@
                                         <input class="form-check-input" type="checkbox" role="switch" id="typeSelect"
                                                name="typeSelect">
                                         <label class="form-check-label" for="typeSelect">Оборудование</label>
-                                    </div>
-                                    <br>
-                                    <div class="mb-3">
-                                        <div class="mb-3">
-                                            <h5 class="card-header"><i class="fa-solid fa-paperclip fa-xs"
-                                                                       style="color: #8f8f8f;"></i> Заявка по клиенту
-                                            </h5>
-                                        </div>
-                                        <input type="file" class="form-control form-control-sm"
-                                               id="applicationFileInput"
-                                               name="uploaded_application"
-                                               required>
                                     </div>
                                 </div>
                             </div>
@@ -433,6 +435,67 @@
                                         var applicationFileInput = document.getElementById("applicationFileInput");
                                         var graphicFileInput = document.getElementById("graphicFileInput");
                                         var submitButton = document.getElementById("submit-button");
+                                        var plSelect = document.querySelector('select[name="pl"]');
+                                        var innSelect = document.querySelector('select[id="sellerInn"]');
+
+                                        applicationFileInput.addEventListener('change', function() {
+                                            var file = applicationFileInput.files[0];
+
+                                            if (file && file.name.endsWith('.xlsx')) {
+                                                var reader = new FileReader();
+
+                                                reader.onload = function(e) {
+                                                    var data = new Uint8Array(e.target.result);
+                                                    var workbook = XLSX.read(data, { type: 'array' });
+
+                                                    // Получаем значение из ячейки D6 первого листа
+                                                    var cellValue = workbook.Sheets[workbook.SheetNames[0]]['D6'].v;
+
+                                                    // Разделяем значение по символу "/" и берем только первую часть
+                                                    var firstPart = cellValue.split('/')[0];
+
+                                                    // Устанавливаем значение ИНН в соответствии с ячейкой D6
+                                                    document.getElementById('clientInn').value = firstPart;
+
+                                                    // Получаем значения из ячеек C21, C22, C23, C24 первого листа
+                                                    var plValues = [
+                                                        workbook.Sheets[workbook.SheetNames[0]]['C21'] ? workbook.Sheets[workbook.SheetNames[0]]['C21'].v : '-',
+                                                        workbook.Sheets[workbook.SheetNames[0]]['C22'] ? workbook.Sheets[workbook.SheetNames[0]]['C22'].v : '-',
+                                                        workbook.Sheets[workbook.SheetNames[0]]['C23'] ? workbook.Sheets[workbook.SheetNames[0]]['C23'].v : '-',
+                                                        workbook.Sheets[workbook.SheetNames[0]]['C24'] ? workbook.Sheets[workbook.SheetNames[0]]['C24'].v : '-'
+                                                    ];
+
+                                                    // Получаем значения из ячеек C11, C13, C15, C17 первого листа (ИНН ПРОДАВЦОВ)
+                                                    var innValues = [
+                                                        workbook.Sheets[workbook.SheetNames[0]]['C11'] ? workbook.Sheets[workbook.SheetNames[0]]['C11'].v : '-',
+                                                        workbook.Sheets[workbook.SheetNames[0]]['C13'] ? workbook.Sheets[workbook.SheetNames[0]]['C13'].v : '-',
+                                                        workbook.Sheets[workbook.SheetNames[0]]['C15'] ? workbook.Sheets[workbook.SheetNames[0]]['C15'].v : '-',
+                                                        workbook.Sheets[workbook.SheetNames[0]]['C17'] ? workbook.Sheets[workbook.SheetNames[0]]['C17'].v : '-'
+                                                    ];
+
+                                                    // Заполняем значения в <select>
+                                                    plSelect.options[1].text = plValues[0];
+                                                    plSelect.options[1].value = plValues[0];
+                                                    plSelect.options[2].text = plValues[1];
+                                                    plSelect.options[2].value = plValues[1];
+                                                    plSelect.options[3].text = plValues[2];
+                                                    plSelect.options[3].value = plValues[2];
+                                                    plSelect.options[4].text = plValues[3];
+                                                    plSelect.options[4].value = plValues[3];
+
+                                                    innSelect.options[1].text = innValues[0];
+                                                    innSelect.options[1].value = innValues[0];
+                                                    innSelect.options[2].text = innValues[1];
+                                                    innSelect.options[2].value = innValues[1];
+                                                    innSelect.options[3].text = innValues[2];
+                                                    innSelect.options[3].value = innValues[2];
+                                                    innSelect.options[4].text = innValues[3];
+                                                    innSelect.options[4].value = innValues[3];
+                                                };
+
+                                                reader.readAsArrayBuffer(file);
+                                            }
+                                        })
 
                                         // Блокируем кнопку "Предпроверка" при загрузке страницы
                                         checkButton.disabled = true;

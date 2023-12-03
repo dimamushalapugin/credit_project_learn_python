@@ -228,3 +228,9 @@ def create_application():
         flash('Ошибка:', 'error')
         flash(str(e), 'error')
         return redirect(url_for('manager.managers_page'))
+
+
+@blueprint.route('/process', methods=['POST'])
+def process_file():
+    inn = 'Тут должен быть ИНН'
+    return render_template('create_agreements.html', inn=inn)
