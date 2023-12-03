@@ -470,6 +470,8 @@ def start_filling_agreement(inn_leasee, path_application, path_graphic, signator
             leader_leasee_rod_padezh = 'Директора'
         elif leader_leasee.upper() == 'генеральный директор'.upper():
             leader_leasee_rod_padezh = 'Генерального директора'
+        elif leader_leasee.upper() == 'исполняющий обязанности директора'.upper():
+            leader_leasee_rod_padezh = 'ИО директора'
         else:
             leader_leasee_rod_padezh = ''
 
