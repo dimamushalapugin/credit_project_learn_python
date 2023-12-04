@@ -861,7 +861,7 @@ def start_filling_agreement(inn_leasee, path_application, path_graphic, signator
             # print(f'Тут ГРАФИК {grafic}')
             suma_chislo = sheet['F7'].value
             replacements = {'א': sheet['B9'].value.strftime('%d.%m.%Y'),
-                            'בּ‎': sheet['B10'].value.strftime('%d.%m.%Y'),
+                            '{{ B10 }}': sheet['B10'].value.strftime('%d.%m.%Y'),
                             'ב‎': sheet['B11'].value.strftime('%d.%m.%Y'),
                             'גּ‎': sheet['B12'].value.strftime('%d.%m.%Y'),
                             'ג‎': sheet['B13'].value.strftime('%d.%m.%Y'),
@@ -897,7 +897,7 @@ def start_filling_agreement(inn_leasee, path_application, path_graphic, signator
                             'תּ‎': sheet['B43'].value.strftime('%d.%m.%Y'),
                             'ת': sheet['B44'].value.strftime('%d.%m.%Y'),
                             'Ա': sheet['B45'].value.strftime('%d.%m.%Y'),
-                            'ա': sheet['B46'].value.strftime('%d.%m.%Y'),
+                            '{{ B46 }}': sheet['B46'].value.strftime('%d.%m.%Y'),
                             'Բ': sheet['B47'].value.strftime('%d.%m.%Y'),
                             'բ': sheet['B48'].value.strftime('%d.%m.%Y'),
                             'Գ': sheet['B49'].value.strftime('%d.%m.%Y'),
@@ -933,7 +933,7 @@ def start_filling_agreement(inn_leasee, path_application, path_graphic, signator
                             f"{round(float(sheet['F9'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F9'].value), 2):,}".replace(',', ' ').replace('.',
                                                                                                                     ',') + '0',
-                            'ծ': f"{round(float(sheet['F10'].value), 2):,}".replace(',', ' ').replace('.', ',') if
+                            '{{ F10 }}': f"{round(float(sheet['F10'].value), 2):,}".replace(',', ' ').replace('.', ',') if
                             f"{round(float(sheet['F10'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F10'].value), 2):,}".replace(',', ' ').replace(
                                 '.', ',') + '0',
@@ -1077,7 +1077,7 @@ def start_filling_agreement(inn_leasee, path_application, path_graphic, signator
                             f"{round(float(sheet['F45'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F45'].value), 2):,}".replace(',', ' ').replace(
                                 '.', ',') + '0',
-                            'Ս': f"{round(float(sheet['F46'].value), 2):,}".replace(',', ' ').replace('.', ',') if
+                            '{{ B46 }}': f"{round(float(sheet['F46'].value), 2):,}".replace(',', ' ').replace('.', ',') if
                             f"{round(float(sheet['F46'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F46'].value), 2):,}".replace(',', ' ').replace(
                                 '.', ',') + '0',
