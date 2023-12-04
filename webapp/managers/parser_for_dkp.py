@@ -92,9 +92,9 @@ def read_xlsx(path_application, pl):
     rekvizit_leasee_bik = '-'
 
     for number in range(8, sheet_anketa_1_list.max_row + 2):
-        if sheet_anketa_1_list[f'A{number}'].value == '1.8         Телефон:':
+        if sheet_anketa_1_list[f'A{number}'].value == '1.7         Телефон:':
             phone_leasee = sheet_anketa_1_list[f'C{number}'].value
-        if sheet_anketa_1_list[f'E{number}'].value == '1.9 Эл. почта:':
+        if sheet_anketa_1_list[f'E{number}'].value == '1.8 Эл. почта:':
             email_leasee = sheet_anketa_1_list[f'F{number}'].value
         if sheet_anketa_1_list[f'B{number}'].value == 'ФИО:':
             fio_leader = sheet_anketa_1_list[f'C{number}'].value

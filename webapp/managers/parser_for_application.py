@@ -355,7 +355,7 @@ def start_filling_application(inn_leasee, path_application, inn_seller1, inn_sel
                         for row_num, fio in enumerate(fio_list, start=1):
                             sheet_anketa_1_list.cell(row=row_num + counter_2_anketa + 1, column=2, value=fio)
                         # print(sheet_anketa_1_list.cell(row=row_num + counter_2_anketa + 1, column=2, value=fio).value)
-                    if sheet_anketa_1_list[f'G{number}'].value == 'ИНН':
+                    if sheet_anketa_1_list[f'G{number}'].value == 'ИНН:':
                         # print(counter_2_anketa)
                         for row_num, inn in enumerate(inn_list, start=1):
                             sheet_anketa_1_list.cell(row=row_num + counter_2_anketa + 1, column=7, value=inn)
@@ -366,10 +366,10 @@ def start_filling_application(inn_leasee, path_application, inn_seller1, inn_sel
                             sheet_anketa_1_list.cell(row=row_num + counter_2_anketa + 1, column=9, value=dolya)
                         # print(sheet_anketa_1_list.cell(row=row_num + counter_2_anketa + 1, column=9).value)
 
-                if sheet_anketa_1_list[f'A{number}'].value == '1.8         Телефон:':
+                if sheet_anketa_1_list[f'A{number}'].value == '1.7         Телефон:':
                     sheet_anketa_1_list[f'C{number}'].value = phone_leasee
                     # print(sheet_anketa_1_list[f'C{number}'].value)
-                if sheet_anketa_1_list[f'E{number}'].value == '1.9 Эл. почта:':
+                if sheet_anketa_1_list[f'E{number}'].value == '1.8 Эл. почта:':
                     sheet_anketa_1_list[f'F{number}'].value = email_leasee
                     # print(sheet_anketa_1_list[f'F{number}'].value)
                 if sheet_anketa_1_list[f'B{number}'].value == 'ФИО:':
