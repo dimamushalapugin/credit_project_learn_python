@@ -1077,7 +1077,7 @@ def start_filling_agreement(inn_leasee, path_application, path_graphic, signator
                             f"{round(float(sheet['F45'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F45'].value), 2):,}".replace(',', ' ').replace(
                                 '.', ',') + '0',
-                            '{{ B46 }}': f"{round(float(sheet['F46'].value), 2):,}".replace(',', ' ').replace('.', ',') if
+                            '{{ F46 }}': f"{round(float(sheet['F46'].value), 2):,}".replace(',', ' ').replace('.', ',') if
                             f"{round(float(sheet['F46'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F46'].value), 2):,}".replace(',', ' ').replace(
                                 '.', ',') + '0',
