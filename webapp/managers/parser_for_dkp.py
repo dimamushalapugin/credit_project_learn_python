@@ -10,7 +10,7 @@ from webapp.config import DADATA_BASE
 from webapp.risk.logger import logging
 
 
-def read_xlsx(path_application):
+def read_xlsx(path_application, pl):
     """
     :param path_application:
     :return: 0: rekvizit_leasee_bik,
@@ -63,9 +63,14 @@ def read_xlsx(path_application):
         if sheet_zayavlenie[f'O{number}'].value == '(расшифровка подписи)':
             formatted_name_leader_leasee = sheet_zayavlenie[f'O{number - 1}'].value
 
-    predmet_lizinga = list(map(lambda x: sheet_zayavlenie[x].value, ['A10', 'A12', 'A14', 'A16']))
+    predmet_lizinga = pl
     inn_seller_list = list(map(lambda x: sheet_zayavlenie[x].value, ['C11', 'C13', 'C15', 'C17']))
-    price_predmet_lizinga = list(map(lambda x: sheet_zayavlenie[x].value, ['P21', 'P22', 'P23', 'P24']))
+    for i in range(1, sheet_zayavlenie.max_row + 2):
+        if sheet_zayavlenie[f'C{i}'].value == pl:
+            price_predmet_lizinga = sheet_zayavlenie[f'P{i}'].value
+            break
+    else:
+        price_predmet_lizinga = 0
 
     # читаем страницу Анкета Стр.1
 
@@ -718,7 +723,7 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
             imenyemoe_dkp = 'именуемая'
         return deystvuysh_list_seller, imenyemoe_dkp
 
-    inn_leasee1 = read_xlsx(path_application)
+    inn_leasee1 = read_xlsx(path_application, pl)
 
     def result_dadata_leasee():
         result_dkp_leasee = DADATA_BASE.find_by_id("party", inn_leasee1)
@@ -736,8 +741,8 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
         print(put_padezh_podpisant)
         return put_padezh_podpisant
 
-    rod_padezh_fio_leader = rod_padezh_fio_leader(read_xlsx(path_application)[5])
-    ip_or_not = read_xlsx(path_application)
+    rod_padezh_fio_leader = rod_padezh_fio_leader(read_xlsx(path_application, pl)[5])
+    ip_or_not = read_xlsx(path_application, pl)
 
     def addicted_info_leasee(date_regist, ogrn_leasee):
         deystvuysh_list_leasee = 'действующей'
@@ -773,8 +778,8 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
     def replace():
         eq_val = equipment_valute()
         logging.info(f'{eq_val=}')
-        data_xlsx = read_xlsx(path_application)  # все из xlsx
-        price_entry = data_xlsx[15][0]  # цена ПЛ
+        data_xlsx = read_xlsx(path_application, pl)  # все из xlsx
+        price_entry = data_xlsx[15]  # цена ПЛ
         logging.info(f'{price_entry=}')
         suma_dann = number_to_words(price_entry)
 
@@ -890,9 +895,9 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
 
     def replace_words_in_dkp(docx_file, old_words_dkp, new_words_dkp):
         eq_val = equipment_valute()
-        data_xlsx = read_xlsx(path_application)
+        data_xlsx = read_xlsx(path_application, pl)
         logging.info(f'{data_xlsx=}')
-        price_entry = data_xlsx[15][0]
+        price_entry = data_xlsx[15]
         payment_dkp = payment_for_dkp(price_entry)  # все для порядка оплаты
         info_about_seller = result_dadata()
         kratk_name_seller = result_dadata()[0]['data']['name']['short_with_opf']

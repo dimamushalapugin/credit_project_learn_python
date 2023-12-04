@@ -10,7 +10,7 @@ from datetime import datetime as dt
 from selenium.webdriver.edge.options import Options
 from flask_login import current_user
 from webapp.risk.logger import logging
-from webapp.managers.parser_for_dkp import read_xlsx, identification_lkmb_rt
+from webapp.managers.parser_for_dkp import read_xlsx
 from num2words import num2words
 from webapp.config import DADATA_TOKEN, DADATA_SECRET, DADATA_BASE
 from selenium import webdriver
@@ -406,7 +406,7 @@ def start_filling_agreement(inn_leasee, path_application, path_graphic, signator
     if not os.path.exists(dir_path):
         os.makedirs(dir_path)
 
-    data_xlsx = read_xlsx(path_application)
+    data_xlsx = read_xlsx(path_application, pl)
     for i in range(len(data_xlsx)):
         print(f'#{i} -> {data_xlsx[i]}')
 
@@ -604,9 +604,7 @@ def start_filling_agreement(inn_leasee, path_application, path_graphic, signator
         vikup = '1000'
         pl_entry = pl
 
-        # TODO: Нужно придумать как связать ПЛ и цену ПЛ (возможно добавить на сайт новое поле с выбором цены).
-        #  Пока цена берется по первому ПЛ, т.е. индекс 0
-        price_entry = price_predmet_lizinga[0]
+        price_entry = price_predmet_lizinga
         if vikup == '1000':
             punkt_4_6 = '4.6. Выкупная цена предмета лизинга составляет 1 000,00 (Одна тысяча) рублей, в том числе НДС.'
         else:
@@ -1309,7 +1307,7 @@ def start_filling_agreement(inn_leasee, path_application, path_graphic, signator
 
     logging.info(f"({current_user}) ЗАПУСК READ XLSX")
 
-    read_xlsx(path_application)  # читает эксель, после этого можно составлять ДЛ
+    read_xlsx(path_application, pl)  # читает эксель, после этого можно составлять ДЛ
 
     logging.info(f'({current_user}) ЗАПУСК CREATE DL')
     create_dl_dkp(inn_leasee, path_application, path_graphic, signatory, investor, currency_list, who_is_insure,
