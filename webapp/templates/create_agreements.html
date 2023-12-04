@@ -169,7 +169,7 @@
                                         </div>
                                     </div>
                                     <div class="mb-3">
-                                        <label>Выберите ИНН продавца</label>
+                                        <label>Выберите продавца</label>
                                         <select class="form-select form-select-sm" name="seller_inn"
                                                 aria-label=".form-select-sm example" id="sellerInn" required>
                                             <option selected></option>
@@ -471,6 +471,13 @@
                                                         workbook.Sheets[workbook.SheetNames[0]]['C17'] ? workbook.Sheets[workbook.SheetNames[0]]['C17'].v : '-'
                                                     ];
 
+                                                    var sellerValues = [
+                                                        workbook.Sheets[workbook.SheetNames[0]]['A10'] ? workbook.Sheets[workbook.SheetNames[0]]['A10'].v : '',
+                                                        workbook.Sheets[workbook.SheetNames[0]]['A12'] ? workbook.Sheets[workbook.SheetNames[0]]['A12'].v : '',
+                                                        workbook.Sheets[workbook.SheetNames[0]]['A14'] ? workbook.Sheets[workbook.SheetNames[0]]['A14'].v : '',
+                                                        workbook.Sheets[workbook.SheetNames[0]]['A16'] ? workbook.Sheets[workbook.SheetNames[0]]['A16'].v : ''
+                                                    ];
+
                                                     // Заполняем значения в <select>
                                                     plSelect.options[1].text = plValues[0];
                                                     plSelect.options[1].value = plValues[0];
@@ -481,13 +488,13 @@
                                                     plSelect.options[4].text = plValues[3];
                                                     plSelect.options[4].value = plValues[3];
 
-                                                    innSelect.options[1].text = innValues[0];
+                                                    innSelect.options[1].text = sellerValues[0] + ', ' + innValues[0];
                                                     innSelect.options[1].value = innValues[0];
-                                                    innSelect.options[2].text = innValues[1];
+                                                    innSelect.options[2].text = sellerValues[1] + ', ' + innValues[1];
                                                     innSelect.options[2].value = innValues[1];
-                                                    innSelect.options[3].text = innValues[2];
+                                                    innSelect.options[3].text = sellerValues[2] + ', ' + innValues[2];
                                                     innSelect.options[3].value = innValues[2];
-                                                    innSelect.options[4].text = innValues[3];
+                                                    innSelect.options[4].text = sellerValues[3] + ', ' + innValues[3];
                                                     innSelect.options[4].value = innValues[3];
                                                 };
 
