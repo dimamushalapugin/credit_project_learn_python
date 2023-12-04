@@ -149,9 +149,9 @@ def identification_lkmb_rt(signatory: str, investor: str):
         bank_rekv_lkmb = 'ПАО «МОСКОВСКИЙ КРЕДИТНЫЙ БАНК»'
         kor_chet_lkmb = '30101810745250000659'
         bik_lkmb = '044525659'
-    elif investor.upper() == 'АО «Инвестторгбанк»'.upper():
+    elif investor.upper() == 'ИНВЕСТТОРГБАНК АО'.upper():
         r_chet_lkmb = '40701810071010300002'
-        bank_rekv_lkmb = 'АО «Инвестторгбанк»'
+        bank_rekv_lkmb = 'ИНВЕСТТОРГБАНК АО'
         kor_chet_lkmb = '30101810645250000267'
         bik_lkmb = '044525267'
     elif investor.upper() == 'АО «АЛЬФА-БАНК»'.upper():
