@@ -252,6 +252,7 @@ def number_to_words(suma_chislo, currency_list: str):
     except ValueError:
         return "Неверный формат числа"
 
+
 def identification_leasee(leader_leasee):
     if leader_leasee.upper() == 'директор'.upper():
         leader_leasee_rod_padezh = 'Директора'
@@ -263,6 +264,7 @@ def identification_leasee(leader_leasee):
         leader_leasee_rod_padezh = ''
     leader_leasee_pod = leader_leasee
     return leader_leasee_rod_padezh, leader_leasee_pod
+
 
 def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_seller: str, numb_dl_dkp: str,
                                 signatory: str, investor: str, currency: str, pl: str, equipment_or_not: Optional[str],
@@ -653,7 +655,6 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
         leader_seller_pod = leader_seller
         return leader_seller, leader_seller_rod_padezh, leader_seller_pod
 
-
     def full_rekviti_seller(result_dkp):
         ip_or_kfh_dkp = 'Нет'
         if result_dkp[0]['data']['opf']['short'] in ['ИП', 'КФХ', 'ГКФХ']:
@@ -718,12 +719,56 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
         return deystvuysh_list_seller, imenyemoe_dkp
 
     inn_leasee1 = read_xlsx(path_application)
+
     def result_dadata_leasee():
         result_dkp_leasee = DADATA_BASE.find_by_id("party", inn_leasee1)
+        if result_dkp_leasee[0]['data']['opf']['short'] in ['ИП', 'ГКФХ', 'КФХ']:
+            inn_kpp1 = 'ИНН'
+            put_padezh_podpisant_rg = ''
+        else:
+            imenyemoe = 'именуемое'
         return result_dkp_leasee
 
+    def rod_padezh_fio_leader(fio):
+        # dadata = Dadata(DADATA_TOKEN, DADATA_SECRET)
+        logging.info(f"({fio})")
+        put_padezh_podpisant = DADATA_BASE.clean("name", fio)
+        print(put_padezh_podpisant)
+        return put_padezh_podpisant
 
+    rod_padezh_fio_leader = rod_padezh_fio_leader(read_xlsx(path_application)[5])
+    ip_or_not = read_xlsx(path_application)
 
+    def addicted_info_leasee(date_regist, ogrn_leasee):
+        deystvuysh_list_leasee = 'действующей'
+        imenyemoe = 'именуемое'
+        try:
+            put_padezh_podpisant_rg = rod_padezh_fio_leader['result_genitive']
+        except:
+            put_padezh_podpisant_rg = ''
+        print(f'123 {put_padezh_podpisant_rg}')
+        doverka_ustav_leasee = 'Устава'
+        for elem in ip_or_not[22].split():
+            if elem in ['Индивидуальный', 'предприниматель', 'хозяйства']:
+                doverka_ustav_leasee = f'Свидетельства о государственной регистрации физического лица в качестве индивидуального предпринимателя серия __ № _________ от {date_regist}, ОГРНИП {ogrn_leasee}'
+
+        try:
+            if rod_padezh_fio_leader['gender'] == 'М':
+                deystvuysh_list_leasee = 'действующего'
+                if result_dadata_leasee()[0]['data']['opf']['short'] in ['ИП', 'КФХ', 'ГКФХ']:
+                    deystvuysh_list_leasee = 'действующий'
+                imenyemoe = 'именуемый'
+        except:
+            try:
+                if result_dadata_leasee()[0]['data']['opf']['short'] in ['ИП', 'КФХ', 'ГКФХ']:
+                    deystvuysh_list_leasee = 'действующая'
+            except:
+                deystvuysh_list_leasee = 'действующей'
+            imenyemoe = 'именуемая'
+        return put_padezh_podpisant_rg, deystvuysh_list_leasee, imenyemoe, doverka_ustav_leasee
+
+    '''выше надо закинуть в реплейс, 
+    это последние недостающие элементы'''
 
     def replace():
         eq_val = equipment_valute()
@@ -784,7 +829,7 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
                          "{{ okato_leasee }}", "{{ ogrn_leasee }}",
                          # ниже список скорее всего не нужен, надо попробовать убрать его
                          "{{ inn_seller_list }}",
-                         #1 цена предмета лизинга, #2 предмет лизинга
+                         # 1 цена предмета лизинга, #2 предмет лизинга
                          "{{ price_entry }}", "{{ pl_entry }}",
                          "{{ formatted_name_leader_leasee }}",
                          "{{ leader_leasee }}", "{{ address_leasee_expluatazia }}", "{{ address_leasee }}",
@@ -837,7 +882,6 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
                          # данные по лизингополучателю
                          str(id_ls[1]), str(id_ls[0])
                          ]
-
 
         # for old, new in zip(old_words_dkp, new_words_dkp):
         #     print(f'{old}: {new}')
@@ -928,7 +972,6 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
                 if run.text.strip() in [
                     'Внести информацию о смене собственника предмета лизинга в Системе Электронных Паспортов (СЭП) не позднее дня подписания акта приема-передачи предмета лизинга, путём создания заявления на смену собственника и подтверждения его в СЭП квалифицированной электронной подписью Продавца. Фактом извещения Покупателя об исполненной обязанности является электронное сообщение с сайта СЭП на адрес электронной почты Покупателя указанный при регистрации в СЭП в виде сообщения с кодом для подтверждения Заявления на смену собственника. ']:
                     doc.element.body.remove(run._element)
-
 
         if place == "продавец" and acts == 'эксплуатация':
             for run in doc.paragraphs:
