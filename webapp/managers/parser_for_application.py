@@ -49,10 +49,11 @@ def start_filling_application(inn_leasee, path_application, inn_seller1, inn_sel
     address_seller2 = ''
     address_seller3 = ''
     address_seller4 = ''
+    inn_dir_leasee = ''
 
     def parser_info_leasee(inn_leasee):
         logging.info(f"({current_user}) Этап 2.")
-        nonlocal ip_or_kfh, type_business, krakt_name_seller1, address_seller1, krakt_name_seller2, address_seller2, krakt_name_seller3, address_seller3, krakt_name_seller4, address_seller4, full_krakt_name_leasee, main_activity_leasee, ogrn_leasee, okpo_leasee, okato_leasee, date_regist, ustav_capital, inn_kpp_leasee, address_leasee, formatted_name_leader_leasee, fio_list, inn_list, dolya_list, full_name_leasee, leader_leasee, fio_leader, phone_leasee, email_leasee
+        nonlocal ip_or_kfh, type_business, inn_dir_leasee, krakt_name_seller1, address_seller1, krakt_name_seller2, address_seller2, krakt_name_seller3, address_seller3, krakt_name_seller4, address_seller4, full_krakt_name_leasee, main_activity_leasee, ogrn_leasee, okpo_leasee, okato_leasee, date_regist, ustav_capital, inn_kpp_leasee, address_leasee, formatted_name_leader_leasee, fio_list, inn_list, dolya_list, full_name_leasee, leader_leasee, fio_leader, phone_leasee, email_leasee
 
         logging.info(f"({inn_leasee})")
 
@@ -181,6 +182,12 @@ def start_filling_application(inn_leasee, path_application, inn_seller1, inn_sel
             # print(f'здесь список ИНН учредов {inn_list}')
 
         try:
+            index_inn_dir_leasee = full_info_leasee_vbc.index('Банковские счета')
+            inn_dir_leasee = full_info_leasee_vbc[index_inn_dir_leasee + 5].replace('ИНН: ', '')
+        except:
+            inn_dir_leasee = ''
+
+        try:
             index_phone_leasee = full_info_leasee_vbc.index('Телефон: ')
             phone_leasee = full_info_leasee_vbc[index_phone_leasee + 1]
             # print(f'Здесь брать телефон лизингополучателя {phone_leasee}')
@@ -305,6 +312,8 @@ def start_filling_application(inn_leasee, path_application, inn_seller1, inn_sel
                 if sheet_zayavlenie[f'O{number}'].value == '(расшифровка подписи)':
                     sheet_zayavlenie[f'O{number - 1}'].value = formatted_name_leader_leasee
                     # print(sheet_zayavlenie[f'H{number - 1}'].value)
+                if sheet_zayavlenie[f'G{number}'].value == 'ИНН:':
+                    sheet_zayavlenie[f'H{number}'].value = inn_dir_leasee
 
                 # заполнение поручителей, автоматом поставил всех учредов
                 if ip_or_kfh != 'Да':
@@ -355,7 +364,7 @@ def start_filling_application(inn_leasee, path_application, inn_seller1, inn_sel
                         for row_num, fio in enumerate(fio_list, start=1):
                             sheet_anketa_1_list.cell(row=row_num + counter_2_anketa + 1, column=2, value=fio)
                         # print(sheet_anketa_1_list.cell(row=row_num + counter_2_anketa + 1, column=2, value=fio).value)
-                    if sheet_anketa_1_list[f'G{number}'].value == 'ИНН:':
+                    if sheet_anketa_1_list[f'G{number}'].value == 'ИНН':
                         # print(counter_2_anketa)
                         for row_num, inn in enumerate(inn_list, start=1):
                             sheet_anketa_1_list.cell(row=row_num + counter_2_anketa + 1, column=7, value=inn)
