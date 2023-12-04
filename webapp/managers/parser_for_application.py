@@ -860,76 +860,76 @@ def start_filling_agreement(inn_leasee, path_application, path_graphic, signator
             sheet = book[grafic]
             # print(f'Тут ГРАФИК {grafic}')
             suma_chislo = sheet['F7'].value
-            replacements = {'א': sheet['B9'].value.strftime('%d.%m.%Y'),
+            replacements = {'{{ B9 }}': sheet['B9'].value.strftime('%d.%m.%Y'),
                             '{{ B10 }}': sheet['B10'].value.strftime('%d.%m.%Y'),
-                            'ב‎': sheet['B11'].value.strftime('%d.%m.%Y'),
-                            'גּ‎': sheet['B12'].value.strftime('%d.%m.%Y'),
-                            'ג‎': sheet['B13'].value.strftime('%d.%m.%Y'),
-                            'דּ‎': sheet['B14'].value.strftime('%d.%m.%Y'),
-                            'ד‎': sheet['B15'].value.strftime('%d.%m.%Y'),
-                            'ה‎': sheet['B16'].value.strftime('%d.%m.%Y'),
-                            'ו‎': sheet['B17'].value.strftime('%d.%m.%Y'),
-                            'ז': sheet['B18'].value.strftime('%d.%m.%Y'),
-                            'ח': sheet['B19'].value.strftime('%d.%m.%Y'),
-                            'ט': sheet['B20'].value.strftime('%d.%m.%Y'),
-                            'י': sheet['B21'].value.strftime('%d.%m.%Y'),
-                            'כּ': sheet['B22'].value.strftime('%d.%m.%Y'),
-                            'כ': sheet['B23'].value.strftime('%d.%m.%Y'),
-                            'ךּ': sheet['B24'].value.strftime('%d.%m.%Y'),
-                            'ך': sheet['B25'].value.strftime('%d.%m.%Y'),
-                            'ל': sheet['B26'].value.strftime('%d.%m.%Y'),
-                            'מ': sheet['B27'].value.strftime('%d.%m.%Y'),
-                            'ם': sheet['B28'].value.strftime('%d.%m.%Y'),
-                            'נ': sheet['B29'].value.strftime('%d.%m.%Y'),
-                            'ן': sheet['B30'].value.strftime('%d.%m.%Y'),
-                            'ס': sheet['B31'].value.strftime('%d.%m.%Y'),
-                            'ע': sheet['B32'].value.strftime('%d.%m.%Y'),
-                            'פּ': sheet['B33'].value.strftime('%d.%m.%Y'),
-                            'פ': sheet['B34'].value.strftime('%d.%m.%Y'),
-                            'ףּ': sheet['B35'].value.strftime('%d.%m.%Y'),
-                            'ף': sheet['B36'].value.strftime('%d.%m.%Y'),
-                            'צ': sheet['B37'].value.strftime('%d.%m.%Y'),
-                            'ץ': sheet['B38'].value.strftime('%d.%m.%Y'),
-                            'ק': sheet['B39'].value.strftime('%d.%m.%Y'),
-                            'ר': sheet['B40'].value.strftime('%d.%m.%Y'),
-                            'שׁ': sheet['B41'].value.strftime('%d.%m.%Y'),
-                            'שׂ‎': sheet['B42'].value.strftime('%d.%m.%Y'),
-                            'תּ‎': sheet['B43'].value.strftime('%d.%m.%Y'),
-                            'ת': sheet['B44'].value.strftime('%d.%m.%Y'),
-                            'Ա': sheet['B45'].value.strftime('%d.%m.%Y'),
+                            '{{ B11 }}': sheet['B11'].value.strftime('%d.%m.%Y'),
+                            '{{ B12 }}': sheet['B12'].value.strftime('%d.%m.%Y'),
+                            '{{ B13}}': sheet['B13'].value.strftime('%d.%m.%Y'),
+                            '{{ B14 }}': sheet['B14'].value.strftime('%d.%m.%Y'),
+                            '{{ B15 }}': sheet['B15'].value.strftime('%d.%m.%Y'),
+                            '{{ B16 }}': sheet['B16'].value.strftime('%d.%m.%Y'),
+                            '{{ B17 }}': sheet['B17'].value.strftime('%d.%m.%Y'),
+                            '{{ B18 }}': sheet['B18'].value.strftime('%d.%m.%Y'),
+                            '{{ B19 }}': sheet['B19'].value.strftime('%d.%m.%Y'),
+                            '{{ B20 }}': sheet['B20'].value.strftime('%d.%m.%Y'),
+                            '{{ B21 }}': sheet['B21'].value.strftime('%d.%m.%Y'),
+                            '{{ B22 }}': sheet['B22'].value.strftime('%d.%m.%Y'),
+                            '{{ B23 }}': sheet['B23'].value.strftime('%d.%m.%Y'),
+                            '{{ B24 }}': sheet['B24'].value.strftime('%d.%m.%Y'),
+                            '{{ B25 }}': sheet['B25'].value.strftime('%d.%m.%Y'),
+                            '{{ B26 }}': sheet['B26'].value.strftime('%d.%m.%Y'),
+                            '{{ B27 }}': sheet['B27'].value.strftime('%d.%m.%Y'),
+                            '{{ B28 }}': sheet['B28'].value.strftime('%d.%m.%Y'),
+                            '{{ B29 }}': sheet['B29'].value.strftime('%d.%m.%Y'),
+                            '{{ B30 }}': sheet['B30'].value.strftime('%d.%m.%Y'),
+                            '{{ B31 }}': sheet['B31'].value.strftime('%d.%m.%Y'),
+                            '{{ B32 }}': sheet['B32'].value.strftime('%d.%m.%Y'),
+                            '{{ B33 }}': sheet['B33'].value.strftime('%d.%m.%Y'),
+                            '{{ B34 }}': sheet['B34'].value.strftime('%d.%m.%Y'),
+                            '{{ B35 }}': sheet['B35'].value.strftime('%d.%m.%Y'),
+                            '{{ B36 }}': sheet['B36'].value.strftime('%d.%m.%Y'),
+                            '{{ B37 }}': sheet['B37'].value.strftime('%d.%m.%Y'),
+                            '{{ B38 }}': sheet['B38'].value.strftime('%d.%m.%Y'),
+                            '{{ B39 }}': sheet['B39'].value.strftime('%d.%m.%Y'),
+                            '{{ B40 }}': sheet['B40'].value.strftime('%d.%m.%Y'),
+                            '{{ B41 }}': sheet['B41'].value.strftime('%d.%m.%Y'),
+                            '{{ B42 }}': sheet['B42'].value.strftime('%d.%m.%Y'),
+                            '{{ B43 }}': sheet['B43'].value.strftime('%d.%m.%Y'),
+                            '{{ B44 }}': sheet['B44'].value.strftime('%d.%m.%Y'),
+                            '{{ B45 }}': sheet['B45'].value.strftime('%d.%m.%Y'),
                             '{{ B46 }}': sheet['B46'].value.strftime('%d.%m.%Y'),
-                            'Բ': sheet['B47'].value.strftime('%d.%m.%Y'),
-                            'բ': sheet['B48'].value.strftime('%d.%m.%Y'),
-                            'Գ': sheet['B49'].value.strftime('%d.%m.%Y'),
-                            'գ': sheet['B50'].value.strftime('%d.%m.%Y'),
-                            'Դ': sheet['B51'].value.strftime('%d.%m.%Y'),
-                            'դ': sheet['B52'].value.strftime('%d.%m.%Y'),
-                            'Ե': sheet['B53'].value.strftime('%d.%m.%Y'),
-                            'ե': sheet['B54'].value.strftime('%d.%m.%Y'),
-                            'Զ': sheet['B55'].value.strftime('%d.%m.%Y'),
-                            'զ': sheet['B56'].value.strftime('%d.%m.%Y'),
-                            'Է': sheet['B57'].value.strftime('%d.%m.%Y'),
-                            'է': sheet['B58'].value.strftime('%d.%m.%Y'),
-                            'Ը': sheet['B59'].value.strftime('%d.%m.%Y'),
-                            'ը': sheet['B60'].value.strftime('%d.%m.%Y'),
-                            'Թ': sheet['B61'].value.strftime('%d.%m.%Y'),
-                            'թ': sheet['B62'].value.strftime('%d.%m.%Y'),
-                            'Ժ': sheet['B63'].value.strftime('%d.%m.%Y'),
-                            'ժ': sheet['B64'].value.strftime('%d.%m.%Y'),
-                            'Ի': sheet['B65'].value.strftime('%d.%m.%Y'),
-                            'ի': sheet['B66'].value.strftime('%d.%m.%Y'),
-                            'ࢱ': sheet['B67'].value.strftime('%d.%m.%Y'),
-                            'ࢣ': sheet['B68'].value.strftime('%d.%m.%Y'),
-                            'ᵪ': sheet['B93'].value.strftime('%d.%m.%Y'),
-                            'Խ': f"{round(float(sheet['F7'].value), 2):,}".replace(',', ' ').replace('.', ',') if
+                            '{{ B47 }}': sheet['B47'].value.strftime('%d.%m.%Y'),
+                            '{{ B48 }}': sheet['B48'].value.strftime('%d.%m.%Y'),
+                            '{{ B49 }}': sheet['B49'].value.strftime('%d.%m.%Y'),
+                            '{{ B50 }}': sheet['B50'].value.strftime('%d.%m.%Y'),
+                            '{{ B51 }}': sheet['B51'].value.strftime('%d.%m.%Y'),
+                            '{{ B52 }}': sheet['B52'].value.strftime('%d.%m.%Y'),
+                            '{{ B53 }}': sheet['B53'].value.strftime('%d.%m.%Y'),
+                            '{{ B54 }}': sheet['B54'].value.strftime('%d.%m.%Y'),
+                            '{{ B55 }}': sheet['B55'].value.strftime('%d.%m.%Y'),
+                            '{{ B56 }}': sheet['B56'].value.strftime('%d.%m.%Y'),
+                            '{{ B57 }}': sheet['B57'].value.strftime('%d.%m.%Y'),
+                            '{{ B58 }}': sheet['B58'].value.strftime('%d.%m.%Y'),
+                            '{{ B59 }}': sheet['B59'].value.strftime('%d.%m.%Y'),
+                            '{{ B60 }}': sheet['B60'].value.strftime('%d.%m.%Y'),
+                            '{{ B61 }}': sheet['B61'].value.strftime('%d.%m.%Y'),
+                            '{{ B62 }}': sheet['B62'].value.strftime('%d.%m.%Y'),
+                            '{{ B63 }}': sheet['B63'].value.strftime('%d.%m.%Y'),
+                            '{{ B64 }}': sheet['B64'].value.strftime('%d.%m.%Y'),
+                            '{{ B65 }}': sheet['B65'].value.strftime('%d.%m.%Y'),
+                            '{{ B66 }}': sheet['B66'].value.strftime('%d.%m.%Y'),
+                            '{{ B67 }}': sheet['B67'].value.strftime('%d.%m.%Y'),
+                            '{{ B68 }}': sheet['B68'].value.strftime('%d.%m.%Y'),
+                            '{{ B69 }}': sheet['B93'].value.strftime('%d.%m.%Y'),
+                            '{{ F7 }}': f"{round(float(sheet['F7'].value), 2):,}".replace(',', ' ').replace('.', ',') if
                             f"{round(float(sheet['F7'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F7'].value), 2):,}".replace(',', ' ').replace('.',
                                                                                                                     ',') + '0',
-                            'Å': f"{round(float(sheet['F8'].value), 2):,}".replace(',', ' ').replace('.', ',') if
+                            '{{ F8 }}': f"{round(float(sheet['F8'].value), 2):,}".replace(',', ' ').replace('.', ',') if
                             f"{round(float(sheet['F8'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F8'].value), 2):,}".replace(',', ' ').replace('.',
                                                                                                                     ',') + '0',
-                            'Ծ': f"{round(float(sheet['F9'].value), 2):,}".replace(',', ' ').replace('.', ',') if
+                            '{{ F9 }}': f"{round(float(sheet['F9'].value), 2):,}".replace(',', ' ').replace('.', ',') if
                             f"{round(float(sheet['F9'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F9'].value), 2):,}".replace(',', ' ').replace('.',
                                                                                                                     ',') + '0',
@@ -937,143 +937,143 @@ def start_filling_agreement(inn_leasee, path_application, path_graphic, signator
                             f"{round(float(sheet['F10'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F10'].value), 2):,}".replace(',', ' ').replace(
                                 '.', ',') + '0',
-                            'Կ': f"{round(float(sheet['F11'].value), 2):,}".replace(',', ' ').replace('.', ',') if
+                            '{{ F11 }}': f"{round(float(sheet['F11'].value), 2):,}".replace(',', ' ').replace('.', ',') if
                             f"{round(float(sheet['F11'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F11'].value), 2):,}".replace(',', ' ').replace(
                                 '.', ',') + '0',
-                            'կ': f"{round(float(sheet['F12'].value), 2):,}".replace(',', ' ').replace('.', ',') if
+                            '{{ F12 }}': f"{round(float(sheet['F12'].value), 2):,}".replace(',', ' ').replace('.', ',') if
                             f"{round(float(sheet['F12'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F12'].value), 2):,}".replace(',', ' ').replace(
                                 '.', ',') + '0',
-                            'Հ': f"{round(float(sheet['F13'].value), 2):,}".replace(',', ' ').replace('.', ',') if
+                            '{{ F13 }}': f"{round(float(sheet['F13'].value), 2):,}".replace(',', ' ').replace('.', ',') if
                             f"{round(float(sheet['F13'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F13'].value), 2):,}".replace(',', ' ').replace(
                                 '.', ',') + '0',
-                            'հ': f"{round(float(sheet['F14'].value), 2):,}".replace(',', ' ').replace('.', ',') if
+                            '{{ F14 }}': f"{round(float(sheet['F14'].value), 2):,}".replace(',', ' ').replace('.', ',') if
                             f"{round(float(sheet['F14'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F14'].value), 2):,}".replace(',', ' ').replace(
                                 '.', ',') + '0',
-                            'Ձ': f"{round(float(sheet['F15'].value), 2):,}".replace(',', ' ').replace('.', ',') if
+                            '{{ F15 }}': f"{round(float(sheet['F15'].value), 2):,}".replace(',', ' ').replace('.', ',') if
                             f"{round(float(sheet['F15'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F15'].value), 2):,}".replace(',', ' ').replace(
                                 '.', ',') + '0',
-                            'ձ': f"{round(float(sheet['F16'].value), 2):,}".replace(',', ' ').replace('.', ',') if
+                            '{{ F16 }}': f"{round(float(sheet['F16'].value), 2):,}".replace(',', ' ').replace('.', ',') if
                             f"{round(float(sheet['F16'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F16'].value), 2):,}".replace(',', ' ').replace(
                                 '.', ',') + '0',
-                            'Ղ': f"{round(float(sheet['F17'].value), 2):,}".replace(',', ' ').replace('.', ',') if
+                            '{{ F17 }}': f"{round(float(sheet['F17'].value), 2):,}".replace(',', ' ').replace('.', ',') if
                             f"{round(float(sheet['F17'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F17'].value), 2):,}".replace(',', ' ').replace(
                                 '.', ',') + '0',
-                            'ղ': f"{round(float(sheet['F18'].value), 2):,}".replace(',', ' ').replace('.', ',') if
+                            '{{ F18 }}': f"{round(float(sheet['F18'].value), 2):,}".replace(',', ' ').replace('.', ',') if
                             f"{round(float(sheet['F18'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F18'].value), 2):,}".replace(',', ' ').replace(
                                 '.', ',') + '0',
-                            'Ճ': f"{round(float(sheet['F19'].value), 2):,}".replace(',', ' ').replace('.', ',') if
+                            '{{ F19 }}': f"{round(float(sheet['F19'].value), 2):,}".replace(',', ' ').replace('.', ',') if
                             f"{round(float(sheet['F19'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F19'].value), 2):,}".replace(',', ' ').replace(
                                 '.', ',') + '0',
-                            'ճ': f"{round(float(sheet['F20'].value), 2):,}".replace(',', ' ').replace('.', ',') if
+                            '{{ F20 }}': f"{round(float(sheet['F20'].value), 2):,}".replace(',', ' ').replace('.', ',') if
                             f"{round(float(sheet['F20'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F20'].value), 2):,}".replace(',', ' ').replace(
                                 '.', ',') + '0',
-                            'Մ': f"{round(float(sheet['F21'].value), 2):,}".replace(',', ' ').replace('.', ',') if
+                            '{{ F21 }}': f"{round(float(sheet['F21'].value), 2):,}".replace(',', ' ').replace('.', ',') if
                             f"{round(float(sheet['F21'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F21'].value), 2):,}".replace(',', ' ').replace(
                                 '.', ',') + '0',
-                            'մ': f"{round(float(sheet['F22'].value), 2):,}".replace(',', ' ').replace('.', ',') if
+                            '{{ F22 }}': f"{round(float(sheet['F22'].value), 2):,}".replace(',', ' ').replace('.', ',') if
                             f"{round(float(sheet['F22'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F22'].value), 2):,}".replace(',', ' ').replace(
                                 '.', ',') + '0',
-                            'ո': f"{round(float(sheet['F23'].value), 2):,}".replace(',', ' ').replace('.', ',') if
+                            '{{ F23 }}': f"{round(float(sheet['F23'].value), 2):,}".replace(',', ' ').replace('.', ',') if
                             f"{round(float(sheet['F23'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F23'].value), 2):,}".replace(',', ' ').replace(
                                 '.', ',') + '0',
-                            'Ո': f"{round(float(sheet['F24'].value), 2):,}".replace(',', ' ').replace('.', ',') if
+                            '{{ F24 }}': f"{round(float(sheet['F24'].value), 2):,}".replace(',', ' ').replace('.', ',') if
                             f"{round(float(sheet['F24'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F24'].value), 2):,}".replace(',', ' ').replace(
                                 '.', ',') + '0',
-                            'շ': f"{round(float(sheet['F25'].value), 2):,}".replace(',', ' ').replace('.', ',') if
+                            '{{ F25 }}': f"{round(float(sheet['F25'].value), 2):,}".replace(',', ' ').replace('.', ',') if
                             f"{round(float(sheet['F25'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F25'].value), 2):,}".replace(',', ' ').replace(
                                 '.', ',') + '0',
-                            'Շ': f"{round(float(sheet['F26'].value), 2):,}".replace(',', ' ').replace('.', ',') if
+                            '{{ F26 }}': f"{round(float(sheet['F26'].value), 2):,}".replace(',', ' ').replace('.', ',') if
                             f"{round(float(sheet['F26'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F26'].value), 2):,}".replace(',', ' ').replace(
                                 '.', ',') + '0',
-                            'ն': f"{round(float(sheet['F27'].value), 2):,}".replace(',', ' ').replace('.', ',') if
+                            '{{ F27 }}': f"{round(float(sheet['F27'].value), 2):,}".replace(',', ' ').replace('.', ',') if
                             f"{round(float(sheet['F27'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F27'].value), 2):,}".replace(',', ' ').replace(
                                 '.', ',') + '0',
-                            'Ն': f"{round(float(sheet['F28'].value), 2):,}".replace(',', ' ').replace('.', ',') if
+                            '{{ F28 }}': f"{round(float(sheet['F28'].value), 2):,}".replace(',', ' ').replace('.', ',') if
                             f"{round(float(sheet['F28'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F28'].value), 2):,}".replace(',', ' ').replace(
                                 '.', ',') + '0',
-                            'յ': f"{round(float(sheet['F29'].value), 2):,}".replace(',', ' ').replace('.', ',') if
+                            '{{ F29 }}': f"{round(float(sheet['F29'].value), 2):,}".replace(',', ' ').replace('.', ',') if
                             f"{round(float(sheet['F29'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F29'].value), 2):,}".replace(',', ' ').replace(
                                 '.', ',') + '0',
-                            'Յ': f"{round(float(sheet['F30'].value), 2):,}".replace(',', ' ').replace('.', ',') if
+                            '{{ F30 }}': f"{round(float(sheet['F30'].value), 2):,}".replace(',', ' ').replace('.', ',') if
                             f"{round(float(sheet['F30'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F30'].value), 2):,}".replace(',', ' ').replace(
                                 '.', ',') + '0',
-                            'Չ': f"{round(float(sheet['F31'].value), 2):,}".replace(',', ' ').replace('.', ',') if
+                            '{{ F31 }}': f"{round(float(sheet['F31'].value), 2):,}".replace(',', ' ').replace('.', ',') if
                             f"{round(float(sheet['F31'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F31'].value), 2):,}".replace(',', ' ').replace(
                                 '.', ',') + '0',
-                            'չ': f"{round(float(sheet['F32'].value), 2):,}".replace(',', ' ').replace('.', ',') if
+                            '{{ 32 }}': f"{round(float(sheet['F32'].value), 2):,}".replace(',', ' ').replace('.', ',') if
                             f"{round(float(sheet['F32'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F32'].value), 2):,}".replace(',', ' ').replace(
                                 '.', ',') + '0',
-                            'Պ': f"{round(float(sheet['F33'].value), 2):,}".replace(',', ' ').replace('.', ',') if
+                            '{{ F33 }}': f"{round(float(sheet['F33'].value), 2):,}".replace(',', ' ').replace('.', ',') if
                             f"{round(float(sheet['F33'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F33'].value), 2):,}".replace(',', ' ').replace(
                                 '.', ',') + '0',
-                            'պ': f"{round(float(sheet['F34'].value), 2):,}".replace(',', ' ').replace('.', ',') if
+                            '{{ F34 }}': f"{round(float(sheet['F34'].value), 2):,}".replace(',', ' ').replace('.', ',') if
                             f"{round(float(sheet['F34'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F34'].value), 2):,}".replace(',', ' ').replace(
                                 '.', ',') + '0',
-                            'Ջ': f"{round(float(sheet['F35'].value), 2):,}".replace(',', ' ').replace('.', ',') if
+                            '{{ F35 }}': f"{round(float(sheet['F35'].value), 2):,}".replace(',', ' ').replace('.', ',') if
                             f"{round(float(sheet['F35'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F35'].value), 2):,}".replace(',', ' ').replace(
                                 '.', ',') + '0',
-                            'ջ': f"{round(float(sheet['F36'].value), 2):,}".replace(',', ' ').replace('.', ',') if
+                            '{{ F36 }}': f"{round(float(sheet['F36'].value), 2):,}".replace(',', ' ').replace('.', ',') if
                             f"{round(float(sheet['F36'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F36'].value), 2):,}".replace(',', ' ').replace(
                                 '.', ',') + '0',
-                            'Ռ': f"{round(float(sheet['F37'].value), 2):,}".replace(',', ' ').replace('.', ',') if
+                            '{{ F37 }}': f"{round(float(sheet['F37'].value), 2):,}".replace(',', ' ').replace('.', ',') if
                             f"{round(float(sheet['F37'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F37'].value), 2):,}".replace(',', ' ').replace(
                                 '.', ',') + '0',
-                            'ռ': f"{round(float(sheet['F38'].value), 2):,}".replace(',', ' ').replace('.', ',') if
+                            '{{ F38 }}': f"{round(float(sheet['F38'].value), 2):,}".replace(',', ' ').replace('.', ',') if
                             f"{round(float(sheet['F38'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F38'].value), 2):,}".replace(',', ' ').replace(
                                 '.', ',') + '0',
-                            'ր': f"{round(float(sheet['F39'].value), 2):,}".replace(',', ' ').replace('.', ',') if
+                            '{{ F39 }}': f"{round(float(sheet['F39'].value), 2):,}".replace(',', ' ').replace('.', ',') if
                             f"{round(float(sheet['F39'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F39'].value), 2):,}".replace(',', ' ').replace(
                                 '.', ',') + '0',
-                            'Ր': f"{round(float(sheet['F40'].value), 2):,}".replace(',', ' ').replace('.', ',') if
+                            '{{ F40 }}': f"{round(float(sheet['F40'].value), 2):,}".replace(',', ' ').replace('.', ',') if
                             f"{round(float(sheet['F40'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F40'].value), 2):,}".replace(',', ' ').replace(
                                 '.', ',') + '0',
-                            'տ': f"{round(float(sheet['F41'].value), 2):,}".replace(',', ' ').replace('.', ',') if
+                            '{{ F41 }}': f"{round(float(sheet['F41'].value), 2):,}".replace(',', ' ').replace('.', ',') if
                             f"{round(float(sheet['F41'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F41'].value), 2):,}".replace(',', ' ').replace(
                                 '.', ',') + '0',
-                            'Տ': f"{round(float(sheet['F42'].value), 2):,}".replace(',', ' ').replace('.', ',') if
+                            '{{ F42 }}': f"{round(float(sheet['F42'].value), 2):,}".replace(',', ' ').replace('.', ',') if
                             f"{round(float(sheet['F42'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F42'].value), 2):,}".replace(',', ' ').replace(
                                 '.', ',') + '0',
-                            'վ': f"{round(float(sheet['F43'].value), 2):,}".replace(',', ' ').replace('.', ',') if
+                            '{{ F43 }}': f"{round(float(sheet['F43'].value), 2):,}".replace(',', ' ').replace('.', ',') if
                             f"{round(float(sheet['F43'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F43'].value), 2):,}".replace(',', ' ').replace(
                                 '.', ',') + '0',
-                            'Վ': f"{round(float(sheet['F44'].value), 2):,}".replace(',', ' ').replace('.', ',') if
+                            '{{ F44 }}': f"{round(float(sheet['F44'].value), 2):,}".replace(',', ' ').replace('.', ',') if
                             f"{round(float(sheet['F44'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F44'].value), 2):,}".replace(',', ' ').replace(
                                 '.', ',') + '0',
-                            'ս': f"{round(float(sheet['F45'].value), 2):,}".replace(',', ' ').replace('.', ',') if
+                            '{{ F45 }}': f"{round(float(sheet['F45'].value), 2):,}".replace(',', ' ').replace('.', ',') if
                             f"{round(float(sheet['F45'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F45'].value), 2):,}".replace(',', ' ').replace(
                                 '.', ',') + '0',
@@ -1081,95 +1081,95 @@ def start_filling_agreement(inn_leasee, path_application, path_graphic, signator
                             f"{round(float(sheet['F46'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F46'].value), 2):,}".replace(',', ' ').replace(
                                 '.', ',') + '0',
-                            'Ց': f"{round(float(sheet['F47'].value), 2):,}".replace(',', ' ').replace('.', ',') if
+                            '{{ F47 }}': f"{round(float(sheet['F47'].value), 2):,}".replace(',', ' ').replace('.', ',') if
                             f"{round(float(sheet['F47'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F47'].value), 2):,}".replace(',', ' ').replace(
                                 '.', ',') + '0',
-                            'ց': f"{round(float(sheet['F48'].value), 2):,}".replace(',', ' ').replace('.', ',') if
+                            '{{ F48 }}': f"{round(float(sheet['F48'].value), 2):,}".replace(',', ' ').replace('.', ',') if
                             f"{round(float(sheet['F48'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F48'].value), 2):,}".replace(',', ' ').replace(
                                 '.', ',') + '0',
-                            'Ւ': f"{round(float(sheet['F49'].value), 2):,}".replace(',', ' ').replace('.', ',') if
+                            '{{ F49 }}': f"{round(float(sheet['F49'].value), 2):,}".replace(',', ' ').replace('.', ',') if
                             f"{round(float(sheet['F49'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F49'].value), 2):,}".replace(',', ' ').replace(
                                 '.', ',') + '0',
-                            'ւ': f"{round(float(sheet['F50'].value), 2):,}".replace(',', ' ').replace('.', ',') if
+                            '{{ F50 }}': f"{round(float(sheet['F50'].value), 2):,}".replace(',', ' ').replace('.', ',') if
                             f"{round(float(sheet['F50'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F50'].value), 2):,}".replace(',', ' ').replace(
                                 '.', ',') + '0',
-                            'Փ': f"{round(float(sheet['F51'].value), 2):,}".replace(',', ' ').replace('.', ',') if
+                            '{{ F51 }}': f"{round(float(sheet['F51'].value), 2):,}".replace(',', ' ').replace('.', ',') if
                             f"{round(float(sheet['F51'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F51'].value), 2):,}".replace(',', ' ').replace(
                                 '.', ',') + '0',
-                            'փ': f"{round(float(sheet['F52'].value), 2):,}".replace(',', ' ').replace('.', ',') if
+                            '{{ F52 }}': f"{round(float(sheet['F52'].value), 2):,}".replace(',', ' ').replace('.', ',') if
                             f"{round(float(sheet['F52'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F52'].value), 2):,}".replace(',', ' ').replace(
                                 '.', ',') + '0',
-                            'Ք': f"{round(float(sheet['F53'].value), 2):,}".replace(',', ' ').replace('.', ',') if
+                            '{{ F53 }}': f"{round(float(sheet['F53'].value), 2):,}".replace(',', ' ').replace('.', ',') if
                             f"{round(float(sheet['F53'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F53'].value), 2):,}".replace(',', ' ').replace(
                                 '.', ',') + '0',
-                            'ք': f"{round(float(sheet['F54'].value), 2):,}".replace(',', ' ').replace('.', ',') if
+                            '{{ F54 }}': f"{round(float(sheet['F54'].value), 2):,}".replace(',', ' ').replace('.', ',') if
                             f"{round(float(sheet['F54'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F54'].value), 2):,}".replace(',', ' ').replace(
                                 '.', ',') + '0',
-                            'Օ': f"{round(float(sheet['F55'].value), 2):,}".replace(',', ' ').replace('.', ',') if
+                            '{{ F55 }}': f"{round(float(sheet['F55'].value), 2):,}".replace(',', ' ').replace('.', ',') if
                             f"{round(float(sheet['F55'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F55'].value), 2):,}".replace(',', ' ').replace(
                                 '.', ',') + '0',
-                            'օ': f"{round(float(sheet['F56'].value), 2):,}".replace(',', ' ').replace('.', ',') if
+                            '{{ F56 }}': f"{round(float(sheet['F56'].value), 2):,}".replace(',', ' ').replace('.', ',') if
                             f"{round(float(sheet['F56'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F56'].value), 2):,}".replace(',', ' ').replace(
                                 '.', ',') + '0',
-                            'Ֆ': f"{round(float(sheet['F57'].value), 2):,}".replace(',', ' ').replace('.', ',') if
+                            '{{ F57 }}': f"{round(float(sheet['F57'].value), 2):,}".replace(',', ' ').replace('.', ',') if
                             f"{round(float(sheet['F57'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F57'].value), 2):,}".replace(',', ' ').replace(
                                 '.', ',') + '0',
-                            'ᶄ': f"{round(float(sheet['F58'].value), 2):,}".replace(',', ' ').replace('.', ',') if
+                            '{{ F58 }}': f"{round(float(sheet['F58'].value), 2):,}".replace(',', ' ').replace('.', ',') if
                             f"{round(float(sheet['F58'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F58'].value), 2):,}".replace(',', ' ').replace(
                                 '.', ',') + '0',
-                            'ᶅ': f"{round(float(sheet['F59'].value), 2):,}".replace(',', ' ').replace('.', ',') if
+                            '{{ F59 }}': f"{round(float(sheet['F59'].value), 2):,}".replace(',', ' ').replace('.', ',') if
                             f"{round(float(sheet['F59'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F59'].value), 2):,}".replace(',', ' ').replace(
                                 '.', ',') + '0',
-                            'ᶆ': f"{round(float(sheet['F60'].value), 2):,}".replace(',', ' ').replace('.', ',') if
+                            '{{ F60 }}': f"{round(float(sheet['F60'].value), 2):,}".replace(',', ' ').replace('.', ',') if
                             f"{round(float(sheet['F60'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F60'].value), 2):,}".replace(',', ' ').replace(
                                 '.', ',') + '0',
-                            'ᶇ': f"{round(float(sheet['F61'].value), 2):,}".replace(',', ' ').replace('.', ',') if
+                            '{{ F61 }}': f"{round(float(sheet['F61'].value), 2):,}".replace(',', ' ').replace('.', ',') if
                             f"{round(float(sheet['F61'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F61'].value), 2):,}".replace(',', ' ').replace(
                                 '.', ',') + '0',
-                            'ᶈ': f"{round(float(sheet['F62'].value), 2):,}".replace(',', ' ').replace('.', ',') if
+                            '{{ F62 }}': f"{round(float(sheet['F62'].value), 2):,}".replace(',', ' ').replace('.', ',') if
                             f"{round(float(sheet['F62'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F62'].value), 2):,}".replace(',', ' ').replace(
                                 '.', ',') + '0',
-                            'ᶉ': f"{round(float(sheet['F63'].value), 2):,}".replace(',', ' ').replace('.', ',') if
+                            '{{ F63 }}': f"{round(float(sheet['F63'].value), 2):,}".replace(',', ' ').replace('.', ',') if
                             f"{round(float(sheet['F63'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F63'].value), 2):,}".replace(',', ' ').replace(
                                 '.', ',') + '0',
-                            'ᶊ': f"{round(float(sheet['F64'].value), 2):,}".replace(',', ' ').replace('.', ',') if
+                            '{{ F64 }}': f"{round(float(sheet['F64'].value), 2):,}".replace(',', ' ').replace('.', ',') if
                             f"{round(float(sheet['F64'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F64'].value), 2):,}".replace(',', ' ').replace(
                                 '.', ',') + '0',
-                            'ᶋ': f"{round(float(sheet['F65'].value), 2):,}".replace(',', ' ').replace('.', ',') if
+                            '{{ F65 }}': f"{round(float(sheet['F65'].value), 2):,}".replace(',', ' ').replace('.', ',') if
                             f"{round(float(sheet['F65'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F65'].value), 2):,}".replace(',', ' ').replace(
                                 '.', ',') + '0',
-                            'ᶌ': f"{round(float(sheet['F66'].value), 2):,}".replace(',', ' ').replace('.', ',') if
+                            '{{ F66 }}': f"{round(float(sheet['F66'].value), 2):,}".replace(',', ' ').replace('.', ',') if
                             f"{round(float(sheet['F66'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F66'].value), 2):,}".replace(',', ' ').replace(
                                 '.', ',') + '0',
-                            'ᶍ': f"{round(float(sheet['F67'].value), 2):,}".replace(',', ' ').replace('.', ',') if
+                            '{{ F67 }}': f"{round(float(sheet['F67'].value), 2):,}".replace(',', ' ').replace('.', ',') if
                             f"{round(float(sheet['F67'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F67'].value), 2):,}".replace(',', ' ').replace(
                                 '.', ',') + '0',
-                            'ᶎ': f"{round(float(sheet['F68'].value), 2):,}".replace(',', ' ').replace('.', ',') if
+                            '{{ F68 }}': f"{round(float(sheet['F68'].value), 2):,}".replace(',', ' ').replace('.', ',') if
                             f"{round(float(sheet['F68'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F68'].value), 2):,}".replace(',', ' ').replace(
                                 '.', ',') + '0',
-                            'ᶏ': f"{round(float(sheet['F93'].value), 2)}".replace('.',
+                            '{{ F93 }}': f"{round(float(sheet['F93'].value), 2)}".replace('.',
                                                                                   ',') if f"{round(float(sheet['F93'].value), 2)}".replace(
                                 '.', ',') == ',' else f"{round(float(sheet['F93'].value), 2)}".replace('.', ',') + '0',
                             }
