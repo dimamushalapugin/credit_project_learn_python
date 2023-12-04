@@ -112,7 +112,7 @@ def read_xlsx(path_application, pl):
     return (rekvizit_leasee_bik, rekvizit_leasee_cs_shet, rekvizit_leasee_shet, rekvizit_leasee_bank,
             main_activity_leasee, fio_leader, email_leasee, phone_leasee, full_krakt_name_leasee, ustav_capital,
             date_regist, okpo_leasee, okato_leasee, ogrn_leasee, inn_seller_list[0], price_predmet_lizinga,
-            predmet_lizinga[0], formatted_name_leader_leasee, leader_leasee, address_leasee_expluatazia, address_leasee,
+            predmet_lizinga, formatted_name_leader_leasee, leader_leasee, address_leasee_expluatazia, address_leasee,
             inn_kpp_leasee, full_name_leasee)
 
 
@@ -872,9 +872,9 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
                          data_xlsx[3], data_xlsx[4], data_xlsx[5], data_xlsx[6], data_xlsx[7], data_xlsx[8],
                          data_xlsx[9], data_xlsx[10], data_xlsx[11], data_xlsx[12], data_xlsx[13],
                          # ниже ИНН поставщиков, цена и предмет лизинга
-                         data_xlsx[14],
+                         inn_seller,
                          f'{data_xlsx[15]:,.2f}'.replace(',', ' ').replace('.', ','),
-                         data_xlsx[16],
+                         pl,
                          data_xlsx[17], data_xlsx[18], data_xlsx[19], data_xlsx[20],
                          data_xlsx[21], data_xlsx[22],
                          # ниже будет подписант и прочие данные ЛКМБ-РТ
