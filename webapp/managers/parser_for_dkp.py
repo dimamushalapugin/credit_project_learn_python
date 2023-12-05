@@ -13,6 +13,7 @@ from webapp.risk.logger import logging
 def read_xlsx(path_application, pl):
     """
     :param path_application:
+    :param pl:
     :return: 0: rekvizit_leasee_bik,
              1: rekvizit_leasee_cs_shet
              2: rekvizit_leasee_shet,
@@ -55,9 +56,8 @@ def read_xlsx(path_application, pl):
     for number in range(24, sheet_zayavlenie.max_row + 2):
         if sheet_zayavlenie[
             f'B{number}'].value == (
-                'Место эксплуатации предмета лизинга (для автотранспорта место стоянки/хранения) '
-                'полный фактический адрес:'):
-            address_leasee_expluatazia = sheet_zayavlenie[f'B{number + 1}'].value
+                'Место эксплуатации предмета лизинга (для автотранспорта место стоянки/хранения) полный фактический адрес:'):
+            address_leasee_expluatazia = sheet_zayavlenie[f'A{number + 1}'].value
         if sheet_zayavlenie[f'A{number}'].value == '(должность руководителя организации Заявителя)':
             leader_leasee = sheet_zayavlenie[f'A{number - 1}'].value
         if sheet_zayavlenie[f'O{number}'].value == '(расшифровка подписи)':
