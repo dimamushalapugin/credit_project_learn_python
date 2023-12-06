@@ -864,7 +864,7 @@ def start_filling_agreement(inn_leasee, path_application, path_graphic, signator
                             '{{ B10 }}': sheet['B10'].value.strftime('%d.%m.%Y'),
                             '{{ B11 }}': sheet['B11'].value.strftime('%d.%m.%Y'),
                             '{{ B12 }}': sheet['B12'].value.strftime('%d.%m.%Y'),
-                            '{{ B13}}': sheet['B13'].value.strftime('%d.%m.%Y'),
+                            '{{ B13 }}': sheet['B13'].value.strftime('%d.%m.%Y'),
                             '{{ B14 }}': sheet['B14'].value.strftime('%d.%m.%Y'),
                             '{{ B15 }}': sheet['B15'].value.strftime('%d.%m.%Y'),
                             '{{ B16 }}': sheet['B16'].value.strftime('%d.%m.%Y'),
