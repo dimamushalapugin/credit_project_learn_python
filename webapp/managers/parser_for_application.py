@@ -2,8 +2,9 @@ import openpyxl
 import docx
 import os
 import datetime
-import subprocess
+import requests
 
+from bs4 import BeautifulSoup
 from docx import Document
 from dadata import Dadata
 from docx.shared import Pt
@@ -13,8 +14,6 @@ from webapp.risk.logger import logging
 from webapp.managers.parser_for_dkp import read_xlsx
 from num2words import num2words
 from webapp.config import DADATA_TOKEN, DADATA_SECRET, DADATA_BASE
-from selenium import webdriver
-from selenium.webdriver.common.by import By
 
 
 def start_filling_application(inn_leasee, path_application, inn_seller1, inn_seller2, inn_seller3, inn_seller4):
@@ -111,130 +110,105 @@ def start_filling_application(inn_leasee, path_application, inn_seller1, inn_sel
         # Форматирование даты в нужный формат
         date_regist = date_time_obj.strftime("%d.%m.%Y")
 
-        try:
-            options = webdriver.ChromeOptions()
-            options.add_argument("--headless=new")
-            options.add_argument("--no-sandbox")
-            options.add_argument('--ignore-certificate-errors')
-            options.add_argument('--disable-dev-shm-usage')
-            options.add_argument('--disable-extensions')
-            options.add_argument('--disable-gpu')
+        def parse_client_bs4(ogrn):
+            nonlocal fio_list, inn_list, dolya_list, inn_dir_leasee, phone_leasee, email_leasee, main_activity_leasee, ustav_capital
+            url = f'https://vbankcenter.ru/contragent/{ogrn}'
 
-            service = webdriver.ChromeService(log_output=subprocess.STDOUT)
-            driver = webdriver.Chrome(options=options, service=service)
+            response = requests.get(url)
 
-            driver.get(f"https://vbankcenter.ru/contragent/{ogrn_leasee}")
-            full_info_leasee_vbc = driver.find_element(By.XPATH, "/html/body").text.split('\n')
-        except Exception as ex:
-            logging.info(ex, exc_info=True)
-            raise ValueError
+            if response.status_code == 200:
+                soup = BeautifulSoup(response.text, 'html.parser')
 
-        # full_info_leasee_vbc = ['ВСЕРОССИЙСКИЙ', 'БИЗНЕС ЦЕНТР', 'Госзакупки', 'TenChat', 'Маркетплейс', 'Агентам', 'Партнерам', 'О проекте', '8 (800) 300-43-43', 'обратный звонок', 'ВОЙТИ', 'Бизнес России', 'Соцсеть для заработка', 'Торги по банкротству', 'Субподряды', 'Маркет', 'ООО "ИНВЕСТСТРОЙПРОЕКТ"', 'ДЕЙСТВУЕТ', 'ОБЩЕСТВО С ОГРАНИЧЕННОЙ ОТВЕТСТВЕННОСТЬЮ "ИНВЕСТСТРОЙПРОЕКТ"', 'Учредители', 'Сотрудники', 'Связи', 'Контакты', 'Финансы', 'Правовая среда', 'О компании', 'Репутация компании', '5.0', 'Все отзывы', '2', 'Отзывы клиентов', '2', 'Отзывы сотрудников', '0', 'Отзывы партнеров', '0', 'Связаться с компанией', 'Задать вопрос', 'Уставный капитал, ₽', '11 тыс', 'Баланс, ₽', '449,76 млн (2022 г.)', '+66,71 млн (17,42%)', 'Чистая прибыль, ₽', '8,8 млн (2022 г.)', '-315 тыс (-3,45%)', 'Выручка, ₽', '707,31 млн (2022 г.)', '+299,68 млн (73,52%)', 'Налоги, ₽', '13,6 млн (2021 г.)', '-1,7 млн (-11,09%)', 'Взносы, ₽', '2,56 млн (2021 г.)', '-1,41 млн (-35,57%)', 'Основные реквизиты', 'Дата создания: ', '20.02.2016', 'ИНН: ', '1657220036', 'КПП: ', '165701001', 'ОГРН: ', '1161690070134', 'Все реквизиты (ФНС / ПФР / ФСС)', 'Банковские счета', 'Руководитель', 'Директор:', 'Валиев Ильнур Исламович', 'с 02.09.2021', 'ИНН: 162200912337', 'Все руководители', 'Юридический адрес', '420133, РЕСПУБЛИКА ТАТАРСТАН, Г. КАЗАНЬ, УЛ. АКАДЕМИКА ЛАВРЕНТЬЕВА, Д. 11, ПОМЕЩ. 1045', 'Контакты', 'Телефон: ', '+7 (843) 216-06-19', 'E-mail: ', 'isp555@mail.ru', 'Показать еще (2)', 'Количество сотрудников', '25 сотрудников (2022)', '30 сотрудников (2021)', 'Показать еще (4)', 'Средняя зарплата', '62 381 рубля (2021)', '81 477 рублей (2020)', 'Показать еще (3)', 'Реестр МСП', 'Малое предприятие', 'с 01.08.2016', 'Налоговый орган', 'МЕЖРАЙОННАЯ ИНСПЕКЦИЯ ФЕДЕРАЛЬНОЙ НАЛОГОВОЙ СЛУЖБЫ № 5 ПО РЕСПУБЛИКЕ ТАТАРСТАН', 'с 20.02.2016', 'Основной вид деятельности', 'Строительство жилых и нежилых зданий (41.20) Все виды деятельности (15)', 'Сведения Росстата', 'ОКПО: ', '00050587', 'Показать еще (4)', 'Отчет в PDF', 'Выписка из ЕГРЮЛ', 'Следить за организацией', 'Поделиться', '89', 'баллов', 'Надёжная компания', 'Расскажите о надёжности компании', 'своим партнерам и клиентам', 'Разместить на сайте', 'Индекс финансового доверия', 'Оцените лимит аванса с компанией', 'Вероятность риска', '3 %', 'Сумма аванса', '318,6 млн ₽', 'Безопасная сумма аванса 318,6 млн ₽', '10 000 ₽', '1,03 млрд ₽', 'Актуально на 20.08.2023', 'ООО "ИНВЕСТСТРОЙПРОЕКТ" ИНН 1657220036 ОГРН 1161690070134 создано 20.02.2016 по юридическому адресу 420133, РЕСПУБЛИКА ТАТАРСТАН, Г. КАЗАНЬ, УЛ. АКАДЕМИКА ЛАВРЕНТЬЕВА, Д. 11, ПОМЕЩ. 1045. Статус организации: действует. Информация о руководителе: Валиев Ильнур Исламович. Уставный капитал организации: 11000. В выписке из официального реестра ЕГРЮЛ в лице учредителей отражено 1 российское юридическое лицо Основной вид деятельности - Строительство жилых и нежилых зданий. Организация присутствует в реестре МСП как Малое 01.08.2016 состоит на учете в налоговом органе МЕЖРАЙОННАЯ ИНСПЕКЦИЯ ФЕДЕРАЛЬНОЙ НАЛОГОВОЙ СЛУЖБЫ № 5 ПО РЕСПУБЛИКЕ ТАТАРСТАН с 20.02.2016. Регистрационный номер в ПФР - 013504034917, в ФСС - 160500031316051', 'Подробнее', 'Искали другую одноименную компанию? Можете посмотреть все организации с названием ООО "ИНВЕСТСТРОЙПРОЕКТ"', 'Финансы', 'Данные по финансовым показателям приведены на основании бухгалтерской отчетности за 2012–2020 годы', 'Выручка', '707,31 млн +299,68 млн', '2022 г.', 'Прибыль', '8,8 млн -315 тыс', '2022 г.', 'Налоги', '13,6 млн -1,7 млн', '2021 г.', '800', '400', '0', '2016', '2017', '2018', '2019', '2020', '2021', '2022', 'млн., ₽', 'Госконтракты', 'Организация ООО "ИНВЕСТСТРОЙПРОЕКТ" выступила поставщиком в 60 госконтрактах на сумму 5,5 млрд ₽', 'Поставщик (60)', 'Заказчик (0)', 'ФКУ УПРДОР "ПРИКАМЬЕ"', '41 контракт на сумму  2 911 153 496 ₽', 'ФКУ "ВОЛГО-ВЯТСКУПРАВТОДОР"', '12 контрактов на сумму  1 194 645 467 ₽', 'ФКУ УПРДОР "ЮЖНЫЙ УРАЛ"', '6 контрактов на сумму  1 377 903 503 ₽', 'ФКУ УПРДОР МОСКВА - НИЖНИЙ НОВГОРОД', '1 контракт на сумму  11 950 000 ₽', 'Компания зарегистрирована в едином реестре участников закупок под номером №19032618 от 02.11.2021', 'РНП', 'По данным ФАС организация не внесена в реестр недобросовестных поставщиков.', 'Проверки', 'За весь период в отношении ООО "ИНВЕСТСТРОЙПРОЕКТ" проведено 4 проверки', 'Плановые', '0', 'Внеплановые', '4', 'Нарушений', '4', 'Предстоит проверок', '0', 'Все проверки', 'Исполнительные производства', 'В отношении организации ООО "ИНВЕСТСТРОЙПРОЕКТ" выявлено 1 открытое производство', 'Открытых производств', 'На сумму, ₽', '1', '300 000', 'Иное', '1', 'Все производства', 'Жалобы ФАС', 'Данные о жалобах в отношении организации в ФАС отсутствуют.', 'Лицензии', 'Сведения о лицензиях в отношении ООО "ИНВЕСТСТРОЙПРОЕКТ" отсутствуют.', 'Конкуренты по величине баланса', 'Наименование компании', 'Баланс, ₽', 'ООО "ЭГИДА"', '451 835 000', 'ООО "СТРОЙПРОЕКТ"', '451 686 000', 'ООО «СЗ «АСК-ВОДРЕМ»', '451 665 000', 'АО "ТСМ"', '451 401 000', 'Учредители', 'Согласно данным ЕГРЮЛ учредителями ООО "ИНВЕСТСТРОЙПРОЕКТ" являются: 1 российское юридическое лицо3 физических лица', 'Валиев Ильмир Исламович', 'Доля:', '3 696 ₽ (33.6%)', 'ИНН:', '162201225231', 'ОБЩЕСТВО С ОГРАНИЧЕННОЙ ОТВЕТСТВЕННОСТЬЮ "ЭКОСТРОЙИНЖИНИРИНГ"', 'Доля:', '2 882 ₽ (26.2%)', 'ИНН:', '1657220029', 'ОГРН:', '1161690070123', 'Зайнутдинов Руслан Рустамович', 'Доля:', '2 211 ₽ (20.1%)', 'ИНН:', '162700654540', 'Валиев Ильнур Исламович', 'Доля:', '2 211 ₽ (20.1%)', 'ИНН:', '162200912337', 'Все 4 учредителя', 'Ваша вечная визитка', 'Удобный способ обмена', 'контактами в одно касание', 'Подробнее', 'Связи', 'Выявлено 19 связей с организациями и предпринимателями', 'По учредителю', '14', 'По руководителю', '5', 'Все связи', 'Арбитражные дела', 'Сведения об участии в судебных процессах: 1 открытое и 39 закрытых дел', '№ А65-19624/2023', 'ЗАКРЫТО', 'от 11.07.2023', 'о несостоятельности (банкротстве) организаций и граждан', 'Сумма: 1 950 000 ₽', 'Истец: Общество с ограниченной ответственность "ИнвестСтройПроект", г.Казань', 'Ответчик: Общество с ограниченной ответственность "РЕА-Строй", г.Казань', '№ А65-19331/2023', 'ЗАКРЫТО', 'от 07.07.2023', 'экономические споры по административным и иным публичным правоотношениям (исключая споры об административных правонарушениях)', 'Сумма: -', 'Истец: Общество с ограниченной ответственность "ИнвестСтройПроект", г.Казань', 'Ответчик: Управление Федеральной антимонопольной службы по Республике Татарстан, г.Казань', '№ А65-19330/2023', 'ЗАКРЫТО', 'от 07.07.2023', 'экономические споры по административным и иным публичным правоотношениям (исключая споры об административных правонарушениях)', 'Сумма: -', 'Истец: Общество с ограниченной ответственность "ИнвестСтройПроект", г.Казань', 'Ответчик: Управление Федеральной антимонопольной службы по Республике Татарстан, г.Казань', '№ А65-36356/2022', 'ЗАКРЫТО', 'от 26.12.2022', 'экономические споры по гражданским правоотношениям', 'Сумма: 336 447 ₽', 'Истец: Федеральное казенное учреждение "Федеральное управление автомобильных дорог Волго-Вятского региона Федерального дорожного агентства", г.Казань', 'Ответчик: Общество с ограниченной ответственность "ИнвестСтройПроект", г.Казань', 'Все дела', 'Филиалы и представительства', 'Сведения о филиалах для ООО "ИНВЕСТСТРОЙПРОЕКТ" отсутствуют.', 'Одноименные компании', 'Наименование компании и руководитель', 'ООО "ИНВЕСТСТРОЙПРОЕКТ" , Андрей Николаевич Зацепин', 'ООО "ИНВЕСТСТРОЙПРОЕКТ"', 'ООО "ИНВЕСТСТРОЙПРОЕКТ" , Марина Александровна Захарова', 'ООО "ИНВЕСТСТРОЙПРОЕКТ" , Андрей Николаевич Корниенко', 'Похожие компании по ИНН', 'Наименование компании', 'Инн', 'ООО "УК "СБК"', '1657220068', 'ООО "САЛАМАТ РИТЕЙЛ"', '1657220082', 'ООО "ПЛОВБЕРИ ЕКБ"', '1657220100', 'ООО "ЭМПАСТА"', '1657220117', 'Секреты компании', 'Сведения, предсказанные искусственным интеллектом приложения TenChat', 'Вероятность проверки:', 'Срок задержки оплаты:', 'Просроченные контракты:', 'Блокировка банк.счетов:', 'Количество клиентов:', 'Получить информацию', 'Отзывы о компании', 'Обновлено 20.08.2023', 'ФКУ УПРДОР "ПРИКАМЬЕ" (Клиент)', '01.10.2021', '5,0', 'Фирма без нареканий все сделали по обязательству 1212600032320000030 "Выполнение работ по объекту: «Расходы на мероприятия по повышению уровня обустройства автомобильных дорог федерального значения. Устройство стационарного электрического освещения на автомобильной дороге М-7 "Волга" Москва – Владимир – Нижний Новгород – Казань – Уфа, подъезд к городам Ижевск и Пермь на участках км 82+300 – км 83+000 н.п. Можга, км 93+900 – км 94+800 н.п. Горняк, км 263+450 – км 267+900 н.п. Сундур, н.п. Игра, Удмуртская Республика»". Отлично уложились по срокам. Будем работать и дальше.', 'ФКУ "ВОЛГО-ВЯТСКУПРАВТОДОР" (Клиент)', '06.12.2020', '5,0', 'Контракт "Капитальный ремонт моста через реку С.Овраг на км 220+283 (левый) автомобильной дороги М-5  "Урал"- Москва-Рязань- Пенза-Самара-Уфа-Челябинск, подъезд к городу Ульяновск, Ульяновская область" был выполнен без проблем. Спасибо. Желаем успешного развития!', 'Все отзывы Добавить отзыв', 'События', 'Обновлено 20.08.2023', 'Победа в тендерах', '10.08.2023', '| Госконтракты', '№ 0311100007223000079', 'Содержание искусственных сооружений на автомобильных дорогах: Р-176 "Вятка" Чебоксары - Йошкар-Ола - Киров - Сыктывкар на участках км 19+008 - км 87+152, км 94+600 - км 135+087; Р-176 "Вятка" Чебоксары - Йошкар-Ола - Киров - Сыктывкар, обход г. Йошкар-Ола на участке км 18+400 - км 47+965; А-295 Йошкар-Ола - Зеленодольск - автомобильная дорога М-7 "Волга" на участке км 8+123 - км 95+566; Р-177 "Поветлужье" Нижний Новгород - Йошкар-Ола на участке км 186+534 - км 353+754, Республика Марий Эл', 'Победа в тендерах', '10.08.2023', '| Госконтракты', '№ 0311100007223000078', 'Содержание искусственных сооружений на автомобильных дорогах: М-7 "Волга" Москва - Владимир - Нижний Новгород - Казань - Уфа на участке км 735+683 - км 785+817; А-295 Йошкар-Ола - Зеленодольск - автомобильная дорога М-7 "Волга" на участке км 95+566 - км 126+279, Республика Татарстан', 'Победа в тендерах', '26.06.2023', '| Госконтракты', '№ 0311100007223000065', 'Содержание искусственных сооружений на автомобильных дорогах М-7 "Волга" Москва - Владимир - Нижний Новгород - Казань - Уфа на участке км 735+683 - км 785+817; А-295 Йошкар-Ола - Зеленодольск - автомобильная дорога М-7 "Волга" на участке км 95+566 - км 126+279, Республика Татарстан', 'Победа в тендерах', '25.06.2023', '| Госконтракты', '№ 0311100007223000064', 'Содержание искусственных сооружений на автомобильных дорогах Р-176 "Вятка" Чебоксары - Йошкар-Ола - Киров - Сыктывкар на участках км 19+008 - км 87+152, км 94+600 - км 135+087; Р-176 "Вятка" Чебоксары - Йошкар-Ола - Киров - Сыктывкар, обход г. Йошкар-Ола на участке км 18+400 - км 47+965; А-295 Йошкар-Ола - Зеленодольск - автомобильная дорога М-7 "Волга" на участке км 8+123 - км 95+566; Р-177 "Поветлужье" Нижний Новгород - Йошкар-Ола на участке км 186+534 - км 353+754, Республика Марий Эл', 'Исторические сведения (85 изменений)', 'Напишите генеральному директору', 'Общайтесь', 'с банками и деловыми партнёрами', 'Предлагайте', 'сотрудничество любому контрагенту', 'Отслеживайте', 'любые события по конкурентам', 'Главная >', 'Проверка контрагентов >', 'ООО "ИНВЕСТСТРОЙПРОЕКТ"', 'Госзакупки', 'Поиск тендера', 'Банковские гарантии', 'Кредиты на исполнение контракта', 'Сопровождение торгов', 'Поиск контрагента по ИНН', 'Финансовый маркетплейс', 'Тендерные займы', 'РКО', 'Инвестиции', 'Частным клиентам', 'Кредиты', 'TenChat', 'Торги по банкротству', 'Субподряды', 'Агентам и партнерам', 'Агентская программа', 'Подключение партнеров', 'Профессионалам', 'Начинающим', 'О проекте', 'Контакты', 'Документы', 'Миссия', 'Руководство', 'Вакансии', 'Предложения, жалобы, новые идеи: Написать напрямую председателю правления ВБЦ', 'Россия, г. Москва, 123290, ул. Мукомольный проезд 4а, стр.2', '© 2016–2023, ООО «ВБЦ», ООО «ВБЦ Лаб» официальный сайт, лицензия Минкомсвязи № 144842 от 8 июня 2016 г.', '8 (800) 300-43-43', 'client@vbankcenter.ru', 'Пользовательское соглашение и Регламент ЭДО Политика конфиденциальности', 'Нам важно Ваше мнение о нашей работе!', 'Перейти к опросу', 'ООО ВБЦ Лаб - резидент ИТ-кластера инновационного проекта Сколково, Маркетплейс ВБЦ включен в реестр российского ПО', 'Лучший финансовый маркетплейс 2020 по версии журнала NBJ']
-        # print(full_info_leasee_vbc)
-        if 'Все учредители' in full_info_leasee_vbc:
-            index_konwch = 'Все учредители'
-        elif 'Все 2 учредителя' in full_info_leasee_vbc:
-            index_konwch = 'Все 2 учредителя'
-        elif 'Все 3 учредителя' in full_info_leasee_vbc:
-            index_konwch = 'Все 3 учредителя'
-        elif 'Все 4 учредителя' in full_info_leasee_vbc:
-            index_konwch = 'Все 4 учредителя'
-        else:
-            index_konwch = ''
+                if len(str(ogrn)) == 13:
 
-        if ip_or_kfh != 'Да' and result[0]['data']['opf']['short'] not in ['НАО', 'ПАО']:
-            full_info_leasee_vbc_out_1_leader = full_info_leasee_vbc[
-                                                full_info_leasee_vbc.index(
-                                                    'Сотрудники') + 1:full_info_leasee_vbc.index(
-                                                    index_konwch) + 1]
-            list_info = full_info_leasee_vbc_out_1_leader[
-                        full_info_leasee_vbc_out_1_leader.index('Учредители') + 2:]
-            count = 0
-            for elem in list_info:
-                count += 1
-                if elem == 'Доля:':
-                    del list_info[count - 1]
-                if elem == 'ИНН:':
-                    del list_info[count - 1]
-            ls = list_info
-            try:
-                index = ls.index('ОГРН:')
-                my_list = ls[:index] + ls[index + 2:]
-                # print(my_list[:-1])
-                # print('Сработало тут1')
-                try:
-                    # print(f'vyvod my_list {my_list[:-1]}')
-                    index = my_list[:-1].index('ОГРН:')
-                    my_list = my_list[:-1][:index] + my_list[:-1][index + 1:]
-                    # print(my_list[:-1])
-                    # print('Сработало тут2')
-                except:
-                    pass
-            except:
-                my_list = ls
-                # print(my_list[:-1])
-                # print('Сработало тут3')
-            fio_list, dolya_list, inn_list = [], [], []
-            count_more = -1
-            for word in my_list[:-1]:
-                count_more += 1
-                if count_more == 0 or count_more % 3 == 0:
-                    fio_list.append(word)
-                if count_more == 1 or count_more % 3 == 1:
-                    dolya_list.append(word)
-                    # print(dolya_list)
-                if count_more == 2 or count_more % 3 == 2:
-                    inn_list.append(word)
-            pattern = r'\d+\.\d+%'
-            for i in range(len(dolya_list)):
-                index = dolya_list[i].index('(')
-                dolya_list[i] = dolya_list[i][index + 1:].replace('%', '').replace(')', '').replace('.', ',')
-            # print(f'здесь список учредов {fio_list}')
-            # print(f'здесь список доли в УК {dolya_list}')
-            # print(f'здесь список ИНН учредов {inn_list}')
+                    try:
+                        fio_list = list(map(lambda x: x.text, soup.find_all('h5', class_='text-base font-bold')))
+                    except Exception as ex:
+                        fio_list = ''
+                        print(ex)
 
-        try:
-            index_inn_dir_leasee = full_info_leasee_vbc.index('Банковские счета')
-            inn_dir_leasee = full_info_leasee_vbc[index_inn_dir_leasee + 5].replace('ИНН: ', '')
-        except:
-            inn_dir_leasee = ''
+                    dolya_list = []
+                    try:
+                        for elem in soup.find_all('p', class_='text-base m-0 text-premium-600', string='Доля:'):
+                            dolya_list.append(
+                                "".join(elem.find_next('p', class_='text-base m-0 ml-1.5').text.split()[-1]).replace(
+                                    '%',
+                                    '').replace(
+                                    '(', '').replace(')', ''))
+                    except Exception as ex:
+                        print(ex)
 
-        try:
-            index_phone_leasee = full_info_leasee_vbc.index('Телефон: ')
-            phone_leasee = full_info_leasee_vbc[index_phone_leasee + 1]
-            # print(f'Здесь брать телефон лизингополучателя {phone_leasee}')
-        except:
-            phone_leasee = '-'
-            # print(phone_leasee)
+                    inn_list = []
+                    try:
+                        for elem in soup.find_all('p', class_='text-base m-0 text-premium-600', string='ИНН:'):
+                            inn_list.append(elem.find_next('a', class_='flex text-base m-0 ml-1.5').text)
+                    except Exception as ex:
+                        print(ex)
 
-        try:
-            index_email_leasee = full_info_leasee_vbc.index('E-mail: ')
-            email_leasee = full_info_leasee_vbc[index_email_leasee + 1]
-            # print(f'Здесь брать email лизингополучателя {email_leasee}')
-        except:
-            email_leasee = '-'
-            # print(email_leasee)
+                    try:
+                        inn_dir_leasee = soup.find('p', class_='mb-1 whitespace-nowrap pr-6 text-premium-600').find('a',
+                                                                                                                    class_='text-blue').text
+                    except Exception as ex:
+                        inn_dir_leasee = ''
+                        print(ex)
 
-        try:
-            index_main_activity_leasee = full_info_leasee_vbc.index('Основной вид деятельности')
-            main_activity_leasee = full_info_leasee_vbc[index_main_activity_leasee + 1]
-            start_index = main_activity_leasee.find('Все виды деятельности')
-            if start_index != -1:
-                # Если найдено, удаляем все после этой позиции
-                main_activity_leasee = main_activity_leasee[:start_index]
-            # print(f'Здесь брать основной ОКВЭД лизингополучателя {main_activity_leasee}')
+                    try:
+                        for elem in soup.find(class_='requisites-info-badge font-bold mb-1').find_next('div',
+                                                                                                       class_='flex items-baseline mt-1').find(
+                            class_='gweb-copy relative inline-block mb-0 py-0 copy-available z-10 cursor-pointer copy-right-padding'):
+                            phone_leasee = elem.get_text(strip=True)
+                    except Exception as ex:
+                        phone_leasee = ''
+                        print(ex)
 
-        except:
-            main_activity_leasee = 'Не найдено'
-            # print(main_activity_leasee)
+                    try:
+                        for elem in soup.find(class_='requisites-info-badge font-bold mb-1').find_next('div',
+                                                                                                       class_='flex items-baseline mt-1').find_next(
+                            'div', class_='flex items-baseline mt-1').find('a'):
+                            email_leasee = elem.get_text(strip=True)
+                    except Exception as ex:
+                        email_leasee = ''
+                        print(ex)
 
-        try:
-            index_ustav_capital = full_info_leasee_vbc.index('Уставный капитал, ₽')
-            ustav_capital = full_info_leasee_vbc[index_ustav_capital + 1].replace(' тыс', '000')
-            # print(f'Здесь брать УК лизингополучателя {ustav_capital}')
-        except:
-            ustav_capital = '-'
-            # print(f'Уставный капитал {ustav_capital} , возможно клиент ИП или КФХ')
+                    try:
+                        main_activity_leasee = soup.find('a', class_='inline-block mt-1').get_text(strip=True)
+                    except Exception as ex:
+                        main_activity_leasee = ''
+                        print(ex)
+
+                    try:
+                        number_element = soup.find('span', class_='statistic-number')
+                        number_text = number_element.text.strip()
+                        additional_text = number_element.find_next_sibling(string=True).strip()
+                        ustav_capital = f"{number_text} {additional_text}"
+                    except Exception as ex:
+                        ustav_capital = ''
+                        print(ex)
+
+                else:
+                    inn_dir_leasee = inn_leasee
+                    phone_leasee = ''
+                    email_leasee = ''
+                    ustav_capital = ''
+                    try:
+                        main_activity_leasee = soup.find('a', class_='inline-block mt-1').get_text(strip=True)
+                    except Exception as ex:
+                        main_activity_leasee = ''
+                        print(ex)
+
+            else:
+                print(f"Ошибка при запросе: {response.status_code}")
+                fio_list = ''
+                dolya_list = []
+                inn_list = []
+                inn_dir_leasee = ''
+                phone_leasee = ''
+                email_leasee = ''
+                ustav_capital = ''
+                main_activity_leasee = ''
+
+        parse_client_bs4(ogrn_leasee)
+
         logging.info(f"({current_user}) Этап 3.")
 
         result_seller1 = dadata.find_by_id("party", inn_seller1)
@@ -945,244 +919,303 @@ def start_filling_agreement(inn_leasee, path_application, path_graphic, signator
                             f"{round(float(sheet['F9'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F9'].value), 2):,}".replace(',', ' ').replace('.',
                                                                                                                     ',') + '0',
-                            '{{ F10 }}': f"{round(float(sheet['F10'].value), 2):,}".replace(',', ' ').replace('.', ',') if
+                            '{{ F10 }}': f"{round(float(sheet['F10'].value), 2):,}".replace(',', ' ').replace('.',
+                                                                                                              ',') if
                             f"{round(float(sheet['F10'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F10'].value), 2):,}".replace(',', ' ').replace(
                                 '.', ',') + '0',
-                            '{{ F11 }}': f"{round(float(sheet['F11'].value), 2):,}".replace(',', ' ').replace('.', ',') if
+                            '{{ F11 }}': f"{round(float(sheet['F11'].value), 2):,}".replace(',', ' ').replace('.',
+                                                                                                              ',') if
                             f"{round(float(sheet['F11'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F11'].value), 2):,}".replace(',', ' ').replace(
                                 '.', ',') + '0',
-                            '{{ F12 }}': f"{round(float(sheet['F12'].value), 2):,}".replace(',', ' ').replace('.', ',') if
+                            '{{ F12 }}': f"{round(float(sheet['F12'].value), 2):,}".replace(',', ' ').replace('.',
+                                                                                                              ',') if
                             f"{round(float(sheet['F12'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F12'].value), 2):,}".replace(',', ' ').replace(
                                 '.', ',') + '0',
-                            '{{ F13 }}': f"{round(float(sheet['F13'].value), 2):,}".replace(',', ' ').replace('.', ',') if
+                            '{{ F13 }}': f"{round(float(sheet['F13'].value), 2):,}".replace(',', ' ').replace('.',
+                                                                                                              ',') if
                             f"{round(float(sheet['F13'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F13'].value), 2):,}".replace(',', ' ').replace(
                                 '.', ',') + '0',
-                            '{{ F14 }}': f"{round(float(sheet['F14'].value), 2):,}".replace(',', ' ').replace('.', ',') if
+                            '{{ F14 }}': f"{round(float(sheet['F14'].value), 2):,}".replace(',', ' ').replace('.',
+                                                                                                              ',') if
                             f"{round(float(sheet['F14'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F14'].value), 2):,}".replace(',', ' ').replace(
                                 '.', ',') + '0',
-                            '{{ F15 }}': f"{round(float(sheet['F15'].value), 2):,}".replace(',', ' ').replace('.', ',') if
+                            '{{ F15 }}': f"{round(float(sheet['F15'].value), 2):,}".replace(',', ' ').replace('.',
+                                                                                                              ',') if
                             f"{round(float(sheet['F15'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F15'].value), 2):,}".replace(',', ' ').replace(
                                 '.', ',') + '0',
-                            '{{ F16 }}': f"{round(float(sheet['F16'].value), 2):,}".replace(',', ' ').replace('.', ',') if
+                            '{{ F16 }}': f"{round(float(sheet['F16'].value), 2):,}".replace(',', ' ').replace('.',
+                                                                                                              ',') if
                             f"{round(float(sheet['F16'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F16'].value), 2):,}".replace(',', ' ').replace(
                                 '.', ',') + '0',
-                            '{{ F17 }}': f"{round(float(sheet['F17'].value), 2):,}".replace(',', ' ').replace('.', ',') if
+                            '{{ F17 }}': f"{round(float(sheet['F17'].value), 2):,}".replace(',', ' ').replace('.',
+                                                                                                              ',') if
                             f"{round(float(sheet['F17'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F17'].value), 2):,}".replace(',', ' ').replace(
                                 '.', ',') + '0',
-                            '{{ F18 }}': f"{round(float(sheet['F18'].value), 2):,}".replace(',', ' ').replace('.', ',') if
+                            '{{ F18 }}': f"{round(float(sheet['F18'].value), 2):,}".replace(',', ' ').replace('.',
+                                                                                                              ',') if
                             f"{round(float(sheet['F18'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F18'].value), 2):,}".replace(',', ' ').replace(
                                 '.', ',') + '0',
-                            '{{ F19 }}': f"{round(float(sheet['F19'].value), 2):,}".replace(',', ' ').replace('.', ',') if
+                            '{{ F19 }}': f"{round(float(sheet['F19'].value), 2):,}".replace(',', ' ').replace('.',
+                                                                                                              ',') if
                             f"{round(float(sheet['F19'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F19'].value), 2):,}".replace(',', ' ').replace(
                                 '.', ',') + '0',
-                            '{{ F20 }}': f"{round(float(sheet['F20'].value), 2):,}".replace(',', ' ').replace('.', ',') if
+                            '{{ F20 }}': f"{round(float(sheet['F20'].value), 2):,}".replace(',', ' ').replace('.',
+                                                                                                              ',') if
                             f"{round(float(sheet['F20'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F20'].value), 2):,}".replace(',', ' ').replace(
                                 '.', ',') + '0',
-                            '{{ F21 }}': f"{round(float(sheet['F21'].value), 2):,}".replace(',', ' ').replace('.', ',') if
+                            '{{ F21 }}': f"{round(float(sheet['F21'].value), 2):,}".replace(',', ' ').replace('.',
+                                                                                                              ',') if
                             f"{round(float(sheet['F21'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F21'].value), 2):,}".replace(',', ' ').replace(
                                 '.', ',') + '0',
-                            '{{ F22 }}': f"{round(float(sheet['F22'].value), 2):,}".replace(',', ' ').replace('.', ',') if
+                            '{{ F22 }}': f"{round(float(sheet['F22'].value), 2):,}".replace(',', ' ').replace('.',
+                                                                                                              ',') if
                             f"{round(float(sheet['F22'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F22'].value), 2):,}".replace(',', ' ').replace(
                                 '.', ',') + '0',
-                            '{{ F23 }}': f"{round(float(sheet['F23'].value), 2):,}".replace(',', ' ').replace('.', ',') if
+                            '{{ F23 }}': f"{round(float(sheet['F23'].value), 2):,}".replace(',', ' ').replace('.',
+                                                                                                              ',') if
                             f"{round(float(sheet['F23'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F23'].value), 2):,}".replace(',', ' ').replace(
                                 '.', ',') + '0',
-                            '{{ F24 }}': f"{round(float(sheet['F24'].value), 2):,}".replace(',', ' ').replace('.', ',') if
+                            '{{ F24 }}': f"{round(float(sheet['F24'].value), 2):,}".replace(',', ' ').replace('.',
+                                                                                                              ',') if
                             f"{round(float(sheet['F24'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F24'].value), 2):,}".replace(',', ' ').replace(
                                 '.', ',') + '0',
-                            '{{ F25 }}': f"{round(float(sheet['F25'].value), 2):,}".replace(',', ' ').replace('.', ',') if
+                            '{{ F25 }}': f"{round(float(sheet['F25'].value), 2):,}".replace(',', ' ').replace('.',
+                                                                                                              ',') if
                             f"{round(float(sheet['F25'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F25'].value), 2):,}".replace(',', ' ').replace(
                                 '.', ',') + '0',
-                            '{{ F26 }}': f"{round(float(sheet['F26'].value), 2):,}".replace(',', ' ').replace('.', ',') if
+                            '{{ F26 }}': f"{round(float(sheet['F26'].value), 2):,}".replace(',', ' ').replace('.',
+                                                                                                              ',') if
                             f"{round(float(sheet['F26'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F26'].value), 2):,}".replace(',', ' ').replace(
                                 '.', ',') + '0',
-                            '{{ F27 }}': f"{round(float(sheet['F27'].value), 2):,}".replace(',', ' ').replace('.', ',') if
+                            '{{ F27 }}': f"{round(float(sheet['F27'].value), 2):,}".replace(',', ' ').replace('.',
+                                                                                                              ',') if
                             f"{round(float(sheet['F27'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F27'].value), 2):,}".replace(',', ' ').replace(
                                 '.', ',') + '0',
-                            '{{ F28 }}': f"{round(float(sheet['F28'].value), 2):,}".replace(',', ' ').replace('.', ',') if
+                            '{{ F28 }}': f"{round(float(sheet['F28'].value), 2):,}".replace(',', ' ').replace('.',
+                                                                                                              ',') if
                             f"{round(float(sheet['F28'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F28'].value), 2):,}".replace(',', ' ').replace(
                                 '.', ',') + '0',
-                            '{{ F29 }}': f"{round(float(sheet['F29'].value), 2):,}".replace(',', ' ').replace('.', ',') if
+                            '{{ F29 }}': f"{round(float(sheet['F29'].value), 2):,}".replace(',', ' ').replace('.',
+                                                                                                              ',') if
                             f"{round(float(sheet['F29'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F29'].value), 2):,}".replace(',', ' ').replace(
                                 '.', ',') + '0',
-                            '{{ F30 }}': f"{round(float(sheet['F30'].value), 2):,}".replace(',', ' ').replace('.', ',') if
+                            '{{ F30 }}': f"{round(float(sheet['F30'].value), 2):,}".replace(',', ' ').replace('.',
+                                                                                                              ',') if
                             f"{round(float(sheet['F30'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F30'].value), 2):,}".replace(',', ' ').replace(
                                 '.', ',') + '0',
-                            '{{ F31 }}': f"{round(float(sheet['F31'].value), 2):,}".replace(',', ' ').replace('.', ',') if
+                            '{{ F31 }}': f"{round(float(sheet['F31'].value), 2):,}".replace(',', ' ').replace('.',
+                                                                                                              ',') if
                             f"{round(float(sheet['F31'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F31'].value), 2):,}".replace(',', ' ').replace(
                                 '.', ',') + '0',
-                            '{{ 32 }}': f"{round(float(sheet['F32'].value), 2):,}".replace(',', ' ').replace('.', ',') if
+                            '{{ 32 }}': f"{round(float(sheet['F32'].value), 2):,}".replace(',', ' ').replace('.',
+                                                                                                             ',') if
                             f"{round(float(sheet['F32'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F32'].value), 2):,}".replace(',', ' ').replace(
                                 '.', ',') + '0',
-                            '{{ F33 }}': f"{round(float(sheet['F33'].value), 2):,}".replace(',', ' ').replace('.', ',') if
+                            '{{ F33 }}': f"{round(float(sheet['F33'].value), 2):,}".replace(',', ' ').replace('.',
+                                                                                                              ',') if
                             f"{round(float(sheet['F33'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F33'].value), 2):,}".replace(',', ' ').replace(
                                 '.', ',') + '0',
-                            '{{ F34 }}': f"{round(float(sheet['F34'].value), 2):,}".replace(',', ' ').replace('.', ',') if
+                            '{{ F34 }}': f"{round(float(sheet['F34'].value), 2):,}".replace(',', ' ').replace('.',
+                                                                                                              ',') if
                             f"{round(float(sheet['F34'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F34'].value), 2):,}".replace(',', ' ').replace(
                                 '.', ',') + '0',
-                            '{{ F35 }}': f"{round(float(sheet['F35'].value), 2):,}".replace(',', ' ').replace('.', ',') if
+                            '{{ F35 }}': f"{round(float(sheet['F35'].value), 2):,}".replace(',', ' ').replace('.',
+                                                                                                              ',') if
                             f"{round(float(sheet['F35'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F35'].value), 2):,}".replace(',', ' ').replace(
                                 '.', ',') + '0',
-                            '{{ F36 }}': f"{round(float(sheet['F36'].value), 2):,}".replace(',', ' ').replace('.', ',') if
+                            '{{ F36 }}': f"{round(float(sheet['F36'].value), 2):,}".replace(',', ' ').replace('.',
+                                                                                                              ',') if
                             f"{round(float(sheet['F36'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F36'].value), 2):,}".replace(',', ' ').replace(
                                 '.', ',') + '0',
-                            '{{ F37 }}': f"{round(float(sheet['F37'].value), 2):,}".replace(',', ' ').replace('.', ',') if
+                            '{{ F37 }}': f"{round(float(sheet['F37'].value), 2):,}".replace(',', ' ').replace('.',
+                                                                                                              ',') if
                             f"{round(float(sheet['F37'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F37'].value), 2):,}".replace(',', ' ').replace(
                                 '.', ',') + '0',
-                            '{{ F38 }}': f"{round(float(sheet['F38'].value), 2):,}".replace(',', ' ').replace('.', ',') if
+                            '{{ F38 }}': f"{round(float(sheet['F38'].value), 2):,}".replace(',', ' ').replace('.',
+                                                                                                              ',') if
                             f"{round(float(sheet['F38'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F38'].value), 2):,}".replace(',', ' ').replace(
                                 '.', ',') + '0',
-                            '{{ F39 }}': f"{round(float(sheet['F39'].value), 2):,}".replace(',', ' ').replace('.', ',') if
+                            '{{ F39 }}': f"{round(float(sheet['F39'].value), 2):,}".replace(',', ' ').replace('.',
+                                                                                                              ',') if
                             f"{round(float(sheet['F39'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F39'].value), 2):,}".replace(',', ' ').replace(
                                 '.', ',') + '0',
-                            '{{ F40 }}': f"{round(float(sheet['F40'].value), 2):,}".replace(',', ' ').replace('.', ',') if
+                            '{{ F40 }}': f"{round(float(sheet['F40'].value), 2):,}".replace(',', ' ').replace('.',
+                                                                                                              ',') if
                             f"{round(float(sheet['F40'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F40'].value), 2):,}".replace(',', ' ').replace(
                                 '.', ',') + '0',
-                            '{{ F41 }}': f"{round(float(sheet['F41'].value), 2):,}".replace(',', ' ').replace('.', ',') if
+                            '{{ F41 }}': f"{round(float(sheet['F41'].value), 2):,}".replace(',', ' ').replace('.',
+                                                                                                              ',') if
                             f"{round(float(sheet['F41'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F41'].value), 2):,}".replace(',', ' ').replace(
                                 '.', ',') + '0',
-                            '{{ F42 }}': f"{round(float(sheet['F42'].value), 2):,}".replace(',', ' ').replace('.', ',') if
+                            '{{ F42 }}': f"{round(float(sheet['F42'].value), 2):,}".replace(',', ' ').replace('.',
+                                                                                                              ',') if
                             f"{round(float(sheet['F42'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F42'].value), 2):,}".replace(',', ' ').replace(
                                 '.', ',') + '0',
-                            '{{ F43 }}': f"{round(float(sheet['F43'].value), 2):,}".replace(',', ' ').replace('.', ',') if
+                            '{{ F43 }}': f"{round(float(sheet['F43'].value), 2):,}".replace(',', ' ').replace('.',
+                                                                                                              ',') if
                             f"{round(float(sheet['F43'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F43'].value), 2):,}".replace(',', ' ').replace(
                                 '.', ',') + '0',
-                            '{{ F44 }}': f"{round(float(sheet['F44'].value), 2):,}".replace(',', ' ').replace('.', ',') if
+                            '{{ F44 }}': f"{round(float(sheet['F44'].value), 2):,}".replace(',', ' ').replace('.',
+                                                                                                              ',') if
                             f"{round(float(sheet['F44'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F44'].value), 2):,}".replace(',', ' ').replace(
                                 '.', ',') + '0',
-                            '{{ F45 }}': f"{round(float(sheet['F45'].value), 2):,}".replace(',', ' ').replace('.', ',') if
+                            '{{ F45 }}': f"{round(float(sheet['F45'].value), 2):,}".replace(',', ' ').replace('.',
+                                                                                                              ',') if
                             f"{round(float(sheet['F45'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F45'].value), 2):,}".replace(',', ' ').replace(
                                 '.', ',') + '0',
-                            '{{ F46 }}': f"{round(float(sheet['F46'].value), 2):,}".replace(',', ' ').replace('.', ',') if
+                            '{{ F46 }}': f"{round(float(sheet['F46'].value), 2):,}".replace(',', ' ').replace('.',
+                                                                                                              ',') if
                             f"{round(float(sheet['F46'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F46'].value), 2):,}".replace(',', ' ').replace(
                                 '.', ',') + '0',
-                            '{{ F47 }}': f"{round(float(sheet['F47'].value), 2):,}".replace(',', ' ').replace('.', ',') if
+                            '{{ F47 }}': f"{round(float(sheet['F47'].value), 2):,}".replace(',', ' ').replace('.',
+                                                                                                              ',') if
                             f"{round(float(sheet['F47'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F47'].value), 2):,}".replace(',', ' ').replace(
                                 '.', ',') + '0',
-                            '{{ F48 }}': f"{round(float(sheet['F48'].value), 2):,}".replace(',', ' ').replace('.', ',') if
+                            '{{ F48 }}': f"{round(float(sheet['F48'].value), 2):,}".replace(',', ' ').replace('.',
+                                                                                                              ',') if
                             f"{round(float(sheet['F48'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F48'].value), 2):,}".replace(',', ' ').replace(
                                 '.', ',') + '0',
-                            '{{ F49 }}': f"{round(float(sheet['F49'].value), 2):,}".replace(',', ' ').replace('.', ',') if
+                            '{{ F49 }}': f"{round(float(sheet['F49'].value), 2):,}".replace(',', ' ').replace('.',
+                                                                                                              ',') if
                             f"{round(float(sheet['F49'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F49'].value), 2):,}".replace(',', ' ').replace(
                                 '.', ',') + '0',
-                            '{{ F50 }}': f"{round(float(sheet['F50'].value), 2):,}".replace(',', ' ').replace('.', ',') if
+                            '{{ F50 }}': f"{round(float(sheet['F50'].value), 2):,}".replace(',', ' ').replace('.',
+                                                                                                              ',') if
                             f"{round(float(sheet['F50'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F50'].value), 2):,}".replace(',', ' ').replace(
                                 '.', ',') + '0',
-                            '{{ F51 }}': f"{round(float(sheet['F51'].value), 2):,}".replace(',', ' ').replace('.', ',') if
+                            '{{ F51 }}': f"{round(float(sheet['F51'].value), 2):,}".replace(',', ' ').replace('.',
+                                                                                                              ',') if
                             f"{round(float(sheet['F51'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F51'].value), 2):,}".replace(',', ' ').replace(
                                 '.', ',') + '0',
-                            '{{ F52 }}': f"{round(float(sheet['F52'].value), 2):,}".replace(',', ' ').replace('.', ',') if
+                            '{{ F52 }}': f"{round(float(sheet['F52'].value), 2):,}".replace(',', ' ').replace('.',
+                                                                                                              ',') if
                             f"{round(float(sheet['F52'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F52'].value), 2):,}".replace(',', ' ').replace(
                                 '.', ',') + '0',
-                            '{{ F53 }}': f"{round(float(sheet['F53'].value), 2):,}".replace(',', ' ').replace('.', ',') if
+                            '{{ F53 }}': f"{round(float(sheet['F53'].value), 2):,}".replace(',', ' ').replace('.',
+                                                                                                              ',') if
                             f"{round(float(sheet['F53'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F53'].value), 2):,}".replace(',', ' ').replace(
                                 '.', ',') + '0',
-                            '{{ F54 }}': f"{round(float(sheet['F54'].value), 2):,}".replace(',', ' ').replace('.', ',') if
+                            '{{ F54 }}': f"{round(float(sheet['F54'].value), 2):,}".replace(',', ' ').replace('.',
+                                                                                                              ',') if
                             f"{round(float(sheet['F54'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F54'].value), 2):,}".replace(',', ' ').replace(
                                 '.', ',') + '0',
-                            '{{ F55 }}': f"{round(float(sheet['F55'].value), 2):,}".replace(',', ' ').replace('.', ',') if
+                            '{{ F55 }}': f"{round(float(sheet['F55'].value), 2):,}".replace(',', ' ').replace('.',
+                                                                                                              ',') if
                             f"{round(float(sheet['F55'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F55'].value), 2):,}".replace(',', ' ').replace(
                                 '.', ',') + '0',
-                            '{{ F56 }}': f"{round(float(sheet['F56'].value), 2):,}".replace(',', ' ').replace('.', ',') if
+                            '{{ F56 }}': f"{round(float(sheet['F56'].value), 2):,}".replace(',', ' ').replace('.',
+                                                                                                              ',') if
                             f"{round(float(sheet['F56'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F56'].value), 2):,}".replace(',', ' ').replace(
                                 '.', ',') + '0',
-                            '{{ F57 }}': f"{round(float(sheet['F57'].value), 2):,}".replace(',', ' ').replace('.', ',') if
+                            '{{ F57 }}': f"{round(float(sheet['F57'].value), 2):,}".replace(',', ' ').replace('.',
+                                                                                                              ',') if
                             f"{round(float(sheet['F57'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F57'].value), 2):,}".replace(',', ' ').replace(
                                 '.', ',') + '0',
-                            '{{ F58 }}': f"{round(float(sheet['F58'].value), 2):,}".replace(',', ' ').replace('.', ',') if
+                            '{{ F58 }}': f"{round(float(sheet['F58'].value), 2):,}".replace(',', ' ').replace('.',
+                                                                                                              ',') if
                             f"{round(float(sheet['F58'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F58'].value), 2):,}".replace(',', ' ').replace(
                                 '.', ',') + '0',
-                            '{{ F59 }}': f"{round(float(sheet['F59'].value), 2):,}".replace(',', ' ').replace('.', ',') if
+                            '{{ F59 }}': f"{round(float(sheet['F59'].value), 2):,}".replace(',', ' ').replace('.',
+                                                                                                              ',') if
                             f"{round(float(sheet['F59'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F59'].value), 2):,}".replace(',', ' ').replace(
                                 '.', ',') + '0',
-                            '{{ F60 }}': f"{round(float(sheet['F60'].value), 2):,}".replace(',', ' ').replace('.', ',') if
+                            '{{ F60 }}': f"{round(float(sheet['F60'].value), 2):,}".replace(',', ' ').replace('.',
+                                                                                                              ',') if
                             f"{round(float(sheet['F60'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F60'].value), 2):,}".replace(',', ' ').replace(
                                 '.', ',') + '0',
-                            '{{ F61 }}': f"{round(float(sheet['F61'].value), 2):,}".replace(',', ' ').replace('.', ',') if
+                            '{{ F61 }}': f"{round(float(sheet['F61'].value), 2):,}".replace(',', ' ').replace('.',
+                                                                                                              ',') if
                             f"{round(float(sheet['F61'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F61'].value), 2):,}".replace(',', ' ').replace(
                                 '.', ',') + '0',
-                            '{{ F62 }}': f"{round(float(sheet['F62'].value), 2):,}".replace(',', ' ').replace('.', ',') if
+                            '{{ F62 }}': f"{round(float(sheet['F62'].value), 2):,}".replace(',', ' ').replace('.',
+                                                                                                              ',') if
                             f"{round(float(sheet['F62'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F62'].value), 2):,}".replace(',', ' ').replace(
                                 '.', ',') + '0',
-                            '{{ F63 }}': f"{round(float(sheet['F63'].value), 2):,}".replace(',', ' ').replace('.', ',') if
+                            '{{ F63 }}': f"{round(float(sheet['F63'].value), 2):,}".replace(',', ' ').replace('.',
+                                                                                                              ',') if
                             f"{round(float(sheet['F63'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F63'].value), 2):,}".replace(',', ' ').replace(
                                 '.', ',') + '0',
-                            '{{ F64 }}': f"{round(float(sheet['F64'].value), 2):,}".replace(',', ' ').replace('.', ',') if
+                            '{{ F64 }}': f"{round(float(sheet['F64'].value), 2):,}".replace(',', ' ').replace('.',
+                                                                                                              ',') if
                             f"{round(float(sheet['F64'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F64'].value), 2):,}".replace(',', ' ').replace(
                                 '.', ',') + '0',
-                            '{{ F65 }}': f"{round(float(sheet['F65'].value), 2):,}".replace(',', ' ').replace('.', ',') if
+                            '{{ F65 }}': f"{round(float(sheet['F65'].value), 2):,}".replace(',', ' ').replace('.',
+                                                                                                              ',') if
                             f"{round(float(sheet['F65'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F65'].value), 2):,}".replace(',', ' ').replace(
                                 '.', ',') + '0',
-                            '{{ F66 }}': f"{round(float(sheet['F66'].value), 2):,}".replace(',', ' ').replace('.', ',') if
+                            '{{ F66 }}': f"{round(float(sheet['F66'].value), 2):,}".replace(',', ' ').replace('.',
+                                                                                                              ',') if
                             f"{round(float(sheet['F66'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F66'].value), 2):,}".replace(',', ' ').replace(
                                 '.', ',') + '0',
-                            '{{ F67 }}': f"{round(float(sheet['F67'].value), 2):,}".replace(',', ' ').replace('.', ',') if
+                            '{{ F67 }}': f"{round(float(sheet['F67'].value), 2):,}".replace(',', ' ').replace('.',
+                                                                                                              ',') if
                             f"{round(float(sheet['F67'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F67'].value), 2):,}".replace(',', ' ').replace(
                                 '.', ',') + '0',
-                            '{{ F68 }}': f"{round(float(sheet['F68'].value), 2):,}".replace(',', ' ').replace('.', ',') if
+                            '{{ F68 }}': f"{round(float(sheet['F68'].value), 2):,}".replace(',', ' ').replace('.',
+                                                                                                              ',') if
                             f"{round(float(sheet['F68'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F68'].value), 2):,}".replace(',', ' ').replace(
                                 '.', ',') + '0',
                             '{{ F93 }}': f"{round(float(sheet['F93'].value), 2)}".replace('.',
-                                                                                  ',') if f"{round(float(sheet['F93'].value), 2)}".replace(
+                                                                                          ',') if f"{round(float(sheet['F93'].value), 2)}".replace(
                                 '.', ',') == ',' else f"{round(float(sheet['F93'].value), 2)}".replace('.', ',') + '0',
                             }
             # logging.info(replacements)
