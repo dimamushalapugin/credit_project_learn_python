@@ -159,6 +159,7 @@ def start_filling_application(inn_leasee, path_application, inn_seller1, inn_sel
                             phone_leasee = elem.get_text(strip=True)
                     except Exception as ex:
                         phone_leasee = ''
+                        logging.info('Нет телефона')
                         logging.info(ex, exc_info=True)
 
                     try:
@@ -168,6 +169,7 @@ def start_filling_application(inn_leasee, path_application, inn_seller1, inn_sel
                             email_leasee = elem.get_text(strip=True)
                     except Exception as ex:
                         email_leasee = ''
+                        logging.info('Нет email')
                         logging.info(ex, exc_info=True)
 
                     try:
