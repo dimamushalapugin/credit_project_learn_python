@@ -478,16 +478,14 @@ def start_filling_agreement(inn_leasee, path_application, path_graphic, signator
         put_padezh_podpisant = ''
 
         def rod_padezh_fio_leader(fio):
-            # dadata = Dadata(DADATA_TOKEN, DADATA_SECRET)
             logging.info(f"({fio})")
-            # put_padezh_podpisant = DADATA_BASE.clean("name", fio)
-            put_padezh_podpisant = {'source': 'Ибнеев Рустем Шамилевич', 'result': 'Ибнеев Рустем Шамилевич',
-                                    'result_genitive': 'Ибнеева Рустема Шамилевича',
-                                    'result_dative': 'Ибнееву Рустему Шамилевичу',
-                                    'result_ablative': 'Ибнеевым Рустемом Шамилевичем', 'surname': 'Ибнеев',
-                                    'name': 'Рустем',
-                                    'patronymic': 'Шамилевич', 'gender': 'М', 'qc': 0}  # mock
-            print(put_padezh_podpisant)
+            put_padezh_podpisant = DADATA_BASE.clean("name", fio)
+            # put_padezh_podpisant = {'source': 'Ибнеев Рустем Шамилевич', 'result': 'Ибнеев Рустем Шамилевич',
+            #                         'result_genitive': 'Ибнеева Рустема Шамилевича',
+            #                         'result_dative': 'Ибнееву Рустему Шамилевичу',
+            #                         'result_ablative': 'Ибнеевым Рустемом Шамилевичем', 'surname': 'Ибнеев',
+            #                         'name': 'Рустем',
+            #                         'patronymic': 'Шамилевич', 'gender': 'М', 'qc': 0}  # mock
             return put_padezh_podpisant
             # print(f" Здесь пол М или Ж: Итого {put_padezh_podpisant['gender']}")
             # print(f" Здесь родительный падеж подписанта: Итого {put_padezh_podpisant['result_genitive']}")

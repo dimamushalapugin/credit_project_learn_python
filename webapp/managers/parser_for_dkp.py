@@ -789,11 +789,11 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
         info_about_seller_director = some_info_seller(info_about_seller)
         logging.info(f'{info_about_seller_director=}')
         full_seller = full_rekviti_seller(info_about_seller)
-        # dbase = DADATA_BASE.clean("name", full_seller[-2])
-        dbase = {'source': 'Ибнеев Рустем Шамилевич', 'result': 'Ибнеев Рустем Шамилевич',
-                 'result_genitive': 'Ибнеева Рустема Шамилевича', 'result_dative': 'Ибнееву Рустему Шамилевичу',
-                 'result_ablative': 'Ибнеевым Рустемом Шамилевичем', 'surname': 'Ибнеев', 'name': 'Рустем',
-                 'patronymic': 'Шамилевич', 'gender': 'М', 'qc': 0}  # mock
+        dbase = DADATA_BASE.clean("name", full_seller[-2])
+        # dbase = {'source': 'Ибнеев Рустем Шамилевич', 'result': 'Ибнеев Рустем Шамилевич',
+        #          'result_genitive': 'Ибнеева Рустема Шамилевича', 'result_dative': 'Ибнееву Рустему Шамилевичу',
+        #          'result_ablative': 'Ибнеевым Рустемом Шамилевичем', 'surname': 'Ибнеев', 'name': 'Рустем',
+        #          'patronymic': 'Шамилевич', 'gender': 'М', 'qc': 0}  # mock
 
         logging.info(f'{dbase=}')
         rod_padezh_seller = dbase['result_genitive']
