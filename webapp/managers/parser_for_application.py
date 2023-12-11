@@ -300,8 +300,6 @@ def start_filling_application(inn_leasee, path_application, inn_seller1, inn_sel
                 if sheet_zayavlenie[f'O{number}'].value == '(расшифровка подписи)':
                     sheet_zayavlenie[f'O{number - 1}'].value = formatted_name_leader_leasee
                     # print(sheet_zayavlenie[f'H{number - 1}'].value)
-                if sheet_zayavlenie[f'G{number}'].value == 'ИНН:':
-                    sheet_zayavlenie[f'H{number}'].value = inn_dir_leasee
 
                 # заполнение поручителей, автоматом поставил всех учредов
                 if ip_or_kfh != 'Да':
@@ -362,6 +360,8 @@ def start_filling_application(inn_leasee, path_application, inn_seller1, inn_sel
                             # dolya_value = float(dolya)
                             sheet_anketa_1_list.cell(row=row_num + counter_2_anketa + 1, column=9, value=dolya)
                         # print(sheet_anketa_1_list.cell(row=row_num + counter_2_anketa + 1, column=9).value)
+                    if sheet_anketa_1_list[f'G{number}'].value == 'ИНН:':
+                        sheet_anketa_1_list[f'H{number}'].value = inn_dir_leasee
 
                 if sheet_anketa_1_list[f'A{number}'].value == '1.7         Телефон:':
                     sheet_anketa_1_list[f'C{number}'].value = phone_leasee
