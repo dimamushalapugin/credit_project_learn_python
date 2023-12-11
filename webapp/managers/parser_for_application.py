@@ -125,7 +125,7 @@ def start_filling_application(inn_leasee, path_application, inn_seller1, inn_sel
                         fio_list = list(map(lambda x: x.text, soup.find_all('h5', class_='text-base font-bold')))
                     except Exception as ex:
                         fio_list = ''
-                        print(ex)
+                        logging.info(ex, exc_info=True)
 
                     dolya_list = []
                     try:
@@ -136,21 +136,21 @@ def start_filling_application(inn_leasee, path_application, inn_seller1, inn_sel
                                     '').replace(
                                     '(', '').replace(')', ''))
                     except Exception as ex:
-                        print(ex)
+                        logging.info(ex, exc_info=True)
 
                     inn_list = []
                     try:
                         for elem in soup.find_all('p', class_='text-base m-0 text-premium-600', string='ИНН:'):
                             inn_list.append(elem.find_next('a', class_='flex text-base m-0 ml-1.5').text)
                     except Exception as ex:
-                        print(ex)
+                        logging.info(ex, exc_info=True)
 
                     try:
                         inn_dir_leasee = soup.find('p', class_='mb-1 whitespace-nowrap pr-6 text-premium-600').find('a',
                                                                                                                     class_='text-blue').text
                     except Exception as ex:
                         inn_dir_leasee = ''
-                        print(ex)
+                        logging.info(ex, exc_info=True)
 
                     try:
                         for elem in soup.find(class_='requisites-info-badge font-bold mb-1').find_next('div',
@@ -159,7 +159,7 @@ def start_filling_application(inn_leasee, path_application, inn_seller1, inn_sel
                             phone_leasee = elem.get_text(strip=True)
                     except Exception as ex:
                         phone_leasee = ''
-                        print(ex)
+                        logging.info(ex, exc_info=True)
 
                     try:
                         for elem in soup.find(class_='requisites-info-badge font-bold mb-1').find_next('div',
@@ -168,13 +168,13 @@ def start_filling_application(inn_leasee, path_application, inn_seller1, inn_sel
                             email_leasee = elem.get_text(strip=True)
                     except Exception as ex:
                         email_leasee = ''
-                        print(ex)
+                        logging.info(ex, exc_info=True)
 
                     try:
                         main_activity_leasee = soup.find('a', class_='inline-block mt-1').get_text(strip=True)
                     except Exception as ex:
                         main_activity_leasee = ''
-                        print(ex)
+                        logging.info(ex, exc_info=True)
 
                     try:
                         number_element = soup.find('span', class_='statistic-number')
@@ -183,7 +183,7 @@ def start_filling_application(inn_leasee, path_application, inn_seller1, inn_sel
                         ustav_capital = f"{number_text} {additional_text}"
                     except Exception as ex:
                         ustav_capital = ''
-                        print(ex)
+                        logging.info(ex, exc_info=True)
 
                 else:
                     inn_dir_leasee = inn_leasee
@@ -194,10 +194,10 @@ def start_filling_application(inn_leasee, path_application, inn_seller1, inn_sel
                         main_activity_leasee = soup.find('a', class_='inline-block mt-1').get_text(strip=True)
                     except Exception as ex:
                         main_activity_leasee = ''
-                        print(ex)
+                        logging.info(ex, exc_info=True)
 
             else:
-                print(f"Ошибка при запросе: {response.status_code}")
+                logging.info(f"Ошибка при запросе: {response.status_code}")
                 fio_list = ''
                 dolya_list = []
                 inn_list = []
