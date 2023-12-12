@@ -221,7 +221,6 @@ def create_application():
         data = request.form
         file_path = create_xlsx_file(data)
         file_name = f'Заявка с заключением {data["client_inn"]}.xlsx'
-        flash(f'Файл успешно создан и загружен', 'success')
         return download_application(file_path, file_name)
     except Exception as e:
         flash('Проверьте корректность ИНН', 'error')
