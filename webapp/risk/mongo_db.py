@@ -9,7 +9,7 @@ from webapp.risk.logger import logging
 
 def write_to_mongodb_risk_count(curr_user, client_inn, seller_inn):
     data = {
-        'user': curr_user.split()[-1],
+        'user': str(curr_user).split()[-1],
         'time': datetime.now().strftime("%d.%m.%Y | %H:%M:%S"),
         'client': client_inn,
         'seller': seller_inn
