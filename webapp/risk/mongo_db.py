@@ -9,18 +9,17 @@ from webapp.risk.logger import logging
 
 def write_to_mongodb_risk_count(curr_user, client_inn, seller_inn):
     data = {
-        'user': curr_user,
+        'user': curr_user.split()[-1],
         'time': datetime.now().strftime("%d.%m.%Y | %H:%M:%S"),
         'client': client_inn,
-        'seller': seller_inn,
+        'seller': seller_inn
     }
     client = MongoClient(MONGO_URL, server_api=ServerApi('1'))
     try:
         client.admin.command('ping')
         logging.info("Pinged your deployment. You successfully connected to MongoDB!")
+        db = client.riskBase
+        db.countRiskConclusions.insert_one(data)
     except Exception as e:
         logging.info("Не записалась информация в MongoDB")
         logging.info(e, exc_info=True)
-
-    db = client.riskBase
-    db.countRiskConclusions.insert_one(data)
