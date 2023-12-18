@@ -2,12 +2,13 @@ import os
 import re
 import time
 
-from flask import Blueprint, flash, render_template, redirect, request, url_for, send_from_directory, jsonify, Response
+from flask import Blueprint, flash, render_template, redirect, request, url_for, send_from_directory
 from flask_login import current_user
 
 from webapp.user.auth_utils import admin_required
 from webapp.risk.new_create_risk_conclusion import create_conclusion
 from webapp.risk.logger import logging
+from webapp.risk.mongo_db import write_to_mongodb_risk_count
 
 blueprint = Blueprint('risk', __name__, url_prefix='/risk')
 
@@ -71,6 +72,7 @@ def create_risk_conclusion():
         logging.info(f"({current_user}) Риск-заключение создалось за: {execution_time:.1f} сек.")
         if file_name:
             flash(f'Файл успешно создан', 'success')
+            write_to_mongodb_risk_count(current_user, data['client_inn'], data['seller_inn'])
             return redirect(url_for('risk.risk_page', file_name=file_name))
         else:
             return redirect(url_for('risk.risk_page', file_name=file_name))
