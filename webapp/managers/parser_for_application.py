@@ -473,7 +473,6 @@ def start_filling_agreement(inn_leasee, path_application, path_graphic, signator
         put_padezh_podpisant = ''
 
         def rod_padezh_fio_leader(fio):
-            logging.info(f"({fio})")
             put_padezh_podpisant = DADATA_BASE.clean("name", fio)
             # put_padezh_podpisant = {'source': 'Ибнеев Рустем Шамилевич', 'result': 'Ибнеев Рустем Шамилевич',
             #                         'result_genitive': 'Ибнеева Рустема Шамилевича',
@@ -485,13 +484,13 @@ def start_filling_agreement(inn_leasee, path_application, path_graphic, signator
             # print(f" Здесь пол М или Ж: Итого {put_padezh_podpisant['gender']}")
             # print(f" Здесь родительный падеж подписанта: Итого {put_padezh_podpisant['result_genitive']}")
 
-        print('19101')
+        # print('19101')
         rod_padezh_fio_leader = rod_padezh_fio_leader(data_xlsx[5])
         try:
             put_padezh_podpisant_rg = rod_padezh_fio_leader['result_genitive']
         except:
             put_padezh_podpisant_rg = ''
-        print(f'123 {put_padezh_podpisant_rg}')
+        # print(f'123 {put_padezh_podpisant_rg}')
         doverka_ustav_leasee = 'Устава'
         for elem in full_name_leasee.split():
             if elem in ['Индивидуальный', 'предприниматель', 'хозяйства']:
@@ -518,7 +517,7 @@ def start_filling_agreement(inn_leasee, path_application, path_graphic, signator
         else:
             vigodo = investor
 
-        print('1912132')
+        # print('1912132')
         r_chet_lkmb = ''
         bank_rekv_lkmb = ''
         kor_chet_lkmb = ''
@@ -613,7 +612,7 @@ def start_filling_agreement(inn_leasee, path_application, path_graphic, signator
             punkt_7_8 = 'УДАЛИТЬ'
 
         suma_dann = ''
-        print('191919')
+        # print('191919')
 
         def chislo_propis():
             nonlocal suma_dann
@@ -672,7 +671,7 @@ def start_filling_agreement(inn_leasee, path_application, path_graphic, signator
                     return "Неверный формат числа"
 
             suma_dann = number_to_words(str(suma_chislo))
-            print(f'01010 {suma_dann}')
+            # print(f'01010 {suma_dann}')
 
         chislo_propis()
 
@@ -685,7 +684,7 @@ def start_filling_agreement(inn_leasee, path_application, path_graphic, signator
             sheet = book[vybor_grafic_list]
             summa_dog_leas = sheet['F7'].value
 
-            print(type(f'Сумма дл{summa_dog_leas}'))
+            # print(type(f'Сумма дл{summa_dog_leas}'))
 
             def number_to_words(summa_dog_leas):
                 try:
@@ -789,7 +788,7 @@ def start_filling_agreement(inn_leasee, path_application, path_graphic, signator
                 for i in range(len(old_words)):
                     if old_words[i] in paragraph.text:
                         paragraph.text = paragraph.text.replace(old_words[i], str(new_words[i]))
-                        print(new_words[i])
+                        # print(new_words[i])
                         # print(f'_____ {i=}')
 
             for table in doc.tables:
@@ -1217,7 +1216,7 @@ def start_filling_agreement(inn_leasee, path_application, path_graphic, signator
             # print(replacements)
         except:
             replacements = {}
-            print('Не сработал график')
+            # print('Не сработал график')
 
         doc = docx.Document(fr"{dir_path}\ДЛ {inn_leasee}.docx")
         for para in doc.paragraphs:
