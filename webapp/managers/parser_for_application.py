@@ -612,6 +612,7 @@ def start_filling_agreement(inn_leasee, path_application, path_graphic, signator
             punkt_7_8 = 'УДАЛИТЬ'
 
         suma_dann = ''
+
         # print('191919')
 
         def chislo_propis():
@@ -735,6 +736,18 @@ def start_filling_agreement(inn_leasee, path_application, path_graphic, signator
 
         chislo_propis_dl(grafic)
 
+        try:
+            book = openpyxl.load_workbook(input_raschet_path, data_only=True)
+            sheet = book[grafic]
+            b93 = sheet['B93'].value.strftime('%d.%m.%Y')
+            f7 = f"{round(float(sheet['F7'].value), 2):,}".replace(',', ' ').replace('.', ',') if \
+            f"{round(float(sheet['F7'].value), 2):,}".replace(',', ' ').replace('.', ',')[
+                -3] == ',' else f"{round(float(sheet['F7'].value), 2):,}".replace(',', ' ').replace('.', ',') + '0'
+        except Exception as ex:
+            logging.info(ex, exc_info=True)
+            b93 = ''
+            f7 = ''
+
         if currency_test == 'рублей':
             currency_test = ''
         months = {1: 'января', 2: 'февраля', 3: 'марта', 4: 'апреля', 5: 'мая', 6: 'июня',
@@ -757,7 +770,7 @@ def start_filling_agreement(inn_leasee, path_application, path_graphic, signator
                      "{{ number_dl }}", "{{ currency_test }}", "{{ suma_dann[0] }}", "{{ dt.today().day }}",
                      "{{ months[dt.today().month] }}", "{{ dt.today().year }}", "{{ punkt_4_6 }}",
                      "{{ summa_dog_leas }}", "{{ punkt_7_8 }}", "{{ inn_kpp1 }}", "{{ ogrnip }}",
-                     "{{ leader_leasee_pod }}", "{{ imenyemoe }}"]
+                     "{{ leader_leasee_pod }}", "{{ imenyemoe }}", "{{ F7 }}", "{{ B93 }}"]
         # ,
         new_words = [str(a_lkmb), str(lkmb_podpisant), str(preambula_dolj_lkmb), str(preambula_fio_lkmb),
                      str(deystvuysh_list),
@@ -778,7 +791,7 @@ def start_filling_agreement(inn_leasee, path_application, path_graphic, signator
                      str(currency_test), str(suma_dann),
                      str(dt.today().day),
                      str(months[dt.today().month]), str(dt.today().year), str(punkt_4_6), str(suma_dann_dl),
-                     str(punkt_7_8), str(inn_kpp1), str(ogrnip), str(leader_leasee_pod), str(imenyemoe)]
+                     str(punkt_7_8), str(inn_kpp1), str(ogrnip), str(leader_leasee_pod), str(imenyemoe), f7, b93]
 
         # создание ДЛ
         def replace_words_in_docx(docx_file, old_words, new_words):
@@ -1024,7 +1037,7 @@ def start_filling_agreement(inn_leasee, path_application, path_graphic, signator
                                 -3] == ',' else f"{round(float(sheet['F31'].value), 2):,}".replace(',', ' ').replace(
                                 '.', ',') + '0',
                             '{{ F32 }}': f"{round(float(sheet['F32'].value), 2):,}".replace(',', ' ').replace('.',
-                                                                                                             ',') if
+                                                                                                              ',') if
                             f"{round(float(sheet['F32'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F32'].value), 2):,}".replace(',', ' ').replace(
                                 '.', ',') + '0',
