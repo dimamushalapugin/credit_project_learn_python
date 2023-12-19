@@ -39,7 +39,7 @@ def write_to_mongodb_app_count(curr_user, client_inn, seller_inn1, seller_inn2, 
     }
     client = MongoClient(MONGO_URL)
     try:
-        db = client.riskBase
+        db = client.managerBase
         db.countManagerApps.insert_one(data)
     except Exception as e:
         logging.info("Не записалась информация в MongoDB")
