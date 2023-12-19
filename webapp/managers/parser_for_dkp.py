@@ -804,6 +804,9 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
         ident_lkmb_rt = identification_lkmb_rt(signatory, investor)
         ident_pl = indentification_pl(currency)
         id_ls = identification_leasee(data_xlsx[18])
+        req1 = data_xlsx[10]
+        ogrn1 = data_xlsx[13]
+        add_inf = addicted_info_leasee(req1, ogrn1)
 
         months = {1: 'января', 2: 'февраля', 3: 'марта', 4: 'апреля', 5: 'мая', 6: 'июня',
                   7: 'июля', 8: 'августа', 9: 'сентября', 10: 'октября', 11: 'ноября', 12: 'декабря'}
@@ -849,7 +852,9 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
                          "{{ number_dl }}",
                          "{{ suma_dann[0] }}",
                          # данные по лизингополучателю
-                         "{{ leader_leasee_pod }}", "{{ leader_leasee_rod_padezh }}"
+                         "{{ leader_leasee_pod }}", "{{ leader_leasee_rod_padezh }}", "{{ imenyemoe }}",
+                         "{{ put_padezh_podpisant_rg }}", "{{ deystvuysh_list_leasee }}",
+                         "{{ {{ doverka_ustav_leasee }} }}"
                          ]
 
         new_words_dkp = [str(eq_val[0]), str(eq_val[1]), str(eq_val[2]), str(eq_val[3]), str(eq_val[4]),
@@ -885,7 +890,8 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
                          str(dt.today().day), str(months[dt.today().month]), str(dt.today().year),
                          str(numb_dl_dkp), str(suma_dann),
                          # данные по лизингополучателю
-                         str(id_ls[1]), str(id_ls[0])
+                         str(id_ls[1]), str(id_ls[0]),
+                         str(add_inf[2]), str(add_inf[0]), str(add_inf[1]), str(add_inf[3])
                          ]
 
         # for old, new in zip(old_words_dkp, new_words_dkp):
