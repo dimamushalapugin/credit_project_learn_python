@@ -1216,6 +1216,7 @@ def start_filling_agreement(inn_leasee, path_application, path_graphic, signator
             # logging.info(replacements)
             # print(replacements)
         except:
+            replacements = {}
             print('Не сработал график')
 
         doc = docx.Document(fr"{dir_path}\ДЛ {inn_leasee}.docx")
