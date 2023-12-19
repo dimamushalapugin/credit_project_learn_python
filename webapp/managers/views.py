@@ -54,21 +54,21 @@ def download(filename):
 
 
 def create_xlsx_file(data):
-    return start_filling_application(data['client_inn'], APPLICATION_PATH, data['seller_inn1'], data['seller_inn2'],
-                                     data['seller_inn3'], data['seller_inn4'])
+    return start_filling_application(data['client_inn'].strip(), APPLICATION_PATH, data['seller_inn1'].strip(), data['seller_inn2'].strip(),
+                                     data['seller_inn3'].strip(), data['seller_inn4'].strip())
 
 
 def create_docx_file(data, application_path, graphic_path):
     path_application = application_path.replace('/', '\\')
     path_graphic = graphic_path.replace('/', '\\')
-    return start_filling_agreement(data['client_inn'], path_application, path_graphic, data['signatory'],
+    return start_filling_agreement(data['client_inn'].strip(), path_application, path_graphic, data['signatory'],
                                    data['investor'], data['currency'], data['insurant'], data['graph'], data['pl'],
                                    data['number_dl'], data['seller_inn'], data.get('typeSelect'))
 
 
 def create_docx_file_dkp(data, application_path):
     path_application = application_path.replace('/', '\\')
-    return start_filling_agreement_dkp(path_application, data['client_inn'], data['seller_inn'],
+    return start_filling_agreement_dkp(path_application, data['client_inn'].strip(), data['seller_inn'].strip(),
                                        data['number_dl'], data['signatory'], data['investor'], data['currency'],
                                        data['pl'], data.get('typeSelect'), data['type_pl_new_or_not'],
                                        data['payment_order'], data['place'], data['acts'], data['diadok'],
@@ -224,7 +224,7 @@ def create_application():
                                    data["seller_inn2"].strip(), data["seller_inn3"].strip(),
                                    data["seller_inn4"].strip())
         file_path = create_xlsx_file(data)
-        file_name = f'Заявка с заключением {data["client_inn"]}.xlsx'
+        file_name = f'Заявка с заключением {data["client_inn"].strip()}.xlsx'
         return download_application(file_path, file_name)
     except Exception as e:
         flash('Проверьте корректность ИНН', 'error')
