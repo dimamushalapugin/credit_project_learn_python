@@ -854,7 +854,7 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
                          # данные по лизингополучателю
                          "{{ leader_leasee_pod }}", "{{ leader_leasee_rod_padezh }}", "{{ imenyemoe }}",
                          "{{ put_padezh_podpisant_rg }}", "{{ deystvuysh_list_leasee }}",
-                         "{{ {{ doverka_ustav_leasee }} }}"
+                         "{{ doverka_ustav_leasee }}"
                          ]
 
         new_words_dkp = [str(eq_val[0]), str(eq_val[1]), str(eq_val[2]), str(eq_val[3]), str(eq_val[4]),
