@@ -220,10 +220,10 @@ def create_application():
     logging.info(f"({current_user}) Нажал на кнопку 'Создать заявку'")
     try:
         data = request.form
-        file_path = create_xlsx_file(data)
-        file_name = f'Заявка с заключением {data["client_inn"]}.xlsx'
         write_to_mongodb_app_count(current_user, data["client_inn"], data["seller_inn1"], data["seller_inn2"],
                                    data["seller_inn3"], data["seller_inn4"])
+        file_path = create_xlsx_file(data)
+        file_name = f'Заявка с заключением {data["client_inn"]}.xlsx'
         return download_application(file_path, file_name)
     except Exception as e:
         flash('Проверьте корректность ИНН', 'error')
