@@ -205,13 +205,13 @@ def indentification_pl(currency_list: str):
     return currency_test
 
 
-def number_to_words(suma_chislo, currency_list: str):
+def number_to_words(suma_chislo123, curr):
     try:
         # Разбиваем строку на целую и десятичную часть
-        suma_chislo = str(round(float(suma_chislo), 2)).replace(',', '.') if \
-            str(round(float(suma_chislo), 2)).replace(',', '.')[-3] == '.' else str(
-            round(float(suma_chislo), 2)).replace(',', '.') + '0'
-        parts = suma_chislo.split(".")
+        suma_chislo123 = str(round(float(suma_chislo123), 2)).replace(',', '.') if \
+            str(round(float(suma_chislo123), 2)).replace(',', '.')[-3] == '.' else str(
+            round(float(suma_chislo123), 2)).replace(',', '.') + '0'
+        parts = suma_chislo123.split(".")
         integer_part = parts[0]
         decimal_part = parts[1] if len(parts) > 1 else "00"
 
@@ -229,7 +229,7 @@ def number_to_words(suma_chislo, currency_list: str):
             valute_rub = "рублей"
 
         # Преобразуем десятичную часть в число прописью
-        if currency_list == 'Рубль':
+        if curr == 'Рубль':
             decimal_words = num2words(int(decimal_part), lang='ru', to='currency', currency='RUB')
         else:
             decimal_words = num2words(int(decimal_part), lang='ru')
@@ -245,15 +245,23 @@ def number_to_words(suma_chislo, currency_list: str):
             valute_copeyka = "копеек"
 
         # Формируем итоговую строку
-        if currency_list == 'Рубль':
-            suma_dann = f"{integer_words} {valute_rub} {decimal_words}".strip().replace('ноль рублей',
-                                                                                        '').replace(' ,',
-                                                                                                    '')
-        elif currency_list == 'Китайский юань':
-            suma_dann = f"{integer_words} целых {decimal_words} сотых китайских юаней"
-        elif currency_list == 'Доллар США':
-            suma_dann = f"{integer_words} целых {decimal_words} сотых долларов США"
-        return suma_dann
+        if curr == 'Рубль':
+            suma_dann1 = ((f"({integer_words}) {valute_rub} {decimal_part} {valute_copeyka}".strip()
+                           .replace('ноль рублей', '').replace(',', '')))
+        elif curr == 'Китайский юань':
+            suma_dann1 = f"({integer_words}) китайских юаней {decimal_part} {valute_copeyka.
+            replace('копеек', 'феней').replace('копейка', 'фень').
+            replace('копейки', 'феня')}"
+        elif curr == 'Доллар США':
+            suma_dann1 = f"({integer_words}) долларов США {decimal_part} {valute_copeyka.
+            replace('копеек', 'центов').replace('копейка', 'цент').
+            replace('копейки', 'цента')}"
+        elif curr == 'Евро':
+            suma_dann1 = f"({integer_words}) евро {decimal_part} {valute_copeyka.
+            replace('копеек', 'евроцентов').replace('копейка', 'евроцент').
+            replace('копейки', 'евроцента')}"
+        print(suma_dann1)
+        return suma_dann1
     except ValueError:
         return "Неверный формат числа"
 
@@ -458,66 +466,6 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
         except ValueError:
             return "Неверный формат числа"
 
-    def number_to_words(suma_chislo123):
-        try:
-            # Разбиваем строку на целую и десятичную часть
-            suma_chislo123 = str(round(float(suma_chislo123), 2)).replace(',', '.') if \
-                str(round(float(suma_chislo123), 2)).replace(',', '.')[-3] == '.' else str(
-                round(float(suma_chislo123), 2)).replace(',', '.') + '0'
-            parts = suma_chislo123.split(".")
-            integer_part = parts[0]
-            decimal_part = parts[1] if len(parts) > 1 else "00"
-
-            # Преобразуем целую часть в число прописью
-            integer_words = num2words(int(integer_part), lang='ru')
-
-            # Определяем правильную форму для "рублей"
-            if 10 < float(integer_part) % 100 < 20:
-                valute_rub = "рублей"
-            elif float(integer_part) % 10 == 1:
-                valute_rub = "рубль"
-            elif 1 < float(integer_part) % 10 < 5:
-                valute_rub = "рубля"
-            else:
-                valute_rub = "рублей"
-
-            # Преобразуем десятичную часть в число прописью
-            if currency == 'Рубль':
-                decimal_words = num2words(int(decimal_part), lang='ru', to='currency', currency='RUB')
-            else:
-                decimal_words = num2words(int(decimal_part), lang='ru')
-
-            # Определяем правильную форму для "копеек"
-            if 10 < float(decimal_part) % 100 < 20:
-                valute_copeyka = "копеек"
-            elif float(decimal_part) % 10 == 1:
-                valute_copeyka = "копейка"
-            elif 1 < float(decimal_part) % 10 <= 4:
-                valute_copeyka = "копейки"
-            else:
-                valute_copeyka = "копеек"
-
-            # Формируем итоговую строку
-            if currency == 'Рубль':
-                suma_dann1 = ((f"({integer_words}) {valute_rub} {decimal_part} {valute_copeyka}".strip()
-                               .replace('ноль рублей', '').replace(',', '')))
-            elif currency == 'Китайский юань':
-                suma_dann1 = f"({integer_words}) китайских юаней {decimal_part} {valute_copeyka.
-                replace('копеек', 'феней').replace('копейка', 'фень').
-                replace('копейки', 'феня')}"
-            elif currency == 'Доллар США':
-                suma_dann1 = f"({integer_words}) долларов США {decimal_part} {valute_copeyka.
-                replace('копеек', 'центов').replace('копейка', 'цент').
-                replace('копейки', 'цента')}"
-            elif currency == 'Евро':
-                suma_dann1 = f"({integer_words}) евро {decimal_part} {valute_copeyka.
-                replace('копеек', 'евроцентов').replace('копейка', 'евроцент').
-                replace('копейки', 'евроцента')}"
-            print(suma_dann1)
-            return suma_dann1
-        except ValueError:
-            return "Неверный формат числа"
-
     def payment_for_dkp(price_entry):
         # print(payment_order)
         punkt_2_3_1_pay = ''
@@ -551,7 +499,7 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
             punkt_2_3_1_num = payment_order.split(' ')[0]
             punkt_2_3_1_numb_pr = percent_to_word(str(punkt_2_3_1_num))
             payment_1 = round((float(price_entry) * float(payment_order.split(' ')[0])) / 100, 2)
-            payment_1_propis = number_to_words(payment_1)
+            payment_1_propis = number_to_words(payment_1, currency)
             payment_1 = payment_1 if str(payment_1)[-3] == '.' else str(payment_1) + '0'
         elif len(payment_order.split(' ')) == 2:
             punkt_2_3_1_pay = 'Первый'
@@ -562,8 +510,8 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
             punkt_2_3_2_numb_pr = percent_to_word(str(punkt_2_3_2_num))
             payment_1 = round((float(price_entry) * float(payment_order.split(' ')[0])) / 100, 2)
             payment_2 = round((float(price_entry) * float(payment_order.split(' ')[1])) / 100, 2)
-            payment_1_propis = number_to_words(payment_1)
-            payment_2_propis = number_to_words(payment_2)
+            payment_1_propis = number_to_words(payment_1, currency)
+            payment_2_propis = number_to_words(payment_2, currency)
             payment_1 = payment_1 if str(payment_1)[-3] == '.' else str(payment_1) + '0'
             payment_2 = payment_2 if str(payment_2)[-3] == '.' else str(payment_2) + '0'
         elif len(payment_order.split(' ')) == 3:
@@ -579,9 +527,9 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
             payment_1 = round((float(price_entry) * float(payment_order.split(' ')[0])) / 100, 2)
             payment_2 = round((float(price_entry) * float(payment_order.split(' ')[1])) / 100, 2)
             payment_3 = round((float(price_entry) * float(payment_order.split(' ')[2])) / 100, 2)
-            payment_1_propis = number_to_words(payment_1)
-            payment_2_propis = number_to_words(payment_2)
-            payment_3_propis = number_to_words(payment_3)
+            payment_1_propis = number_to_words(payment_1, currency)
+            payment_2_propis = number_to_words(payment_2, currency)
+            payment_3_propis = number_to_words(payment_3, currency)
             payment_1 = payment_1 if str(payment_1)[-3] == '.' else str(payment_1) + '0'
             payment_2 = payment_2 if str(payment_2)[-3] == '.' else str(payment_2) + '0'
             payment_3 = payment_3 if str(payment_3)[-3] == '.' else str(payment_3) + '0'
@@ -602,10 +550,10 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
             payment_2 = round((float(price_entry) * float(payment_order.split(' ')[1])) / 100, 2)
             payment_3 = round((float(price_entry) * float(payment_order.split(' ')[2])) / 100, 2)
             payment_4 = round((float(price_entry) * float(payment_order.split(' ')[3])) / 100, 2)
-            payment_1_propis = number_to_words(payment_1)
-            payment_2_propis = number_to_words(payment_2)
-            payment_3_propis = number_to_words(payment_3)
-            payment_4_propis = number_to_words(payment_4)
+            payment_1_propis = number_to_words(payment_1, currency)
+            payment_2_propis = number_to_words(payment_2, currency)
+            payment_3_propis = number_to_words(payment_3, currency)
+            payment_4_propis = number_to_words(payment_4, currency)
             payment_1 = payment_1 if str(payment_1)[-3] == '.' else str(payment_1) + '0'
             payment_2 = payment_2 if str(payment_2)[-3] == '.' else str(payment_2) + '0'
             payment_3 = payment_3 if str(payment_3)[-3] == '.' else str(payment_3) + '0'
@@ -631,11 +579,11 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
             payment_3 = round((float(price_entry) * float(payment_order.split(' ')[2])) / 100, 2)
             payment_4 = round((float(price_entry) * float(payment_order.split(' ')[3])) / 100, 2)
             payment_5 = round((float(price_entry) * float(payment_order.split(' ')[4])) / 100, 2)
-            payment_1_propis = number_to_words(payment_1)
-            payment_2_propis = number_to_words(payment_2)
-            payment_3_propis = number_to_words(payment_3)
-            payment_4_propis = number_to_words(payment_4)
-            payment_5_propis = number_to_words(payment_5)
+            payment_1_propis = number_to_words(payment_1, currency)
+            payment_2_propis = number_to_words(payment_2, currency)
+            payment_3_propis = number_to_words(payment_3, currency)
+            payment_4_propis = number_to_words(payment_4, currency)
+            payment_5_propis = number_to_words(payment_5, currency)
             payment_1 = payment_1 if str(payment_1)[-3] == '.' else str(payment_1) + '0'
             payment_2 = payment_2 if str(payment_2)[-3] == '.' else str(payment_2) + '0'
             payment_3 = payment_3 if str(payment_3)[-3] == '.' else str(payment_3) + '0'
@@ -784,7 +732,7 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
         data_xlsx = read_xlsx(path_application, pl)  # все из xlsx
         price_entry = data_xlsx[15]  # цена ПЛ
         logging.info(f'{price_entry=}')
-        suma_dann = number_to_words(price_entry)
+        suma_dann = number_to_words(price_entry, currency)
 
         payment_dkp = payment_for_dkp(price_entry)  # все для порядка оплаты
         info_about_seller = result_dadata()

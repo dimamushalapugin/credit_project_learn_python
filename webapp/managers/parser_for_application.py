@@ -11,7 +11,7 @@ from docx.shared import Pt
 from datetime import datetime as dt
 from flask_login import current_user
 from webapp.risk.logger import logging
-from webapp.managers.parser_for_dkp import read_xlsx
+from webapp.managers.parser_for_dkp import read_xlsx, number_to_words
 from num2words import num2words
 from webapp.config import DADATA_TOKEN, DADATA_SECRET, DADATA_BASE
 
@@ -619,59 +619,7 @@ def start_filling_agreement(inn_leasee, path_application, path_graphic, signator
             nonlocal suma_dann
             suma_chislo = price_entry
 
-            def number_to_words(suma_chislo):
-                try:
-                    # Разбиваем строку на целую и десятичную часть
-                    suma_chislo = str(round(float(suma_chislo), 2)).replace(',', '.') if \
-                        str(round(float(suma_chislo), 2)).replace(',', '.')[-3] == '.' else str(
-                        round(float(suma_chislo), 2)).replace(',', '.') + '0'
-                    parts = suma_chislo.split(".")
-                    integer_part = parts[0]
-                    decimal_part = parts[1] if len(parts) > 1 else "00"
-
-                    # Преобразуем целую часть в число прописью
-                    integer_words = num2words(int(integer_part), lang='ru')
-
-                    # Определяем правильную форму для "рублей"
-                    if 10 < float(integer_part) % 100 < 20:
-                        valute_rub = "рублей"
-                    elif float(integer_part) % 10 == 1:
-                        valute_rub = "рубль"
-                    elif 1 < float(integer_part) % 10 < 5:
-                        valute_rub = "рубля"
-                    else:
-                        valute_rub = "рублей"
-
-                    # Преобразуем десятичную часть в число прописью
-                    if currency_list == 'Рубль':
-                        decimal_words = num2words(int(decimal_part), lang='ru', to='currency', currency='RUB')
-                    else:
-                        decimal_words = num2words(int(decimal_part), lang='ru')
-
-                    # Определяем правильную форму для "копеек"
-                    if 10 < float(decimal_part) % 100 < 20:
-                        valute_copeyka = "копеек"
-                    elif float(decimal_part) % 10 == 1:
-                        valute_copeyka = "копейка"
-                    elif 1 < float(decimal_part) % 10 <= 4:
-                        valute_copeyka = "копейки"
-                    else:
-                        valute_copeyka = "копеек"
-
-                    # Формируем итоговую строку
-                    if currency_list == 'Рубль':
-                        suma_dann = f"{integer_words} {valute_rub} {decimal_words}".strip().replace('ноль рублей',
-                                                                                                    '').replace(' ,',
-                                                                                                                '')
-                    elif currency_list == 'Китайский юань':
-                        suma_dann = f"{integer_words} целых {decimal_words} сотых китайских юаней"
-                    elif currency_list == 'Доллар США':
-                        suma_dann = f"{integer_words} целых {decimal_words} сотых долларов США"
-                    return suma_dann
-                except ValueError:
-                    return "Неверный формат числа"
-
-            suma_dann = number_to_words(str(suma_chislo))
+            suma_dann = number_to_words(str(suma_chislo), currency_list)
             # print(f'01010 {suma_dann}')
 
         chislo_propis()
@@ -687,52 +635,8 @@ def start_filling_agreement(inn_leasee, path_application, path_graphic, signator
 
             # print(type(f'Сумма дл{summa_dog_leas}'))
 
-            def number_to_words(summa_dog_leas):
-                try:
-                    # Разбиваем строку на целую и десятичную часть
-                    summa_dog_leas = str(round(float(summa_dog_leas), 2)).replace(',', '.') if \
-                        str(round(float(summa_dog_leas), 2)).replace(',', '.')[-3] == '.' else str(
-                        round(float(summa_dog_leas), 2)).replace(',', '.') + '0'
-                    # print(type(summa_dog_leas))
-                    parts = summa_dog_leas.split(".")
-                    integer_part = parts[0]
-                    decimal_part = parts[1] if len(parts) > 1 else "00"
 
-                    # Преобразуем целую часть в число прописью
-                    integer_words = num2words(int(integer_part), lang='ru')
-
-                    # Определяем правильную форму для "рублей"
-                    if 10 < float(integer_part) % 100 < 20:
-                        valute_rub = "рублей"
-                    elif float(integer_part) % 10 == 1:
-                        valute_rub = "рубль"
-                    elif 1 < float(integer_part) % 10 < 5:
-                        valute_rub = "рубля"
-                    else:
-                        valute_rub = "рублей"
-
-                    # Преобразуем десятичную часть в число прописью
-                    decimal_words = num2words(int(decimal_part), lang='ru', to='currency', currency='RUB')
-
-                    # Определяем правильную форму для "копеек"
-                    if 10 < float(decimal_part) % 100 < 20:
-                        valute_copeyka = "копеек"
-                    elif float(decimal_part) % 10 == 1:
-                        valute_copeyka = "копейка"
-                    elif 1 < float(decimal_part) % 10 <= 4:
-                        valute_copeyka = "копейки"
-                    else:
-                        valute_copeyka = "копеек"
-
-                    # Формируем итоговую строку
-                    suma_dann_dl = f"{integer_words} {valute_rub} {decimal_words}".strip().replace('ноль рублей',
-                                                                                                   '').replace(' ,',
-                                                                                                               '')
-                    return suma_dann_dl
-                except ValueError:
-                    return "Неверный формат числа"
-
-            suma_dann_dl = number_to_words(str(summa_dog_leas))
+            suma_dann_dl = number_to_words(str(summa_dog_leas), currency_list)
 
         chislo_propis_dl(grafic)
 
