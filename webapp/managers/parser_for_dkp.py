@@ -720,7 +720,7 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
                     deystvuysh_list_seller = '-'
             except:
                 deystvuysh_list_seller = 'действующей'
-            imenyemoe_dkp = 'именуемая'
+            imenyemoe_dkp = 'именуемое'
         return deystvuysh_list_seller, imenyemoe_dkp
 
     inn_leasee1 = read_xlsx(path_application, pl)
@@ -769,7 +769,7 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
                     deystvuysh_list_leasee = 'действующая'
             except:
                 deystvuysh_list_leasee = 'действующей'
-            imenyemoe = 'именуемая'
+            imenyemoe = 'именуемое'
         return put_padezh_podpisant_rg, deystvuysh_list_leasee, imenyemoe, doverka_ustav_leasee
 
     '''выше надо закинуть в реплейс, 
