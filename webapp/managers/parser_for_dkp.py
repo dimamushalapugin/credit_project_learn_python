@@ -484,10 +484,6 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
             # Преобразуем десятичную часть в число прописью
             if currency == 'Рубль':
                 decimal_words = num2words(int(decimal_part), lang='ru', to='currency', currency='RUB')
-            # elif currency == 'Китайский юань':
-            #     decimal_words = num2words(int(decimal_part), lang='ru', to='currency', currency='CNY')
-            # elif currency == 'Доллар США':
-            #     decimal_words = num2words(int(decimal_part), lang='ru', to='currency', currency='USD')
             else:
                 decimal_words = num2words(int(decimal_part), lang='ru')
 
@@ -502,14 +498,22 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
                 valute_copeyka = "копеек"
 
             # Формируем итоговую строку
-            # if currency_list == 'Рубль':
-            suma_dann1 = ((f"{integer_words} {decimal_words}".strip().replace('ноль рублей', '').replace(',', '')
-                           .replace('копеек', 'сотых')).replace('копейка', 'сотая')
-                          .replace('копейки', 'сотые'))
-            # elif currency_list == 'Китайский юань':
-            #     suma_dann1 = f"{integer_words} целых {decimal_words} сотых китайских юаней"
-            # elif currency_list == 'Доллар США':
-            #     suma_dann1 = f"{integer_words} целых {decimal_words} сотых долларов США"
+            if currency == 'Рубль':
+                suma_dann1 = ((f"({integer_words}) {valute_rub} {decimal_part} {valute_copeyka}".strip()
+                               .replace('ноль рублей', '').replace(',', '')))
+            elif currency == 'Китайский юань':
+                suma_dann1 = f"({integer_words}) китайских юаней {decimal_part} {valute_copeyka.
+                replace('копеек', 'феней').replace('копейка', 'фень').
+                replace('копейки', 'феня')}"
+            elif currency == 'Доллар США':
+                suma_dann1 = f"({integer_words}) долларов США {decimal_part} {valute_copeyka.
+                replace('копеек', 'центов').replace('копейка', 'цент').
+                replace('копейки', 'цента')}"
+            elif currency == 'Евро':
+                suma_dann1 = f"({integer_words}) евро {decimal_part} {valute_copeyka.
+                replace('копеек', 'евроцентов').replace('копейка', 'евроцент').
+                replace('копейки', 'евроцента')}"
+            print(suma_dann1)
             return suma_dann1
         except ValueError:
             return "Неверный формат числа"
@@ -719,8 +723,7 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
                 else:
                     deystvuysh_list_seller = '-'
             except:
-                deystvuysh_list_seller = 'действующей'
-            imenyemoe_dkp = 'именуемое'
+                imenyemoe_dkp = 'именуемая'
         return deystvuysh_list_seller, imenyemoe_dkp
 
     inn_leasee1 = read_xlsx(path_application, pl)
@@ -768,7 +771,7 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
                 if result_dadata_leasee()[0]['data']['opf']['short'] in ['ИП', 'КФХ', 'ГКФХ']:
                     deystvuysh_list_leasee = 'действующая'
             except:
-                deystvuysh_list_leasee = 'действующей'
+                deystvuysh_list_leasee = 'действующего'
             imenyemoe = 'именуемое'
         return put_padezh_podpisant_rg, deystvuysh_list_leasee, imenyemoe, doverka_ustav_leasee
 
