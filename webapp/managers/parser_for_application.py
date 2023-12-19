@@ -901,7 +901,7 @@ def start_filling_agreement(inn_leasee, path_application, path_graphic, signator
                             '{{ B66 }}': sheet['B66'].value.strftime('%d.%m.%Y'),
                             '{{ B67 }}': sheet['B67'].value.strftime('%d.%m.%Y'),
                             '{{ B68 }}': sheet['B68'].value.strftime('%d.%m.%Y'),
-                            '{{ B69 }}': sheet['B93'].value.strftime('%d.%m.%Y'),
+                            '{{ B93 }}': sheet['B93'].value.strftime('%d.%m.%Y'),
                             '{{ F7 }}': f"{round(float(sheet['F7'].value), 2):,}".replace(',', ' ').replace('.', ',') if
                             f"{round(float(sheet['F7'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F7'].value), 2):,}".replace(',', ' ').replace('.',
@@ -1024,7 +1024,7 @@ def start_filling_agreement(inn_leasee, path_application, path_graphic, signator
                             f"{round(float(sheet['F31'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F31'].value), 2):,}".replace(',', ' ').replace(
                                 '.', ',') + '0',
-                            '{{ 32 }}': f"{round(float(sheet['F32'].value), 2):,}".replace(',', ' ').replace('.',
+                            '{{ F32 }}': f"{round(float(sheet['F32'].value), 2):,}".replace(',', ' ').replace('.',
                                                                                                              ',') if
                             f"{round(float(sheet['F32'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                                 -3] == ',' else f"{round(float(sheet['F32'].value), 2):,}".replace(',', ' ').replace(
