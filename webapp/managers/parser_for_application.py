@@ -58,7 +58,7 @@ def start_filling_application(inn_leasee, path_application, inn_seller1, inn_sel
 
         dadata = Dadata(DADATA_TOKEN)
         result = dadata.find_by_id("party", inn_leasee)
-        logging.info(f"{result}")
+        # logging.info(f"{result}")
 
         ip_or_kfh = 'Нет'
         if result[0]['data']['opf']['short'] in ['ИП', 'КФХ', 'ГКФХ']:
@@ -404,11 +404,6 @@ def start_filling_agreement(inn_leasee, path_application, path_graphic, signator
         os.makedirs(dir_path)
 
     data_xlsx = read_xlsx(path_application, pl)
-    for i in range(len(data_xlsx)):
-        print(f'#{i} -> {data_xlsx[i]}')
-
-    print(pl)
-    print(inn_seller)
 
     formatted_name_leader_leasee = data_xlsx[17]
     full_name_leasee = data_xlsx[22]
@@ -584,7 +579,7 @@ def start_filling_agreement(inn_leasee, path_application, path_graphic, signator
                       'юани': 'юанях', 'юаней': 'юанях', 'долларов США': 'долларах США'}
         # print(currency)
         # print(wr_rub_usd)
-        print('1910')
+        # print('1910')
         leader_leasee_pod = leader_leasee
         inn_kpp1 = 'ИНН/КПП'
         ogrnip = ''
@@ -595,7 +590,7 @@ def start_filling_agreement(inn_leasee, path_application, path_graphic, signator
             put_padezh_podpisant_rg = ''
         else:
             imenyemoe = 'именуемое'
-        print(f'123213 {put_padezh_podpisant_rg}')
+        # print(f'123213 {put_padezh_podpisant_rg}')
         vikup = '1000'
         pl_entry = pl
 
