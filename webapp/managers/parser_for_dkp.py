@@ -337,7 +337,7 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
         summ = 0
         for num in payment_order.split(' '):
             summ += float(num)
-        print(summ)
+        # print(summ)
 
         if summ == 100:
             print("Суммы равны 100")
@@ -435,11 +435,11 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
 
             # Преобразуем целую часть в число прописью
             integer_words = num2words(int(integer_part), lang='ru')
-            print(integer_part)
+            # print(integer_part)
 
             # Преобразуем десятичную часть в число прописью
             decimal_words = num2words(int(decimal_part), lang='ru')
-            print(decimal_part)
+            # print(decimal_part)
 
             # формируем итоговую строку
             if int(integer_part) in [1, 21, 31, 41, 51, 61, 71, 81, 91] and decimal_part == '00':
@@ -515,7 +515,7 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
             return "Неверный формат числа"
 
     def payment_for_dkp(price_entry):
-        print(payment_order)
+        # print(payment_order)
         punkt_2_3_1_pay = ''
         punkt_2_3_2_pay = ''
         punkt_2_3_3_pay = ''
@@ -695,7 +695,7 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
     def seller_dkp_all():
         result_dkp = DADATA_BASE.find_by_id("party", inn_seller)
         full_name_seller = result_dkp[0]['data']['name']['short_with_opf'].replace('"', '')
-        print(full_name_seller)
+        # print(full_name_seller)
         doverka_ustav_seller = 'Устава'
         for elem in full_name_seller.split():
             if elem in ['Индивидуальный', 'предприниматель', 'хозяйства']:
@@ -738,7 +738,7 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
         # dadata = Dadata(DADATA_TOKEN, DADATA_SECRET)
         logging.info(f"({fio})")
         put_padezh_podpisant = DADATA_BASE.clean("name", fio)
-        print(put_padezh_podpisant)
+        # print(put_padezh_podpisant)
         return put_padezh_podpisant
 
     rod_padezh_fio_leader = rod_padezh_fio_leader(read_xlsx(path_application, pl)[5])
@@ -751,7 +751,7 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
             put_padezh_podpisant_rg = rod_padezh_fio_leader['result_genitive']
         except:
             put_padezh_podpisant_rg = ''
-        print(f'123 {put_padezh_podpisant_rg}')
+        # print(f'123 {put_padezh_podpisant_rg}')
         doverka_ustav_leasee = 'Устава'
         for elem in ip_or_not[22].split():
             if elem in ['Индивидуальный', 'предприниматель', 'хозяйства']:
