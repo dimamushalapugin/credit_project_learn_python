@@ -7,6 +7,7 @@ from webapp.managers.parser_for_application import start_filling_application, st
 from webapp.managers.parser_for_dkp import start_filling_agreement_dkp
 from webapp.config import APPLICATION_PATH
 from webapp.risk.logger import logging
+from webapp.risk.mongo_db import write_to_mongodb_app_count
 
 blueprint = Blueprint('manager', __name__, url_prefix='/managers')
 
@@ -221,6 +222,8 @@ def create_application():
         data = request.form
         file_path = create_xlsx_file(data)
         file_name = f'Заявка с заключением {data["client_inn"]}.xlsx'
+        write_to_mongodb_app_count(current_user, data["client_inn"], data["seller_inn1"], data["seller_inn2"],
+                                   data["seller_inn3"], data["seller_inn4"])
         return download_application(file_path, file_name)
     except Exception as e:
         flash('Проверьте корректность ИНН', 'error')
