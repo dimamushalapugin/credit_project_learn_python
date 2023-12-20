@@ -84,17 +84,49 @@ class MongoDB:
             info = {}
             return info
 
+    @staticmethod
+    def __update_mongodb_bank_details(db, sheet, client_inn):
+        try:
+            data = db.companyBankDetails.find_one({'client_inn': client_inn})
+        except Exception as e:
+            logging.info(e, exc_info=True)
+            data = {}
+
+        logging.info('UPDATE MONGODB BANK DETAILS')
+        logging.info('=' * 40)
+        if data.get('bank') != sheet['G39'].value and sheet['G39'].value is not None:
+            logging.info(f'{data.get("bank")} -> {sheet["G39"].value}')
+            db.companyBankDetails.update_one({'client_inn': client_inn}, {'$set': {
+                'bank': sheet['G39'].value
+            }})
+        if data.get('checking_account') != sheet['B40'].value and sheet['B40'].value is not None:
+            logging.info(f'{data.get("checking_account")} -> {sheet["B40"].value}')
+            db.companyBankDetails.update_one({'client_inn': client_inn}, {'$set': {
+                'checking_account': sheet['B40'].value
+            }})
+        if data.get('correspondent_account') != sheet['F40'].value and sheet['F40'].value is not None:
+            logging.info(f'{data.get("correspondent_account")} -> {sheet["F40"].value}')
+            db.companyBankDetails.update_one({'client_inn': client_inn}, {'$set': {
+                'correspondent_account': sheet['F40'].value
+            }})
+        if data.get('bik') != sheet['I40'].value and sheet['I40'].value is not None:
+            logging.info(f'{data.get("bik")} -> {sheet["I40"].value}')
+            db.companyBankDetails.update_one({'client_inn': client_inn}, {'$set': {
+                'bik': sheet['I40'].value
+            }})
+        logging.info('=' * 40)
+
     def write_to_mongodb_bank_details(self, client_inn, sheet):
+        data = {
+            'client_inn': client_inn,
+            'bank': sheet['G39'].value.strip(),
+            'checking_account': sheet['B40'].value.strip(),
+            'correspondent_account': sheet['F40'].value.strip(),
+            'bik': sheet['I40'].value.strip(),
+            'date': datetime.now().strftime("%d.%m.%Y | %H:%M:%S"),
+        }
         if not self.check_in_manager_base(client_inn):
             try:
-                data = {
-                    'client_inn': client_inn,
-                    'bank': sheet['G39'].value.strip(),
-                    'checking_account': sheet['B40'].value.strip(),
-                    'correspondent_account': sheet['F40'].value.strip(),
-                    'bik': sheet['I40'].value.strip(),
-                    'date': datetime.now().strftime("%d.%m.%Y | %H:%M:%S"),
-                }
                 db = self.client.managerBase
                 db.companyBankDetails.insert_one(data)
                 logging.info(f"Банковские реквизиты клиента ({client_inn}) успешно записаны в MongoDB")
@@ -103,6 +135,11 @@ class MongoDB:
                 logging.info(e, exc_info=True)
         else:
             logging.info(f"Лизингополучатель (ИНН: {client_inn}) уже есть в MongoDB")
+            try:
+                db = self.client.managerBase
+                self.__update_mongodb_bank_details(db, sheet, client_inn)
+            except Exception as e:
+                logging.info(e, exc_info=True)
 
     def read_mongodb_director_details(self, director_inn):
         try:
@@ -127,20 +164,67 @@ class MongoDB:
             info = {}
             return info
 
+    @staticmethod
+    def __update_mongodb_director_details(db, sheet, director_inn):
+        try:
+            data = db.directorDetails.find_one({'director_inn': director_inn})
+        except Exception as e:
+            logging.info(e, exc_info=True)
+            data = {}
+
+        logging.info('UPDATE MONGODB DIRECTOR DETAILS')
+        logging.info('=' * 40)
+        if data.get('date_of_birth') != sheet['D24'].value and sheet['D24'].value is not None:
+            logging.info(f'{data.get("date_of_birth")} -> {sheet["D24"].value}')
+            db.directorDetails.update_one({'director_inn': director_inn}, {'$set': {
+                'date_of_birth': sheet['D24'].value
+            }})
+        if data.get('place_of_birth') != sheet['F24'].value and sheet['F24'].value is not None:
+            logging.info(f'{data.get("place_of_birth")} -> {sheet["F24"].value}')
+            db.directorDetails.update_one({'director_inn': director_inn}, {'$set': {
+                'place_of_birth': sheet['F24'].value
+            }})
+        if data.get('passport') != sheet['D28'].value and sheet['D28'].value is not None:
+            logging.info(f'{data.get("passport")} -> {sheet["D28"].value}')
+            db.directorDetails.update_one({'director_inn': director_inn}, {'$set': {
+                'passport': sheet['D28'].value
+            }})
+        if data.get('issued_by') != sheet['F28'].value and sheet['F28'].value is not None:
+            logging.info(f'{data.get("issued_by")} -> {sheet["F28"].value}')
+            db.directorDetails.update_one({'director_inn': director_inn}, {'$set': {
+                'issued_by': sheet['F28'].value
+            }})
+        if data.get('department_code') != sheet['D29'].value and sheet['D29'].value is not None:
+            logging.info(f'{data.get("department_code")} -> {sheet["D29"].value}')
+            db.directorDetails.update_one({'director_inn': director_inn}, {'$set': {
+                'department_code': sheet['D29'].value
+            }})
+        if data.get('address_reg') != sheet['D30'].value and sheet['D30'].value is not None:
+            logging.info(f'{data.get("address_reg")} -> {sheet["D30"].value}')
+            db.directorDetails.update_one({'director_inn': director_inn}, {'$set': {
+                'address_reg': sheet['D30'].value
+            }})
+        if data.get('address_fact') != sheet['E31'].value and sheet['E31'].value is not None:
+            logging.info(f'{data.get("address_fact")} -> {sheet["E31"].value}')
+            db.directorDetails.update_one({'director_inn': director_inn}, {'$set': {
+                'address_fact': sheet['E31'].value
+            }})
+        logging.info('=' * 40)
+
     def write_to_mongodb_director_details(self, director_inn, sheet):
+        data = {
+            'director_inn': director_inn,
+            'date_of_birth': sheet['D24'].value,
+            'place_of_birth': sheet['F24'].value.strip(),
+            'passport': sheet['D28'].value.strip(),
+            'issued_by': sheet['F28'].value.strip(),
+            'department_code': sheet['D29'].value.strip(),
+            'address_reg': sheet['D30'].value.strip(),
+            'address_fact': sheet['E31'].value.strip(),
+            'date': datetime.now().strftime("%d.%m.%Y | %H:%M:%S")
+        }
         if not self.check_in_director_base(director_inn):
             try:
-                data = {
-                    'director_inn': director_inn,
-                    'date_of_birth': sheet['D24'].value,
-                    'place_of_birth': sheet['F24'].value.strip(),
-                    'passport': sheet['D28'].value.strip(),
-                    'issued_by': sheet['F28'].value.strip(),
-                    'department_code': sheet['D29'].value.strip(),
-                    'address_reg': sheet['D30'].value.strip(),
-                    'address_fact': sheet['E31'].value.strip(),
-                    'date': datetime.now().strftime("%d.%m.%Y | %H:%M:%S")
-                }
                 db = self.client.managerBase
                 db.directorDetails.insert_one(data)
                 logging.info(f"Реквизиты директора ({director_inn}) успешно записаны в MongoDB")
@@ -149,3 +233,8 @@ class MongoDB:
                 logging.info(e, exc_info=True)
         else:
             logging.info(f"Директор ({director_inn}) уже есть в MongoDB")
+            try:
+                db = self.client.managerBase
+                self.__update_mongodb_director_details(db, sheet, director_inn)
+            except Exception as e:
+                logging.info(e, exc_info=True)
