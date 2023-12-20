@@ -343,8 +343,8 @@ def start_filling_application(inn_leasee, path_application, inn_seller1, inn_sel
             bank_details = mongo.read_mongodb_bank_details(inn_leasee)
             if bank_details:
                 sheet_anketa_1_list['G39'].value = bank_details.get('bank')
-                sheet_anketa_1_list['B40'].value = bank_details.get('checking_account')
-                sheet_anketa_1_list['F40'].value = bank_details.get('correspondent_account')
+                sheet_anketa_1_list['B40'].value = bank_details.get('check_account')
+                sheet_anketa_1_list['F40'].value = bank_details.get('cor_account')
                 sheet_anketa_1_list['I40'].value = bank_details.get('bik')
 
             counter_2_anketa = 7
