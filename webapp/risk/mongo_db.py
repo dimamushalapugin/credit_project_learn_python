@@ -102,7 +102,7 @@ class MongoDB:
                 logging.info("Не записалась информация про банковские реквизиты в MongoDB")
                 logging.info(e, exc_info=True)
         else:
-            logging.info(f"{client_inn} уже есть в MongoDB")
+            logging.info(f"Лизингополучатель (ИНН: {client_inn}) уже есть в MongoDB")
 
     def read_mongodb_director_details(self, director_inn):
         try:
