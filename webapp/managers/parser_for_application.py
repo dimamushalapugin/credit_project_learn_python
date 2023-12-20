@@ -342,6 +342,8 @@ def start_filling_application(inn_leasee, path_application, inn_seller1, inn_sel
             # print(sheet_anketa_1_list['A6'].value)
             bank_details = mongo.read_mongodb_bank_details(inn_leasee)
             director_details = mongo.read_mongodb_director_details(inn_dir_leasee)
+            logging.info(bank_details)
+            logging.info(director_details)
             if bank_details:
                 sheet_anketa_1_list['G39'].value = bank_details.get('bank')
                 sheet_anketa_1_list['B40'].value = bank_details.get('check_account')
