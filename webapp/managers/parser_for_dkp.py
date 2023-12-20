@@ -185,10 +185,10 @@ def identification_lkmb_rt(signatory: str, investor: str):
         kor_chet_lkmb = '30101810445250000360'
         bik_lkmb = '044525360'
     elif investor.upper() == 'ПАО «Сбербанк»'.upper():
-        r_chet_lkmb = 'ХХХХХХХХХХХХХХХХХХ'
+        r_chet_lkmb = '40701810962000000214'
         bank_rekv_lkmb = 'ПАО «Сбербанк»'
-        kor_chet_lkmb = 'ХХХХХХХХХХХХХХ'
-        bik_lkmb = 'ХХХХХХХХХХХХХХХХХХХ'
+        kor_chet_lkmb = '30101810900000000603'
+        bik_lkmb = '042202603'
     else:
         r_chet_lkmb = '40702810100020002464'
         bank_rekv_lkmb = 'ПАО «АК БАРС» БАНК г. Казань'
