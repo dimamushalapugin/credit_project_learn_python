@@ -79,13 +79,16 @@ class MongoDB:
         if not self.check_in_manager_base(client_inn):
             try:
                 data = {
+                    'client_inn': client_inn,
                     'bank': sheet['G39'].value,
                     'checking_account': sheet['B40'].value,
                     'correspondent_account': sheet['F40'].value,
                     'bik': sheet['I40'].value,
+                    'date': datetime.now().strftime("%d.%m.%Y | %H:%M:%S"),
                 }
                 db = self.client.managerBase
                 db.companyBankDetails.insert_one(data)
+                logging.info(f"Банковские реквизиты клиента ({client_inn}) успешно записаны в MongoDB")
             except Exception as e:
                 logging.info("Не записалась информация про банковские реквизиты в MongoDB")
                 logging.info(e, exc_info=True)
