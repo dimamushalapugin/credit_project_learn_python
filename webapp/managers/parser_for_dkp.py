@@ -47,8 +47,7 @@ def read_xlsx(path_application, pl):
     full_name_leasee = sheet_zayavlenie['A5'].value
     inn_kpp_leasee = sheet_zayavlenie['D6'].value
     client_inn = inn_kpp_leasee.split('/')[0] if '/' in inn_kpp_leasee else inn_kpp_leasee
-    # if ip_or_kfh == 'Да':
-    #     inn_leasee = sheet_zayavlenie['C7'].value
+
 
     formatted_name_leader_leasee = '-'
     leader_leasee = '-'
@@ -77,8 +76,10 @@ def read_xlsx(path_application, pl):
     # читаем страницу Анкета Стр.1
 
     sheet_anketa_1_list = wb['Анкета Стр.1']
+    director_inn = sheet_anketa_1_list['H25'].value
     mongo = MongoDB(current_user)
     mongo.write_to_mongodb_bank_details(client_inn, sheet_anketa_1_list)
+    mongo.write_to_mongodb_director_details(director_inn, sheet_anketa_1_list)
     ogrn_leasee = sheet_anketa_1_list['F7'].value
     okato_leasee = sheet_anketa_1_list['H7'].value
     okpo_leasee = sheet_anketa_1_list['J7'].value

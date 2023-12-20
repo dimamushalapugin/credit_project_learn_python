@@ -254,7 +254,7 @@ def start_filling_application(inn_leasee, path_application, inn_seller1, inn_sel
             address_seller4 = result_seller4[0]['data']['address']['unrestricted_value']
             # print(f'Здесь брать юр адрес Продавца №4 {address_seller4}')
 
-    def zapolnenie_zayvki_ankety(inn_leasee, path_application):
+    def zapolnenie_zayvki_ankety(inn_leasee, path_application, inn_dir_leasee):
         logging.info(f"({current_user}) Этап 4.")
         try:
             # сейчас будем заполнять заявку, вносить данные по лп
@@ -341,11 +341,20 @@ def start_filling_application(inn_leasee, path_application, inn_seller1, inn_sel
             sheet_anketa_1_list['A6'].value = full_krakt_name_leasee
             # print(sheet_anketa_1_list['A6'].value)
             bank_details = mongo.read_mongodb_bank_details(inn_leasee)
+            director_details = mongo.read_mongodb_director_details(inn_dir_leasee)
             if bank_details:
                 sheet_anketa_1_list['G39'].value = bank_details.get('bank')
                 sheet_anketa_1_list['B40'].value = bank_details.get('check_account')
                 sheet_anketa_1_list['F40'].value = bank_details.get('cor_account')
                 sheet_anketa_1_list['I40'].value = bank_details.get('bik')
+            if director_details:
+                sheet_anketa_1_list['D24'].value = director_details.get('date_of_birth')
+                sheet_anketa_1_list['F24'].value = director_details.get('place_of_birth')
+                sheet_anketa_1_list['D28'].value = director_details.get('passport')
+                sheet_anketa_1_list['F28'].value = director_details.get('issued_by')
+                sheet_anketa_1_list['D29'].value = director_details.get('department_code')
+                sheet_anketa_1_list['D30'].value = director_details.get('address_reg')
+                sheet_anketa_1_list['E31'].value = director_details.get('address_fact')
 
             counter_2_anketa = 7
             for number in range(8, sheet_anketa_1_list.max_row + 2):
@@ -397,7 +406,7 @@ def start_filling_application(inn_leasee, path_application, inn_seller1, inn_sel
 
     parser_info_leasee(inn_leasee)  # берет инфу из инета по лизингополучателю
     application_filename = zapolnenie_zayvki_ankety(inn_leasee,
-                                                    path_application)  # заполняет эксель данными из инета по лизингополучателю
+                                                    path_application, inn_dir_leasee)  # заполняет эксель данными из инета по лизингополучателю
 
     return application_filename
 
