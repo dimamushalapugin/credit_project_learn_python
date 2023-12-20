@@ -46,7 +46,7 @@ def read_xlsx(path_application, pl):
     sheet_zayavlenie = wb['Заявление']
     full_name_leasee = sheet_zayavlenie['A5'].value
     inn_kpp_leasee = sheet_zayavlenie['D6'].value
-    client_inn = inn_kpp_leasee.split('/')[0]
+    client_inn = inn_kpp_leasee.split('/')[0] if '/' in inn_kpp_leasee else inn_kpp_leasee
     # if ip_or_kfh == 'Да':
     #     inn_leasee = sheet_zayavlenie['C7'].value
 
