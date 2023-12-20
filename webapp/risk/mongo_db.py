@@ -77,7 +77,7 @@ class MongoDB:
                 }
                 return info
             else:
-                logging.info(f"{client_inn} отсутствует в MongoDB")
+                logging.info(f"Лизингополучатель (ИНН: {client_inn}) отсутствует в MongoDB")
         except Exception as e:
             logging.info("Не прочиталась информация про банковские реквизиты в MongoDB")
             logging.info(e, exc_info=True)
@@ -120,7 +120,7 @@ class MongoDB:
                 }
                 return info
             else:
-                logging.info(f"{director_inn} отсутствует в MongoDB")
+                logging.info(f"Дирктор (ИНН: {director_inn}) отсутствует в MongoDB")
         except Exception as e:
             logging.info("Не прочиталась информация про банковские реквизиты в MongoDB")
             logging.info(e, exc_info=True)
