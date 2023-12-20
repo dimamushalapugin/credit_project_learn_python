@@ -94,25 +94,25 @@ class MongoDB:
 
         logging.info('UPDATE MONGODB BANK DETAILS')
         logging.info('=' * 40)
-        if data.get('bank') != sheet['G39'].value and sheet['G39'].value is not None:
-            logging.info(f'{data.get("bank")} -> {sheet["G39"].value}')
+        if data.get('bank') != str(sheet['G39'].value).strip() and str(sheet['G39'].value).strip() is not None:
+            logging.info(f'{data.get("bank")} -> {str(sheet["G39"].value).strip()}')
             db.companyBankDetails.update_one({'client_inn': client_inn}, {'$set': {
-                'bank': sheet['G39'].value
+                'bank': str(sheet['G39'].value).strip()
             }})
-        if data.get('checking_account') != sheet['B40'].value and sheet['B40'].value is not None:
-            logging.info(f'{data.get("checking_account")} -> {sheet["B40"].value}')
+        if data.get('checking_account') != str(sheet['B40'].value).strip() and str(sheet['B40'].value).strip() is not None:
+            logging.info(f'{data.get("checking_account")} -> {str(sheet["B40"].value).strip()}')
             db.companyBankDetails.update_one({'client_inn': client_inn}, {'$set': {
-                'checking_account': sheet['B40'].value
+                'checking_account': str(sheet['B40'].value).strip()
             }})
-        if data.get('correspondent_account') != sheet['F40'].value and sheet['F40'].value is not None:
-            logging.info(f'{data.get("correspondent_account")} -> {sheet["F40"].value}')
+        if data.get('correspondent_account') != str(sheet['F40'].value).strip() and str(sheet['F40'].value).strip() is not None:
+            logging.info(f'{data.get("correspondent_account")} -> {str(sheet["F40"].value).strip()}')
             db.companyBankDetails.update_one({'client_inn': client_inn}, {'$set': {
-                'correspondent_account': sheet['F40'].value
+                'correspondent_account': str(sheet['F40'].value).strip()
             }})
-        if data.get('bik') != sheet['I40'].value and sheet['I40'].value is not None:
-            logging.info(f'{data.get("bik")} -> {sheet["I40"].value}')
+        if data.get('bik') != str(sheet['I40'].value).strip() and str(sheet['I40'].value).strip() is not None:
+            logging.info(f'{data.get("bik")} -> {str(sheet["I40"].value).strip()}')
             db.companyBankDetails.update_one({'client_inn': client_inn}, {'$set': {
-                'bik': sheet['I40'].value
+                'bik': str(sheet['I40'].value).strip()
             }})
         logging.info('=' * 40)
 
@@ -179,35 +179,36 @@ class MongoDB:
             db.directorDetails.update_one({'director_inn': director_inn}, {'$set': {
                 'date_of_birth': sheet['D24'].value
             }})
-        if data.get('place_of_birth') != sheet['F24'].value and sheet['F24'].value is not None:
-            logging.info(f'{data.get("place_of_birth")} -> {sheet["F24"].value}')
+        if data.get('place_of_birth') != str(sheet['F24'].value).strip() and str(
+                sheet['F24'].value).strip() is not None:
+            logging.info(f'{data.get("place_of_birth")} -> {str(sheet["F24"].value).strip()}')
             db.directorDetails.update_one({'director_inn': director_inn}, {'$set': {
-                'place_of_birth': sheet['F24'].value
+                'place_of_birth': str(sheet['F24'].value).strip()
             }})
-        if data.get('passport') != sheet['D28'].value and sheet['D28'].value is not None:
-            logging.info(f'{data.get("passport")} -> {sheet["D28"].value}')
+        if data.get('passport') != str(sheet['D28'].value).strip() and str(sheet['D28'].value).strip() is not None:
+            logging.info(f'{data.get("passport")} -> {str(sheet["D28"].value).strip()}')
             db.directorDetails.update_one({'director_inn': director_inn}, {'$set': {
-                'passport': sheet['D28'].value
+                'passport': str(sheet['D28'].value).strip()
             }})
-        if data.get('issued_by') != sheet['F28'].value and sheet['F28'].value is not None:
-            logging.info(f'{data.get("issued_by")} -> {sheet["F28"].value}')
+        if data.get('issued_by') != str(sheet['F28'].value).strip() and str(sheet['F28'].value).strip() is not None:
+            logging.info(f'{data.get("issued_by")} -> {str(sheet["F28"].value).strip()}')
             db.directorDetails.update_one({'director_inn': director_inn}, {'$set': {
-                'issued_by': sheet['F28'].value
+                'issued_by': str(sheet['F28'].value).strip()
             }})
-        if data.get('department_code') != sheet['D29'].value and sheet['D29'].value is not None:
-            logging.info(f'{data.get("department_code")} -> {sheet["D29"].value}')
+        if data.get('department_code') != str(sheet['D29'].value).strip() and sheet['D29'].value is not None:
+            logging.info(f'{data.get("department_code")} -> {str(sheet["D29"].value).strip()}')
             db.directorDetails.update_one({'director_inn': director_inn}, {'$set': {
-                'department_code': sheet['D29'].value
+                'department_code': str(sheet['D29'].value).strip()
             }})
-        if data.get('address_reg') != sheet['D30'].value and sheet['D30'].value is not None:
-            logging.info(f'{data.get("address_reg")} -> {sheet["D30"].value}')
+        if data.get('address_reg') != str(sheet['D30'].value).strip() and str(sheet['D30'].value).strip() is not None:
+            logging.info(f'{data.get("address_reg")} -> {str(sheet["D30"].value).strip()}')
             db.directorDetails.update_one({'director_inn': director_inn}, {'$set': {
-                'address_reg': sheet['D30'].value
+                'address_reg': str(sheet['D30'].value).strip()
             }})
-        if data.get('address_fact') != sheet['E31'].value and sheet['E31'].value is not None:
-            logging.info(f'{data.get("address_fact")} -> {sheet["E31"].value}')
+        if data.get('address_fact') != str(sheet['E31'].value).strip() and str(sheet['E31'].value).strip() is not None:
+            logging.info(f'{data.get("address_fact")} -> {str(sheet["E31"].value).strip()}')
             db.directorDetails.update_one({'director_inn': director_inn}, {'$set': {
-                'address_fact': sheet['E31'].value
+                'address_fact': str(sheet['E31'].value).strip()
             }})
         logging.info('=' * 40)
 
