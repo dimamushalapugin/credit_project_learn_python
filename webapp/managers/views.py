@@ -7,7 +7,7 @@ from webapp.managers.parser_for_application import start_filling_application, st
 from webapp.managers.parser_for_dkp import start_filling_agreement_dkp
 from webapp.config import APPLICATION_PATH
 from webapp.risk.logger import logging
-from webapp.risk.mongo_db import write_to_mongodb_app_count
+from webapp.risk.mongo_db import MongoDB
 
 blueprint = Blueprint('manager', __name__, url_prefix='/managers')
 
@@ -54,8 +54,9 @@ def download(filename):
 
 
 def create_xlsx_file(data):
-    return start_filling_application(data['client_inn'].strip(), APPLICATION_PATH, data['seller_inn1'].strip(), data['seller_inn2'].strip(),
-                                     data['seller_inn3'].strip(), data['seller_inn4'].strip())
+    return start_filling_application(data['client_inn'].strip(), APPLICATION_PATH, data['seller_inn1'].strip(),
+                                     data['seller_inn2'].strip(), data['seller_inn3'].strip(),
+                                     data['seller_inn4'].strip())
 
 
 def create_docx_file(data, application_path, graphic_path):
@@ -146,7 +147,8 @@ def create_agreement():
             create_dl()
             create_dkp()
             return redirect(url_for('manager.managers_page'))
-        except Exception:
+        except Exception as e:
+            logging.info(e, exc_info=True)
             flash('Ошибка при создании договора. Проверьте правильность прикрепляемых файлов', 'error')
             return redirect(url_for('manager.managers_page'))
         finally:
@@ -220,9 +222,10 @@ def create_application():
     logging.info(f"({current_user}) Нажал на кнопку 'Создать заявку'")
     try:
         data = request.form
-        write_to_mongodb_app_count(current_user, data["client_inn"].strip(), data["seller_inn1"].strip(),
-                                   data["seller_inn2"].strip(), data["seller_inn3"].strip(),
-                                   data["seller_inn4"].strip())
+        mongo = MongoDB(current_user)
+        mongo.write_to_mongodb_app_count(data["client_inn"].strip(), data["seller_inn1"].strip(),
+                                         data["seller_inn2"].strip(), data["seller_inn3"].strip(),
+                                         data["seller_inn4"].strip())
         file_path = create_xlsx_file(data)
         file_name = f'Заявка с заключением {data["client_inn"].strip()}.xlsx'
         return download_application(file_path, file_name)

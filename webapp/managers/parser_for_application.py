@@ -12,11 +12,12 @@ from datetime import datetime as dt
 from flask_login import current_user
 from webapp.risk.logger import logging
 from webapp.managers.parser_for_dkp import read_xlsx, number_to_words
-from num2words import num2words
-from webapp.config import DADATA_TOKEN, DADATA_SECRET, DADATA_BASE
+from webapp.config import DADATA_TOKEN, DADATA_BASE
+from webapp.risk.mongo_db import MongoDB
 
 
 def start_filling_application(inn_leasee, path_application, inn_seller1, inn_seller2, inn_seller3, inn_seller4):
+    mongo = MongoDB(current_user)
     logging.info(f"({current_user}) Этап 1.")
     temporary_path = r'webapp\static\temporary'
     path_for_download = r'static\temporary'
@@ -339,6 +340,12 @@ def start_filling_application(inn_leasee, path_application, inn_seller1, inn_sel
             # print(sheet_anketa_1_list['J9'].value)
             sheet_anketa_1_list['A6'].value = full_krakt_name_leasee
             # print(sheet_anketa_1_list['A6'].value)
+            bank_details = mongo.read_mongodb_bank_details(inn_leasee)
+            if bank_details:
+                sheet_anketa_1_list['G39'].value = bank_details.get('bank')
+                sheet_anketa_1_list['B40'].value = bank_details.get('checking_account')
+                sheet_anketa_1_list['F40'].value = bank_details.get('correspondent_account')
+                sheet_anketa_1_list['I40'].value = bank_details.get('bik')
 
             counter_2_anketa = 7
             for number in range(8, sheet_anketa_1_list.max_row + 2):
@@ -474,17 +481,8 @@ def start_filling_agreement(inn_leasee, path_application, path_graphic, signator
 
         def rod_padezh_fio_leader(fio):
             put_padezh_podpisant = DADATA_BASE.clean("name", fio)
-            # put_padezh_podpisant = {'source': 'Ибнеев Рустем Шамилевич', 'result': 'Ибнеев Рустем Шамилевич',
-            #                         'result_genitive': 'Ибнеева Рустема Шамилевича',
-            #                         'result_dative': 'Ибнееву Рустему Шамилевичу',
-            #                         'result_ablative': 'Ибнеевым Рустемом Шамилевичем', 'surname': 'Ибнеев',
-            #                         'name': 'Рустем',
-            #                         'patronymic': 'Шамилевич', 'gender': 'М', 'qc': 0}  # mock
             return put_padezh_podpisant
-            # print(f" Здесь пол М или Ж: Итого {put_padezh_podpisant['gender']}")
-            # print(f" Здесь родительный падеж подписанта: Итого {put_padezh_podpisant['result_genitive']}")
 
-        # print('19101')
         rod_padezh_fio_leader = rod_padezh_fio_leader(data_xlsx[5])
         try:
             put_padezh_podpisant_rg = rod_padezh_fio_leader['result_genitive']
