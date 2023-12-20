@@ -79,10 +79,10 @@ class MongoDB:
         if not self.check_in_manager_base(client_inn):
             try:
                 data = {
-                    'bank': sheet['G39'],
-                    'checking_account': sheet['B40'],
-                    'correspondent_account': sheet['F40'],
-                    'bik': sheet['I40'],
+                    'bank': sheet['G39'].value,
+                    'checking_account': sheet['B40'].value,
+                    'correspondent_account': sheet['F40'].value,
+                    'bik': sheet['I40'].value,
                 }
                 db = self.client.managerBase
                 db.companyBankDetails.insert_one(data)
