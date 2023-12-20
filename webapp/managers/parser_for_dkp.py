@@ -264,7 +264,7 @@ def number_to_words(suma_chislo123, curr):
             suma_dann1 = f"({integer_words}) евро {decimal_part} {valute_copeyka.
             replace('копеек', 'евроцентов').replace('копейка', 'евроцент').
             replace('копейки', 'евроцента')}"
-        print(suma_dann1)
+        # print(suma_dann1)
         return suma_dann1
     except ValueError:
         return "Неверный формат числа"
@@ -735,25 +735,19 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
 
     def replace():
         eq_val = equipment_valute()
-        logging.info(f'{eq_val=}')
+        # logging.info(f'{eq_val=}')
         data_xlsx = read_xlsx(path_application, pl)  # все из xlsx
         price_entry = data_xlsx[15]  # цена ПЛ
-        logging.info(f'{price_entry=}')
+        # logging.info(f'{price_entry=}')
         suma_dann = number_to_words(price_entry, currency)
 
         payment_dkp = payment_for_dkp(price_entry)  # все для порядка оплаты
         info_about_seller = result_dadata()
-        logging.info(f'{info_about_seller=}')
+        # logging.info(f'{info_about_seller=}')
         info_about_seller_director = some_info_seller(info_about_seller)
-        logging.info(f'{info_about_seller_director=}')
+        # logging.info(f'{info_about_seller_director=}')
         full_seller = full_rekviti_seller(info_about_seller)
         dbase = DADATA_BASE.clean("name", full_seller[-2])
-        # dbase = {'source': 'Ибнеев Рустем Шамилевич', 'result': 'Ибнеев Рустем Шамилевич',
-        #          'result_genitive': 'Ибнеева Рустема Шамилевича', 'result_dative': 'Ибнееву Рустему Шамилевичу',
-        #          'result_ablative': 'Ибнеевым Рустемом Шамилевичем', 'surname': 'Ибнеев', 'name': 'Рустем',
-        #          'patronymic': 'Шамилевич', 'gender': 'М', 'qc': 0}  # mock
-
-        logging.info(f'{dbase=}')
         rod_padezh_seller = dbase['result_genitive']
         name_and_dover_seller = seller_dkp_all()
         what_gender = dbase['gender']
@@ -861,7 +855,7 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
     def replace_words_in_dkp(docx_file, old_words_dkp, new_words_dkp):
         eq_val = equipment_valute()
         data_xlsx = read_xlsx(path_application, pl)
-        logging.info(f'{data_xlsx=}')
+        # logging.info(f'{data_xlsx=}')
         price_entry = data_xlsx[15]
         payment_dkp = payment_for_dkp(price_entry)  # все для порядка оплаты
         info_about_seller = result_dadata()
