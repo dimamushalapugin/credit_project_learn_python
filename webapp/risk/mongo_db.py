@@ -89,10 +89,10 @@ class MongoDB:
             try:
                 data = {
                     'client_inn': client_inn,
-                    'bank': sheet['G39'].value,
-                    'checking_account': sheet['B40'].value,
-                    'correspondent_account': sheet['F40'].value,
-                    'bik': sheet['I40'].value,
+                    'bank': sheet['G39'].value.strip(),
+                    'checking_account': sheet['B40'].value.strip(),
+                    'correspondent_account': sheet['F40'].value.strip(),
+                    'bik': sheet['I40'].value.strip(),
                     'date': datetime.now().strftime("%d.%m.%Y | %H:%M:%S"),
                 }
                 db = self.client.managerBase
@@ -132,13 +132,13 @@ class MongoDB:
             try:
                 data = {
                     'director_inn': director_inn,
-                    'date_of_birth': sheet['D24'].value,
-                    'place_of_birth': sheet['F24'].value,
-                    'passport': sheet['D28'].value,
-                    'issued_by': sheet['F28'].value,
-                    'department_code': sheet['D29'].value,
-                    'address_reg': sheet['D30'].value,
-                    'address_fact': sheet['E31'].value,
+                    'date_of_birth': sheet['D24'].value.strip(),
+                    'place_of_birth': sheet['F24'].value.strip(),
+                    'passport': sheet['D28'].value.strip(),
+                    'issued_by': sheet['F28'].value.strip(),
+                    'department_code': sheet['D29'].value.strip(),
+                    'address_reg': sheet['D30'].value.strip(),
+                    'address_fact': sheet['E31'].value.strip(),
                     'date': datetime.now().strftime("%d.%m.%Y | %H:%M:%S")
                 }
                 db = self.client.managerBase
