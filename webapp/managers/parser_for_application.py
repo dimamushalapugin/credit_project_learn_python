@@ -369,7 +369,6 @@ def start_filling_application(inn_leasee, path_application, inn_seller1, inn_sel
                         # print(sheet_anketa_1_list.cell(row=row_num + counter_2_anketa + 1, column=9).value)
                     if sheet_anketa_1_list[f'G{number}'].value == 'ИНН:':
                         sheet_anketa_1_list[f'H{number}'].value = inn_dir_leasee
-
                 if sheet_anketa_1_list[f'A{number}'].value == '1.7         Телефон:':
                     sheet_anketa_1_list[f'C{number}'].value = phone_leasee
                     # print(sheet_anketa_1_list[f'C{number}'].value)
@@ -382,6 +381,10 @@ def start_filling_application(inn_leasee, path_application, inn_seller1, inn_sel
                 if sheet_anketa_1_list[f'B{number}'].value == 'ОКВЭД с расшифровкой:':
                     sheet_anketa_1_list[f'E{number}'].value = main_activity_leasee
                     # print(sheet_anketa_1_list[f'E{number}'].value)
+                if ip_or_kfh == 'Да':
+                    if sheet_anketa_1_list[f'G{number}'].value == 'ИНН:':
+                        sheet_anketa_1_list[f'H{number}'].value = inn_leasee
+
 
             application_filename = fr'{temporary_path}\Заявка с заключением {inn_leasee}.xlsx'
             wb.save(application_filename)
