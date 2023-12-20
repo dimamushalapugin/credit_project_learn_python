@@ -8,6 +8,7 @@ from num2words import num2words
 from flask_login import current_user
 from webapp.config import DADATA_BASE
 from webapp.risk.logger import logging
+from webapp.risk.mongo_db import MongoDB
 
 
 def read_xlsx(path_application, pl):
@@ -45,6 +46,7 @@ def read_xlsx(path_application, pl):
     sheet_zayavlenie = wb['Заявление']
     full_name_leasee = sheet_zayavlenie['A5'].value
     inn_kpp_leasee = sheet_zayavlenie['D6'].value
+    client_inn = inn_kpp_leasee.split('/')[0]
     # if ip_or_kfh == 'Да':
     #     inn_leasee = sheet_zayavlenie['C7'].value
 
@@ -75,6 +77,8 @@ def read_xlsx(path_application, pl):
     # читаем страницу Анкета Стр.1
 
     sheet_anketa_1_list = wb['Анкета Стр.1']
+    mongo = MongoDB(current_user)
+    mongo.write_to_mongodb_bank_details(client_inn, sheet_anketa_1_list)
     ogrn_leasee = sheet_anketa_1_list['F7'].value
     okato_leasee = sheet_anketa_1_list['H7'].value
     okpo_leasee = sheet_anketa_1_list['J7'].value
