@@ -132,7 +132,7 @@ class MongoDB:
             try:
                 data = {
                     'director_inn': director_inn,
-                    'date_of_birth': sheet['D24'].value.strip(),
+                    'date_of_birth': sheet['D24'].value,
                     'place_of_birth': sheet['F24'].value.strip(),
                     'passport': sheet['D28'].value.strip(),
                     'issued_by': sheet['F28'].value.strip(),
