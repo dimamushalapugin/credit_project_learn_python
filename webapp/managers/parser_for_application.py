@@ -515,6 +515,9 @@ def start_filling_agreement(inn_leasee, path_application, path_graphic, signator
                 if result[0]['data']['opf']['short'] in ['ИП', 'КФХ', 'ГКФХ']:
                     deystvuysh_list_leasee = 'действующий'
                 imenyemoe = 'именуемый'
+            else:
+                deystvuysh_list_leasee = 'действующая'
+                imenyemoe = 'именуемая'
         except:
             try:
                 if result[0]['data']['opf']['short'] in ['ИП', 'КФХ', 'ГКФХ']:
@@ -655,7 +658,7 @@ def start_filling_agreement(inn_leasee, path_application, path_graphic, signator
         try:
             book = openpyxl.load_workbook(input_raschet_path, data_only=True)
             sheet = book[grafic]
-            b93 = sheet['B93'].value.strftime('%d.%m.%Y')
+            b93 = sheet['B93'].value.strftime('%d.%m.%Y') if sheet['B93'].value is not None else ''
             f7 = f"{round(float(sheet['F7'].value), 2):,}".replace(',', ' ').replace('.', ',') if \
             f"{round(float(sheet['F7'].value), 2):,}".replace(',', ' ').replace('.', ',')[
                 -3] == ',' else f"{round(float(sheet['F7'].value), 2):,}".replace(',', ' ').replace('.', ',') + '0'
