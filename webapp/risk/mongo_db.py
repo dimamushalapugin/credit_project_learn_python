@@ -131,12 +131,12 @@ class MongoDB:
     def write_to_mongodb_bank_details(self, client_inn, sheet):
         data = {
             'client_inn': client_inn,
-            'bank': sheet['G39'].value.strip(),
-            'checking_account': sheet['B40'].value.strip(),
-            'correspondent_account': sheet['F40'].value.strip(),
-            'bik': sheet['I40'].value.strip(),
-            'phone': sheet['C21'].value.strip(),
-            'email': sheet['F21'].value.strip(),
+            'bank': str(sheet['G39'].value).strip(),
+            'checking_account': str(sheet['B40'].value).strip(),
+            'correspondent_account': str(sheet['F40'].value).strip(),
+            'bik': str(sheet['I40'].value).strip(),
+            'phone': str(sheet['C21'].value).strip(),
+            'email': str(sheet['F21'].value).strip(),
             'date': datetime.now().strftime("%d.%m.%Y | %H:%M:%S"),
         }
         if not self.check_in_manager_base(client_inn):
@@ -233,15 +233,15 @@ class MongoDB:
 
     def write_to_mongodb_director_details(self, director_inn, sheet):
         data = {
-            'director_name': sheet['C23'].value.strip(),
+            'director_name': str(sheet['C23'].value).strip(),
             'director_inn': director_inn,
             'date_of_birth': sheet['D24'].value,
-            'place_of_birth': sheet['F24'].value.strip(),
-            'passport': sheet['D28'].value.strip(),
-            'issued_by': sheet['F28'].value.strip(),
-            'department_code': sheet['D29'].value.strip(),
-            'address_reg': sheet['D30'].value.strip(),
-            'address_fact': sheet['E31'].value.strip(),
+            'place_of_birth': str(sheet['F24'].value).strip(),
+            'passport': str(sheet['D28'].value).strip(),
+            'issued_by': str(sheet['F28'].value).strip(),
+            'department_code': str(sheet['D29'].value).strip(),
+            'address_reg': str(sheet['D30'].value).strip(),
+            'address_fact': str(sheet['E31'].value).strip(),
             'date': datetime.now().strftime("%d.%m.%Y | %H:%M:%S")
         }
         if not self.check_in_director_base(director_inn):
