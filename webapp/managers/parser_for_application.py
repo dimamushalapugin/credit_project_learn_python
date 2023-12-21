@@ -515,6 +515,9 @@ def start_filling_agreement(inn_leasee, path_application, path_graphic, signator
                 if result[0]['data']['opf']['short'] in ['ИП', 'КФХ', 'ГКФХ']:
                     deystvuysh_list_leasee = 'действующий'
                 imenyemoe = 'именуемый'
+            else:
+                deystvuysh_list_leasee = 'действующая'
+                imenyemoe = 'именуемая'
         except:
             try:
                 if result[0]['data']['opf']['short'] in ['ИП', 'КФХ', 'ГКФХ']:
