@@ -608,13 +608,24 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
         return result_dkp
 
     def some_info_seller(result_dkp):
-        leader_seller = result_dkp[0]['data']['management']['post']
+        leader_seller = 'Индивидуальный предприниматель'
+        try:
+            leader_seller = result_dkp[0]['data']['management']['post']
+        except:
+            leader_seller = result_dkp[0]['data']['opf']['short']
+        if result_dkp[0]['data']['opf']['short'] == 'ИП':
+            leader_seller = 'Индивидуальный предприниматель'
+        else:
+            leader_seller = 'Глава'
+
         if leader_seller.upper() == 'директор'.upper():
             leader_seller_rod_padezh = 'Директора'
         elif leader_seller.upper() == 'генеральный директор'.upper():
             leader_seller_rod_padezh = 'Генерального директора'
         elif leader_seller.upper() == 'исполняющий обязанности директора'.upper():
             leader_seller_rod_padezh = 'ИО директора'
+        elif leader_seller.upper() == 'управляющий'.upper():
+            leader_seller_rod_padezh = 'Управляющего'
         else:
             leader_seller_rod_padezh = ''
         leader_seller_pod = leader_seller
@@ -624,10 +635,14 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
         ip_or_kfh_dkp = 'Нет'
         if result_dkp[0]['data']['opf']['short'] in ['ИП', 'КФХ', 'ГКФХ']:
             ip_or_kfh_dkp = 'Да'
+            logging.info('12131')
+            logging.info(ip_or_kfh_dkp)
         if ip_or_kfh_dkp == 'Нет':
             inn_kpp_seller = inn_seller + '/' + result_dkp[0]['data']['kpp']
             leader_seller = result_dkp[0]['data']['management']['post']
             fio_leader_seller = result_dkp[0]['data']['management']['name']
+            logging.info('123')
+            logging.info(ip_or_kfh_dkp)
         else:
             inn_kpp_seller = inn_seller
             type_business_dkp = result_dkp[0]['data']['opf']['short']
