@@ -349,6 +349,8 @@ def start_filling_application(inn_leasee, path_application, inn_seller1, inn_sel
                 sheet_anketa_1_list['B40'].value = bank_details.get('check_account')
                 sheet_anketa_1_list['F40'].value = bank_details.get('cor_account')
                 sheet_anketa_1_list['I40'].value = bank_details.get('bik')
+                sheet_anketa_1_list['C21'].value = bank_details.get('phone')
+                sheet_anketa_1_list['F21'].value = bank_details.get('email')
             if director_details:
                 sheet_anketa_1_list['D24'].value = director_details.get('date_of_birth')
                 sheet_anketa_1_list['F24'].value = director_details.get('place_of_birth')

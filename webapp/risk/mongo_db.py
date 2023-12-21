@@ -74,6 +74,8 @@ class MongoDB:
                     'check_account': db.companyBankDetails.find_one({'client_inn': client_inn})['checking_account'],
                     'cor_account': db.companyBankDetails.find_one({'client_inn': client_inn})['correspondent_account'],
                     'bik': db.companyBankDetails.find_one({'client_inn': client_inn})['bik'],
+                    'phone': db.companyBankDetails.find_one({'client_inn': client_inn})['phone'],
+                    'email': db.companyBankDetails.find_one({'client_inn': client_inn})['email'],
                 }
                 return info
             else:
@@ -114,6 +116,16 @@ class MongoDB:
             db.companyBankDetails.update_one({'client_inn': client_inn}, {'$set': {
                 'bik': str(sheet['I40'].value).strip()
             }})
+        if data.get('phone') != str(sheet['C21'].value).strip() and str(sheet['C21'].value).strip() is not None:
+            logging.info(f'{data.get("phone")} -> {str(sheet["C21"].value).strip()}')
+            db.companyBankDetails.update_one({'client_inn': client_inn}, {'$set': {
+                'phone': str(sheet['C21'].value).strip()
+            }})
+        if data.get('email') != str(sheet['F21'].value).strip() and str(sheet['F21'].value).strip() is not None:
+            logging.info(f'{data.get("email")} -> {str(sheet["F21"].value).strip()}')
+            db.companyBankDetails.update_one({'client_inn': client_inn}, {'$set': {
+                'email': str(sheet['F21'].value).strip()
+            }})
         logging.info('=' * 40)
 
     def write_to_mongodb_bank_details(self, client_inn, sheet):
@@ -123,6 +135,8 @@ class MongoDB:
             'checking_account': sheet['B40'].value.strip(),
             'correspondent_account': sheet['F40'].value.strip(),
             'bik': sheet['I40'].value.strip(),
+            'phone': sheet['C21'].value.strip(),
+            'email': sheet['F21'].value.strip(),
             'date': datetime.now().strftime("%d.%m.%Y | %H:%M:%S"),
         }
         if not self.check_in_manager_base(client_inn):
@@ -174,6 +188,11 @@ class MongoDB:
 
         logging.info('UPDATE MONGODB DIRECTOR DETAILS')
         logging.info('=' * 40)
+        if data.get('director_name') != sheet['C23'].value and sheet['C23'].value is not None:
+            logging.info(f'{data.get("director_name")} -> {sheet["C23"].value}')
+            db.directorDetails.update_one({'director_name': director_inn}, {'$set': {
+                'director_name': sheet['C23'].value
+            }})
         if data.get('date_of_birth') != sheet['D24'].value and sheet['D24'].value is not None:
             logging.info(f'{data.get("date_of_birth")} -> {sheet["D24"].value}')
             db.directorDetails.update_one({'director_inn': director_inn}, {'$set': {
@@ -214,6 +233,7 @@ class MongoDB:
 
     def write_to_mongodb_director_details(self, director_inn, sheet):
         data = {
+            'director_name': sheet['C23'].value.strip(),
             'director_inn': director_inn,
             'date_of_birth': sheet['D24'].value,
             'place_of_birth': sheet['F24'].value.strip(),
