@@ -114,11 +114,14 @@ def start_filling_application(inn_leasee, path_application, inn_seller1, inn_sel
         def parse_client_bs4(ogrn):
             nonlocal fio_list, inn_list, dolya_list, inn_dir_leasee, phone_leasee, email_leasee, main_activity_leasee, ustav_capital
             url = f'https://vbankcenter.ru/contragent/{ogrn}'
+            url2 = f'https://vbankcenter.ru/contragent/search?searchStr={ogrn}'
 
             response = requests.get(url)
+            response2 = requests.get(url2)
 
             if response.status_code == 200:
                 soup = BeautifulSoup(response.text, 'html.parser')
+                soup2 = BeautifulSoup(response2.text, 'html.parser')
 
                 if len(str(ogrn)) == 13:
 
@@ -180,10 +183,10 @@ def start_filling_application(inn_leasee, path_application, inn_seller1, inn_sel
                         logging.info(ex, exc_info=True)
 
                     try:
-                        number_element = soup.find('span', class_='statistic-number')
+                        number_element = soup2.find('span', class_='inline-block pr-2 text-premium-600 lg:mr-4 xl:mr-0',
+                                                    string='Уставный капитал:').find_next_sibling('span')
                         number_text = number_element.text.strip()
-                        additional_text = number_element.find_next_sibling(string=True).strip()
-                        ustav_capital = f"{number_text} {additional_text}"
+                        ustav_capital = float(''.join(filter(lambda x: x.isdigit() or x == '.', number_text)))
                     except Exception as ex:
                         ustav_capital = ''
                         logging.info(ex, exc_info=True)
