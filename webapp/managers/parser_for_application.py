@@ -349,8 +349,6 @@ def start_filling_application(inn_leasee, path_application, inn_seller1, inn_sel
                 sheet_anketa_1_list['B40'].value = bank_details.get('check_account')
                 sheet_anketa_1_list['F40'].value = bank_details.get('cor_account')
                 sheet_anketa_1_list['I40'].value = bank_details.get('bik')
-                sheet_anketa_1_list['C21'].value = bank_details.get('phone')
-                sheet_anketa_1_list['F21'].value = bank_details.get('email')
             if director_details:
                 sheet_anketa_1_list['D24'].value = director_details.get('date_of_birth')
                 sheet_anketa_1_list['F24'].value = director_details.get('place_of_birth')
@@ -398,6 +396,9 @@ def start_filling_application(inn_leasee, path_application, inn_seller1, inn_sel
                     if sheet_anketa_1_list[f'G{number}'].value == 'ИНН:':
                         sheet_anketa_1_list[f'H{number}'].value = inn_leasee
 
+            if bank_details:
+                sheet_anketa_1_list['C21'].value = bank_details.get('phone')
+                sheet_anketa_1_list['F21'].value = bank_details.get('email')
 
             application_filename = fr'{temporary_path}\Заявка с заключением {inn_leasee}.xlsx'
             wb.save(application_filename)
@@ -410,7 +411,8 @@ def start_filling_application(inn_leasee, path_application, inn_seller1, inn_sel
 
     parser_info_leasee(inn_leasee)  # берет инфу из инета по лизингополучателю
     application_filename = zapolnenie_zayvki_ankety(inn_leasee,
-                                                    path_application, inn_dir_leasee)  # заполняет эксель данными из инета по лизингополучателю
+                                                    path_application,
+                                                    inn_dir_leasee)  # заполняет эксель данными из инета по лизингополучателю
 
     return application_filename
 
@@ -652,7 +654,6 @@ def start_filling_agreement(inn_leasee, path_application, path_graphic, signator
 
             # print(type(f'Сумма дл{summa_dog_leas}'))
 
-
             suma_dann_dl = number_to_words(str(summa_dog_leas), currency_list)
 
         chislo_propis_dl(grafic)
@@ -662,8 +663,8 @@ def start_filling_agreement(inn_leasee, path_application, path_graphic, signator
             sheet = book[grafic]
             b93 = sheet['B93'].value.strftime('%d.%m.%Y') if sheet['B93'].value is not None else ''
             f7 = f"{round(float(sheet['F7'].value), 2):,}".replace(',', ' ').replace('.', ',') if \
-            f"{round(float(sheet['F7'].value), 2):,}".replace(',', ' ').replace('.', ',')[
-                -3] == ',' else f"{round(float(sheet['F7'].value), 2):,}".replace(',', ' ').replace('.', ',') + '0'
+                f"{round(float(sheet['F7'].value), 2):,}".replace(',', ' ').replace('.', ',')[
+                    -3] == ',' else f"{round(float(sheet['F7'].value), 2):,}".replace(',', ' ').replace('.', ',') + '0'
         except Exception as ex:
             logging.info(ex, exc_info=True)
             b93 = ''
