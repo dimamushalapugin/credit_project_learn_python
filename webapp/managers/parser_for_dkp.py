@@ -674,7 +674,7 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
         doverka_ustav_seller = 'Устава'
         for elem in full_name_seller.split():
             if elem in ['Индивидуальный', 'предприниматель', 'хозяйства']:
-                doverka_ustav_seller = f'Свидетельства о государственной регистрации физического лица в качестве индивидуального предпринимателя серия __ № _________ от , ОГРНИП '
+                doverka_ustav_seller = f'Свидетельства о государственной регистрации физического лица в качестве индивидуального предпринимателя серия от , ОГРНИП '
         return full_name_seller, doverka_ustav_seller
 
     def deistv_seller(result_dkp, fio, gender):
@@ -730,7 +730,7 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
         doverka_ustav_leasee = 'Устава'
         for elem in ip_or_not[22].split():
             if elem in ['Индивидуальный', 'предприниматель', 'хозяйства']:
-                doverka_ustav_leasee = f'Свидетельства о государственной регистрации физического лица в качестве индивидуального предпринимателя серия __ № _________ от {date_regist}, ОГРНИП {ogrn_leasee}'
+                doverka_ustav_leasee = f'Свидетельства о государственной регистрации физического лица в качестве индивидуального предпринимателя серия {date_regist}, ОГРНИП {ogrn_leasee}'
 
         try:
             if rod_padezh_fio_leader['gender'] == 'М':
