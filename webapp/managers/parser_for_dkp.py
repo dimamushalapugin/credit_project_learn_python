@@ -686,7 +686,8 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
                     deystvuysh_list_seller = 'действующий'
                 imenyemoe_dkp = 'именуемый'
             else:
-                deystvuysh_list_seller = '-'
+                deystvuysh_list_seller = 'действующая'
+                imenyemoe_dkp = 'именуемая'
         except:
             try:
                 if result_dkp[0]['data']['opf']['short'] in ['ИП', 'КФХ', 'ГКФХ']:
