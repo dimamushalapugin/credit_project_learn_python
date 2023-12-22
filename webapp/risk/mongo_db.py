@@ -10,7 +10,16 @@ from webapp.risk.xlsx_models import XlsxCreator
 
 class MongoDB:
     def __init__(self, current_user):
-        self.client = MongoClient(MONGO_URL, server_api=ServerApi('1'))
+        try:
+            self.client = MongoClient(MONGO_URL, server_api=ServerApi('1'))
+        except Exception as e:
+            logging.info(e, exc_info=True)
+            try:
+                self.client = MongoClient(MONGO_URL, server_api=ServerApi('1'))
+            except Exception as e:
+                logging.info('Второй раз тоже не подключился к MongoDB')
+                logging.info(e, exc_info=True)
+
         self.curr_user = current_user
 
     def write_to_mongodb_risk_count(self, client_inn, seller_inn):
