@@ -513,47 +513,58 @@
                                         })
 
 
-                                                graphicFileInput.addEventListener('change', function() {
-    var fileGraph = graphicFileInput.files[0];
-    if ((fileGraph && fileGraph.name.endsWith('.xlsm')) || (fileGraph && fileGraph.name.endsWith('.xlsx'))) {
-        var readerGraph = new FileReader();
-        console.log("Change event triggered"); // Отладочный лог
+                                       function handleFileChange() {
+                                        var graphicFileInput = document.getElementById("graphicFileInput");
+                                        graphicFileInput.addEventListener('change', function() {
+                                            var fileGraph = graphicFileInput.files[0];
+                                            if ((fileGraph && fileGraph.name.endsWith('.xlsm')) || (fileGraph && fileGraph.name.endsWith('.xlsx'))) {
+                                                var readerGraph = new FileReader();
+                                                console.log("Change event triggered"); // Отладочный лог
 
-        readerGraph.onload = function(e) {
-            var dataGraph = new Uint8Array(e.target.result);
-            var workbookGraph = XLSX.read(dataGraph, { type: 'array' });
+                                                readerGraph.onload = function(e) {
+                                                    var dataGraph = new Uint8Array(e.target.result);
+                                                    var workbookGraph = XLSX.read(dataGraph, { type: 'array' });
 
 
-            var graphSelect = document.getElementById("graphSelect");
-            var sheetName = graphSelect.value; // Имя выбранного листа
+                                                    var graphSelect = document.getElementById("graphSelect");
+                                                    var sheetName = graphSelect.value; // Имя выбранного листа
 
-            // Выводим сообщение о выбранном листе
-            var selectedSheetMessage = "Выбран лист: " + sheetName;
-            console.log(selectedSheetMessage);
+                                                    // Выводим сообщение о выбранном листе
+                                                    var selectedSheetMessage = "Выбран лист: " + sheetName;
+                                                    console.log(selectedSheetMessage);
 
-            // Проверяем, что выбран нужный лист
-            if (workbookGraph.SheetNames.includes(sheetName)) {
-                // Получаем значение из ячейки B93 выбранного листа
-                var cellValueGraph = workbookGraph.Sheets[sheetName]['B93']?.v;
-                var checkButtonGraph = document.getElementById("check-button");
-                console.log("Change event triggered"); // Отладочный лог3
+                                                    // Проверяем, что выбран нужный лист
+                                                    if (workbookGraph.SheetNames.includes(sheetName)) {
+                                                        // Получаем значение из ячейки B93 выбранного листа
+                                                        var cellValueGraph = workbookGraph.Sheets[sheetName]['B93']?.v;
+                                                        var checkButtonGraph = document.getElementById("check-button");
+                                                        console.log("Change event triggered"); // Отладочный лог3
 
-                function handleClick() {
-    if (cellValueGraph === undefined || cellValueGraph === "") {
-        console.log("Condition is true");
-        document.getElementById("message").innerHTML = "Уважаемый, в графике ячейка B93 пустая, просьба заполнить";
-    }
-}
+                                                        function handleClick() {
+                                                    if (cellValueGraph === undefined || cellValueGraph === "") {
+                                                        console.log("Condition is true");
+                                                        document.getElementById("message").innerHTML = "Уважаемый, в графике ячейка B93 пустая, просьба заполнить";
 
-// Вызов функции обработчика события без нажатия на кнопку
-handleClick();
-            }
-        }
+                                                        // Show the message for 5 seconds
+                                                        setTimeout(function() {
+                                                            document.getElementById("message").innerHTML = "";
+                                                        }, 5000);
+                                                    }
+                                                }
 
-        readerGraph.readAsArrayBuffer(fileGraph);
-    }
-});
+                                                        // Вызов функции обработчика события без нажатия на кнопку
+                                                        handleClick();
+                                                    }
+                                                }
 
+                                                readerGraph.readAsArrayBuffer(fileGraph);
+                                            }
+                                        });
+                                    }
+
+                                        // Call the function проверка графика, ячейка B93
+                                        handleFileChange();
+                                        setInterval(checkFilesUploaded, 2000);
 
                                         // Блокируем кнопку "Предпроверка" при загрузке страницы
                                         checkButton.disabled = true;
@@ -566,6 +577,8 @@ handleClick();
                                                 checkButton.disabled = false;
                                             }
                                         }
+                                        // Call the function проверка графика, ячейка B93
+                                        handleFileChange();
 
                                         // Добавляем обработчик события change для обоих инпутов файлов
                                         applicationFileInput.addEventListener("change", checkFilesUploaded);
