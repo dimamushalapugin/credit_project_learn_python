@@ -273,6 +273,7 @@
                                     <div class="mb-3">
                                         <label>Выберите график платежей</label>
                                         <select class="form-select form-select-sm" name="graph"
+                                                id="graphSelect"
                                                 aria-label=".form-select-sm example"
                                                 required disabled>
                                             <option selected></option>
@@ -280,7 +281,15 @@
                                             <option value="Регрессив">Регрессив</option>
                                             <option value="Clients">Clients</option>
                                         </select>
+                                            <div id="message"></div>
                                     </div>
+                                    <style>
+                                            #message {
+                                                font-weight: bold;
+                                                color: red;
+                                                font-size: 20px;
+                                            }
+                                    </style>
                                     <div class="mb-3 border border-1 border-info rounded p-2">
                                         <label><i class="fa-solid fa-paperclip fa-xs"
                                                   style="color: #8f8f8f;"></i> Выберите график платежей</label>
@@ -503,6 +512,49 @@
                                             }
                                         })
 
+
+                                                graphicFileInput.addEventListener('change', function() {
+    var fileGraph = graphicFileInput.files[0];
+    if ((fileGraph && fileGraph.name.endsWith('.xlsm')) || (fileGraph && fileGraph.name.endsWith('.xlsx'))) {
+        var readerGraph = new FileReader();
+        console.log("Change event triggered"); // Отладочный лог
+
+        readerGraph.onload = function(e) {
+            var dataGraph = new Uint8Array(e.target.result);
+            var workbookGraph = XLSX.read(dataGraph, { type: 'array' });
+
+
+            var graphSelect = document.getElementById("graphSelect");
+            var sheetName = graphSelect.value; // Имя выбранного листа
+
+            // Выводим сообщение о выбранном листе
+            var selectedSheetMessage = "Выбран лист: " + sheetName;
+            console.log(selectedSheetMessage);
+
+            // Проверяем, что выбран нужный лист
+            if (workbookGraph.SheetNames.includes(sheetName)) {
+                // Получаем значение из ячейки B93 выбранного листа
+                var cellValueGraph = workbookGraph.Sheets[sheetName]['B93']?.v;
+                var checkButtonGraph = document.getElementById("check-button");
+                console.log("Change event triggered"); // Отладочный лог3
+
+                function handleClick() {
+    if (cellValueGraph === undefined || cellValueGraph === "") {
+        console.log("Condition is true");
+        document.getElementById("message").innerHTML = "Уважаемый, в графике ячейка B93 пустая, просьба заполнить";
+    }
+}
+
+// Вызов функции обработчика события без нажатия на кнопку
+handleClick();
+            }
+        }
+
+        readerGraph.readAsArrayBuffer(fileGraph);
+    }
+});
+
+
                                         // Блокируем кнопку "Предпроверка" при загрузке страницы
                                         checkButton.disabled = true;
                                         submitButton.disabled = true;
@@ -548,6 +600,8 @@
                 </div>
             </form>
         </div>
+
+
         <script>
             // Получаем ссылки на чекбоксы и дополнительные поля
             const checkDl = document.getElementById("check_dl");
@@ -632,7 +686,7 @@
                 }
             }
             function updateStock() {
-                if ((currency.value === "Китайский юань" || currency.value === "Доллар США") && checkDkp.checked) {
+                if ((currency.value === "Китайский юань" || currency.value === "Доллар США" || currency.value === "Евро") && checkDkp.checked) {
                     stockEx.style.display = "block";
                     enableFields(stockEx)
                 } else {
