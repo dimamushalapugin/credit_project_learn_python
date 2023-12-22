@@ -5,6 +5,7 @@ from datetime import datetime
 
 from webapp.config import MONGO_URL
 from webapp.risk.logger import logging
+from webapp.risk.xlsx_models import XlsxCreator
 
 
 class MongoDB:
@@ -88,6 +89,7 @@ class MongoDB:
 
     @staticmethod
     def __update_mongodb_bank_details(db, sheet, client_inn):
+        xlsx = XlsxCreator(sheet)
         try:
             data = db.companyBankDetails.find_one({'client_inn': client_inn})
         except Exception as e:
@@ -96,47 +98,48 @@ class MongoDB:
 
         logging.info('UPDATE MONGODB BANK DETAILS')
         logging.info('=' * 40)
-        if data.get('bank') != str(sheet['G39'].value).strip() and str(sheet['G39'].value).strip() is not None:
-            logging.info(f'{data.get("bank")} -> {str(sheet["G39"].value).strip()}')
+        if data.get('bank') != xlsx.get_cell('G39') and not xlsx.is_cell_none('G39'):
+            logging.info(f'{data.get("bank")} -> {xlsx.get_cell('G39')}')
             db.companyBankDetails.update_one({'client_inn': client_inn}, {'$set': {
-                'bank': str(sheet['G39'].value).strip()
+                'bank': xlsx.get_cell('G39')
             }})
-        if data.get('checking_account') != str(sheet['B40'].value).strip() and str(sheet['B40'].value).strip() is not None:
-            logging.info(f'{data.get("checking_account")} -> {str(sheet["B40"].value).strip()}')
+        if data.get('checking_account') != xlsx.get_cell('B40') and not xlsx.is_cell_none('B40'):
+            logging.info(f'{data.get("checking_account")} -> {xlsx.get_cell('B40')}')
             db.companyBankDetails.update_one({'client_inn': client_inn}, {'$set': {
-                'checking_account': str(sheet['B40'].value).strip()
+                'checking_account': xlsx.get_cell('B40')
             }})
-        if data.get('correspondent_account') != str(sheet['F40'].value).strip() and str(sheet['F40'].value).strip() is not None:
-            logging.info(f'{data.get("correspondent_account")} -> {str(sheet["F40"].value).strip()}')
+        if data.get('correspondent_account') != xlsx.get_cell('F40') and not xlsx.is_cell_none('F40'):
+            logging.info(f'{data.get("correspondent_account")} -> {xlsx.get_cell('F40')}')
             db.companyBankDetails.update_one({'client_inn': client_inn}, {'$set': {
-                'correspondent_account': str(sheet['F40'].value).strip()
+                'correspondent_account': xlsx.get_cell('F40')
             }})
-        if data.get('bik') != str(sheet['I40'].value).strip() and str(sheet['I40'].value).strip() is not None:
-            logging.info(f'{data.get("bik")} -> {str(sheet["I40"].value).strip()}')
+        if data.get('bik') != xlsx.get_cell('I40') and not xlsx.is_cell_none('I40'):
+            logging.info(f'{data.get("bik")} -> {xlsx.get_cell('I40')}')
             db.companyBankDetails.update_one({'client_inn': client_inn}, {'$set': {
-                'bik': str(sheet['I40'].value).strip()
+                'bik': xlsx.get_cell('I40')
             }})
-        if data.get('phone') != str(sheet['C21'].value).strip() and str(sheet['C21'].value).strip() is not None:
-            logging.info(f'{data.get("phone")} -> {str(sheet["C21"].value).strip()}')
+        if data.get('phone') != xlsx.get_cell('C21') and not xlsx.is_cell_none('C21'):
+            logging.info(f'{data.get("phone")} -> {xlsx.get_cell('C21')}')
             db.companyBankDetails.update_one({'client_inn': client_inn}, {'$set': {
-                'phone': str(sheet['C21'].value).strip()
+                'phone': xlsx.get_cell('C21')
             }})
-        if data.get('email') != str(sheet['F21'].value).strip() and str(sheet['F21'].value).strip() is not None:
-            logging.info(f'{data.get("email")} -> {str(sheet["F21"].value).strip()}')
+        if data.get('email') != xlsx.get_cell('F21') and not xlsx.is_cell_none('F21'):
+            logging.info(f'{data.get("email")} -> {xlsx.get_cell('F21')}')
             db.companyBankDetails.update_one({'client_inn': client_inn}, {'$set': {
-                'email': str(sheet['F21'].value).strip()
+                'email': xlsx.get_cell('F21')
             }})
         logging.info('=' * 40)
 
     def write_to_mongodb_bank_details(self, client_inn, sheet):
+        xlsx = XlsxCreator(sheet)
         data = {
             'client_inn': client_inn,
-            'bank': str(sheet['G39'].value).strip(),
-            'checking_account': str(sheet['B40'].value).strip(),
-            'correspondent_account': str(sheet['F40'].value).strip(),
-            'bik': str(sheet['I40'].value).strip(),
-            'phone': str(sheet['C21'].value).strip(),
-            'email': str(sheet['F21'].value).strip(),
+            'bank': xlsx.get_cell('G39'),
+            'checking_account': xlsx.get_cell('B40'),
+            'correspondent_account': xlsx.get_cell('F40'),
+            'bik': xlsx.get_cell('I40'),
+            'phone': xlsx.get_cell('C21'),
+            'email': xlsx.get_cell('F21'),
             'date': datetime.now().strftime("%d.%m.%Y | %H:%M:%S"),
         }
         if not self.check_in_manager_base(client_inn):
@@ -232,16 +235,17 @@ class MongoDB:
         logging.info('=' * 40)
 
     def write_to_mongodb_director_details(self, director_inn, sheet):
+        xlsx = XlsxCreator(sheet)
         data = {
-            'director_name': str(sheet['C23'].value).strip(),
+            'director_name': xlsx.get_cell('C23'),
             'director_inn': director_inn,
-            'date_of_birth': sheet['D24'].value,
-            'place_of_birth': str(sheet['F24'].value).strip(),
-            'passport': str(sheet['D28'].value).strip(),
-            'issued_by': str(sheet['F28'].value).strip(),
-            'department_code': str(sheet['D29'].value).strip(),
-            'address_reg': str(sheet['D30'].value).strip(),
-            'address_fact': str(sheet['E31'].value).strip(),
+            'date_of_birth': xlsx.get_cell('D24'),
+            'place_of_birth': xlsx.get_cell('F24'),
+            'passport': xlsx.get_cell('D28'),
+            'issued_by': xlsx.get_cell('F28'),
+            'department_code': xlsx.get_cell('D29'),
+            'address_reg': xlsx.get_cell('D30'),
+            'address_fact': xlsx.get_cell('E31'),
             'date': datetime.now().strftime("%d.%m.%Y | %H:%M:%S")
         }
         if not self.check_in_director_base(director_inn):
