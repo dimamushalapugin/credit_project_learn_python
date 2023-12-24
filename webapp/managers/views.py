@@ -236,6 +236,18 @@ def create_application():
         return redirect(url_for('manager.managers_page'))
 
 
+@blueprint.route('/create_bki')
+@login_required
+def bki_page():
+    return render_template('create_bki.html')
+
+
+@blueprint.route('/create_bki', methods=['POST'])
+def create_bki():
+    logging.info(f"({current_user}) Нажал на кнопку 'Создать БКИ'")
+    pass
+
+
 @blueprint.route('/process', methods=['POST'])
 def process_file():
     inn = 'Тут должен быть ИНН'

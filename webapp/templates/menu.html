@@ -70,6 +70,8 @@
                         </li>
                         <li><a class="dropdown-item" href="{{ url_for('manager.managers_page') }}">Создание договоров</a>
                         </li>
+                        <li><a class="dropdown-item" href="{{ url_for('manager.bki_page') }}">Создание БКИ</a>
+                        </li>
                     </ul>
                 </li>
                 {% elif current_user.is_manager%}
