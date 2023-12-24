@@ -290,7 +290,8 @@
                                                 font-size: 20px;
                                             }
                                     </style>
-                                    <div class="mb-3 border border-1 border-info rounded p-2">
+                                    <div id="divField" style="display: none;"
+                                            class="mb-3 border border-1 border-info rounded p-2">
                                         <label><i class="fa-solid fa-paperclip fa-xs"
                                                   style="color: #8f8f8f;"></i> Выберите график платежей</label>
                                         <input type="file" class="form-control form-control-sm" id="graphicFileInput"
@@ -627,6 +628,18 @@
             const stockEx = document.getElementById("stock");
             const currency = document.getElementById("currency");
             const stockSelect = document.querySelector('[name="stock"]');
+            const graphSelect = document.getElementById("graphSelect");
+
+            graphSelect.addEventListener("change", function() {
+            const selectedValue = graphSelect.value;
+            const divField = document.getElementById("divField");
+
+            if (selectedValue) {
+                divField.style.display = "block";
+            } else {
+                divField.style.display = "none";
+            }
+            });
 
             // Добавляем слушатели событий на чекбоксы
             checkDl.addEventListener("change", function() {
