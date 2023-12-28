@@ -7,6 +7,7 @@ from webapp.managers.parser_for_application import start_filling_application, st
 from webapp.managers.parser_for_dkp import start_filling_agreement_dkp
 from webapp.config import APPLICATION_PATH
 from webapp.risk.logger import logging
+from webapp.risk.mongo_db import MongoDB
 
 blueprint = Blueprint('manager', __name__, url_prefix='/managers')
 
@@ -53,21 +54,22 @@ def download(filename):
 
 
 def create_xlsx_file(data):
-    return start_filling_application(data['client_inn'], APPLICATION_PATH, data['seller_inn1'], data['seller_inn2'],
-                                     data['seller_inn3'], data['seller_inn4'])
+    return start_filling_application(data['client_inn'].strip(), APPLICATION_PATH, data['seller_inn1'].strip(),
+                                     data['seller_inn2'].strip(), data['seller_inn3'].strip(),
+                                     data['seller_inn4'].strip())
 
 
 def create_docx_file(data, application_path, graphic_path):
     path_application = application_path.replace('/', '\\')
     path_graphic = graphic_path.replace('/', '\\')
-    return start_filling_agreement(data['client_inn'], path_application, path_graphic, data['signatory'],
+    return start_filling_agreement(data['client_inn'].strip(), path_application, path_graphic, data['signatory'],
                                    data['investor'], data['currency'], data['insurant'], data['graph'], data['pl'],
                                    data['number_dl'], data['seller_inn'], data.get('typeSelect'))
 
 
 def create_docx_file_dkp(data, application_path):
     path_application = application_path.replace('/', '\\')
-    return start_filling_agreement_dkp(path_application, data['client_inn'], data['seller_inn'],
+    return start_filling_agreement_dkp(path_application, data['client_inn'].strip(), data['seller_inn'].strip(),
                                        data['number_dl'], data['signatory'], data['investor'], data['currency'],
                                        data['pl'], data.get('typeSelect'), data['type_pl_new_or_not'],
                                        data['payment_order'], data['place'], data['acts'], data['diadok'],
@@ -145,7 +147,8 @@ def create_agreement():
             create_dl()
             create_dkp()
             return redirect(url_for('manager.managers_page'))
-        except Exception:
+        except Exception as e:
+            logging.info(e, exc_info=True)
             flash('Ошибка при создании договора. Проверьте правильность прикрепляемых файлов', 'error')
             return redirect(url_for('manager.managers_page'))
         finally:
@@ -219,12 +222,33 @@ def create_application():
     logging.info(f"({current_user}) Нажал на кнопку 'Создать заявку'")
     try:
         data = request.form
+        mongo = MongoDB(current_user)
+        mongo.write_to_mongodb_app_count(data["client_inn"].strip(), data["seller_inn1"].strip(),
+                                         data["seller_inn2"].strip(), data["seller_inn3"].strip(),
+                                         data["seller_inn4"].strip())
         file_path = create_xlsx_file(data)
-        file_name = f'Заявка с заключением {data["client_inn"]}.xlsx'
-        flash(f'Файл успешно создан и загружен', 'success')
+        file_name = f'Заявка с заключением {data["client_inn"].strip()}.xlsx'
         return download_application(file_path, file_name)
     except Exception as e:
         flash('Проверьте корректность ИНН', 'error')
         flash('Ошибка:', 'error')
         flash(str(e), 'error')
         return redirect(url_for('manager.managers_page'))
+
+
+@blueprint.route('/create_bki')
+@login_required
+def bki_page():
+    return render_template('create_bki.html')
+
+
+@blueprint.route('/create_bki', methods=['POST'])
+def create_bki():
+    logging.info(f"({current_user}) Нажал на кнопку 'Создать БКИ'")
+    pass
+
+
+@blueprint.route('/process', methods=['POST'])
+def process_file():
+    inn = 'Тут должен быть ИНН'
+    return render_template('create_agreements.html', inn=inn)

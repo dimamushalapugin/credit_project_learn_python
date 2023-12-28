@@ -8,11 +8,13 @@ from num2words import num2words
 from flask_login import current_user
 from webapp.config import DADATA_BASE
 from webapp.risk.logger import logging
+from webapp.risk.mongo_db import MongoDB
 
 
-def read_xlsx(path_application):
+def read_xlsx(path_application, pl):
     """
     :param path_application:
+    :param pl:
     :return: 0: rekvizit_leasee_bik,
              1: rekvizit_leasee_cs_shet
              2: rekvizit_leasee_shet,
@@ -44,8 +46,8 @@ def read_xlsx(path_application):
     sheet_zayavlenie = wb['Заявление']
     full_name_leasee = sheet_zayavlenie['A5'].value
     inn_kpp_leasee = sheet_zayavlenie['D6'].value
-    # if ip_or_kfh == 'Да':
-    #     inn_leasee = sheet_zayavlenie['C7'].value
+    client_inn = inn_kpp_leasee.split('/')[0] if '/' in inn_kpp_leasee else inn_kpp_leasee
+
 
     formatted_name_leader_leasee = '-'
     leader_leasee = '-'
@@ -55,21 +57,29 @@ def read_xlsx(path_application):
     for number in range(24, sheet_zayavlenie.max_row + 2):
         if sheet_zayavlenie[
             f'B{number}'].value == (
-                'Место эксплуатации предмета лизинга (для автотранспорта место стоянки/хранения) '
-                'полный фактический адрес:'):
-            address_leasee_expluatazia = sheet_zayavlenie[f'B{number + 1}'].value
+                'Место эксплуатации предмета лизинга (для автотранспорта место стоянки/хранения) полный фактический адрес:'):
+            address_leasee_expluatazia = sheet_zayavlenie[f'A{number + 1}'].value
         if sheet_zayavlenie[f'A{number}'].value == '(должность руководителя организации Заявителя)':
             leader_leasee = sheet_zayavlenie[f'A{number - 1}'].value
         if sheet_zayavlenie[f'O{number}'].value == '(расшифровка подписи)':
             formatted_name_leader_leasee = sheet_zayavlenie[f'O{number - 1}'].value
 
-    predmet_lizinga = list(map(lambda x: sheet_zayavlenie[x].value, ['A10', 'A12', 'A14', 'A16']))
+    predmet_lizinga = pl
     inn_seller_list = list(map(lambda x: sheet_zayavlenie[x].value, ['C11', 'C13', 'C15', 'C17']))
-    price_predmet_lizinga = list(map(lambda x: sheet_zayavlenie[x].value, ['P21', 'P22', 'P23', 'P24']))
+    for i in range(1, sheet_zayavlenie.max_row + 2):
+        if sheet_zayavlenie[f'C{i}'].value == pl:
+            price_predmet_lizinga = sheet_zayavlenie[f'P{i}'].value
+            break
+    else:
+        price_predmet_lizinga = 0
 
     # читаем страницу Анкета Стр.1
 
     sheet_anketa_1_list = wb['Анкета Стр.1']
+    director_inn = sheet_anketa_1_list['H25'].value
+    mongo = MongoDB(current_user)
+    mongo.write_to_mongodb_bank_details(client_inn, sheet_anketa_1_list)
+    mongo.write_to_mongodb_director_details(director_inn, sheet_anketa_1_list)
     ogrn_leasee = sheet_anketa_1_list['F7'].value
     okato_leasee = sheet_anketa_1_list['H7'].value
     okpo_leasee = sheet_anketa_1_list['J7'].value
@@ -87,9 +97,9 @@ def read_xlsx(path_application):
     rekvizit_leasee_bik = '-'
 
     for number in range(8, sheet_anketa_1_list.max_row + 2):
-        if sheet_anketa_1_list[f'A{number}'].value == '1.8         Телефон:':
+        if sheet_anketa_1_list[f'A{number}'].value == '1.7         Телефон:':
             phone_leasee = sheet_anketa_1_list[f'C{number}'].value
-        if sheet_anketa_1_list[f'E{number}'].value == '1.9 Эл. почта:':
+        if sheet_anketa_1_list[f'E{number}'].value == '1.8 Эл. почта:':
             email_leasee = sheet_anketa_1_list[f'F{number}'].value
         if sheet_anketa_1_list[f'B{number}'].value == 'ФИО:':
             fio_leader = sheet_anketa_1_list[f'C{number}'].value
@@ -107,7 +117,7 @@ def read_xlsx(path_application):
     return (rekvizit_leasee_bik, rekvizit_leasee_cs_shet, rekvizit_leasee_shet, rekvizit_leasee_bank,
             main_activity_leasee, fio_leader, email_leasee, phone_leasee, full_krakt_name_leasee, ustav_capital,
             date_regist, okpo_leasee, okato_leasee, ogrn_leasee, inn_seller_list[0], price_predmet_lizinga,
-            predmet_lizinga[0], formatted_name_leader_leasee, leader_leasee, address_leasee_expluatazia, address_leasee,
+            predmet_lizinga, formatted_name_leader_leasee, leader_leasee, address_leasee_expluatazia, address_leasee,
             inn_kpp_leasee, full_name_leasee)
 
 
@@ -144,9 +154,9 @@ def identification_lkmb_rt(signatory: str, investor: str):
         bank_rekv_lkmb = 'ПАО «МОСКОВСКИЙ КРЕДИТНЫЙ БАНК»'
         kor_chet_lkmb = '30101810745250000659'
         bik_lkmb = '044525659'
-    elif investor.upper() == 'АО «Инвестторгбанк»'.upper():
+    elif investor.upper() == 'ИНВЕСТТОРГБАНК АО'.upper():
         r_chet_lkmb = '40701810071010300002'
-        bank_rekv_lkmb = 'АО «Инвестторгбанк»'
+        bank_rekv_lkmb = 'ИНВЕСТТОРГБАНК АО'
         kor_chet_lkmb = '30101810645250000267'
         bik_lkmb = '044525267'
     elif investor.upper() == 'АО «АЛЬФА-БАНК»'.upper():
@@ -170,15 +180,15 @@ def identification_lkmb_rt(signatory: str, investor: str):
         kor_chet_lkmb = '30101810800000000790'
         bik_lkmb = '045773790'
     elif investor.upper() == 'ПАО «Совкомбанк»'.upper():
-        r_chet_lkmb = 'ХХХХХХХХХХХХХХХХХХ'
+        r_chet_lkmb = '40701810212020710089'
         bank_rekv_lkmb = 'ПАО «Совкомбанк»'
-        kor_chet_lkmb = 'ХХХХХХХХХХХХХХ'
-        bik_lkmb = 'ХХХХХХХХХХХХХХХХХХХ'
+        kor_chet_lkmb = '30101810445250000360'
+        bik_lkmb = '044525360'
     elif investor.upper() == 'ПАО «Сбербанк»'.upper():
-        r_chet_lkmb = 'ХХХХХХХХХХХХХХХХХХ'
+        r_chet_lkmb = '40701810962000000214'
         bank_rekv_lkmb = 'ПАО «Сбербанк»'
-        kor_chet_lkmb = 'ХХХХХХХХХХХХХХ'
-        bik_lkmb = 'ХХХХХХХХХХХХХХХХХХХ'
+        kor_chet_lkmb = '30101810900000000603'
+        bik_lkmb = '042202603'
     else:
         r_chet_lkmb = '40702810100020002464'
         bank_rekv_lkmb = 'ПАО «АК БАРС» БАНК г. Казань'
@@ -200,13 +210,13 @@ def indentification_pl(currency_list: str):
     return currency_test
 
 
-def number_to_words(suma_chislo, currency_list: str):
+def number_to_words(suma_chislo123, curr):
     try:
         # Разбиваем строку на целую и десятичную часть
-        suma_chislo = str(round(float(suma_chislo), 2)).replace(',', '.') if \
-            str(round(float(suma_chislo), 2)).replace(',', '.')[-3] == '.' else str(
-            round(float(suma_chislo), 2)).replace(',', '.') + '0'
-        parts = suma_chislo.split(".")
+        suma_chislo123 = str(round(float(suma_chislo123), 2)).replace(',', '.') if \
+            str(round(float(suma_chislo123), 2)).replace(',', '.')[-3] == '.' else str(
+            round(float(suma_chislo123), 2)).replace(',', '.') + '0'
+        parts = suma_chislo123.split(".")
         integer_part = parts[0]
         decimal_part = parts[1] if len(parts) > 1 else "00"
 
@@ -224,7 +234,7 @@ def number_to_words(suma_chislo, currency_list: str):
             valute_rub = "рублей"
 
         # Преобразуем десятичную часть в число прописью
-        if currency_list == 'Рубль':
+        if curr == 'Рубль':
             decimal_words = num2words(int(decimal_part), lang='ru', to='currency', currency='RUB')
         else:
             decimal_words = num2words(int(decimal_part), lang='ru')
@@ -240,17 +250,26 @@ def number_to_words(suma_chislo, currency_list: str):
             valute_copeyka = "копеек"
 
         # Формируем итоговую строку
-        if currency_list == 'Рубль':
-            suma_dann = f"{integer_words} {valute_rub} {decimal_words}".strip().replace('ноль рублей',
-                                                                                        '').replace(' ,',
-                                                                                                    '')
-        elif currency_list == 'Китайский юань':
-            suma_dann = f"{integer_words} целых {decimal_words} сотых китайских юаней"
-        elif currency_list == 'Доллар США':
-            suma_dann = f"{integer_words} целых {decimal_words} сотых долларов США"
-        return suma_dann
+        if curr == 'Рубль':
+            suma_dann1 = ((f"({integer_words}) {valute_rub} {decimal_part} {valute_copeyka}".strip()
+                           .replace('ноль рублей', '').replace(',', '')))
+        elif curr == 'Китайский юань':
+            suma_dann1 = f"({integer_words}) китайских юаней {decimal_part} {valute_copeyka.
+            replace('копеек', 'феней').replace('копейка', 'фень').
+            replace('копейки', 'феня')}"
+        elif curr == 'Доллар США':
+            suma_dann1 = f"({integer_words}) долларов США {decimal_part} {valute_copeyka.
+            replace('копеек', 'центов').replace('копейка', 'цент').
+            replace('копейки', 'цента')}"
+        elif curr == 'Евро':
+            suma_dann1 = f"({integer_words}) евро {decimal_part} {valute_copeyka.
+            replace('копеек', 'евроцентов').replace('копейка', 'евроцент').
+            replace('копейки', 'евроцента')}"
+        # print(suma_dann1)
+        return suma_dann1
     except ValueError:
         return "Неверный формат числа"
+
 
 def identification_leasee(leader_leasee):
     if leader_leasee.upper() == 'директор'.upper():
@@ -263,6 +282,7 @@ def identification_leasee(leader_leasee):
         leader_leasee_rod_padezh = ''
     leader_leasee_pod = leader_leasee
     return leader_leasee_rod_padezh, leader_leasee_pod
+
 
 def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_seller: str, numb_dl_dkp: str,
                                 signatory: str, investor: str, currency: str, pl: str, equipment_or_not: Optional[str],
@@ -330,7 +350,7 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
         summ = 0
         for num in payment_order.split(' '):
             summ += float(num)
-        print(summ)
+        # print(summ)
 
         if summ == 100:
             print("Суммы равны 100")
@@ -405,12 +425,15 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
         type_currency = ''
         equivalent_currency = ''
         if currency == 'Рубль':
-            type_currency = 'рублей'
-        elif currency == 'Китайский юань':
-            type_currency = 'китайских юаней'
+            type_currency = 'российских рублях'
+        elif currency == 'китайских юанях':
+            type_currency = 'китайских юанях'
             equivalent_currency = 'в рублях, эквивалентную'
         elif currency == 'Доллар США':
-            type_currency = 'долларов США'
+            type_currency = 'долларах США'
+            equivalent_currency = 'в рублях, эквивалентную'
+        elif currency == 'евро':
+            type_currency = 'евро'
             equivalent_currency = 'в рублях, эквивалентную'
         return (new_old_pl, pb_vizor, identif_punkt_3_1_1, identif_punkt_3_1_3, punkt_3_1_9, punkt_3_3_3_key,
                 punkt_3_3_3_key2, punkt_3_1_6, punkt_3_3_7, punkt_8_2, pril_1_2, pril_1_3, punkt_4_7_1, punkt_5_3,
@@ -428,11 +451,11 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
 
             # Преобразуем целую часть в число прописью
             integer_words = num2words(int(integer_part), lang='ru')
-            print(integer_part)
+            # print(integer_part)
 
             # Преобразуем десятичную часть в число прописью
             decimal_words = num2words(int(decimal_part), lang='ru')
-            print(decimal_part)
+            # print(decimal_part)
 
             # формируем итоговую строку
             if int(integer_part) in [1, 21, 31, 41, 51, 61, 71, 81, 91] and decimal_part == '00':
@@ -451,64 +474,8 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
         except ValueError:
             return "Неверный формат числа"
 
-    def number_to_words(suma_chislo123):
-        try:
-            # Разбиваем строку на целую и десятичную часть
-            suma_chislo123 = str(round(float(suma_chislo123), 2)).replace(',', '.') if \
-                str(round(float(suma_chislo123), 2)).replace(',', '.')[-3] == '.' else str(
-                round(float(suma_chislo123), 2)).replace(',', '.') + '0'
-            parts = suma_chislo123.split(".")
-            integer_part = parts[0]
-            decimal_part = parts[1] if len(parts) > 1 else "00"
-
-            # Преобразуем целую часть в число прописью
-            integer_words = num2words(int(integer_part), lang='ru')
-
-            # Определяем правильную форму для "рублей"
-            if 10 < float(integer_part) % 100 < 20:
-                valute_rub = "рублей"
-            elif float(integer_part) % 10 == 1:
-                valute_rub = "рубль"
-            elif 1 < float(integer_part) % 10 < 5:
-                valute_rub = "рубля"
-            else:
-                valute_rub = "рублей"
-
-            # Преобразуем десятичную часть в число прописью
-            if currency == 'Рубль':
-                decimal_words = num2words(int(decimal_part), lang='ru', to='currency', currency='RUB')
-            # elif currency == 'Китайский юань':
-            #     decimal_words = num2words(int(decimal_part), lang='ru', to='currency', currency='CNY')
-            # elif currency == 'Доллар США':
-            #     decimal_words = num2words(int(decimal_part), lang='ru', to='currency', currency='USD')
-            else:
-                decimal_words = num2words(int(decimal_part), lang='ru')
-
-            # Определяем правильную форму для "копеек"
-            if 10 < float(decimal_part) % 100 < 20:
-                valute_copeyka = "копеек"
-            elif float(decimal_part) % 10 == 1:
-                valute_copeyka = "копейка"
-            elif 1 < float(decimal_part) % 10 <= 4:
-                valute_copeyka = "копейки"
-            else:
-                valute_copeyka = "копеек"
-
-            # Формируем итоговую строку
-            # if currency_list == 'Рубль':
-            suma_dann1 = ((f"{integer_words} {decimal_words}".strip().replace('ноль рублей', '').replace(',', '')
-                           .replace('копеек', 'сотых')).replace('копейка', 'сотая')
-                          .replace('копейки', 'сотые'))
-            # elif currency_list == 'Китайский юань':
-            #     suma_dann1 = f"{integer_words} целых {decimal_words} сотых китайских юаней"
-            # elif currency_list == 'Доллар США':
-            #     suma_dann1 = f"{integer_words} целых {decimal_words} сотых долларов США"
-            return suma_dann1
-        except ValueError:
-            return "Неверный формат числа"
-
     def payment_for_dkp(price_entry):
-        print(payment_order)
+        # print(payment_order)
         punkt_2_3_1_pay = ''
         punkt_2_3_2_pay = ''
         punkt_2_3_3_pay = ''
@@ -540,7 +507,7 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
             punkt_2_3_1_num = payment_order.split(' ')[0]
             punkt_2_3_1_numb_pr = percent_to_word(str(punkt_2_3_1_num))
             payment_1 = round((float(price_entry) * float(payment_order.split(' ')[0])) / 100, 2)
-            payment_1_propis = number_to_words(payment_1)
+            payment_1_propis = number_to_words(payment_1, currency)
             payment_1 = payment_1 if str(payment_1)[-3] == '.' else str(payment_1) + '0'
         elif len(payment_order.split(' ')) == 2:
             punkt_2_3_1_pay = 'Первый'
@@ -551,8 +518,8 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
             punkt_2_3_2_numb_pr = percent_to_word(str(punkt_2_3_2_num))
             payment_1 = round((float(price_entry) * float(payment_order.split(' ')[0])) / 100, 2)
             payment_2 = round((float(price_entry) * float(payment_order.split(' ')[1])) / 100, 2)
-            payment_1_propis = number_to_words(payment_1)
-            payment_2_propis = number_to_words(payment_2)
+            payment_1_propis = number_to_words(payment_1, currency)
+            payment_2_propis = number_to_words(payment_2, currency)
             payment_1 = payment_1 if str(payment_1)[-3] == '.' else str(payment_1) + '0'
             payment_2 = payment_2 if str(payment_2)[-3] == '.' else str(payment_2) + '0'
         elif len(payment_order.split(' ')) == 3:
@@ -568,9 +535,9 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
             payment_1 = round((float(price_entry) * float(payment_order.split(' ')[0])) / 100, 2)
             payment_2 = round((float(price_entry) * float(payment_order.split(' ')[1])) / 100, 2)
             payment_3 = round((float(price_entry) * float(payment_order.split(' ')[2])) / 100, 2)
-            payment_1_propis = number_to_words(payment_1)
-            payment_2_propis = number_to_words(payment_2)
-            payment_3_propis = number_to_words(payment_3)
+            payment_1_propis = number_to_words(payment_1, currency)
+            payment_2_propis = number_to_words(payment_2, currency)
+            payment_3_propis = number_to_words(payment_3, currency)
             payment_1 = payment_1 if str(payment_1)[-3] == '.' else str(payment_1) + '0'
             payment_2 = payment_2 if str(payment_2)[-3] == '.' else str(payment_2) + '0'
             payment_3 = payment_3 if str(payment_3)[-3] == '.' else str(payment_3) + '0'
@@ -591,10 +558,10 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
             payment_2 = round((float(price_entry) * float(payment_order.split(' ')[1])) / 100, 2)
             payment_3 = round((float(price_entry) * float(payment_order.split(' ')[2])) / 100, 2)
             payment_4 = round((float(price_entry) * float(payment_order.split(' ')[3])) / 100, 2)
-            payment_1_propis = number_to_words(payment_1)
-            payment_2_propis = number_to_words(payment_2)
-            payment_3_propis = number_to_words(payment_3)
-            payment_4_propis = number_to_words(payment_4)
+            payment_1_propis = number_to_words(payment_1, currency)
+            payment_2_propis = number_to_words(payment_2, currency)
+            payment_3_propis = number_to_words(payment_3, currency)
+            payment_4_propis = number_to_words(payment_4, currency)
             payment_1 = payment_1 if str(payment_1)[-3] == '.' else str(payment_1) + '0'
             payment_2 = payment_2 if str(payment_2)[-3] == '.' else str(payment_2) + '0'
             payment_3 = payment_3 if str(payment_3)[-3] == '.' else str(payment_3) + '0'
@@ -620,11 +587,11 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
             payment_3 = round((float(price_entry) * float(payment_order.split(' ')[2])) / 100, 2)
             payment_4 = round((float(price_entry) * float(payment_order.split(' ')[3])) / 100, 2)
             payment_5 = round((float(price_entry) * float(payment_order.split(' ')[4])) / 100, 2)
-            payment_1_propis = number_to_words(payment_1)
-            payment_2_propis = number_to_words(payment_2)
-            payment_3_propis = number_to_words(payment_3)
-            payment_4_propis = number_to_words(payment_4)
-            payment_5_propis = number_to_words(payment_5)
+            payment_1_propis = number_to_words(payment_1, currency)
+            payment_2_propis = number_to_words(payment_2, currency)
+            payment_3_propis = number_to_words(payment_3, currency)
+            payment_4_propis = number_to_words(payment_4, currency)
+            payment_5_propis = number_to_words(payment_5, currency)
             payment_1 = payment_1 if str(payment_1)[-3] == '.' else str(payment_1) + '0'
             payment_2 = payment_2 if str(payment_2)[-3] == '.' else str(payment_2) + '0'
             payment_3 = payment_3 if str(payment_3)[-3] == '.' else str(payment_3) + '0'
@@ -641,27 +608,41 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
         return result_dkp
 
     def some_info_seller(result_dkp):
-        leader_seller = result_dkp[0]['data']['management']['post']
+        leader_seller = 'Индивидуальный предприниматель'
+        try:
+            leader_seller = result_dkp[0]['data']['management']['post']
+        except:
+            leader_seller = result_dkp[0]['data']['opf']['short']
+        if result_dkp[0]['data']['opf']['short'] == 'ИП':
+            leader_seller = 'Индивидуальный предприниматель'
+        else:
+            leader_seller = 'Глава'
+
         if leader_seller.upper() == 'директор'.upper():
             leader_seller_rod_padezh = 'Директора'
         elif leader_seller.upper() == 'генеральный директор'.upper():
             leader_seller_rod_padezh = 'Генерального директора'
         elif leader_seller.upper() == 'исполняющий обязанности директора'.upper():
             leader_seller_rod_padezh = 'ИО директора'
+        elif leader_seller.upper() == 'управляющий'.upper():
+            leader_seller_rod_padezh = 'Управляющего'
         else:
             leader_seller_rod_padezh = ''
         leader_seller_pod = leader_seller
         return leader_seller, leader_seller_rod_padezh, leader_seller_pod
 
-
     def full_rekviti_seller(result_dkp):
         ip_or_kfh_dkp = 'Нет'
         if result_dkp[0]['data']['opf']['short'] in ['ИП', 'КФХ', 'ГКФХ']:
             ip_or_kfh_dkp = 'Да'
+            logging.info('12131')
+            logging.info(ip_or_kfh_dkp)
         if ip_or_kfh_dkp == 'Нет':
             inn_kpp_seller = inn_seller + '/' + result_dkp[0]['data']['kpp']
             leader_seller = result_dkp[0]['data']['management']['post']
             fio_leader_seller = result_dkp[0]['data']['management']['name']
+            logging.info('123')
+            logging.info(ip_or_kfh_dkp)
         else:
             inn_kpp_seller = inn_seller
             type_business_dkp = result_dkp[0]['data']['opf']['short']
@@ -689,11 +670,11 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
     def seller_dkp_all():
         result_dkp = DADATA_BASE.find_by_id("party", inn_seller)
         full_name_seller = result_dkp[0]['data']['name']['short_with_opf'].replace('"', '')
-        print(full_name_seller)
+        # print(full_name_seller)
         doverka_ustav_seller = 'Устава'
         for elem in full_name_seller.split():
             if elem in ['Индивидуальный', 'предприниматель', 'хозяйства']:
-                doverka_ustav_seller = f'Свидетельства о государственной регистрации физического лица в качестве индивидуального предпринимателя серия __ № _________ от , ОГРНИП '
+                doverka_ustav_seller = f'Свидетельства о государственной регистрации физического лица в качестве индивидуального предпринимателя серия от , ОГРНИП '
         return full_name_seller, doverka_ustav_seller
 
     def deistv_seller(result_dkp, fio, gender):
@@ -705,7 +686,8 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
                     deystvuysh_list_seller = 'действующий'
                 imenyemoe_dkp = 'именуемый'
             else:
-                deystvuysh_list_seller = '-'
+                deystvuysh_list_seller = 'действующая'
+                imenyemoe_dkp = 'именуемая'
         except:
             try:
                 if result_dkp[0]['data']['opf']['short'] in ['ИП', 'КФХ', 'ГКФХ']:
@@ -713,11 +695,11 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
                 else:
                     deystvuysh_list_seller = '-'
             except:
-                deystvuysh_list_seller = 'действующей'
-            imenyemoe_dkp = 'именуемая'
+                imenyemoe_dkp = 'именуемая'
         return deystvuysh_list_seller, imenyemoe_dkp
 
-    inn_leasee1 = read_xlsx(path_application)
+    inn_leasee1 = read_xlsx(path_application, pl)
+
     def result_dadata_leasee():
         result_dkp_leasee = DADATA_BASE.find_by_id("party", inn_leasee1)
         if result_dkp_leasee[0]['data']['opf']['short'] in ['ИП', 'ГКФХ', 'КФХ']:
@@ -731,23 +713,24 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
         # dadata = Dadata(DADATA_TOKEN, DADATA_SECRET)
         logging.info(f"({fio})")
         put_padezh_podpisant = DADATA_BASE.clean("name", fio)
-        print(put_padezh_podpisant)
+        # print(put_padezh_podpisant)
         return put_padezh_podpisant
 
-    rod_padezh_fio_leader = rod_padezh_fio_leader(read_xlsx(path_application)[5])
-    ip_or_not = read_xlsx(path_application)
-    def addicted_info_leasee():
+    rod_padezh_fio_leader = rod_padezh_fio_leader(read_xlsx(path_application, pl)[5])
+    ip_or_not = read_xlsx(path_application, pl)
+
+    def addicted_info_leasee(date_regist, ogrn_leasee):
         deystvuysh_list_leasee = 'действующей'
         imenyemoe = 'именуемое'
         try:
             put_padezh_podpisant_rg = rod_padezh_fio_leader['result_genitive']
         except:
             put_padezh_podpisant_rg = ''
-        print(f'123 {put_padezh_podpisant_rg}')
+        # print(f'123 {put_padezh_podpisant_rg}')
         doverka_ustav_leasee = 'Устава'
         for elem in ip_or_not[22].split():
             if elem in ['Индивидуальный', 'предприниматель', 'хозяйства']:
-                doverka_ustav_leasee = f'Свидетельства о государственной регистрации физического лица в качестве индивидуального предпринимателя серия __ № _________ от {date_regist}, ОГРНИП {ogrn_leasee}'
+                doverka_ustav_leasee = f'Свидетельства о государственной регистрации физического лица в качестве индивидуального предпринимателя серия {date_regist}, ОГРНИП {ogrn_leasee}'
 
         try:
             if rod_padezh_fio_leader['gender'] == 'М':
@@ -760,38 +743,28 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
                 if result_dadata_leasee()[0]['data']['opf']['short'] in ['ИП', 'КФХ', 'ГКФХ']:
                     deystvuysh_list_leasee = 'действующая'
             except:
-                deystvuysh_list_leasee = 'действующей'
-            imenyemoe = 'именуемая'
+                deystvuysh_list_leasee = 'действующего'
+            imenyemoe = 'именуемое'
         return put_padezh_podpisant_rg, deystvuysh_list_leasee, imenyemoe, doverka_ustav_leasee
-    выше надо закинуть в реплейс, это последние недостающие элементы
 
-
-
-
-
-
+    '''выше надо закинуть в реплейс, 
+    это последние недостающие элементы'''
 
     def replace():
         eq_val = equipment_valute()
-        logging.info(f'{eq_val=}')
-        data_xlsx = read_xlsx(path_application)  # все из xlsx
-        price_entry = data_xlsx[15][0]  # цена ПЛ
-        logging.info(f'{price_entry=}')
-        suma_dann = number_to_words(price_entry)
+        # logging.info(f'{eq_val=}')
+        data_xlsx = read_xlsx(path_application, pl)  # все из xlsx
+        price_entry = data_xlsx[15]  # цена ПЛ
+        # logging.info(f'{price_entry=}')
+        suma_dann = number_to_words(price_entry, currency)
 
         payment_dkp = payment_for_dkp(price_entry)  # все для порядка оплаты
         info_about_seller = result_dadata()
-        logging.info(f'{info_about_seller=}')
+        # logging.info(f'{info_about_seller=}')
         info_about_seller_director = some_info_seller(info_about_seller)
-        logging.info(f'{info_about_seller_director=}')
+        # logging.info(f'{info_about_seller_director=}')
         full_seller = full_rekviti_seller(info_about_seller)
-        # dbase = DADATA_BASE.clean("name", full_seller[-2])
-        dbase = {'source': 'Ибнеев Рустем Шамилевич', 'result': 'Ибнеев Рустем Шамилевич',
-                 'result_genitive': 'Ибнеева Рустема Шамилевича', 'result_dative': 'Ибнееву Рустему Шамилевичу',
-                 'result_ablative': 'Ибнеевым Рустемом Шамилевичем', 'surname': 'Ибнеев', 'name': 'Рустем',
-                 'patronymic': 'Шамилевич', 'gender': 'М', 'qc': 0}  # mock
-
-        logging.info(f'{dbase=}')
+        dbase = DADATA_BASE.clean("name", full_seller[-2])
         rod_padezh_seller = dbase['result_genitive']
         name_and_dover_seller = seller_dkp_all()
         what_gender = dbase['gender']
@@ -800,6 +773,9 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
         ident_lkmb_rt = identification_lkmb_rt(signatory, investor)
         ident_pl = indentification_pl(currency)
         id_ls = identification_leasee(data_xlsx[18])
+        req1 = data_xlsx[10]
+        ogrn1 = data_xlsx[13]
+        add_inf = addicted_info_leasee(req1, ogrn1)
 
         months = {1: 'января', 2: 'февраля', 3: 'марта', 4: 'апреля', 5: 'мая', 6: 'июня',
                   7: 'июля', 8: 'августа', 9: 'сентября', 10: 'октября', 11: 'ноября', 12: 'декабря'}
@@ -830,7 +806,7 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
                          "{{ okato_leasee }}", "{{ ogrn_leasee }}",
                          # ниже список скорее всего не нужен, надо попробовать убрать его
                          "{{ inn_seller_list }}",
-                         #1 цена предмета лизинга, #2 предмет лизинга
+                         # 1 цена предмета лизинга, #2 предмет лизинга
                          "{{ price_entry }}", "{{ pl_entry }}",
                          "{{ formatted_name_leader_leasee }}",
                          "{{ leader_leasee }}", "{{ address_leasee_expluatazia }}", "{{ address_leasee }}",
@@ -845,7 +821,10 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
                          "{{ number_dl }}",
                          "{{ suma_dann[0] }}",
                          # данные по лизингополучателю
-                         "{{ leader_leasee_pod }}", "{{ leader_leasee_rod_padezh }}"
+                         "{{ leader_leasee_pod }}", "{{ leader_leasee_rod_padezh }}", "{{ imenyemoe }}",
+                         "{{ put_padezh_podpisant_rg }}", "{{ deystvuysh_list_leasee }}",
+                         "{{ doverka_ustav_leasee }}"
+
                          ]
 
         new_words_dkp = [str(eq_val[0]), str(eq_val[1]), str(eq_val[2]), str(eq_val[3]), str(eq_val[4]),
@@ -868,9 +847,9 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
                          data_xlsx[3], data_xlsx[4], data_xlsx[5], data_xlsx[6], data_xlsx[7], data_xlsx[8],
                          data_xlsx[9], data_xlsx[10], data_xlsx[11], data_xlsx[12], data_xlsx[13],
                          # ниже ИНН поставщиков, цена и предмет лизинга
-                         data_xlsx[14],
+                         inn_seller,
                          f'{data_xlsx[15]:,.2f}'.replace(',', ' ').replace('.', ','),
-                         data_xlsx[16],
+                         pl,
                          data_xlsx[17], data_xlsx[18], data_xlsx[19], data_xlsx[20],
                          data_xlsx[21], data_xlsx[22],
                          # ниже будет подписант и прочие данные ЛКМБ-РТ
@@ -881,9 +860,9 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
                          str(dt.today().day), str(months[dt.today().month]), str(dt.today().year),
                          str(numb_dl_dkp), str(suma_dann),
                          # данные по лизингополучателю
-                         str(id_ls[1]), str(id_ls[0])
+                         str(id_ls[1]), str(id_ls[0]),
+                         str(add_inf[2]), str(add_inf[0]), str(add_inf[1]), str(add_inf[3])
                          ]
-
 
         # for old, new in zip(old_words_dkp, new_words_dkp):
         #     print(f'{old}: {new}')
@@ -892,9 +871,9 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
 
     def replace_words_in_dkp(docx_file, old_words_dkp, new_words_dkp):
         eq_val = equipment_valute()
-        data_xlsx = read_xlsx(path_application)
-        logging.info(f'{data_xlsx=}')
-        price_entry = data_xlsx[15][0]
+        data_xlsx = read_xlsx(path_application, pl)
+        # logging.info(f'{data_xlsx=}')
+        price_entry = data_xlsx[15]
         payment_dkp = payment_for_dkp(price_entry)  # все для порядка оплаты
         info_about_seller = result_dadata()
         kratk_name_seller = result_dadata()[0]['data']['name']['short_with_opf']
@@ -974,7 +953,6 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
                 if run.text.strip() in [
                     'Внести информацию о смене собственника предмета лизинга в Системе Электронных Паспортов (СЭП) не позднее дня подписания акта приема-передачи предмета лизинга, путём создания заявления на смену собственника и подтверждения его в СЭП квалифицированной электронной подписью Продавца. Фактом извещения Покупателя об исполненной обязанности является электронное сообщение с сайта СЭП на адрес электронной почты Покупателя указанный при регистрации в СЭП в виде сообщения с кодом для подтверждения Заявления на смену собственника. ']:
                     doc.element.body.remove(run._element)
-
 
         if place == "продавец" and acts == 'эксплуатация':
             for run in doc.paragraphs:
@@ -1146,44 +1124,44 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
         if len(payment_order.split(' ')) == 1:
             for run in doc.paragraphs:
                 if run.text.strip() in [
-                    f'2.3.1. {payment_dkp[0]} платеж в размере {payment_dkp[5]}% ({payment_dkp[10]}) от стоимости предмета лизинга, что составляет сумму {eq_val[-2]} {payment_dkp[15]} ({payment_dkp[20]}) {eq_val[-3]}, в т.ч. НДС 20%, в течение 15 (пятнадцати) рабочих дней с момента перечисления Лизингополучателем первоначального платежа Покупателю по договору лизинга, а также после выставления Продавцом счета на оплату.',
-                    f'2.3.2. {payment_dkp[1]} платеж в размере {payment_dkp[6]}% ({payment_dkp[11]}) от стоимости предмета лизинга, что составляет сумму {eq_val[-2]} {payment_dkp[16]} ({payment_dkp[21]}) {eq_val[-3]}, в т.ч. НДС 20%, в течение 7 (семи) рабочих дней с момента получения уведомления о готовности предмета лизинга к отгрузке согласно п.3.1.1 и после выставления Продавцом счета на оплату.',
-                    f'2.3.3. {payment_dkp[2]} платеж в размере {payment_dkp[7]}% ({payment_dkp[12]}) от стоимости предмета лизинга, что составляет сумму {eq_val[-2]} {payment_dkp[17]} ({payment_dkp[22]}) {eq_val[-3]}, в т.ч. НДС 20%, в течение 7 (семи) рабочих дней после выставления Продавцом счета на оплату.',
-                    f'2.3.4. {payment_dkp[3]} платеж в размере {payment_dkp[8]}% ({payment_dkp[13]}) от стоимости предмета лизинга, что составляет сумму {eq_val[-2]} {payment_dkp[18]} ({payment_dkp[23]}) {eq_val[-3]}, в т.ч. НДС 20%, в течение 7 (семи) рабочих дней после выставления Продавцом счета на оплату.',
-                    f'2.3.5. {payment_dkp[4]} платеж в размере {payment_dkp[9]}% ({payment_dkp[14]}) от стоимости предмета лизинга, что составляет сумму {eq_val[-2]} {payment_dkp[19]} ({payment_dkp[24]}) {eq_val[-3]}, в т.ч. НДС 20%, в течение 7 (семи) рабочих дней после выставления Продавцом счета на оплату.']:
+                    f'2.3.1. {payment_dkp[0]} платеж в размере {payment_dkp[5]}% ({payment_dkp[10]}) от стоимости предмета лизинга, что составляет сумму {eq_val[-2]} {payment_dkp[15]} {payment_dkp[20]}, в т.ч. НДС 20%, в течение 15 (пятнадцати) рабочих дней с момента перечисления Лизингополучателем первоначального платежа Покупателю по договору лизинга, а также после выставления Продавцом счета на оплату.',
+                    f'2.3.2. {payment_dkp[1]} платеж в размере {payment_dkp[6]}% ({payment_dkp[11]}) от стоимости предмета лизинга, что составляет сумму {eq_val[-2]} {payment_dkp[16]} {payment_dkp[21]}, в т.ч. НДС 20%, в течение 7 (семи) рабочих дней с момента получения уведомления о готовности предмета лизинга к отгрузке согласно п.3.1.1 и после выставления Продавцом счета на оплату.',
+                    f'2.3.3. {payment_dkp[2]} платеж в размере {payment_dkp[7]}% ({payment_dkp[12]}) от стоимости предмета лизинга, что составляет сумму {eq_val[-2]} {payment_dkp[17]} {payment_dkp[22]}, в т.ч. НДС 20%, в течение 7 (семи) рабочих дней после выставления Продавцом счета на оплату.',
+                    f'2.3.4. {payment_dkp[3]} платеж в размере {payment_dkp[8]}% ({payment_dkp[13]}) от стоимости предмета лизинга, что составляет сумму {eq_val[-2]} {payment_dkp[18]} {payment_dkp[23]}, в т.ч. НДС 20%, в течение 7 (семи) рабочих дней после выставления Продавцом счета на оплату.',
+                    f'2.3.5. {payment_dkp[4]} платеж в размере {payment_dkp[9]}% ({payment_dkp[14]}) от стоимости предмета лизинга, что составляет сумму {eq_val[-2]} {payment_dkp[19]} {payment_dkp[24]}, в т.ч. НДС 20%, в течение 7 (семи) рабочих дней после выставления Продавцом счета на оплату.']:
                     doc.element.body.remove(run._element)
 
         elif len(payment_order.split(' ')) == 2:
             for run in doc.paragraphs:
                 if run.text.strip() in [
-                    f'2.3.1. Оплата в размере {payment_dkp[5]}% ({payment_dkp[10]}) от стоимости предмета лизинга, что составляет сумму {eq_val[-2]} {payment_dkp[15]} ({payment_dkp[20]}) {eq_val[-3]}, в т.ч. НДС, в течение 15 (пятнадцати) рабочих дней с момента перечисления Лизингополучателем первоначального платежа Покупателю по договору лизинга,',
+                    f'2.3.1. Оплата в размере {payment_dkp[5]}% ({payment_dkp[10]}) от стоимости предмета лизинга, что составляет сумму {eq_val[-2]} {payment_dkp[15]} {payment_dkp[20]}, в т.ч. НДС, в течение 15 (пятнадцати) рабочих дней с момента перечисления Лизингополучателем первоначального платежа Покупателю по договору лизинга,',
                     'и в течение 7 (семи) рабочих дней с момента получения Покупателем уведомления Продавца о готовности предмета лизинга к отгрузке согласно п.3.1.1 и после выставления Продавцом счета на оплату.',
-                    f'2.3.3. {payment_dkp[2]} платеж в размере {payment_dkp[7]}% ({payment_dkp[12]}) от стоимости предмета лизинга, что составляет сумму {eq_val[-2]} {payment_dkp[17]} ({payment_dkp[22]}) {eq_val[-3]}, в т.ч. НДС 20%, в течение 7 (семи) рабочих дней после выставления Продавцом счета на оплату.',
-                    f'2.3.4. {payment_dkp[3]} платеж в размере {payment_dkp[8]}% ({payment_dkp[13]}) от стоимости предмета лизинга, что составляет сумму {eq_val[-2]} {payment_dkp[18]} ({payment_dkp[23]}) {eq_val[-3]}, в т.ч. НДС 20%, в течение 7 (семи) рабочих дней после выставления Продавцом счета на оплату.',
-                    f'2.3.5. {payment_dkp[4]} платеж в размере {payment_dkp[9]}% ({payment_dkp[14]}) от стоимости предмета лизинга, что составляет сумму {eq_val[-2]} {payment_dkp[19]} ({payment_dkp[24]}) {eq_val[-3]}, в т.ч. НДС 20%, в течение 7 (семи) рабочих дней после выставления Продавцом счета на оплату.'
+                    f'2.3.3. {payment_dkp[2]} платеж в размере {payment_dkp[7]}% ({payment_dkp[12]}) от стоимости предмета лизинга, что составляет сумму {eq_val[-2]} {payment_dkp[17]} {payment_dkp[22]}, в т.ч. НДС 20%, в течение 7 (семи) рабочих дней после выставления Продавцом счета на оплату.',
+                    f'2.3.4. {payment_dkp[3]} платеж в размере {payment_dkp[8]}% ({payment_dkp[13]}) от стоимости предмета лизинга, что составляет сумму {eq_val[-2]} {payment_dkp[18]} {payment_dkp[23]}, в т.ч. НДС 20%, в течение 7 (семи) рабочих дней после выставления Продавцом счета на оплату.',
+                    f'2.3.5. {payment_dkp[4]} платеж в размере {payment_dkp[9]}% ({payment_dkp[14]}) от стоимости предмета лизинга, что составляет сумму {eq_val[-2]} {payment_dkp[19]} {payment_dkp[24]}, в т.ч. НДС 20%, в течение 7 (семи) рабочих дней после выставления Продавцом счета на оплату.'
                 ]:
                     doc.element.body.remove(run._element)
         elif len(payment_order.split(' ')) == 3:
             for run in doc.paragraphs:
                 if run.text.strip() in [
-                    f'2.3.1. Оплата в размере {payment_dkp[5]}% ({payment_dkp[10]}) от стоимости предмета лизинга, что составляет сумму {eq_val[-2]} {payment_dkp[15]} ({payment_dkp[20]}) {eq_val[-3]}, в т.ч. НДС, в течение 15 (пятнадцати) рабочих дней с момента перечисления Лизингополучателем первоначального платежа Покупателю по договору лизинга,',
+                    f'2.3.1. Оплата в размере {payment_dkp[5]}% ({payment_dkp[10]}) от стоимости предмета лизинга, что составляет сумму {eq_val[-2]} {payment_dkp[15]} {payment_dkp[20]}, в т.ч. НДС, в течение 15 (пятнадцати) рабочих дней с момента перечисления Лизингополучателем первоначального платежа Покупателю по договору лизинга,',
                     'и в течение 7 (семи) рабочих дней с момента получения Покупателем уведомления Продавца о готовности предмета лизинга к отгрузке согласно п.3.1.1 и после выставления Продавцом счета на оплату.',
-                    f'2.3.4. {payment_dkp[3]} платеж в размере {payment_dkp[8]}% ({payment_dkp[13]}) от стоимости предмета лизинга, что составляет сумму {eq_val[-2]} {payment_dkp[18]} ({payment_dkp[23]}) {eq_val[-3]}, в т.ч. НДС 20%, в течение 7 (семи) рабочих дней после выставления Продавцом счета на оплату.',
-                    f'2.3.5. {payment_dkp[4]} платеж в размере {payment_dkp[9]}% ({payment_dkp[14]}) от стоимости предмета лизинга, что составляет сумму {eq_val[-2]} {payment_dkp[19]} ({payment_dkp[24]}) {eq_val[-3]}, в т.ч. НДС 20%, в течение 7 (семи) рабочих дней после выставления Продавцом счета на оплату.'
+                    f'2.3.4. {payment_dkp[3]} платеж в размере {payment_dkp[8]}% ({payment_dkp[13]}) от стоимости предмета лизинга, что составляет сумму {eq_val[-2]} {payment_dkp[18]} {payment_dkp[23]}, в т.ч. НДС 20%, в течение 7 (семи) рабочих дней после выставления Продавцом счета на оплату.',
+                    f'2.3.5. {payment_dkp[4]} платеж в размере {payment_dkp[9]}% ({payment_dkp[14]}) от стоимости предмета лизинга, что составляет сумму {eq_val[-2]} {payment_dkp[19]} {payment_dkp[24]}, в т.ч. НДС 20%, в течение 7 (семи) рабочих дней после выставления Продавцом счета на оплату.'
                 ]:
                     doc.element.body.remove(run._element)
         elif len(payment_order.split(' ')) == 4:
             for run in doc.paragraphs:
                 if run.text.strip() in [
-                    f'2.3.1. Оплата в размере {payment_dkp[5]}% ({payment_dkp[10]}) от стоимости предмета лизинга, что составляет сумму {eq_val[-2]} {payment_dkp[15]} ({payment_dkp[20]}) {eq_val[-3]}, в т.ч. НДС, в течение 15 (пятнадцати) рабочих дней с момента перечисления Лизингополучателем первоначального платежа Покупателю по договору лизинга,',
+                    f'2.3.1. Оплата в размере {payment_dkp[5]}% ({payment_dkp[10]}) от стоимости предмета лизинга, что составляет сумму {eq_val[-2]} {payment_dkp[15]} {payment_dkp[20]}, в т.ч. НДС, в течение 15 (пятнадцати) рабочих дней с момента перечисления Лизингополучателем первоначального платежа Покупателю по договору лизинга,',
                     'и в течение 7 (семи) рабочих дней с момента получения Покупателем уведомления Продавца о готовности предмета лизинга к отгрузке согласно п.3.1.1 и после выставления Продавцом счета на оплату.',
-                    f'2.3.5. {payment_dkp[4]} платеж в размере {payment_dkp[9]}% ({payment_dkp[14]}) от стоимости предмета лизинга, что составляет сумму {eq_val[-2]} {payment_dkp[19]} ({payment_dkp[24]}) {eq_val[-3]}, в т.ч. НДС 20%, в течение 7 (семи) рабочих дней после выставления Продавцом счета на оплату.'
+                    f'2.3.5. {payment_dkp[4]} платеж в размере {payment_dkp[9]}% ({payment_dkp[14]}) от стоимости предмета лизинга, что составляет сумму {eq_val[-2]} {payment_dkp[19]} {payment_dkp[24]}, в т.ч. НДС 20%, в течение 7 (семи) рабочих дней после выставления Продавцом счета на оплату.'
                 ]:
                     doc.element.body.remove(run._element)
         else:
             for run in doc.paragraphs:
                 if run.text.strip() in [
-                    f'2.3.1. Оплата в размере {payment_dkp[5]}% ({payment_dkp[10]}) от стоимости предмета лизинга, что составляет сумму {eq_val[-2]} {payment_dkp[15]} ({payment_dkp[20]}) {eq_val[-3]}, в т.ч. НДС, в течение 15 (пятнадцати) рабочих дней с момента перечисления Лизингополучателем первоначального платежа Покупателю по договору лизинга,',
+                    f'2.3.1. Оплата в размере {payment_dkp[5]}% ({payment_dkp[10]}) от стоимости предмета лизинга, что составляет сумму {eq_val[-2]} {payment_dkp[15]} {payment_dkp[20]}, в т.ч. НДС, в течение 15 (пятнадцати) рабочих дней с момента перечисления Лизингополучателем первоначального платежа Покупателю по договору лизинга,',
                     'и в течение 7 (семи) рабочих дней с момента получения Покупателем уведомления Продавца о готовности предмета лизинга к отгрузке согласно п.3.1.1 и после выставления Продавцом счета на оплату.']:
                     doc.element.body.remove(run._element)
 

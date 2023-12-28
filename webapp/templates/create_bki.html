@@ -29,6 +29,22 @@
         .content {
             flex: 1;
         }
+        .button-container {
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap; /* Добавляем перенос элементов */
+        }
+
+        .form-group {
+            margin-right: 10px;
+            margin-bottom: 10px; /* Добавляем отступ снизу */
+        }
+
+        /* Дополнительный стиль для последней строки */
+        .button-container::after {
+            content: "";
+            flex: auto;
+        }
     </style>
 </head>
 <body style="background-color: #edf6fc;">
@@ -93,49 +109,78 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-7">
+        <div class="col-10">
             <div class="card border-light mb-3">
                 <div class="card-body">
                     <form action="{{ url_for('manager.create_application') }}" method="POST">
                         <div class="mb-3">
                             <h5 class="card-header"><i class="fa-solid fa-circle-info fa-xs"
-                                                       style="color: #8f8f8f;"></i> Заполнение заявки
+                                                       style="color: #8f8f8f;"></i> Заполнение БКИ юр лица
                             </h5>
                         </div>
                         <div class="mb-3">
-                            <label>Введите ИНН лизингополучателя</label>
+                            <label>Введите ИНН контрагента</label>
                             <div class="input-group input-group-sm mb-3">
                                 <input type="text" name="client_inn" value="" class="form-control" required>
+                                <button type="button" class="btn btn-primary">Автозаполнение</button>
                             </div>
                         </div>
                         <div class="mb-3">
-                            <label>Введите ИНН продавца 1</label>
+                            <label>Введите полное наименование контрагента</label>
                             <div class="input-group input-group-sm mb-3">
-                                <input type="text" name="seller_inn1" value="" class="form-control" required>
+                                <input type="text" name="full_name_ur" value="" class="form-control" required>
                             </div>
                         </div>
                         <div class="mb-3">
-                            <label>Введите ИНН продавца 2</label>
+                            <label>Введите ОГРН контрагента</label>
                             <div class="input-group input-group-sm mb-3">
-                                <input type="text" name="seller_inn2" value="" class="form-control">
+                                <input type="text" name="ogrn_ur" value="" class="form-control">
                             </div>
                         </div>
                         <div class="mb-3">
-                            <label>Введите ИНН продавца 3</label>
+                            <label>Введите адрес контрагента</label>
                             <div class="input-group input-group-sm mb-3">
-                                <input type="text" name="seller_inn3" value="" class="form-control">
+                                <input type="text" name="address_ur" value="" class="form-control">
                             </div>
                         </div>
                         <div class="mb-3">
-                            <label>Введите ИНН продавца 4</label>
+                            <label>Введите телефон контрагента</label>
                             <div class="input-group input-group-sm mb-3">
-                                <input type="text" name="seller_inn4" value="" class="form-control">
+                                <input type="text" name="phone_ur" value="" class="form-control">
                             </div>
                         </div>
-                        <div class="form-group">
-                            <button type="submit" id="submit-button1" class="btn btn-outline-primary btn-block">
-                                Скачать заявку
-                            </button>
+                        <div class="mb-3">
+                            <label>Введите полное ФИО подписанта контрагента в родительном падеже</label>
+                            <div class="input-group input-group-sm mb-3">
+                                <input type="text" name="fio_signatory_ur" value="" class="form-control"
+                                placeholder="Краснова Сергея Ивановича">
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label>Введите наименование должности подписанта контрагента в родительном падеже</label>
+                            <div class="input-group input-group-sm mb-3">
+                                <input type="text" name="position_signatory_ur" value="" class="form-control"
+                                placeholder="Директора/Генерального директора">
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label>На основании каких полномочий будет подписание</label>
+                            <div class="input-group input-group-sm mb-3">
+                                <input type="text" name="status_signatory_ur" value="" class="form-control"
+                                placeholder="Устава/Доверенности № ... от дата">
+                            </div>
+                        </div>
+                        <div class="button-container">
+                            <div class="form-group">
+                                <button type="submit" id="submit-button1" class="btn btn-outline-primary btn-block">
+                                    Скачать заявку ООО "ЛКМБ-РТ"
+                                </button>
+                            </div>
+                            <div class="form-group">
+                                <button type="submit" id="submit-buttonijara" class="btn btn-outline-primary btn-block">
+                                    Скачать заявку ООО "Иджара-Лизинг"
+                                </button>
+                            </div>
                         </div>
                     </form>
                 </div>
@@ -281,17 +326,17 @@
                                             <option value="Регрессив">Регрессив</option>
                                             <option value="Clients">Clients</option>
                                         </select>
-                                            <div id="message"></div>
+                                        <div id="message"></div>
                                     </div>
                                     <style>
-                                            #message {
-                                                font-weight: bold;
-                                                color: red;
-                                                font-size: 20px;
-                                            }
+                                        #message {
+                                            font-weight: bold;
+                                            color: red;
+                                            font-size: 20px;
+                                        }
                                     </style>
                                     <div id="divField" style="display: none;"
-                                            class="mb-3 border border-1 border-info rounded p-2">
+                                         class="mb-3 border border-1 border-info rounded p-2">
                                         <label><i class="fa-solid fa-paperclip fa-xs"
                                                   style="color: #8f8f8f;"></i> Выберите график платежей</label>
                                         <input type="file" class="form-control form-control-sm" id="graphicFileInput"
@@ -754,25 +799,7 @@
                 });
             }
         </script>
-        <div class="col-5">
-            <div class="card border-light mb-3">
-                <div class="card-body">
-                    <div class="mb-3">
-                        <h4 class="card-header">Документы по клиенту</h4>
-                    </div>
-                    <ul class="list-group list-group-flush">
-                        {% for folder_name in folder_names %}
-                        <li class="list-group-item">
-                            <a href="{{ url_for('manager.agreements_folder', folder_path=folder_name) }}"
-                               class="btn btn-light btn-sm">
-                                <i class="fa-regular fa-folder" style="color: #6b6b6b;"></i> {{ folder_name }}
-                            </a>
-                        </li>
-                        {% endfor %}
-                    </ul>
-                </div>
-            </div>
-        </div>
+
     </div>
 </div>
 
