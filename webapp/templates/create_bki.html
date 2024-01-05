@@ -153,21 +153,21 @@
                             <label>Введите полное ФИО подписанта контрагента в родительном падеже</label>
                             <div class="input-group input-group-sm mb-3">
                                 <input type="text" name="fio_signatory_ur" value="" class="form-control"
-                                placeholder="Краснова Сергея Ивановича">
+                                       placeholder="Краснова Сергея Ивановича">
                             </div>
                         </div>
                         <div class="mb-3">
                             <label>Введите наименование должности подписанта контрагента в родительном падеже</label>
                             <div class="input-group input-group-sm mb-3">
                                 <input type="text" name="position_signatory_ur" value="" class="form-control"
-                                placeholder="Директора/Генерального директора">
+                                       placeholder="Директора/Генерального директора">
                             </div>
                         </div>
                         <div class="mb-3">
                             <label>На основании каких полномочий будет подписание</label>
                             <div class="input-group input-group-sm mb-3">
                                 <input type="text" name="status_signatory_ur" value="" class="form-control"
-                                placeholder="Устава/Доверенности № ... от дата">
+                                       placeholder="Устава/Доверенности № ... от дата">
                             </div>
                         </div>
                         <div class="button-container">
@@ -181,627 +181,122 @@
                                     Скачать заявку ООО "Иджара-Лизинг"
                                 </button>
                             </div>
+
+                        </div>
+                    </form>
+                    <form action="{{ url_for('manager.create_application') }}" method="POST">
+                        <div class="mb-3">
+                            <h5 class="card-header"><i class="fa-solid fa-circle-info fa-xs"
+                                                       style="color: #8f8f8f;"></i> Заполнение БКИ физического лица
+                            </h5>
+                        </div>
+                        <div class="mb-3">
+                            <label>Введите полное ФИО физического лица</label>
+                            <div class="input-group input-group-sm mb-3">
+                                <input type="text" name="client_fio" value="" class="form-control" required>
+                                <button type="button" class="btn btn-primary">Автозаполнение</button>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <div class="mb-3">
+                                    <label>Введите серию паспорта</label>
+                                    <div class="input-group input-group-sm mb-3">
+                                        <input type="text" name="series" value="" class="form-control" required>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="mb-3">
+                                    <label>Введите номер паспорта</label>
+                                    <div class="input-group input-group-sm mb-3">
+                                        <input type="text" name="number" value="" class="form-control" required>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <div class="mb-3">
+                                    <label>Кем выдан паспорт</label>
+                                    <div class="input-group input-group-sm mb-3">
+                                        <input type="text" name="who_issued" value="" class="form-control" required>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="mb-3">
+                                    <label>Дата выдачи паспорта</label>
+                                    <div class="input-group input-group-sm mb-3">
+                                        <input type="date" name="date_issued" value="" class="form-control" required>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label>Код подразделения</label>
+                            <div class="input-group input-group-sm mb-3">
+                                <input type="text" name="code_passport" value="" class="form-control">
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label>Место рождения</label>
+                            <div class="input-group input-group-sm mb-3">
+                                <input type="text" name="location_birth" value="" class="form-control">
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label>Дата рождения</label>
+                            <div class="input-group input-group-sm mb-3">
+                                <input type="date" name="fio_birth" value="" class="form-control">
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label>Адрес регистрации физического лица</label>
+                            <div class="input-group input-group-sm mb-3">
+                                <input type="text" name="registration_address" value="" class="form-control">
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label>ИНН физического лица</label>
+                            <div class="input-group input-group-sm mb-3">
+                                <input type="text" name="inn_fiz" value="" class="form-control">
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label>Дата заполнения заявки</label>
+                            <div class="input-group input-group-sm mb-3">
+                                <input type="date" name="date_zayvka" value="" class="form-control">
+                            </div>
+                        </div>
+                        <div class="button-container">
+                            <div class="form-group">
+                                <button type="submit" id="submit-button_fiz" class="btn btn-outline-primary btn-block">
+                                    Скачать заявку ООО "ЛКМБ-РТ"
+                                </button>
+                            </div>
+                            <div class="form-group">
+                                <button type="submit" id="submit-buttonijara_fiz" class="btn btn-outline-primary btn-block">
+                                    Скачать заявку ООО "Иджара-Лизинг"
+                                </button>
+                            </div>
+
                         </div>
                     </form>
                 </div>
             </div>
-            <form action="{{ url_for('manager.create_agreement') }}" method="POST">
-                <div class="card border-light mb-3">
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="card border-light mb-3" id="main_fields" style="display: none;">
-                                <div class="card-body">
-                                    <div class="mb-3">
-                                        <div class="mb-3">
-                                            <h5 class="card-header"><i class="fa-solid fa-circle-info fa-xs"
-                                                                       style="color: #8f8f8f;"></i> Общие поля</h5>
-                                        </div>
-                                    </div>
-                                    <div class="mb-3 border border-1 border-info rounded p-2">
-                                        <label><i class="fa-solid fa-paperclip fa-xs"
-                                                  style="color: #8f8f8f;"></i> Заявка по клиенту</label>
-                                        <input type="file" class="form-control form-control-sm"
-                                               id="applicationFileInput"
-                                               name="uploaded_application"
-                                               required>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label>Введите ИНН лизингополучателя</label>
-                                        <div class="input-group input-group-sm mb-3">
-                                            <input type="text" name="client_inn" value="" class="form-control"
-                                                   id="clientInn"
-                                                   required>
-                                        </div>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label>Выберите продавца</label>
-                                        <select class="form-select form-select-sm" name="seller_inn"
-                                                aria-label=".form-select-sm example" id="sellerInn" required>
-                                            <option selected></option>
-                                            <option value='ИНН1'>-</option>
-                                            <option value='ИНН2'>-</option>
-                                            <option value='ИНН3'>-</option>
-                                            <option value='ИНН4'>-</option>
-                                        </select>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label>Введите номер ДЛ/ДКП</label>
-                                        <div class="input-group input-group-sm mb-3">
-                                            <input type="text" name="number_dl" value="" class="form-control"
-                                                   required>
-                                        </div>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label>Выберите подписанта от ЛКМБ</label>
-                                        <select class="form-select form-select-sm" name="signatory"
-                                                aria-label=".form-select-sm example" required>
-                                            <option selected></option>
-                                            <option value="Каюмов А. Д.">Каюмов А. Д.</option>
-                                            <option value="Габдрахманов Р. Р.">Габдрахманов Р. Р.</option>
-                                            <option value="Хасанова Д. Р.">Хасанова Д. Р.</option>
-                                        </select>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label>Выберите инвестора</label>
-                                        <select class="form-select form-select-sm" name="investor"
-                                                aria-label=".form-select-sm example" required>
-                                            <option selected></option>
-                                            <option value="ПАО «АК БАРС» БАНК">ПАО «АК БАРС» БАНК</option>
-                                            <option value="АО «АЛЬФА-БАНК»">АО «АЛЬФА-БАНК»</option>
-                                            <option value="ПАО АКБ «МЕТАЛЛИНВЕСТБАНК»">ПАО АКБ «МЕТАЛЛИНВЕСТБАНК»
-                                            </option>
-                                            <option value="ПАО «МКБ»">ПАО «МКБ»</option>
-                                            <option value="АО «ПЕРВОУРАЛЬСКБАНК»">АО «ПЕРВОУРАЛЬСКБАНК»</option>
-                                            <option value="АО «СОЛИД БАНК»">АО «СОЛИД БАНК»</option>
-                                            <option value="АО КБ «УРАЛ ФД»">АО КБ «УРАЛ ФД»</option>
-                                            <option value="ИНВЕСТТОРГБАНК АО">ИНВЕСТТОРГБАНК АО</option>
-                                            <option value="ПАО СБЕРБАНК">ПАО СБЕРБАНК</option>
-                                            <option value="ПАО СОВКОМБАНК">ПАО СОВКОМБАНК</option>
-                                            <option value="ООО «ЛКМБ-РТ»">ООО «ЛКМБ-РТ»</option>
-                                        </select>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label>Выберите валюту</label>
-                                        <select class="form-select form-select-sm" name="currency"
-                                                aria-label=".form-select-sm example" id="currency" required>
-                                            <option selected></option>
-                                            <option value="Рубль">Рубль</option>
-                                            <option value="Китайский юань">Китайский юань</option>
-                                            <option value="Доллар США">Доллар США</option>
-                                            <option value="Евро">Евро</option>
-                                        </select>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label>Выберите предмет лизинга</label>
-                                        <select class="form-select form-select-sm" name="pl"
-                                                aria-label=".form-select-sm example"
-                                                required>
-                                            <option selected></option>
-                                            <option value='0'>ПЛ №1</option>
-                                            <option value='1'>ПЛ №2</option>
-                                            <option value='2'>ПЛ №3</option>
-                                            <option value='3'>ПЛ №4</option>
-                                        </select>
-                                    </div>
-                                    <div class="form-check form-switch">
-                                        <input class="form-check-input" type="checkbox" role="switch" id="typeSelect"
-                                               name="typeSelect">
-                                        <label class="form-check-label" for="typeSelect">Оборудование</label>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-6">
-                            <div class="card border-light mb-3" id="dl_fields" style="display: none;">
-                                <div class="card-body">
-                                    <div class="mb-3">
-                                        <div class="mb-3">
-                                            <h5 class="card-header"><i class="fa-solid fa-circle-info fa-xs"
-                                                                       style="color: #8f8f8f;"></i> Поля для ДЛ</h5>
-                                        </div>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label>Выберите страхователя</label>
-                                        <select class="form-select form-select-sm" name="insurant"
-                                                aria-label=".form-select-sm example" required disabled>
-                                            <option selected></option>
-                                            <option value="ООО «ЛКМБ-РТ»">ООО «ЛКМБ-РТ»</option>
-                                            <option value="Лизингополучатель">Лизингополучатель</option>
-                                            <option value="1 год ЛКМБ-РТ, дальше лизингополучатель">1 год ЛКМБ-РТ,
-                                                дальше
-                                                лизингополучатель
-                                            </option>
-                                        </select>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label>Выберите график платежей</label>
-                                        <select class="form-select form-select-sm" name="graph"
-                                                id="graphSelect"
-                                                aria-label=".form-select-sm example"
-                                                required disabled>
-                                            <option selected></option>
-                                            <option value="Аннуитет">Аннуитет</option>
-                                            <option value="Регрессив">Регрессив</option>
-                                            <option value="Clients">Clients</option>
-                                        </select>
-                                        <div id="message"></div>
-                                    </div>
-                                    <style>
-                                        #message {
-                                            font-weight: bold;
-                                            color: red;
-                                            font-size: 20px;
-                                        }
-                                    </style>
-                                    <div id="divField" style="display: none;"
-                                         class="mb-3 border border-1 border-info rounded p-2">
-                                        <label><i class="fa-solid fa-paperclip fa-xs"
-                                                  style="color: #8f8f8f;"></i> Выберите график платежей</label>
-                                        <input type="file" class="form-control form-control-sm" id="graphicFileInput"
-                                               name="uploaded_graphic"
-                                               required disabled>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-6">
-                            <div class="card border-light mb-3" id="dkp_fields" style="display: none;">
-                                <div class="card-body">
-                                    <div class="mb-3">
-                                        <div class="mb-3">
-                                            <h5 class="card-header"><i class="fa-solid fa-circle-info fa-xs"
-                                                                       style="color: #8f8f8f;"></i> Поля для ДКП</h5>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label>Тип предмета лизинга (новый или Б/У)</label>
-                                            <select class="form-select form-select-sm" name="type_pl_new_or_not"
-                                                    aria-label=".form-select-sm example" required disabled>
-                                                <option selected></option>
-                                                <option value="used">Б/У без гарантии</option>
-                                                <option value="used_with_garantee">Б/У с гарантией</option>
-                                                <option value="new">Новый</option>
-                                            </select>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label>Порядок оплаты (через пробел, например: 20 80)</label>
-                                            <div class="input-group input-group-sm mb-3">
-                                                <input type="text" name="payment_order" value="" class="form-control"
-                                                       required disabled>
-                                            </div>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label>Место отгрузки ПЛ</label>
-                                            <select class="form-select form-select-sm" name="place"
-                                                    aria-label=".form-select-sm example" required disabled>
-                                                <option selected></option>
-                                                <option value="продавец">По месту рег. продавца</option>
-                                                <option value="лп">По месту рег. ЛП</option>
-                                            </select>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label>Подписание актов приема-передачи</label>
-                                            <select class="form-select form-select-sm" name="acts"
-                                                    aria-label=".form-select-sm example" required disabled>
-                                                <option selected></option>
-                                                <option value="склад">В момент отгрузки со склада продавца</option>
-                                                <option value="эксплуатация">По месту эксплуатации</option>
-                                            </select>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label>Способ подписания договора</label>
-                                            <select class="form-select form-select-sm" name="diadok"
-                                                    aria-label=".form-select-sm example" required disabled>
-                                                <option selected></option>
-                                                <option value="диадок">Диадок</option>
-                                                <option value="эцп">ЭЦП</option>
-                                                <option value="живая">Живая подпись</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="card border-light mb-3" id="stock" style="display: none;">
-                                <div class="card-body">
-                                    <div class="mb-3">
-                                        <div class="mb-3">
-                                            <label>Способ оплаты (по курсу ЦБ или по Бирже)</label>
-                                            <select class="form-select form-select-sm" name="stock"
-                                                    aria-label=".form-select-sm example" required disabled>
-                                                <option selected></option>
-                                                <option value="ЦБ">ЦБ</option>
-                                                <option value="Биржа">Биржа</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="card border-light mb-3" id="dop_fields" style="display: none;">
-                                <div class="card-body">
-                                    <div class="mb-3">
-                                        <div class="mb-3">
-                                            <label>Необходимость пуско-наладочных работ</label>
-                                            <select class="form-select form-select-sm" name="pnr"
-                                                    aria-label=".form-select-sm example" required disabled>
-                                                <option selected></option>
-                                                <option value="Да">Да</option>
-                                                <option value="Нет">Нет</option>
-                                            </select>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label>Необходимость подготовки помещения</label>
-                                            <select class="form-select form-select-sm" name="house"
-                                                    aria-label=".form-select-sm example" required disabled>
-                                                <option selected></option>
-                                                <option value="Да">Да</option>
-                                                <option value="Нет">Нет</option>
-                                            </select>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label>Необходимость обучения персонала</label>
-                                            <select class="form-select form-select-sm" name="learn"
-                                                    aria-label=".form-select-sm example" required disabled>
-                                                <option selected></option>
-                                                <option value="Да">Да</option>
-                                                <option value="Нет">Нет</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="card border-light mb-3">
-                                <div class="card-body">
-                                    <div class="mb-3">
-                                        <div class="mb-3">
-                                            <h5 class="card-header"><i class="fa-solid fa-file-circle-check fa-xs"
-                                                                       style="color: #8f8f8f;"></i> Создать договор
-                                            </h5>
-                                        </div>
-                                    </div>
-                                    <div class="form-check form-switch">
-                                        <input class="form-check-input" type="checkbox" role="switch" id="check_dl"
-                                               name="check_dl">
-                                        <label class="form-check-label" for="check_dl">ДЛ</label>
-                                    </div>
-                                    <div class="form-check form-switch">
-                                        <input class="form-check-input" type="checkbox" role="switch" id="check_dkp"
-                                               name="check_dkp">
-                                        <label class="form-check-label" for="check_dkp">ДКП</label>
-                                    </div>
-                                    <br>
-                                    <div class="btn-group d-flex justify-content-center" role="group"
-                                         aria-label="Basic outlined example">
-                                        <button type="button" id="check-button" class="btn btn-outline-primary">
-                                            Предпроверка
-                                        </button>
-                                        <button type="submit" id="submit-button" class="btn btn-outline-primary">Создать
-                                            Договор
-                                        </button>
-                                    </div>
-                                    <script>
-                                        // Получаем ссылки на кнопки и инпуты для файлов
-                                        var checkButton = document.getElementById("check-button");
-                                        var applicationFileInput = document.getElementById("applicationFileInput");
-                                        var graphicFileInput = document.getElementById("graphicFileInput");
-                                        var submitButton = document.getElementById("submit-button");
-                                        var plSelect = document.querySelector('select[name="pl"]');
-                                        var innSelect = document.querySelector('select[id="sellerInn"]');
 
-                                        applicationFileInput.addEventListener('change', function() {
-                                            var file = applicationFileInput.files[0];
+            <script>
 
-                                            if (file && file.name.endsWith('.xlsx')) {
-                                                var reader = new FileReader();
-
-                                                reader.onload = function(e) {
-                                                    var data = new Uint8Array(e.target.result);
-                                                    var workbook = XLSX.read(data, { type: 'array' });
-
-                                                    // Получаем значение из ячейки D6 первого листа
-                                                    var cellValue = workbook.Sheets[workbook.SheetNames[0]]['D6'].v;
-
-                                                    // Разделяем значение по символу "/" и берем только первую часть
-                                                    var firstPart = cellValue.split('/')[0];
-
-                                                    // Устанавливаем значение ИНН в соответствии с ячейкой D6
-                                                    document.getElementById('clientInn').value = firstPart;
-
-                                                    // Получаем значения из ячеек C21, C22, C23, C24 первого листа
-                                                    var plValues = [
-                                                        workbook.Sheets[workbook.SheetNames[0]]['C21'] ? workbook.Sheets[workbook.SheetNames[0]]['C21'].v : '-',
-                                                        workbook.Sheets[workbook.SheetNames[0]]['C22'] ? workbook.Sheets[workbook.SheetNames[0]]['C22'].v : '-',
-                                                        workbook.Sheets[workbook.SheetNames[0]]['C23'] ? workbook.Sheets[workbook.SheetNames[0]]['C23'].v : '-',
-                                                        workbook.Sheets[workbook.SheetNames[0]]['C24'] ? workbook.Sheets[workbook.SheetNames[0]]['C24'].v : '-'
-                                                    ];
-
-                                                    // Получаем значения из ячеек C11, C13, C15, C17 первого листа (ИНН ПРОДАВЦОВ)
-                                                    var innValues = [
-                                                        workbook.Sheets[workbook.SheetNames[0]]['C11'] ? workbook.Sheets[workbook.SheetNames[0]]['C11'].v : '-',
-                                                        workbook.Sheets[workbook.SheetNames[0]]['C13'] ? workbook.Sheets[workbook.SheetNames[0]]['C13'].v : '-',
-                                                        workbook.Sheets[workbook.SheetNames[0]]['C15'] ? workbook.Sheets[workbook.SheetNames[0]]['C15'].v : '-',
-                                                        workbook.Sheets[workbook.SheetNames[0]]['C17'] ? workbook.Sheets[workbook.SheetNames[0]]['C17'].v : '-'
-                                                    ];
-
-                                                    var sellerValues = [
-                                                        workbook.Sheets[workbook.SheetNames[0]]['A10'] ? workbook.Sheets[workbook.SheetNames[0]]['A10'].v : '',
-                                                        workbook.Sheets[workbook.SheetNames[0]]['A12'] ? workbook.Sheets[workbook.SheetNames[0]]['A12'].v : '',
-                                                        workbook.Sheets[workbook.SheetNames[0]]['A14'] ? workbook.Sheets[workbook.SheetNames[0]]['A14'].v : '',
-                                                        workbook.Sheets[workbook.SheetNames[0]]['A16'] ? workbook.Sheets[workbook.SheetNames[0]]['A16'].v : ''
-                                                    ];
-
-                                                    // Заполняем значения в <select>
-                                                    plSelect.options[1].text = plValues[0];
-                                                    plSelect.options[1].value = plValues[0];
-                                                    plSelect.options[2].text = plValues[1];
-                                                    plSelect.options[2].value = plValues[1];
-                                                    plSelect.options[3].text = plValues[2];
-                                                    plSelect.options[3].value = plValues[2];
-                                                    plSelect.options[4].text = plValues[3];
-                                                    plSelect.options[4].value = plValues[3];
-
-                                                    innSelect.options[1].text = sellerValues[0] + ', ' + innValues[0];
-                                                    innSelect.options[1].value = innValues[0];
-                                                    innSelect.options[2].text = sellerValues[1] + ', ' + innValues[1];
-                                                    innSelect.options[2].value = innValues[1];
-                                                    innSelect.options[3].text = sellerValues[2] + ', ' + innValues[2];
-                                                    innSelect.options[3].value = innValues[2];
-                                                    innSelect.options[4].text = sellerValues[3] + ', ' + innValues[3];
-                                                    innSelect.options[4].value = innValues[3];
-                                                };
-
-                                                reader.readAsArrayBuffer(file);
-                                            }
-                                        })
-
-
-                                       function handleFileChange() {
-                                        var graphicFileInput = document.getElementById("graphicFileInput");
-                                        graphicFileInput.addEventListener('change', function() {
-                                            var fileGraph = graphicFileInput.files[0];
-                                            if ((fileGraph && fileGraph.name.endsWith('.xlsm')) || (fileGraph && fileGraph.name.endsWith('.xlsx'))) {
-                                                var readerGraph = new FileReader();
-                                                console.log("Change event triggered"); // Отладочный лог
-
-                                                readerGraph.onload = function(e) {
-                                                    var dataGraph = new Uint8Array(e.target.result);
-                                                    var workbookGraph = XLSX.read(dataGraph, { type: 'array' });
-
-
-                                                    var graphSelect = document.getElementById("graphSelect");
-                                                    var sheetName = graphSelect.value; // Имя выбранного листа
-
-                                                    // Выводим сообщение о выбранном листе
-                                                    var selectedSheetMessage = "Выбран лист: " + sheetName;
-                                                    console.log(selectedSheetMessage);
-
-                                                    // Проверяем, что выбран нужный лист
-                                                    if (workbookGraph.SheetNames.includes(sheetName)) {
-                                                        // Получаем значение из ячейки B93 выбранного листа
-                                                        var cellValueGraph = workbookGraph.Sheets[sheetName]['B93']?.v;
-                                                        var checkButtonGraph = document.getElementById("check-button");
-                                                        console.log("Change event triggered"); // Отладочный лог3
-
-                                                        function handleClick() {
-                                                    if (cellValueGraph === undefined || cellValueGraph === "") {
-                                                        console.log("Condition is true");
-                                                        document.getElementById("message").innerHTML = "Уважаемый, в графике ячейка B93 пустая, просьба заполнить";
-
-                                                        // Show the message for 5 seconds
-                                                        setTimeout(function() {
-                                                            document.getElementById("message").innerHTML = "";
-                                                        }, 5000);
-                                                    }
-                                                }
-
-                                                        // Вызов функции обработчика события без нажатия на кнопку
-                                                        handleClick();
-                                                    }
-                                                }
-
-                                                readerGraph.readAsArrayBuffer(fileGraph);
-                                            }
-                                        });
-                                    }
-
-                                        // Call the function проверка графика, ячейка B93
-                                        handleFileChange();
-                                        setInterval(checkFilesUploaded, 2000);
-
-                                        // Блокируем кнопку "Предпроверка" при загрузке страницы
-                                        checkButton.disabled = true;
-                                        submitButton.disabled = true;
-
-                                        // Функция для проверки загрузки обоих файлов и разблокировки кнопки "Предпроверка"
-                                        function checkFilesUploaded() {
-                                            if (applicationFileInput.files.length > 0 && (!checkDl.checked || graphicFileInput.files.length > 0)) {
-                                                // Если оба файла загружены или флажок не выбран, разблокируем кнопку "Предпроверка"
-                                                checkButton.disabled = false;
-                                            }
-                                        }
-                                        // Call the function проверка графика, ячейка B93
-                                        handleFileChange();
-
-                                        // Добавляем обработчик события change для обоих инпутов файлов
-                                        applicationFileInput.addEventListener("change", checkFilesUploaded);
-                                        graphicFileInput.addEventListener("change", checkFilesUploaded);
-
-                                        // Обработчик события для кнопки "Предпроверка"
-                                        checkButton.addEventListener("click", function() {
-                                            // Создаем объект FormData для загрузки файлов
-                                            var formData = new FormData();
-                                            formData.append('uploaded_application', applicationFileInput.files[0]);
-                                            formData.append('uploaded_graphic', graphicFileInput.files[0]);
-
-                                            // Отправляем файлы на сервер
-                                            fetch("{{ url_for('manager.upload_files') }}", {
-                                                method: 'POST',
-                                                body: formData
-                                            })
-                                            .then(response => response.json())
-                                            .then(data => {
-                                                console.log(data); // Обработка данных с сервера после загрузки файлов
-
-                                                // После успешной загрузки и сохранения файлов, можно выполнить дополнительные действия
-                                                checkButton.disabled = true;
-                                                submitButton.disabled = false;
-                                            });
-                                        });
-                                    </script>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </form>
+            </script>
         </div>
-
-
-        <script>
-            // Получаем ссылки на чекбоксы и дополнительные поля
-            const checkDl = document.getElementById("check_dl");
-            const checkDkp = document.getElementById("check_dkp");
-            const dlFields = document.getElementById("dl_fields");
-            const dkpFields = document.getElementById("dkp_fields");
-            const mainFields = document.getElementById("main_fields");
-            const typeSelect = document.getElementById("typeSelect");
-            const dopFields = document.getElementById("dop_fields");
-            const stockEx = document.getElementById("stock");
-            const currency = document.getElementById("currency");
-            const stockSelect = document.querySelector('[name="stock"]');
-            const graphSelect = document.getElementById("graphSelect");
-
-            graphSelect.addEventListener("change", function() {
-            const selectedValue = graphSelect.value;
-            const divField = document.getElementById("divField");
-
-            if (selectedValue) {
-                divField.style.display = "block";
-            } else {
-                divField.style.display = "none";
-            }
-            });
-
-            // Добавляем слушатели событий на чекбоксы
-            checkDl.addEventListener("change", function() {
-                if (checkDl.checked) {
-                    dlFields.style.display = "block";
-                    enableFields(dlFields);
-                    updateCheckButtonDl();
-                    updateMainAndAppFields();
-                } else {
-                    dlFields.style.display = "none";
-                    disableFields(dlFields);
-                    updateCheckButtonDl();
-                    updateMainAndAppFields();
-                }
-            });
-
-            checkDkp.addEventListener("change", function() {
-                if (checkDkp.checked) {
-                    dkpFields.style.display = "block";
-                    enableFields(dkpFields);
-                    updateDopFields();
-                    updateCheckButtonDkp();
-                    updateMainAndAppFields();
-                    updateStock();
-                } else {
-                    dkpFields.style.display = "none";
-                    disableFields(dkpFields);
-                    updateDopFields();
-                    updateCheckButtonDkp();
-                    updateMainAndAppFields();
-                    updateStock();
-                }
-            });
-
-            // Добавляем слушатель события изменения выбора
-            typeSelect.addEventListener("change", function() {
-                if (typeSelect.checked && checkDkp.checked) {
-                    dopFields.style.display = "block";
-                    enableFields(dopFields);
-                    updateDopFields();
-                } else {
-                    dopFields.style.display = "none";
-                    disableFields(dopFields);
-                    updateDopFields();
-                }
-            });
-
-            // Добавляем слушатель события для поля ЦБ или Биржа
-            currency.addEventListener("change", function () {
-                updateStock();
-            });
-
-            function updateMainAndAppFields() {
-                if (checkDl.checked || checkDkp.checked) {
-                    mainFields.style.display = "block";
-                    enableFields(mainFields);
-                } else {
-                    mainFields.style.display = "none";
-                    disableFields(mainFields);
-                }
-            }
-
-            function updateDopFields() {
-                if (typeSelect.checked && checkDkp.checked) {
-                    dopFields.style.display = "block";
-                    enableFields(dopFields);
-                } else {
-                    dopFields.style.display = "none";
-                    disableFields(dopFields);
-                }
-            }
-            function updateStock() {
-                if ((currency.value === "Китайский юань" || currency.value === "Доллар США" || currency.value === "Евро") && checkDkp.checked) {
-                    stockEx.style.display = "block";
-                    enableFields(stockEx)
-                } else {
-                    stockEx.style.display = "none";
-                    // Отключаем возможность выбора опций в блоке "stock"
-                    disableFields(stockEx);
-                }
-            }
-
-            function updateCheckButtonDl() {
-                if (checkDl.checked && (applicationFileInput.files.length > 0 && graphicFileInput.files.length > 0)) {
-                    checkButton.disabled = false;
-                } else {
-                    checkButton.disabled = true;
-                }
-            }
-
-            function updateCheckButtonDkp() {
-                if (checkDkp.checked && (applicationFileInput.files.length > 0)) {
-                    checkButton.disabled = false;
-                } else {
-                    checkButton.disabled = true;
-                }
-            }
-
-            // Функция для отключения элементов и добавления атрибута disabled
-            function disableFields(container) {
-                const inputs = container.querySelectorAll("input, select, textarea");
-                inputs.forEach(input => {
-                    input.disabled = true;
-                });
-            }
-
-            // Функция для включения элементов и удаления атрибута disabled
-            function enableFields(container) {
-                const inputs = container.querySelectorAll("input, select, textarea");
-                inputs.forEach(input => {
-                    input.disabled = false;
-                });
-            }
-        </script>
-
     </div>
 </div>
+
+
+<script>
+
+</script>
 
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
