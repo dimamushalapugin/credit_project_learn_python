@@ -254,17 +254,11 @@ def number_to_words(suma_chislo123, curr):
             suma_dann1 = ((f"({integer_words}) {valute_rub} {decimal_part} {valute_copeyka}".strip()
                            .replace('ноль рублей', '').replace(',', '')))
         elif curr == 'Китайский юань':
-            suma_dann1 = f"({integer_words}) китайских юаней {decimal_part} {valute_copeyka.
-            replace('копеек', 'феней').replace('копейка', 'фень').
-            replace('копейки', 'феня')}"
+            suma_dann1 = f"({integer_words}) китайских юаней {decimal_part} {valute_copeyka.replace('копеек', 'феней').replace('копейка', 'фень').replace('копейки', 'феня')}"
         elif curr == 'Доллар США':
-            suma_dann1 = f"({integer_words}) долларов США {decimal_part} {valute_copeyka.
-            replace('копеек', 'центов').replace('копейка', 'цент').
-            replace('копейки', 'цента')}"
+            suma_dann1 = f"({integer_words}) долларов США {decimal_part} {valute_copeyka.replace('копеек', 'центов').replace('копейка', 'цент').replace('копейки', 'цента')}"
         elif curr == 'Евро':
-            suma_dann1 = f"({integer_words}) евро {decimal_part} {valute_copeyka.
-            replace('копеек', 'евроцентов').replace('копейка', 'евроцент').
-            replace('копейки', 'евроцента')}"
+            suma_dann1 = f"({integer_words}) евро {decimal_part} {valute_copeyka.replace('копеек', 'евроцентов').replace('копейка', 'евроцент').replace('копейки', 'евроцента')}"
         # print(suma_dann1)
         return suma_dann1
     except ValueError:
