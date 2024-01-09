@@ -322,7 +322,7 @@
                 $('#autofillButton').click(function() {
                     var data = $('#input1').val();
                     $.ajax({
-                        url: '/autofill',
+                        url: './autofill',
                         type: 'POST',
                         data: {'data': data},
                         success: function(response) {
