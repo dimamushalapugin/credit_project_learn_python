@@ -1,213 +1,66 @@
-import openpyxl
-import os
-
-from datetime import datetime as dt
-from typing import Optional
 from docx import Document
-from num2words import num2words
-from flask_login import current_user
-from webapp.config import DADATA_BASE
-from webapp.risk.logger import logging
-from webapp.risk.mongo_db import MongoDB
 
 
-def start_filling_application(inn_leasee, path_application, inn_seller1, inn_seller2, inn_seller3, inn_seller4):
-    mongo = MongoDB(current_user)
-    logging.info(f"({current_user}) Этап 1.")
-    temporary_path = r'webapp\static\temporary'
-    path_for_download = r'static\temporary'
-    ip_or_kfh = 'Нет'
-    type_business = ''
-    full_krakt_name_leasee = ''
-    main_activity_leasee = ''
-    ogrn_leasee = ''
-    okpo_leasee = ''
-    okato_leasee = ''
-    date_regist = ''
-    ustav_capital = ''
-    inn_kpp_leasee = ''
-    address_leasee = ''
-    formatted_name_leader_leasee = ''
-    fio_list = ''
-    inn_list = ''
-    dolya_list = ''
-    full_name_leasee = ''
-    leader_leasee = ''
-    fio_leader = ''
-    phone_leasee = ''
-    email_leasee = ''
-    krakt_name_seller1 = ''
-    krakt_name_seller2 = ''
-    krakt_name_seller3 = ''
-    krakt_name_seller4 = ''
-    address_seller1 = ''
-    address_seller2 = ''
-    address_seller3 = ''
-    address_seller4 = ''
-    inn_dir_leasee = ''
+def replace_words_in_bki(docx_file, old_words_bki, new_words_bki):
+    doc = Document(docx_file)
+    for paragraph in doc.paragraphs:
+        for i in range(len(old_words_bki)):
+            if old_words_bki[i] in paragraph.text:
+                paragraph.text = paragraph.text.replace(old_words_bki[i], str(new_words_bki[i]))
 
-    def parser_info_leasee(inn_leasee):
-        logging.info(f"({current_user}) Этап 2.")
-        nonlocal ip_or_kfh, type_business, inn_dir_leasee, krakt_name_seller1, address_seller1, krakt_name_seller2, address_seller2, krakt_name_seller3, address_seller3, krakt_name_seller4, address_seller4, full_krakt_name_leasee, main_activity_leasee, ogrn_leasee, okpo_leasee, okato_leasee, date_regist, ustav_capital, inn_kpp_leasee, address_leasee, formatted_name_leader_leasee, fio_list, inn_list, dolya_list, full_name_leasee, leader_leasee, fio_leader, phone_leasee, email_leasee
+                # print(f'_____ {i=}')
 
-        logging.info(f"({inn_leasee})")
+    for table in doc.tables:
+        for row in table.rows:
+            for cell in row.cells:
+                for i in range(len(old_words_bki)):
+                    if old_words_bki[i] in cell.text:
+                        cell.text = cell.text.replace(old_words_bki[i], str(new_words_bki[i]))
+    new = new_words_bki[0].replace('"', '')
+    if all(char.isdigit() for char in new_words_bki[1]):
+        doc.save(fr'БКИ физ лицо {new}.docx')
+    else:
+        doc.save(fr'БКИ юр лицо {new_words_bki[1]}.docx')
 
-        dadata = Dadata(DADATA_TOKEN)
-        result = dadata.find_by_id("party", inn_leasee)
-        # logging.info(f"{result}")
 
-        ip_or_kfh = 'Нет'
-        if result[0]['data']['opf']['short'] in ['ИП', 'КФХ', 'ГКФХ']:
-            ip_or_kfh = 'Да'
+def replace_bki(some1, some2, some3, some4, some5, some6, some7, some8, some9):
+    print("Выполняю действия с юриком:", some1, some2, some3, some4, some5, some6, some7, some8, some9)
+    date_string = some9
+    year, month, day = date_string.split("-")
+    months = {1: 'января', 2: 'февраля', 3: 'марта', 4: 'апреля', 5: 'мая', 6: 'июня',
+              7: 'июля', 8: 'августа', 9: 'сентября', 10: 'октября', 11: 'ноября', 12: 'декабря'}
 
-        full_name_leasee = result[0]['data']['name']['full_with_opf']
+    old_words_bki = ["{{ fullname_company }}", "{{ ogrn_company }}", "{{ inn_company }}", "{{ address_company }}",
+                     "{{ phone_company }}", "{{ leader_company }}", "{{ fio_company }}", "{{ doverka_company }}",
+                     "{{ dt.today().day }}", "{{ months[dt.today().month] }}", "{{ dt.today().year }}"]
 
-        full_krakt_name_leasee = result[0]['data']['name']['short_with_opf']
+    new_words_bki = ([str(item) for item in [some2, some3, some1, some4, some5, some7, some6, some8]] +
+                     [str(day), str(months[int(month)]), str(year)])
+    print("old_words_bki:", old_words_bki, "new_words_bki:", new_words_bki)
+    replace_words_in_bki(r"Согласие на получение кредитного отчета Юрлицо.docx", old_words_bki, new_words_bki)
+    return old_words_bki, new_words_bki
 
-        if ip_or_kfh == 'Нет':
-            inn_kpp_leasee = inn_leasee + '/' + result[0]['data']['kpp']
-            leader_leasee = result[0]['data']['management']['post']
-            fio_leader = result[0]['data']['management']['name']
-        else:
-            inn_kpp_leasee = inn_leasee
-            type_business = result[0]['data']['opf']['short']
-            leader_leasee = result[0]['data']['opf']['short']
-            if result[0]['data']['opf']['short'] == 'ИП':
-                leader_leasee = 'Индивидуальный предприниматель'
-            else:
-                leader_leasee = 'Глава'
-            fio_leader = result[0]['data']['name']['full']
 
-        last_name, first_name, patronymic_name = fio_leader.split()
+def replace_bki_fiz(some1, some2, some3, some4, some5, some6, some7, some8, some9, some10, some11):
+    print("Выполняю действия с физиком:", some1, some2, some3, some4, some5, some6, some7, some8, some9, some10, some11)
+    date_mvd_string = some6
+    year_mvd, month_mvd, day_mvd = date_mvd_string.split("-")
+    datebirth_string = some9
+    year_birth, month_birth, day_birth = datebirth_string.split("-")
+    date_string = some11
+    year, month, day = date_string.split("-")
+    months = {1: 'января', 2: 'февраля', 3: 'марта', 4: 'апреля', 5: 'мая', 6: 'июня',
+              7: 'июля', 8: 'августа', 9: 'сентября', 10: 'октября', 11: 'ноября', 12: 'декабря'}
 
-        # Get the initial of the first name
-        first_name_initial = first_name[0]
+    old_words_bki = ["{{ fio_fizik }}", "{{ ser_fizik }}", "{{ number_fizik }}", "{{ outputmvd_fizik }}",
+                     "{{ daymvd_fizik }}", "{{ monthmvd_fizik }}", "{{ yearmvd_fizik }}", "{{ code_fizik }}",
+                     "{{ birthplace_fizik }}", "{{ daybirthdate_fizik }}", "{{ monthbirthdate_fizik }}",
+                     "{{ yearbirthdate_fizik }}", "{{ address_fizik }}", "{{ inn_fizik }}",
+                     "{{ dt.today().day }}", "{{ months[dt.today().month] }}", "{{ dt.today().year }}"]
 
-        # Get the initial of the patronymic name
-        patronymic_initial = patronymic_name[0]
-
-        # Combine the last name and initials in the desired format
-        formatted_name_leader_leasee = f'{last_name} {first_name_initial}.{patronymic_initial}.'
-
-        address_leasee = result[0]['data']['address']['unrestricted_value']
-
-        ogrn_leasee = result[0]['data']['ogrn']
-
-        okato_leasee = result[0]['data']['okato']
-
-        okpo_leasee = result[0]['data']['okpo']
-
-        # Значение registration_date в миллисекундах
-        registration_date_ms = result[0]['data']['ogrn_date']
-        # Преобразуем значение в объект datetime
-        registration_date = datetime.datetime.fromtimestamp(registration_date_ms / 1000)
-        # Преобразование строки в объект datetime
-        date_time_obj = datetime.datetime.strptime(str(registration_date), "%Y-%m-%d %H:%M:%S")
-        # Форматирование даты в нужный формат
-        date_regist = date_time_obj.strftime("%d.%m.%Y")
-
-        def parse_client_bs4(ogrn):
-            nonlocal fio_list, inn_list, dolya_list, inn_dir_leasee, phone_leasee, email_leasee, main_activity_leasee, ustav_capital
-            url = f'https://vbankcenter.ru/contragent/{ogrn}'
-            url2 = f'https://vbankcenter.ru/contragent/search?searchStr={ogrn}'
-
-            response = requests.get(url)
-            response2 = requests.get(url2)
-
-            if response.status_code == 200:
-                soup = BeautifulSoup(response.text, 'html.parser')
-                soup2 = BeautifulSoup(response2.text, 'html.parser')
-
-                if len(str(ogrn)) == 13:
-
-                    try:
-                        fio_list = list(map(lambda x: x.text, soup.find_all('h5', class_='text-base font-bold')))
-                    except Exception as ex:
-                        fio_list = ''
-                        logging.info(ex, exc_info=True)
-
-                    dolya_list = []
-                    try:
-                        for elem in soup.find_all('p', class_='text-base m-0 text-premium-600', string='Доля:'):
-                            dolya_list.append(
-                                "".join(elem.find_next('p', class_='text-base m-0 ml-1.5').text.split()[-1]).replace(
-                                    '%',
-                                    '').replace(
-                                    '(', '').replace(')', ''))
-                    except Exception as ex:
-                        logging.info(ex, exc_info=True)
-
-                    inn_list = []
-                    try:
-                        for elem in soup.find_all('p', class_='text-base m-0 text-premium-600', string='ИНН:'):
-                            inn_list.append(elem.find_next('a', class_='flex text-base m-0 ml-1.5').text)
-                    except Exception as ex:
-                        logging.info(ex, exc_info=True)
-
-                    try:
-                        inn_dir_leasee = soup.find('p', class_='mb-1 whitespace-nowrap pr-6 text-premium-600').find('a',
-                                                                                                                    class_='text-blue').text
-                    except Exception as ex:
-                        inn_dir_leasee = ''
-                        logging.info(ex, exc_info=True)
-
-                    try:
-                        for elem in soup.find(class_='requisites-info-badge font-bold mb-1').find_next('div',
-                                                                                                       class_='flex items-baseline mt-1').find(
-                            class_='gweb-copy relative inline-block mb-0 py-0 copy-available z-10 cursor-pointer copy-right-padding'):
-                            phone_leasee = elem.get_text(strip=True)
-                    except Exception as ex:
-                        phone_leasee = ''
-                        logging.info('Нет телефона')
-                        logging.info(ex, exc_info=True)
-
-                    try:
-                        for elem in soup.find(class_='requisites-info-badge font-bold mb-1').find_next('div',
-                                                                                                       class_='flex items-baseline mt-1').find_next(
-                            'div', class_='flex items-baseline mt-1').find('a'):
-                            email_leasee = elem.get_text(strip=True)
-                    except Exception as ex:
-                        email_leasee = ''
-                        logging.info('Нет email')
-                        logging.info(ex, exc_info=True)
-
-                    try:
-                        main_activity_leasee = soup.find('a', class_='inline-block mt-1').get_text(strip=True)
-                    except Exception as ex:
-                        main_activity_leasee = ''
-                        logging.info(ex, exc_info=True)
-
-                    try:
-                        number_element = soup2.find('span', class_='inline-block pr-2 text-premium-600 lg:mr-4 xl:mr-0',
-                                                    string='Уставный капитал:').find_next_sibling('span')
-                        number_text = number_element.text.strip()
-                        ustav_capital = float(''.join(filter(lambda x: x.isdigit() or x == '.', number_text)))
-                    except Exception as ex:
-                        ustav_capital = ''
-                        logging.info(ex, exc_info=True)
-
-                else:
-                    inn_dir_leasee = inn_leasee
-                    phone_leasee = ''
-                    email_leasee = ''
-                    ustav_capital = ''
-                    try:
-                        main_activity_leasee = soup.find('a', class_='inline-block mt-1').get_text(strip=True)
-                    except Exception as ex:
-                        main_activity_leasee = ''
-                        logging.info(ex, exc_info=True)
-
-            else:
-                logging.info(f"Ошибка при запросе: {response.status_code}")
-                fio_list = ''
-                dolya_list = []
-                inn_list = []
-                inn_dir_leasee = ''
-                phone_leasee = ''
-                email_leasee = ''
-                ustav_capital = ''
-                main_activity_leasee = ''
-
-        parse_client_bs4(ogrn_leasee)
-
-        logging.info(f"({current_user}) Этап 3.")
+    new_words_bki = ([str(item) for item in [some2, some3, some4, some5, day_mvd, months[int(month_mvd)], year_mvd,
+                                             some7, some8, day_birth, months[int(month_birth)], year_birth,
+                                             some10, some1, str(day), str(months[int(month)]), str(year)]])
+    print("old_words_bki:", old_words_bki, "new_words_bki:", new_words_bki)
+    replace_words_in_bki(r"Согласие на получение кредитного отчета Физлицо.docx", old_words_bki, new_words_bki)
+    return old_words_bki, new_words_bki

@@ -8,6 +8,16 @@ from webapp.managers.parser_for_dkp import start_filling_agreement_dkp
 from webapp.config import APPLICATION_PATH
 from webapp.risk.logger import logging
 from webapp.risk.mongo_db import MongoDB
+from datetime import date
+from dadata import Dadata
+
+from webapp.managers.main_parser import naming_dadata_bk_ur, ogrn_dadata_bk_ur, address_dadata_bk_ur, fio_dadata_bk_ur, \
+    leader_dadata_bk_ur, doverka_ustav_dadata_bk_ur
+from webapp.managers.parser_for_bki import replace_bki, replace_bki_fiz
+
+DADATA_TOKEN = "804d29658b186056c6cfab57f94c68695581d747"
+DADATA_SECRET = "2c54bab544f947c975525ab452d014492122e52b"
+DADATA_BASE = Dadata(DADATA_TOKEN, DADATA_SECRET)
 
 blueprint = Blueprint('manager', __name__, url_prefix='/managers')
 
@@ -246,6 +256,84 @@ def bki_page():
 def create_bki():
     logging.info(f"({current_user}) Нажал на кнопку 'Создать БКИ'")
     pass
+
+@blueprint.route('/autofill', methods=['POST'])
+def autofill():
+    data = request.form['data']
+    autofilled_data = naming_dadata_bk_ur(data)
+    autofilled_data1 = ogrn_dadata_bk_ur(data)
+    autofilled_data2 = address_dadata_bk_ur(data)
+    autofilled_data3 = fio_dadata_bk_ur(data)
+    autofilled_data4 = leader_dadata_bk_ur(data)
+    autofilled_data5 = doverka_ustav_dadata_bk_ur(data)
+    current_date = date.today()
+    autofilled_data6 = current_date.strftime("%Y-%m-%d")
+    print(autofilled_data, autofilled_data1, autofilled_data2, autofilled_data3, autofilled_data4, autofilled_data5)
+    return jsonify({'data1': autofilled_data, 'data2': autofilled_data1, 'data3': autofilled_data2,
+                    'data4': autofilled_data3, 'data5': autofilled_data4, 'data6': autofilled_data5,
+                    'data7': autofilled_data6})
+
+
+@blueprint.route('/autofillfiz', methods=['POST'])
+def autofillfiz():
+    data = request.form['data']
+    autofilled_data = 'Ибнеев Рустем Шамилевич'
+    autofilled_data1 = '9223'
+    autofilled_data2 = '338637'
+    autofilled_data3 = 'МВД по Республике Татарстан'
+    autofilled_data4 = '2023-09-01'
+    autofilled_data5 = '160-002'
+    autofilled_data6 = 'г. Казань'
+    autofilled_data7 = '1978-07-05'
+    autofilled_data8 = 'г. Казань, ул. Ленинградская, д. 60Б, кв. 148'
+    current_date = date.today()
+    autofilled_data9 = current_date.strftime("%Y-%m-%d")
+    print(autofilled_data, autofilled_data1, autofilled_data2, autofilled_data3, autofilled_data4, autofilled_data5,
+          autofilled_data6, autofilled_data7, autofilled_data8, autofilled_data9)
+    return jsonify({'data1': autofilled_data, 'data2': autofilled_data1, 'data3': autofilled_data2,
+                    'data4': autofilled_data3, 'data5': autofilled_data4, 'data6': autofilled_data5,
+                    'data7': autofilled_data6, 'data8': autofilled_data7, 'data9': autofilled_data8,
+                    'data10': autofilled_data9})
+
+
+@blueprint.route('/submit_form_ur', methods=['POST'])
+def submit_form_ur():
+    data_inn_ur = request.form['data']
+    data_naming_ur = request.form['data1']
+    data_ogrn_ur = request.form['data2']
+    data_address_ur = request.form['data3']
+    data_phone_ur = request.form['data4']
+    data_fio_ur = request.form['data5']
+    data_leader_ur = request.form['data6']
+    data_doverka_ur = request.form['data7']
+    data_year_ur = request.form['data8']
+    print(data_inn_ur, data_naming_ur, data_ogrn_ur, data_address_ur, data_phone_ur, data_fio_ur, data_leader_ur,
+          data_doverka_ur, data_year_ur)
+    replace_bki(data_inn_ur, data_naming_ur, data_ogrn_ur, data_address_ur, data_phone_ur, data_fio_ur, data_leader_ur,
+                data_doverka_ur, data_year_ur)
+    return jsonify(data_inn_ur)
+
+
+@blueprint.route('/submit_form_fiz', methods=['POST'])
+def submit_form_fiz():
+    data_inn_fiz = request.form['data']
+    data_naming_fiz = request.form['data1']
+    data_ser_fiz = request.form['data2']
+    data_numb_fiz = request.form['data3']
+    data_whoismvd_fiz = request.form['data4']
+    data_output_fiz = request.form['data5']
+    data_code_fiz = request.form['data6']
+    data_birthplace_fiz = request.form['data7']
+    data_birthdate_fiz = request.form['data8']
+    data_address_fiz = request.form['data9']
+    data_year_fiz = request.form['data10']
+    print(data_inn_fiz, data_naming_fiz, data_ser_fiz, data_numb_fiz, data_whoismvd_fiz, data_output_fiz, data_code_fiz,
+          data_birthplace_fiz, data_birthdate_fiz, data_address_fiz, data_year_fiz)
+    replace_bki_fiz(data_inn_fiz, data_naming_fiz, data_ser_fiz, data_numb_fiz, data_whoismvd_fiz, data_output_fiz,
+                    data_code_fiz,
+                    data_birthplace_fiz, data_birthdate_fiz, data_address_fiz, data_year_fiz)
+    return jsonify(data_naming_fiz)
+
 
 
 @blueprint.route('/process', methods=['POST'])

@@ -11,6 +11,7 @@
         gtag('config', 'G-KQX5FDFY5F');
 
     </script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.5/xlsx.full.min.js"></script>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -121,67 +122,76 @@
                         <div class="mb-3">
                             <label>Введите ИНН контрагента</label>
                             <div class="input-group input-group-sm mb-3">
-                                <input type="text" name="client_inn" value="" class="form-control" required>
-                                <button type="button" class="btn btn-primary">Автозаполнение</button>
+                                <input id="input1" type="text" name="client_inn" value="" class="form-control" required>
+                                <button id="autofillButton" type="button" class="btn btn-primary">Автозаполнение
+                                </button>
                             </div>
                         </div>
                         <div class="mb-3">
                             <label>Введите полное наименование контрагента</label>
                             <div class="input-group input-group-sm mb-3">
-                                <input type="text" name="full_name_ur" value="" class="form-control" required>
+                                <input id="input2" type="text" name="full_name_ur" value="" class="form-control"
+                                       required>
                             </div>
                         </div>
                         <div class="mb-3">
                             <label>Введите ОГРН контрагента</label>
                             <div class="input-group input-group-sm mb-3">
-                                <input type="text" name="ogrn_ur" value="" class="form-control">
+                                <input id="input3" type="text" name="ogrn_ur" value="" class="form-control">
                             </div>
                         </div>
                         <div class="mb-3">
                             <label>Введите адрес контрагента</label>
                             <div class="input-group input-group-sm mb-3">
-                                <input type="text" name="address_ur" value="" class="form-control">
+                                <input id="input4" type="text" name="address_ur" value="" class="form-control">
                             </div>
                         </div>
                         <div class="mb-3">
                             <label>Введите телефон контрагента</label>
                             <div class="input-group input-group-sm mb-3">
-                                <input type="text" name="phone_ur" value="" class="form-control">
+                                <input id="input5" type="text" name="phone_ur" value="" class="form-control">
                             </div>
                         </div>
                         <div class="mb-3">
                             <label>Введите полное ФИО подписанта контрагента в родительном падеже</label>
                             <div class="input-group input-group-sm mb-3">
-                                <input type="text" name="fio_signatory_ur" value="" class="form-control"
+                                <input id="input6" type="text" name="fio_signatory_ur" value="" class="form-control"
                                        placeholder="Краснова Сергея Ивановича">
                             </div>
                         </div>
                         <div class="mb-3">
                             <label>Введите наименование должности подписанта контрагента в родительном падеже</label>
                             <div class="input-group input-group-sm mb-3">
-                                <input type="text" name="position_signatory_ur" value="" class="form-control"
+                                <input id="input7" type="text" name="position_signatory_ur" value=""
+                                       class="form-control"
                                        placeholder="Директора/Генерального директора">
                             </div>
                         </div>
                         <div class="mb-3">
                             <label>На основании каких полномочий будет подписание</label>
                             <div class="input-group input-group-sm mb-3">
-                                <input type="text" name="status_signatory_ur" value="" class="form-control"
+                                <input id="input8" type="text" name="status_signatory_ur" value="" class="form-control"
                                        placeholder="Устава/Доверенности № ... от дата">
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label>Дата заполнения заявки</label>
+                            <div class="input-group input-group-sm mb-3">
+                                <input id="input9" type="date" name="date_zayvka_ur" value="" class="form-control">
                             </div>
                         </div>
                         <div class="button-container">
                             <div class="form-group">
-                                <button type="submit" id="submit-button1" class="btn btn-outline-primary btn-block">
+                                <button type="submit" id="submit-button1" class="btn btn-outline-primary btn-block"
+                                        disabled>
                                     Скачать заявку ООО "ЛКМБ-РТ"
                                 </button>
                             </div>
-                            <div class="form-group">
-                                <button type="submit" id="submit-buttonijara" class="btn btn-outline-primary btn-block">
-                                    Скачать заявку ООО "Иджара-Лизинг"
-                                </button>
-                            </div>
-
+                            <!--                            <div class="form-group">-->
+                            <!--                                <button type="submit" id="submit-buttonijara" class="btn btn-outline-primary btn-block">-->
+                            <!--                                    Скачать заявку ООО "Иджара-Лизинг"-->
+                            <!--                                </button>-->
+                            <!--                            </div>-->
                         </div>
                     </form>
                     <form action="{{ url_for('manager.create_application') }}" method="POST">
@@ -191,10 +201,18 @@
                             </h5>
                         </div>
                         <div class="mb-3">
+                            <label>ИНН физического лица</label>
+                            <div class="input-group input-group-sm mb-3">
+                                <input id="inputFiz1" type="text" name="inn_fiz" value="" class="form-control" required>
+                                <button id="autofillButtonFiz" type="button" class="btn btn-primary">Автозаполнение
+                                </button>
+                            </div>
+                        </div>
+                        <div class="mb-3">
                             <label>Введите полное ФИО физического лица</label>
                             <div class="input-group input-group-sm mb-3">
-                                <input type="text" name="client_fio" value="" class="form-control" required>
-                                <button type="button" class="btn btn-primary">Автозаполнение</button>
+                                <input id="inputFiz2" type="text" name="client_fio" value="" class="form-control"
+                                       required>
                             </div>
                         </div>
                         <div class="row">
@@ -202,7 +220,8 @@
                                 <div class="mb-3">
                                     <label>Введите серию паспорта</label>
                                     <div class="input-group input-group-sm mb-3">
-                                        <input type="text" name="series" value="" class="form-control" required>
+                                        <input id="inputFiz3" type="text" name="series" value="" class="form-control"
+                                               required>
                                     </div>
                                 </div>
                             </div>
@@ -210,7 +229,8 @@
                                 <div class="mb-3">
                                     <label>Введите номер паспорта</label>
                                     <div class="input-group input-group-sm mb-3">
-                                        <input type="text" name="number" value="" class="form-control" required>
+                                        <input id="inputFiz4" type="text" name="number" value="" class="form-control"
+                                               required>
                                     </div>
                                 </div>
                             </div>
@@ -220,7 +240,8 @@
                                 <div class="mb-3">
                                     <label>Кем выдан паспорт</label>
                                     <div class="input-group input-group-sm mb-3">
-                                        <input type="text" name="who_issued" value="" class="form-control" required>
+                                        <input id="inputFiz5" type="text" name="who_issued" value=""
+                                               class="form-control" required>
                                     </div>
                                 </div>
                             </div>
@@ -228,7 +249,8 @@
                                 <div class="mb-3">
                                     <label>Дата выдачи паспорта</label>
                                     <div class="input-group input-group-sm mb-3">
-                                        <input type="date" name="date_issued" value="" class="form-control" required>
+                                        <input id="inputFiz6" type="date" name="date_issued" value=""
+                                               class="form-control" required>
                                     </div>
                                 </div>
                             </div>
@@ -236,72 +258,58 @@
                         <div class="mb-3">
                             <label>Код подразделения</label>
                             <div class="input-group input-group-sm mb-3">
-                                <input type="text" name="code_passport" value="" class="form-control">
+                                <input id="inputFiz7" type="text" name="code_passport" value="" class="form-control"
+                                       required>
                             </div>
                         </div>
                         <div class="mb-3">
                             <label>Место рождения</label>
                             <div class="input-group input-group-sm mb-3">
-                                <input type="text" name="location_birth" value="" class="form-control">
+                                <input id="inputFiz8" type="text" name="location_birth" value="" class="form-control"
+                                       required>
                             </div>
                         </div>
                         <div class="mb-3">
                             <label>Дата рождения</label>
                             <div class="input-group input-group-sm mb-3">
-                                <input type="date" name="fio_birth" value="" class="form-control">
+                                <input id="inputFiz9" type="date" name="fio_birth" value="" class="form-control"
+                                       required>
                             </div>
                         </div>
                         <div class="mb-3">
                             <label>Адрес регистрации физического лица</label>
                             <div class="input-group input-group-sm mb-3">
-                                <input type="text" name="registration_address" value="" class="form-control">
-                            </div>
-                        </div>
-                        <div class="mb-3">
-                            <label>ИНН физического лица</label>
-                            <div class="input-group input-group-sm mb-3">
-                                <input type="text" name="inn_fiz" value="" class="form-control">
+                                <input id="inputFiz10" type="text" name="registration_address" value=""
+                                       class="form-control" required>
                             </div>
                         </div>
                         <div class="mb-3">
                             <label>Дата заполнения заявки</label>
                             <div class="input-group input-group-sm mb-3">
-                                <input type="date" name="date_zayvka" value="" class="form-control">
+                                <input id="inputFiz11" type="date" name="date_zayvka_fiz" value="" class="form-control"
+                                       required>
                             </div>
                         </div>
                         <div class="button-container">
                             <div class="form-group">
-                                <button type="submit" id="submit-button_fiz" class="btn btn-outline-primary btn-block">
-                                    Скачать заявку ООО "ЛКМБ-РТ"
+                                <button type="submit" id="submit-button_fiz" class="btn btn-outline-primary btn-block"
+                                        disabled>
+                                    Скачать заявку по физ. лицу ООО "ЛКМБ-РТ"
                                 </button>
                             </div>
-                            <div class="form-group">
-                                <button type="submit" id="submit-buttonijara_fiz"
-                                        class="btn btn-outline-primary btn-block">
-                                    Скачать заявку ООО "Иджара-Лизинг"
-                                </button>
-                            </div>
-
+                            <!--                            <div class="form-group">-->
+                            <!--                                <button type="submit" id="submit-buttonijara_fiz"-->
+                            <!--                                        class="btn btn-outline-primary btn-block">-->
+                            <!--                                    Скачать заявку ООО "Иджара-Лизинг"-->
+                            <!--                                </button>-->
+                            <!--                            </div>-->
                         </div>
                     </form>
                 </div>
             </div>
 
             <script>
-                document.querySelector('.btn-primary').addEventListener('click', function() {
-                  var inputText = document.querySelector('input[name="client_fio"]').value;
-                  main_result_dadata(inputText);
 
-                  var resultElement = document.querySelector('.result');
-                  var resultData = "Обработанные данные"; // Здесь выполните обработку полученных данных и сохраните результат в переменную resultData
-
-                  resultElement.innerHTML = resultData; // или resultElement.innerText = resultData;
-                });
-
-                var fullName = "Ваши данные"; // Здесь предполагается, что у вас есть переменная с данными
-
-                var inputElement = document.querySelector('input[name="full_name_ur"]');
-                inputElement.value = fullName;
             </script>
         </div>
     </div>
@@ -309,7 +317,156 @@
 
 
 <script>
+    <!--    после ввода ИНН парсит все данные в дадата и вставляет их в поля-->
+            $(document).ready(function() {
+                $('#autofillButton').click(function() {
+                    var data = $('#input1').val();
+                    $.ajax({
+                        url: '/autofill',
+                        type: 'POST',
+                        data: {'data': data},
+                        success: function(response) {
+                        $('#input2').val(response.data1);
+                        $('#input3').val(response.data2);
+                        $('#input4').val(response.data3);
+                        $('#input6').val(response.data4);
+                        $('#input7').val(response.data5);
+                        $('#input8').val(response.data6);
+                        $('#input9').val(response.data7);
+                    }
+                    });
+                });
+            });
+        <!--при нажатии на кнопку "Скачать заявку ООО "ЛКМБ-РТ"" парсит данные с сайта и скачивается заявка в ворде-->
+        $(document).ready(function() {
+            $('#submit-button1').click(function() {
+                var bkiurLkmb1 = $('#input1').val();
+                var bkiurLkmb2 = $('#input2').val();
+                var bkiurLkmb3 = $('#input3').val();
+                var bkiurLkmb4 = $('#input4').val();
+                var bkiurLkmb5 = $('#input5').val();
+                var bkiurLkmb6 = $('#input6').val();
+                var bkiurLkmb7 = $('#input7').val();
+                var bkiurLkmb8 = $('#input8').val();
+                var bkiurLkmb9 = $('#input9').val();
+                $.ajax({
+                    url: '/submit_form_ur',
+                    type: 'POST',
+                    data: {'data': bkiurLkmb1,
+                           'data1': bkiurLkmb2,
+                           'data2': bkiurLkmb3,
+                           'data3': bkiurLkmb4,
+                           'data4': bkiurLkmb5,
+                           'data5': bkiurLkmb6,
+                           'data6': bkiurLkmb7,
+                           'data7': bkiurLkmb8,
+                           'data8': bkiurLkmb9},
+                    success: function(response) {
+                        // Обработка успешного ответа здесь
+                        console.log(response); // Пример вывода ответа в консоль
+                    }
+                });
+            });
+        });
+        <!--не дает странице обновиться при нажатии на кнопку "Скачать заявку ООО "ЛКМБ-РТ""-->
+        document.getElementById("submit-button1").addEventListener("click", function(event) {
+                event.preventDefault();
+            });
+        <!--    делает неактивной кнопку "Скачать заявку ООО "ЛКМБ-РТ" при незаполненных данных. Срабатывает каждую секунду-->
+            $(document).ready(function() {
+            $('#submit-button1').prop('disabled', true);
 
+            setInterval(function() {
+                if ($('#input1').val() !== '' && $('#input2').val() !== '' && $('#input3').val() !== ''
+                && $('#input4').val() !== '' && $('#input5').val() !== '' && $('#input6').val() !== ''
+                && $('#input7').val() !== '' && $('#input8').val() !== '' && $('#input9').val() !== '') {
+                    $('#submit-button1').prop('disabled', false);
+                } else {
+                    $('#submit-button1').prop('disabled', true);
+                }
+            }, 1000);
+        });
+
+    <!--    Скрипты ниже работают по физику-->
+        <!--    после ввода ИНН парсит все данные в дадата и вставляет их в поля-->
+            $(document).ready(function() {
+                $('#autofillButtonFiz').click(function() {
+                    var fiz1 = $('#inputFiz1').val();
+                    $.ajax({
+                        url: '/autofillfiz',
+                        type: 'POST',
+                        data: {'data': fiz1},
+                        success: function(response) {
+                        $('#inputFiz2').val(response.data1);
+                        $('#inputFiz3').val(response.data2);
+                        $('#inputFiz4').val(response.data3);
+                        $('#inputFiz5').val(response.data4);
+                        $('#inputFiz6').val(response.data5);
+                        $('#inputFiz7').val(response.data6);
+                        $('#inputFiz8').val(response.data7);
+                        $('#inputFiz9').val(response.data8);
+                        $('#inputFiz10').val(response.data9);
+                        $('#inputFiz11').val(response.data10);
+                    }
+                    });
+                });
+            });
+
+        <!--при нажатии на кнопку "Скачать заявку ООО "ЛКМБ-РТ"" парсит данные с сайта и скачивается заявка в ворде-->
+        $(document).ready(function() {
+            $('#submit-button_fiz').click(function() {
+                var bkifizLkmb1 = $('#inputFiz1').val();
+                var bkifizLkmb2 = $('#inputFiz2').val();
+                var bkifizLkmb3 = $('#inputFiz3').val();
+                var bkifizLkmb4 = $('#inputFiz4').val();
+                var bkifizLkmb5 = $('#inputFiz5').val();
+                var bkifizLkmb6 = $('#inputFiz6').val();
+                var bkifizLkmb7 = $('#inputFiz7').val();
+                var bkifizLkmb8 = $('#inputFiz8').val();
+                var bkifizLkmb9 = $('#inputFiz9').val();
+                var bkifizLkmb10 = $('#inputFiz10').val();
+                var bkifizLkmb11 = $('#inputFiz11').val();
+                $.ajax({
+                    url: '/submit_form_fiz',
+                    type: 'POST',
+                    data: {'data': bkifizLkmb1,
+                           'data1': bkifizLkmb2,
+                           'data2': bkifizLkmb3,
+                           'data3': bkifizLkmb4,
+                           'data4': bkifizLkmb5,
+                           'data5': bkifizLkmb6,
+                           'data6': bkifizLkmb7,
+                           'data7': bkifizLkmb8,
+                           'data8': bkifizLkmb9,
+                           'data9': bkifizLkmb10,
+                           'data10': bkifizLkmb11},
+                    success: function(response) {
+                        // Обработка успешного ответа здесь
+                        console.log(response); // Пример вывода ответа в консоль
+                    }
+                });
+            });
+        });
+
+        <!--не дает странице обновиться при нажатии на кнопку "Скачать заявку по физ лицу ООО "ЛКМБ-РТ""-->
+        document.getElementById("submit-button_fiz").addEventListener("click", function(event) {
+                event.preventDefault();
+            });
+        <!--    делает неактивной кнопку "Скачать заявку по физ лицу ООО "ЛКМБ-РТ" при незаполненных данных. Срабатывает каждую секунду-->
+            $(document).ready(function() {
+            $('#submit-button_fiz').prop('disabled', true);
+
+            setInterval(function() {
+                if ($('#inputFiz1').val() !== '' && $('#inputFiz2').val() !== '' && $('#inputFiz3').val() !== ''
+                && $('#inputFiz4').val() !== '' && $('#inputFiz5').val() !== '' && $('#inputFiz6').val() !== ''
+                && $('#inputFiz7').val() !== '' && $('#inputFiz8').val() !== '' && $('#inputFiz9').val() !== ''
+                && $('#inputFiz10').val() !== '' && $('#inputFiz11').val() !== '') {
+                    $('#submit-button_fiz').prop('disabled', false);
+                } else {
+                    $('#submit-button_fiz').prop('disabled', true);
+                }
+            }, 1000);
+        });
 </script>
 
 
