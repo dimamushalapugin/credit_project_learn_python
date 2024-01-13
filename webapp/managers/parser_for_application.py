@@ -267,7 +267,7 @@ def start_filling_application(inn_leasee, path_application, inn_seller1, inn_sel
             # заполняем страницу Заявление
             sheet_zayavlenie = wb['Заявление']
             # Создаем список валидации данных
-            dv = DataValidation(type="list", formula1='"Option 1,Option 2,Option 3"', showDropDown=True)
+            dv = DataValidation(type="list", formula1='"Руб с НДС, Китайский юань с НДС, Доллар с НДС"', showDropDown=True)
             # Apply the DataValidation object to the cell
             sheet_zayavlenie.add_data_validation(dv)
             dv.add(sheet_zayavlenie['Q21'])
