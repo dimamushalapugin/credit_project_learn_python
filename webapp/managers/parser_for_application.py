@@ -14,6 +14,7 @@ from webapp.risk.logger import logging
 from webapp.managers.parser_for_dkp import read_xlsx, number_to_words
 from webapp.config import DADATA_TOKEN, DADATA_BASE
 from webapp.risk.mongo_db import MongoDB
+from openpyxl.worksheet.datavalidation import DataValidation
 
 
 def start_filling_application(inn_leasee, path_application, inn_seller1, inn_seller2, inn_seller3, inn_seller4):
@@ -265,6 +266,12 @@ def start_filling_application(inn_leasee, path_application, inn_seller1, inn_sel
                                         read_only=False)
             # заполняем страницу Заявление
             sheet_zayavlenie = wb['Заявление']
+            # Создаем список валидации данных
+            dv = DataValidation(type="list", formula1='"Option 1,Option 2,Option 3"', showDropDown=True)
+            # Apply the DataValidation object to the cell
+            sheet_zayavlenie.add_data_validation(dv)
+            dv.add(sheet_zayavlenie['Q21'])
+
             sheet_zayavlenie['A5'].value = full_name_leasee
             sheet_zayavlenie['D6'].value = inn_kpp_leasee
             sheet_zayavlenie['B1'].value = dt.today().strftime(f"%d.%m.%Y")
