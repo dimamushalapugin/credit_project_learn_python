@@ -257,6 +257,7 @@ def create_bki():
     logging.info(f"({current_user}) Нажал на кнопку 'Создать БКИ'")
     pass
 
+
 @blueprint.route('/autofill', methods=['POST'])
 def autofill():
     data = request.form['data']
@@ -311,7 +312,8 @@ def submit_form_ur():
           data_doverka_ur, data_year_ur)
     replace_bki(data_inn_ur, data_naming_ur, data_ogrn_ur, data_address_ur, data_phone_ur, data_fio_ur, data_leader_ur,
                 data_doverka_ur, data_year_ur)
-    return jsonify(data_inn_ur)
+
+    return download_bki(fr'static', f'БКИ.docx')
 
 
 @blueprint.route('/submit_form_fiz', methods=['POST'])
@@ -335,8 +337,19 @@ def submit_form_fiz():
     return jsonify(data_naming_fiz)
 
 
-
 @blueprint.route('/process', methods=['POST'])
 def process_file():
     inn = 'Тут должен быть ИНН'
     return render_template('create_agreements.html', inn=inn)
+
+
+@blueprint.route('/download_bki')
+def download_bki(file_path, filename):
+    try:
+        print(f"Attempting to download file: {file_path}/{filename}")
+        response = send_file(file_path, as_attachment=True, download_name=filename)
+        print("File sent successfully.")
+        return response
+    except Exception as e:
+        print(f"Error: {e}")
+        return f"Error occurred while trying to download the file: {e}"

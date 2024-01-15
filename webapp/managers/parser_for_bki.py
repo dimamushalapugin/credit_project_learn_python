@@ -18,9 +18,9 @@ def replace_words_in_bki(docx_file, old_words_bki, new_words_bki):
                         cell.text = cell.text.replace(old_words_bki[i], str(new_words_bki[i]))
     new = new_words_bki[0].replace('"', '')
     if all(char.isdigit() for char in new_words_bki[1]):
-        doc.save(fr'БКИ физ лицо {new}.docx')
+        doc.save(fr'webapp/static/temporary/БКИ физ лицо {new}.docx')
     else:
-        doc.save(fr'БКИ юр лицо {new_words_bki[1]}.docx')
+        doc.save(fr'webapp/static/temporary/БКИ юр лицо {new_words_bki[1]}.docx')
 
 
 def replace_bki(some1, some2, some3, some4, some5, some6, some7, some8, some9):
@@ -37,7 +37,8 @@ def replace_bki(some1, some2, some3, some4, some5, some6, some7, some8, some9):
     new_words_bki = ([str(item) for item in [some2, some3, some1, some4, some5, some7, some6, some8]] +
                      [str(day), str(months[int(month)]), str(year)])
     print("old_words_bki:", old_words_bki, "new_words_bki:", new_words_bki)
-    replace_words_in_bki(r"Согласие на получение кредитного отчета Юрлицо.docx", old_words_bki, new_words_bki)
+    replace_words_in_bki(r"webapp/static/agreement_templates/Согласие на получение кредитного отчета Юрлицо.docx",
+                         old_words_bki, new_words_bki)
     return old_words_bki, new_words_bki
 
 
@@ -62,5 +63,6 @@ def replace_bki_fiz(some1, some2, some3, some4, some5, some6, some7, some8, some
                                              some7, some8, day_birth, months[int(month_birth)], year_birth,
                                              some10, some1, str(day), str(months[int(month)]), str(year)]])
     print("old_words_bki:", old_words_bki, "new_words_bki:", new_words_bki)
-    replace_words_in_bki(r"Согласие на получение кредитного отчета Физлицо.docx", old_words_bki, new_words_bki)
+    replace_words_in_bki(r"webapp/static/agreement_templates/Согласие на получение кредитного отчета Физлицо.docx",
+                         old_words_bki, new_words_bki)
     return old_words_bki, new_words_bki

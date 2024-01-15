@@ -11,9 +11,11 @@
 from retrying import retry
 import httpx
 from dadata import Dadata
+
 DADATA_TOKEN = "804d29658b186056c6cfab57f94c68695581d747"
 DADATA_SECRET = "2c54bab544f947c975525ab452d014492122e52b"
 DADATA_BASE = Dadata(DADATA_TOKEN, DADATA_SECRET)
+
 
 @retry(stop_max_attempt_number=3, wait_fixed=2000)
 def main_result_dadata(someone):
@@ -24,6 +26,7 @@ def main_result_dadata(someone):
     except httpx.ConnectTimeout:
         print("Timeout error occurred. Retrying...")
         raise
+
 
 # def main_result_dadata(someone):
 #     main_result = DADATA_BASE.find_by_id("party", someone)
@@ -39,6 +42,8 @@ def naming_dadata_bk_ur(someone):
         full_name_bki_ur = ''
     print(full_name_bki_ur)
     return full_name_bki_ur
+
+
 # naming_dadata_bk_ur('1655099271')
 
 def ogrn_dadata_bk_ur(someone):
@@ -49,6 +54,8 @@ def ogrn_dadata_bk_ur(someone):
         ogrn_bki_ur = ''
     print(ogrn_bki_ur)
     return ogrn_bki_ur
+
+
 # ogrn_dadata_bk_ur('1655099271')
 
 def address_dadata_bk_ur(someone):
@@ -59,6 +66,8 @@ def address_dadata_bk_ur(someone):
         address_bki_ur = ''
     print(address_bki_ur)
     return address_bki_ur
+
+
 # address_dadata_bk_ur('1427010997')
 
 def fio_dadata_bk_ur(someone):
@@ -75,6 +84,8 @@ def fio_dadata_bk_ur(someone):
         fio_bki_ur = ''
     print(fio_bki_ur)
     return fio_bki_ur
+
+
 # fio_dadata_bk_ur('6120001800')
 
 def leader_dadata_bk_ur(someone):
@@ -91,6 +102,8 @@ def leader_dadata_bk_ur(someone):
         leader_bki_ur = ''
     print(leader_bki_ur)
     return leader_bki_ur
+
+
 # leader_dadata_bk_ur('771386745859')
 
 def doverka_ustav_dadata_bk_ur(someone):
@@ -108,4 +121,3 @@ def doverka_ustav_dadata_bk_ur(someone):
     print(doverka_ustav_bki_ur)
     return doverka_ustav_bki_ur
 # doverka_ustav_dadata_bk_ur('1655099271')
-

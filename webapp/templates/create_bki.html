@@ -184,7 +184,7 @@
                             <div class="form-group">
                                 <button type="submit" id="submit-button1" class="btn btn-outline-primary btn-block"
                                         disabled>
-                                    Скачать заявку ООО "ЛКМБ-РТ"
+                                    Скачать БКИ
                                 </button>
                             </div>
                             <!--                            <div class="form-group">-->
@@ -350,7 +350,7 @@
                 var bkiurLkmb8 = $('#input8').val();
                 var bkiurLkmb9 = $('#input9').val();
                 $.ajax({
-                    url: '/submit_form_ur',
+                    url: './submit_form_ur',
                     type: 'POST',
                     data: {'data': bkiurLkmb1,
                            'data1': bkiurLkmb2,
@@ -393,7 +393,7 @@
                 $('#autofillButtonFiz').click(function() {
                     var fiz1 = $('#inputFiz1').val();
                     $.ajax({
-                        url: '/autofillfiz',
+                        url: './autofillfiz',
                         type: 'POST',
                         data: {'data': fiz1},
                         success: function(response) {
@@ -427,7 +427,7 @@
                 var bkifizLkmb10 = $('#inputFiz10').val();
                 var bkifizLkmb11 = $('#inputFiz11').val();
                 $.ajax({
-                    url: '/submit_form_fiz',
+                    url: './submit_form_fiz',
                     type: 'POST',
                     data: {'data': bkifizLkmb1,
                            'data1': bkifizLkmb2,
