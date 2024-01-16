@@ -300,7 +300,7 @@ def autofillfiz():
 
 @blueprint.route('/submit_form_ur', methods=['POST'])
 def submit_form_ur():
-    data = request.form['data']
+    # data = request.form['data']
     data_inn_ur = request.form['data']
     data_naming_ur = request.form['data1']
     data_ogrn_ur = request.form['data2']

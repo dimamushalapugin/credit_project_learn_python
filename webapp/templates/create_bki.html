@@ -367,8 +367,8 @@
 
                         // Создаем скрытую ссылку для скачивания
                         var link = document.createElement('a');
-                        link.href = '/static/temporary/БКИ физ лицо ОБЩЕСТВО С ОГРАНИЧЕННОЙ ОТВЕТСТВЕННОСТЬЮ ЭПИ-ГРУПП.docx';
-                        link.download = 'БКИ физ лицо ОБЩЕСТВО С ОГРАНИЧЕННОЙ ОТВЕТСТВЕННОСТЬЮ ЭПИ-ГРУПП.docx'; // Имя файла для скачивания
+                        link.href = '/static/temporary/БКИ ' + bkiurLkmb2.replace(/"/g, '') + '.docx';  // Вставляем значение из bkiurLkmb2
+                        link.download = 'БКИ ' + bkiurLkmb2.replace(/"/g, '') + '.docx';  // Вставляем значение из bkiurLkmb2
                         document.body.appendChild(link);
 
                         // Имитируем клик по ссылке для начала скачивания
@@ -453,8 +453,20 @@
                            'data9': bkifizLkmb10,
                            'data10': bkifizLkmb11},
                     success: function(response) {
-                        // Обработка успешного ответа здесь
-                        console.log(response); // Пример вывода ответа в консоль
+                        // Предполагается, что сервер вернул ссылку на скачивание в переменной response.downloadLink
+                        var downloadLink = response.downloadLink;
+
+                        // Создаем скрытую ссылку для скачивания
+                        var link = document.createElement('a');
+                        link.href = '/static/temporary/БКИ ' + bkifizLkmb2 + '.docx';  // Вставляем значение из bkiurLkmb2
+                        link.download = 'БКИ ' + bkifizLkmb2 + '.docx';  // Вставляем значение из bkiurLkmb2
+                        document.body.appendChild(link);
+
+                        // Имитируем клик по ссылке для начала скачивания
+                        link.click();
+
+                        // Удаляем временную ссылку
+                        document.body.removeChild(link);
                     }
                 });
             });
