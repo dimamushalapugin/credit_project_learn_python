@@ -223,6 +223,7 @@ def upload_files():
 
 @blueprint.route('/download_application')
 def download_application(file_path, filename):
+    print(f"Attempting to download file: {file_path}/{filename}")
     response = send_file(file_path, as_attachment=True, download_name=filename)
     return response
 
@@ -299,6 +300,7 @@ def autofillfiz():
 
 @blueprint.route('/submit_form_ur', methods=['POST'])
 def submit_form_ur():
+    data = request.form['data']
     data_inn_ur = request.form['data']
     data_naming_ur = request.form['data1']
     data_ogrn_ur = request.form['data2']
@@ -313,7 +315,7 @@ def submit_form_ur():
     replace_bki(data_inn_ur, data_naming_ur, data_ogrn_ur, data_address_ur, data_phone_ur, data_fio_ur, data_leader_ur,
                 data_doverka_ur, data_year_ur)
 
-    return download_bki(fr'static', f'БКИ.docx')
+    return download_bki(fr'static\БКИ.docx', f'БКИ.docx')
 
 
 @blueprint.route('/submit_form_fiz', methods=['POST'])

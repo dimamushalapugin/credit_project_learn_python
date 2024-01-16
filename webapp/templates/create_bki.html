@@ -194,7 +194,7 @@
                             <!--                            </div>-->
                         </div>
                     </form>
-                    <form action="{{ url_for('manager.create_application') }}" method="POST">
+                    <form action="" method="POST">
                         <div class="mb-3">
                             <h5 class="card-header"><i class="fa-solid fa-circle-info fa-xs"
                                                        style="color: #8f8f8f;"></i> Заполнение БКИ физического лица
@@ -362,8 +362,20 @@
                            'data7': bkiurLkmb8,
                            'data8': bkiurLkmb9},
                     success: function(response) {
-                        // Обработка успешного ответа здесь
-                        console.log(response); // Пример вывода ответа в консоль
+                        // Предполагается, что сервер вернул ссылку на скачивание в переменной response.downloadLink
+                        var downloadLink = response.downloadLink;
+
+                        // Создаем скрытую ссылку для скачивания
+                        var link = document.createElement('a');
+                        link.href = '/static/temporary/БКИ физ лицо ОБЩЕСТВО С ОГРАНИЧЕННОЙ ОТВЕТСТВЕННОСТЬЮ ЭПИ-ГРУПП.docx';
+                        link.download = 'БКИ физ лицо ОБЩЕСТВО С ОГРАНИЧЕННОЙ ОТВЕТСТВЕННОСТЬЮ ЭПИ-ГРУПП.docx'; // Имя файла для скачивания
+                        document.body.appendChild(link);
+
+                        // Имитируем клик по ссылке для начала скачивания
+                        link.click();
+
+                        // Удаляем временную ссылку
+                        document.body.removeChild(link);
                     }
                 });
             });
