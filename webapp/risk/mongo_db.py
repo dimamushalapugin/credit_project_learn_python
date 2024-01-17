@@ -115,10 +115,10 @@ class MongoDB:
         logging.info('UPDATE MONGODB BANK DETAILS')
         logging.info('=' * 40)
         try:
-            self.__set_details(db, data, 'bank', 'G39', inn, key_inn, xlsx)
-            self.__set_details(db, data, 'check_account', 'B40', inn, key_inn, xlsx)
-            self.__set_details(db, data, 'cor_account', 'F40', inn, key_inn, xlsx)
-            self.__set_details(db, data, 'bik', 'I40', inn, key_inn, xlsx)
+            self.__set_details(db, data, 'bank', 'G40', inn, key_inn, xlsx)
+            self.__set_details(db, data, 'check_account', 'B41', inn, key_inn, xlsx)
+            self.__set_details(db, data, 'cor_account', 'F41', inn, key_inn, xlsx)
+            self.__set_details(db, data, 'bik', 'I41', inn, key_inn, xlsx)
             self.__set_details(db, data, 'phone', 'C21', inn, key_inn, xlsx)
             self.__set_details(db, data, 'email', 'F21', inn, key_inn, xlsx)
         except Exception as e:
@@ -131,10 +131,10 @@ class MongoDB:
         xlsx = XlsxCreator(sheet)
         data = {
             'client_inn': client_inn,
-            'bank': xlsx.get_cell('G39'),
-            'checking_account': xlsx.get_cell('B40'),
-            'correspondent_account': xlsx.get_cell('F40'),
-            'bik': xlsx.get_cell('I40'),
+            'bank': xlsx.get_cell('G40'),
+            'checking_account': xlsx.get_cell('B41'),
+            'correspondent_account': xlsx.get_cell('F41'),
+            'bik': xlsx.get_cell('I41'),
             'phone': xlsx.get_cell('C21'),
             'email': xlsx.get_cell('F21'),
             'date': datetime.now().strftime("%d.%m.%Y | %H:%M:%S"),

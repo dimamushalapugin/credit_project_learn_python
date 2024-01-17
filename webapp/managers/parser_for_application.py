@@ -355,10 +355,10 @@ def start_filling_application(inn_leasee, path_application, inn_seller1, inn_sel
             logging.info(bank_details)
             logging.info(director_details)
             if bank_details:
-                sheet_anketa_1_list['G39'].value = bank_details.get('bank')
-                sheet_anketa_1_list['B40'].value = bank_details.get('check_account')
-                sheet_anketa_1_list['F40'].value = bank_details.get('cor_account')
-                sheet_anketa_1_list['I40'].value = bank_details.get('bik')
+                sheet_anketa_1_list['G40'].value = bank_details.get('bank')
+                sheet_anketa_1_list['B41'].value = bank_details.get('check_account')
+                sheet_anketa_1_list['F41'].value = bank_details.get('cor_account')
+                sheet_anketa_1_list['I41'].value = bank_details.get('bik')
             if director_details:
                 sheet_anketa_1_list['D24'].value = director_details.get('date_of_birth')
                 sheet_anketa_1_list['F24'].value = director_details.get('place_of_birth')
