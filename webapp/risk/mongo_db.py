@@ -160,6 +160,7 @@ class MongoDB:
             db = self.client.managerBase
             if self.check_in_director_base(director_inn):
                 info = {
+                    'director_name': db.directorDetails.find_one({'director_inn': director_inn})['director_name'],
                     'date_of_birth': db.directorDetails.find_one({'director_inn': director_inn})['date_of_birth'],
                     'place_of_birth': db.directorDetails.find_one({'director_inn': director_inn})['place_of_birth'],
                     'passport_series': db.directorDetails.find_one({'director_inn': director_inn})['passport_series'],

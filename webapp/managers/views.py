@@ -278,16 +278,29 @@ def autofill():
 
 @blueprint.route('/autofillfiz', methods=['POST'])
 def autofillfiz():
+    mongo = MongoDB(current_user)
     data = request.form['data']
-    autofilled_data = 'Ибнеев Рустем Шамилевич'
-    autofilled_data1 = '9223'
-    autofilled_data2 = '338637'
-    autofilled_data3 = 'МВД по Республике Татарстан'
-    autofilled_data4 = '2023-09-01'
-    autofilled_data5 = '160-002'
-    autofilled_data6 = 'г. Казань'
-    autofilled_data7 = '1978-07-05'
-    autofilled_data8 = 'г. Казань, ул. Ленинградская, д. 60Б, кв. 148'
+    director_details = mongo.read_mongodb_director_details(data)
+    if director_details:
+        autofilled_data = director_details.get('director_name')
+        autofilled_data7 = director_details.get('date_of_birth').split()[0]
+        autofilled_data6 = director_details.get('place_of_birth')
+        autofilled_data1 = director_details.get('passport_series')
+        autofilled_data2 = director_details.get('passport_id')
+        autofilled_data3 = director_details.get('issued_by')
+        autofilled_data4 = director_details.get('issued_when').split()[0]
+        autofilled_data5 = director_details.get('department_code')
+        autofilled_data8 = director_details.get('address_reg')
+    else:
+        autofilled_data = 'Ибнеев Рустем Шамилевич'
+        autofilled_data1 = '9223'
+        autofilled_data2 = '338637'
+        autofilled_data3 = 'МВД по Республике Татарстан'
+        autofilled_data4 = '2023-09-01'
+        autofilled_data5 = '160-002'
+        autofilled_data6 = 'г. Казань'
+        autofilled_data7 = '1978-07-05'
+        autofilled_data8 = 'г. Казань, ул. Ленинградская, д. 60Б, кв. 148'
     current_date = date.today()
     autofilled_data9 = current_date.strftime("%Y-%m-%d")
     # print(autofilled_data, autofilled_data1, autofilled_data2, autofilled_data3, autofilled_data4, autofilled_data5,
