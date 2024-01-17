@@ -162,8 +162,10 @@ class MongoDB:
                 info = {
                     'date_of_birth': db.directorDetails.find_one({'director_inn': director_inn})['date_of_birth'],
                     'place_of_birth': db.directorDetails.find_one({'director_inn': director_inn})['place_of_birth'],
-                    'passport': db.directorDetails.find_one({'director_inn': director_inn})['passport'],
+                    'passport_series': db.directorDetails.find_one({'director_inn': director_inn})['passport_series'],
+                    'passport_id': db.directorDetails.find_one({'director_inn': director_inn})['passport_id'],
                     'issued_by': db.directorDetails.find_one({'director_inn': director_inn})['issued_by'],
+                    'issued_when': db.directorDetails.find_one({'director_inn': director_inn})['issued_when'],
                     'department_code': db.directorDetails.find_one({'director_inn': director_inn})[
                         'department_code'],
                     'address_reg': db.directorDetails.find_one({'director_inn': director_inn})['address_reg'],
@@ -191,11 +193,13 @@ class MongoDB:
             self.__set_details(db, data, 'director_name', 'C23', inn, key_inn, xlsx)
             self.__set_details(db, data, 'date_of_birth', 'D24', inn, key_inn, xlsx)
             self.__set_details(db, data, 'place_of_birth', 'F24', inn, key_inn, xlsx)
-            self.__set_details(db, data, 'passport', 'D28', inn, key_inn, xlsx)
+            self.__set_details(db, data, 'passport_series', 'D28', inn, key_inn, xlsx)
+            self.__set_details(db, data, 'passport_id', 'D29', inn, key_inn, xlsx)
             self.__set_details(db, data, 'issued_by', 'F28', inn, key_inn, xlsx)
-            self.__set_details(db, data, 'department_code', 'D29', inn, key_inn, xlsx)
-            self.__set_details(db, data, 'address_reg', 'D30', inn, key_inn, xlsx)
-            self.__set_details(db, data, 'address_fact', 'E31', inn, key_inn, xlsx)
+            self.__set_details(db, data, 'issued_when', 'F29', inn, key_inn, xlsx)
+            self.__set_details(db, data, 'department_code', 'D30', inn, key_inn, xlsx)
+            self.__set_details(db, data, 'address_reg', 'D31', inn, key_inn, xlsx)
+            self.__set_details(db, data, 'address_fact', 'E32', inn, key_inn, xlsx)
         except Exception as e:
             logging.info(e, exc_info=True)
             logging.info('Не удалось обновить реквизиты директора')
@@ -208,11 +212,13 @@ class MongoDB:
             'director_inn': director_inn,
             'date_of_birth': xlsx.get_cell('D24'),
             'place_of_birth': xlsx.get_cell('F24'),
-            'passport': xlsx.get_cell('D28'),
+            'passport_id': xlsx.get_cell('D29'),
+            'passport_series': xlsx.get_cell('D28'),
             'issued_by': xlsx.get_cell('F28'),
-            'department_code': xlsx.get_cell('D29'),
-            'address_reg': xlsx.get_cell('D30'),
-            'address_fact': xlsx.get_cell('E31'),
+            'issued_when': xlsx.get_cell('F29'),
+            'department_code': xlsx.get_cell('D30'),
+            'address_reg': xlsx.get_cell('D31'),
+            'address_fact': xlsx.get_cell('E32'),
             'date': datetime.now().strftime("%d.%m.%Y | %H:%M:%S")
         }
         if not self.check_in_director_base(director_inn):
