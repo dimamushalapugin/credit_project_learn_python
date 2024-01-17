@@ -279,7 +279,7 @@ def autofill():
 @blueprint.route('/autofillfiz', methods=['POST'])
 def autofillfiz():
     mongo = MongoDB(current_user)
-    data = request.form['data']
+    data = request.form['data'].strip()
     director_details = mongo.read_mongodb_director_details(data)
     if director_details:
         autofilled_data = director_details.get('director_name')
