@@ -24,7 +24,7 @@ def replace_words_in_bki(docx_file, old_words_bki, new_words_bki):
 
 
 def replace_bki(some1, some2, some3, some4, some5, some6, some7, some8, some9):
-    print("Выполняю действия с юриком:", some1, some2, some3, some4, some5, some6, some7, some8, some9)
+    # print("Выполняю действия с юриком:", some1, some2, some3, some4, some5, some6, some7, some8, some9)
     date_string = some9
     year, month, day = date_string.split("-")
     months = {1: 'января', 2: 'февраля', 3: 'марта', 4: 'апреля', 5: 'мая', 6: 'июня',
@@ -36,14 +36,14 @@ def replace_bki(some1, some2, some3, some4, some5, some6, some7, some8, some9):
 
     new_words_bki = ([str(item) for item in [some2, some3, some1, some4, some5, some7, some6, some8]] +
                      [str(day), str(months[int(month)]), str(year)])
-    print("old_words_bki:", old_words_bki, "new_words_bki:", new_words_bki)
+    # print("old_words_bki:", old_words_bki, "new_words_bki:", new_words_bki)
     replace_words_in_bki(r"webapp/static/agreement_templates/Согласие на получение кредитного отчета Юрлицо.docx",
                          old_words_bki, new_words_bki)
     return old_words_bki, new_words_bki
 
 
 def replace_bki_fiz(some1, some2, some3, some4, some5, some6, some7, some8, some9, some10, some11):
-    print("Выполняю действия с физиком:", some1, some2, some3, some4, some5, some6, some7, some8, some9, some10, some11)
+    # print("Выполняю действия с физиком:", some1, some2, some3, some4, some5, some6, some7, some8, some9, some10, some11)
     date_mvd_string = some6
     year_mvd, month_mvd, day_mvd = date_mvd_string.split("-")
     datebirth_string = some9
@@ -62,7 +62,7 @@ def replace_bki_fiz(some1, some2, some3, some4, some5, some6, some7, some8, some
     new_words_bki = ([str(item) for item in [some2, some3, some4, some5, day_mvd, months[int(month_mvd)], year_mvd,
                                              some7, some8, day_birth, months[int(month_birth)], year_birth,
                                              some10, some1, str(day), str(months[int(month)]), str(year)]])
-    print("old_words_bki:", old_words_bki, "new_words_bki:", new_words_bki)
+    # print("old_words_bki:", old_words_bki, "new_words_bki:", new_words_bki)
     replace_words_in_bki(r"webapp/static/agreement_templates/Согласие на получение кредитного отчета Физлицо.docx",
                          old_words_bki, new_words_bki)
     return old_words_bki, new_words_bki

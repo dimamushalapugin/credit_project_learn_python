@@ -223,7 +223,7 @@ def upload_files():
 
 @blueprint.route('/download_application')
 def download_application(file_path, filename):
-    print(f"Attempting to download file: {file_path}/{filename}")
+    # print(f"Attempting to download file: {file_path}/{filename}")
     response = send_file(file_path, as_attachment=True, download_name=filename)
     return response
 
@@ -270,7 +270,7 @@ def autofill():
     autofilled_data5 = doverka_ustav_dadata_bk_ur(data)
     current_date = date.today()
     autofilled_data6 = current_date.strftime("%Y-%m-%d")
-    print(autofilled_data, autofilled_data1, autofilled_data2, autofilled_data3, autofilled_data4, autofilled_data5)
+    # print(autofilled_data, autofilled_data1, autofilled_data2, autofilled_data3, autofilled_data4, autofilled_data5)
     return jsonify({'data1': autofilled_data, 'data2': autofilled_data1, 'data3': autofilled_data2,
                     'data4': autofilled_data3, 'data5': autofilled_data4, 'data6': autofilled_data5,
                     'data7': autofilled_data6})
@@ -290,8 +290,8 @@ def autofillfiz():
     autofilled_data8 = 'г. Казань, ул. Ленинградская, д. 60Б, кв. 148'
     current_date = date.today()
     autofilled_data9 = current_date.strftime("%Y-%m-%d")
-    print(autofilled_data, autofilled_data1, autofilled_data2, autofilled_data3, autofilled_data4, autofilled_data5,
-          autofilled_data6, autofilled_data7, autofilled_data8, autofilled_data9)
+    # print(autofilled_data, autofilled_data1, autofilled_data2, autofilled_data3, autofilled_data4, autofilled_data5,
+    #       autofilled_data6, autofilled_data7, autofilled_data8, autofilled_data9)
     return jsonify({'data1': autofilled_data, 'data2': autofilled_data1, 'data3': autofilled_data2,
                     'data4': autofilled_data3, 'data5': autofilled_data4, 'data6': autofilled_data5,
                     'data7': autofilled_data6, 'data8': autofilled_data7, 'data9': autofilled_data8,
@@ -310,8 +310,8 @@ def submit_form_ur():
     data_leader_ur = request.form['data6']
     data_doverka_ur = request.form['data7']
     data_year_ur = request.form['data8']
-    print(data_inn_ur, data_naming_ur, data_ogrn_ur, data_address_ur, data_phone_ur, data_fio_ur, data_leader_ur,
-          data_doverka_ur, data_year_ur)
+    # print(data_inn_ur, data_naming_ur, data_ogrn_ur, data_address_ur, data_phone_ur, data_fio_ur, data_leader_ur,
+    #       data_doverka_ur, data_year_ur)
     replace_bki(data_inn_ur, data_naming_ur, data_ogrn_ur, data_address_ur, data_phone_ur, data_fio_ur, data_leader_ur,
                 data_doverka_ur, data_year_ur)
 
@@ -331,8 +331,8 @@ def submit_form_fiz():
     data_birthdate_fiz = request.form['data8']
     data_address_fiz = request.form['data9']
     data_year_fiz = request.form['data10']
-    print(data_inn_fiz, data_naming_fiz, data_ser_fiz, data_numb_fiz, data_whoismvd_fiz, data_output_fiz, data_code_fiz,
-          data_birthplace_fiz, data_birthdate_fiz, data_address_fiz, data_year_fiz)
+    # print(data_inn_fiz, data_naming_fiz, data_ser_fiz, data_numb_fiz, data_whoismvd_fiz, data_output_fiz, data_code_fiz,
+    #       data_birthplace_fiz, data_birthdate_fiz, data_address_fiz, data_year_fiz)
     replace_bki_fiz(data_inn_fiz, data_naming_fiz, data_ser_fiz, data_numb_fiz, data_whoismvd_fiz, data_output_fiz,
                     data_code_fiz,
                     data_birthplace_fiz, data_birthdate_fiz, data_address_fiz, data_year_fiz)

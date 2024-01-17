@@ -21,7 +21,7 @@ DADATA_BASE = Dadata(DADATA_TOKEN, DADATA_SECRET)
 def main_result_dadata(someone):
     try:
         main_result = DADATA_BASE.find_by_id("party", someone)
-        print(main_result)
+        # print(main_result)
         return main_result
     except httpx.ConnectTimeout:
         print("Timeout error occurred. Retrying...")
@@ -40,7 +40,7 @@ def naming_dadata_bk_ur(someone):
         full_name_bki_ur = main_result[0]['data']['name']['full_with_opf']
     except:
         full_name_bki_ur = ''
-    print(full_name_bki_ur)
+    # print(full_name_bki_ur)
     return full_name_bki_ur
 
 
@@ -52,7 +52,7 @@ def ogrn_dadata_bk_ur(someone):
         ogrn_bki_ur = main_result[0]['data']['ogrn']
     except:
         ogrn_bki_ur = ''
-    print(ogrn_bki_ur)
+    # print(ogrn_bki_ur)
     return ogrn_bki_ur
 
 
@@ -64,7 +64,7 @@ def address_dadata_bk_ur(someone):
         address_bki_ur = main_result[0]['data']['address']['unrestricted_value']
     except:
         address_bki_ur = ''
-    print(address_bki_ur)
+    # print(address_bki_ur)
     return address_bki_ur
 
 
@@ -82,7 +82,7 @@ def fio_dadata_bk_ur(someone):
             fio_bki_ur = main_result[0]['data']['name']['full']
     except:
         fio_bki_ur = ''
-    print(fio_bki_ur)
+    # print(fio_bki_ur)
     return fio_bki_ur
 
 
@@ -100,7 +100,7 @@ def leader_dadata_bk_ur(someone):
             leader_bki_ur = main_result[0]['data']['opf']['full']
     except:
         leader_bki_ur = ''
-    print(leader_bki_ur)
+    # print(leader_bki_ur)
     return leader_bki_ur
 
 
@@ -118,6 +118,6 @@ def doverka_ustav_dadata_bk_ur(someone):
             doverka_ustav_bki_ur = 'Свидетельства о регистрации индивидуального предпринимателя'
     except:
         doverka_ustav_bki_ur = ''
-    print(doverka_ustav_bki_ur)
+    # print(doverka_ustav_bki_ur)
     return doverka_ustav_bki_ur
 # doverka_ustav_dadata_bk_ur('1655099271')
