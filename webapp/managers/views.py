@@ -255,22 +255,24 @@ def autofill():
     if company_details:
         autofilled_data = company_details.get('full_name')
         autofilled_data1 = company_details.get('ogrn')
-        autofilled_data2 = company_details.get('ogrn')
-        autofilled_data3 = company_details.get('ogrn')
-        autofilled_data4 = company_details.get('ogrn')
+        autofilled_data2 = ''
+        autofilled_data3 = ''
+        autofilled_data4 = leader_dadata_bk_ur(data).capitalize()
         autofilled_data5 = doverka_ustav_dadata_bk_ur(data)
+        autofilled_data7 = company_details.get('phone')
     else:
         autofilled_data = naming_dadata_bk_ur(data)
         autofilled_data1 = ogrn_dadata_bk_ur(data)
         autofilled_data2 = address_dadata_bk_ur(data)
         autofilled_data3 = fio_dadata_bk_ur(data)
-        autofilled_data4 = leader_dadata_bk_ur(data)
+        autofilled_data4 = leader_dadata_bk_ur(data).capitalize()
         autofilled_data5 = doverka_ustav_dadata_bk_ur(data)
+        autofilled_data7 = ''
     current_date = date.today()
     autofilled_data6 = current_date.strftime("%Y-%m-%d")
     return jsonify({'data1': autofilled_data, 'data2': autofilled_data1, 'data3': autofilled_data2,
                     'data4': autofilled_data3, 'data5': autofilled_data4, 'data6': autofilled_data5,
-                    'data7': autofilled_data6})
+                    'data7': autofilled_data6, 'data8': autofilled_data7})
 
 
 @blueprint.route('/autofillfiz', methods=['POST'])
