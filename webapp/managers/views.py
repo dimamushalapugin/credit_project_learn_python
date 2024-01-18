@@ -255,8 +255,8 @@ def autofill():
     if company_details:
         autofilled_data = company_details.get('full_name')
         autofilled_data1 = company_details.get('ogrn')
-        autofilled_data2 = ''
-        autofilled_data3 = ''
+        autofilled_data2 = company_details.get('address')
+        autofilled_data3 = company_details.get('director')
         autofilled_data4 = leader_dadata_bk_ur(data).capitalize()
         autofilled_data5 = doverka_ustav_dadata_bk_ur(data)
         autofilled_data7 = company_details.get('phone')

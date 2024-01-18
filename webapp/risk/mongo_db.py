@@ -83,6 +83,8 @@ class MongoDB:
                     'bank': db.companyBankDetails.find_one({'client_inn': client_inn})['bank'],
                     'full_name': db.companyBankDetails.find_one({'client_inn': client_inn})['full_name'],
                     'short_name': db.companyBankDetails.find_one({'client_inn': client_inn})['short_name'],
+                    'address': db.companyBankDetails.find_one({'client_inn': client_inn})['address'],
+                    'director': db.companyBankDetails.find_one({'client_inn': client_inn})['director'],
                     'ogrn': db.companyBankDetails.find_one({'client_inn': client_inn})['ogrn'],
                     'check_account': db.companyBankDetails.find_one({'client_inn': client_inn})['checking_account'],
                     'cor_account': db.companyBankDetails.find_one({'client_inn': client_inn})['correspondent_account'],
@@ -121,6 +123,8 @@ class MongoDB:
             self.__set_details(db, data, 'bank', 'G40', inn, key_inn, xlsx)
             self.__set_details(db, data, 'full_name', 'A4', inn, key_inn, xlsx)
             self.__set_details(db, data, 'short_name', 'A6', inn, key_inn, xlsx)
+            self.__set_details(db, data, 'address', 'B18', inn, key_inn, xlsx)
+            self.__set_details(db, data, 'director', 'C23', inn, key_inn, xlsx)
             self.__set_details(db, data, 'ogrn', 'F7', inn, key_inn, xlsx)
             self.__set_details(db, data, 'check_account', 'B41', inn, key_inn, xlsx)
             self.__set_details(db, data, 'cor_account', 'F41', inn, key_inn, xlsx)
@@ -137,8 +141,11 @@ class MongoDB:
         xlsx = XlsxCreator(sheet)
         data = {
             'client_inn': client_inn,
+            'ogrn': xlsx.get_cell('F7'),
             'full_name': xlsx.get_cell('A4'),
             'short_name': xlsx.get_cell('A6'),
+            'address': xlsx.get_cell('B18'),
+            'director': xlsx.get_cell('C23'),
             'bank': xlsx.get_cell('G40'),
             'checking_account': xlsx.get_cell('B41'),
             'correspondent_account': xlsx.get_cell('F41'),
