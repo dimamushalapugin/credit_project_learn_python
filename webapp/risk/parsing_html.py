@@ -1194,7 +1194,7 @@ def read_main_html_individual(client_inn, object_inn, short_name):
         'История_руководства': ind_is_dir_or_founder_history(),
         'АРБИТРАЖНЫЙ СУД ФЛ': ind_arbit_cases(),
         'АРБИТРАЖНЫЙ СУД ИП/ЮЛ': ind_arbit_cases_ip(),
-        'НАЛОГОВАЯ ЗАДОЛЖЕННОСТЬ 2023': ind_tax_debts(),
+        'НАЛОГОВАЯ ЗАДОЛЖЕННОСТЬ': ind_tax_debts(),
         'ЗАБЛОКИРОВАННЫЕ РАСЧЕТНЫЕ СЧЕТА (ФЛ)': ind_blocked_acc(),
         'ФЕДЕРАЛЬНАЯ СЛУЖБА СУДЕБНЫХ ПРИСТАВОВ (ФССП ФЛ)': ind_fssp_fl(),
         'РЕЕСТР ЗАЛОГОВ': ind_reestr_zalog(),
