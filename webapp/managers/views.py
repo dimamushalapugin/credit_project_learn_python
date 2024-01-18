@@ -1,4 +1,5 @@
 import os
+from datetime import date
 
 from flask import Blueprint, flash, render_template, redirect, request, url_for, send_from_directory, jsonify, send_file
 from flask_login import login_required, current_user
@@ -8,16 +9,9 @@ from webapp.managers.parser_for_dkp import start_filling_agreement_dkp
 from webapp.config import APPLICATION_PATH
 from webapp.risk.logger import logging
 from webapp.risk.mongo_db import MongoDB
-from datetime import date
-from dadata import Dadata
-
-from webapp.managers.main_parser import naming_dadata_bk_ur, ogrn_dadata_bk_ur, address_dadata_bk_ur, fio_dadata_bk_ur, \
-    leader_dadata_bk_ur, doverka_ustav_dadata_bk_ur
+from webapp.managers.main_parser import (naming_dadata_bk_ur, ogrn_dadata_bk_ur, address_dadata_bk_ur,
+                                         fio_dadata_bk_ur, leader_dadata_bk_ur, doverka_ustav_dadata_bk_ur)
 from webapp.managers.parser_for_bki import replace_bki, replace_bki_fiz
-
-DADATA_TOKEN = "804d29658b186056c6cfab57f94c68695581d747"
-DADATA_SECRET = "2c54bab544f947c975525ab452d014492122e52b"
-DADATA_BASE = Dadata(DADATA_TOKEN, DADATA_SECRET)
 
 blueprint = Blueprint('manager', __name__, url_prefix='/managers')
 
@@ -253,24 +247,27 @@ def bki_page():
     return render_template('create_bki.html')
 
 
-@blueprint.route('/create_bki', methods=['POST'])
-def create_bki():
-    logging.info(f"({current_user}) Нажал на кнопку 'Создать БКИ'")
-    pass
-
-
 @blueprint.route('/autofill', methods=['POST'])
 def autofill():
+    mongo = MongoDB(current_user)
     data = request.form['data']
-    autofilled_data = naming_dadata_bk_ur(data)
-    autofilled_data1 = ogrn_dadata_bk_ur(data)
-    autofilled_data2 = address_dadata_bk_ur(data)
-    autofilled_data3 = fio_dadata_bk_ur(data)
-    autofilled_data4 = leader_dadata_bk_ur(data)
-    autofilled_data5 = doverka_ustav_dadata_bk_ur(data)
+    company_details = mongo.read_mongodb_bank_details(data)
+    if company_details:
+        autofilled_data = company_details.get('full_name')
+        autofilled_data1 = company_details.get('ogrn')
+        autofilled_data2 = company_details.get('ogrn')
+        autofilled_data3 = company_details.get('ogrn')
+        autofilled_data4 = company_details.get('ogrn')
+        autofilled_data5 = doverka_ustav_dadata_bk_ur(data)
+    else:
+        autofilled_data = naming_dadata_bk_ur(data)
+        autofilled_data1 = ogrn_dadata_bk_ur(data)
+        autofilled_data2 = address_dadata_bk_ur(data)
+        autofilled_data3 = fio_dadata_bk_ur(data)
+        autofilled_data4 = leader_dadata_bk_ur(data)
+        autofilled_data5 = doverka_ustav_dadata_bk_ur(data)
     current_date = date.today()
     autofilled_data6 = current_date.strftime("%Y-%m-%d")
-    # print(autofilled_data, autofilled_data1, autofilled_data2, autofilled_data3, autofilled_data4, autofilled_data5)
     return jsonify({'data1': autofilled_data, 'data2': autofilled_data1, 'data3': autofilled_data2,
                     'data4': autofilled_data3, 'data5': autofilled_data4, 'data6': autofilled_data5,
                     'data7': autofilled_data6})
@@ -303,8 +300,6 @@ def autofillfiz():
         autofilled_data8 = 'г. Казань, ул. Ленинградская, д. 60Б, кв. 148'
     current_date = date.today()
     autofilled_data9 = current_date.strftime("%Y-%m-%d")
-    # print(autofilled_data, autofilled_data1, autofilled_data2, autofilled_data3, autofilled_data4, autofilled_data5,
-    #       autofilled_data6, autofilled_data7, autofilled_data8, autofilled_data9)
     return jsonify({'data1': autofilled_data, 'data2': autofilled_data1, 'data3': autofilled_data2,
                     'data4': autofilled_data3, 'data5': autofilled_data4, 'data6': autofilled_data5,
                     'data7': autofilled_data6, 'data8': autofilled_data7, 'data9': autofilled_data8,
@@ -323,8 +318,6 @@ def submit_form_ur():
     data_leader_ur = request.form['data6']
     data_doverka_ur = request.form['data7']
     data_year_ur = request.form['data8']
-    # print(data_inn_ur, data_naming_ur, data_ogrn_ur, data_address_ur, data_phone_ur, data_fio_ur, data_leader_ur,
-    #       data_doverka_ur, data_year_ur)
     replace_bki(data_inn_ur, data_naming_ur, data_ogrn_ur, data_address_ur, data_phone_ur, data_fio_ur, data_leader_ur,
                 data_doverka_ur, data_year_ur)
 
@@ -344,8 +337,6 @@ def submit_form_fiz():
     data_birthdate_fiz = request.form['data8']
     data_address_fiz = request.form['data9']
     data_year_fiz = request.form['data10']
-    # print(data_inn_fiz, data_naming_fiz, data_ser_fiz, data_numb_fiz, data_whoismvd_fiz, data_output_fiz, data_code_fiz,
-    #       data_birthplace_fiz, data_birthdate_fiz, data_address_fiz, data_year_fiz)
     replace_bki_fiz(data_inn_fiz, data_naming_fiz, data_ser_fiz, data_numb_fiz, data_whoismvd_fiz, data_output_fiz,
                     data_code_fiz,
                     data_birthplace_fiz, data_birthdate_fiz, data_address_fiz, data_year_fiz)
@@ -361,10 +352,10 @@ def process_file():
 @blueprint.route('/download_bki')
 def download_bki(file_path, filename):
     try:
-        print(f"Attempting to download file: {file_path}/{filename}")
+        logging.info(f"Attempting to download file: {file_path}/{filename}")
         response = send_file(file_path, as_attachment=True, download_name=filename)
-        print("File sent successfully.")
+        logging.info("File sent successfully.")
         return response
     except Exception as e:
-        print(f"Error: {e}")
+        logging.info(f"Error: {e}")
         return f"Error occurred while trying to download the file: {e}"
