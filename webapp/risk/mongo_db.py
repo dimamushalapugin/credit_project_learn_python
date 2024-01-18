@@ -81,6 +81,9 @@ class MongoDB:
             if self.check_in_manager_base(client_inn):
                 info = {
                     'bank': db.companyBankDetails.find_one({'client_inn': client_inn})['bank'],
+                    'full_name': db.companyBankDetails.find_one({'client_inn': client_inn})['full_name'],
+                    'short_name': db.companyBankDetails.find_one({'client_inn': client_inn})['short_name'],
+                    'ogrn': db.companyBankDetails.find_one({'client_inn': client_inn})['ogrn'],
                     'check_account': db.companyBankDetails.find_one({'client_inn': client_inn})['checking_account'],
                     'cor_account': db.companyBankDetails.find_one({'client_inn': client_inn})['correspondent_account'],
                     'bik': db.companyBankDetails.find_one({'client_inn': client_inn})['bik'],
@@ -116,6 +119,9 @@ class MongoDB:
         logging.info('=' * 40)
         try:
             self.__set_details(db, data, 'bank', 'G40', inn, key_inn, xlsx)
+            self.__set_details(db, data, 'full_name', 'A4', inn, key_inn, xlsx)
+            self.__set_details(db, data, 'short_name', 'A6', inn, key_inn, xlsx)
+            self.__set_details(db, data, 'ogrn', 'F7', inn, key_inn, xlsx)
             self.__set_details(db, data, 'check_account', 'B41', inn, key_inn, xlsx)
             self.__set_details(db, data, 'cor_account', 'F41', inn, key_inn, xlsx)
             self.__set_details(db, data, 'bik', 'I41', inn, key_inn, xlsx)
@@ -131,6 +137,8 @@ class MongoDB:
         xlsx = XlsxCreator(sheet)
         data = {
             'client_inn': client_inn,
+            'full_name': xlsx.get_cell('A4'),
+            'short_name': xlsx.get_cell('A6'),
             'bank': xlsx.get_cell('G40'),
             'checking_account': xlsx.get_cell('B41'),
             'correspondent_account': xlsx.get_cell('F41'),
