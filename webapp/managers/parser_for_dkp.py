@@ -41,7 +41,7 @@ def read_xlsx(path_application, pl):
 
     """
     # ip_or_kfh = 'Нет'
-    wb = openpyxl.load_workbook(fr'{path_application}')
+    wb = openpyxl.load_workbook(fr'{path_application}', data_only=True)
     # читаем страницу Заявление
     sheet_zayavlenie = wb['Заявление']
     full_name_leasee = sheet_zayavlenie['A5'].value

@@ -262,8 +262,7 @@ def start_filling_application(inn_leasee, path_application, inn_seller1, inn_sel
         logging.info(f"({current_user}) Этап 4.")
         try:
             # сейчас будем заполнять заявку, вносить данные по лп
-            wb = openpyxl.load_workbook(rf'{path_application}',
-                                        read_only=False)
+            wb = openpyxl.load_workbook(rf'{path_application}')
             # заполняем страницу Заявление
             sheet_zayavlenie = wb['Заявление']
             # Создаем список валидации данных
