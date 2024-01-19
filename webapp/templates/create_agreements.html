@@ -32,39 +32,46 @@
         }
     </style>
     <style>
-    #loading-indicator {
-        display: none;
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        background-color: rgba(240, 240, 240, 0.5);
-        padding: 20px;
-        border-radius: 10px;
-        text-align: center;
-        z-index: 1000;
-    }
+        #loading-indicator {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(240, 240, 240, 0.5);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            z-index: 1000;
+        }
 
-    #loading-indicator .loader {
-        border: 8px solid #3498db; /* Цвет круга */
-        border-top: 8px solid #f1c40f; /* Цвет круга при анимации */
-        border-radius: 50%;
-        width: 70px; /* Размер круга */
-        height: 70px; /* Размер круга */
-        animation: spin 1s linear infinite;
-        margin-bottom: 10px;
-    }
+        #loading-indicator .loader {
+            border: 8px solid #3498db; /* Цвет круга */
+            border-top: 8px solid #f1c40f; /* Цвет круга при анимации */
+            border-radius: 50%;
+            width: 70px; /* Размер круга */
+            height: 70px; /* Размер круга */
+            animation: spin 1s linear infinite;
+            margin-bottom: 10px;
+        }
 
-    #loading-indicator p {
-        font-size: 20px; /* Размер текста */
-        color: #333; /* Цвет текста */
-        margin: 0;
-    }
+        #loading-indicator p {
+            font-size: 20px; /* Размер текста */
+            color: #333; /* Цвет текста */
+            margin: 0;
+        }
 
-    @keyframes spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
-    }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+    <style>
+        #message {
+            font-weight: bold;
+            color: red;
+            font-size: 20px;
+        }
     </style>
 </head>
 <body style="background-color: #edf6fc;">
@@ -323,17 +330,10 @@
                                             <option value="Регрессив">Регрессив</option>
                                             <option value="Clients">Clients</option>
                                         </select>
-                                            <div id="message"></div>
+                                        <div id="message"></div>
                                     </div>
-                                    <style>
-                                            #message {
-                                                font-weight: bold;
-                                                color: red;
-                                                font-size: 20px;
-                                            }
-                                    </style>
                                     <div id="divField" style="display: none;"
-                                            class="mb-3 border border-1 border-info rounded p-2">
+                                         class="mb-3 border border-1 border-info rounded p-2">
                                         <label><i class="fa-solid fa-paperclip fa-xs"
                                                   style="color: #8f8f8f;"></i> Выберите график платежей</label>
                                         <input type="file" class="form-control form-control-sm" id="graphicFileInput"
