@@ -323,7 +323,7 @@ def submit_form_ur():
     replace_bki(data_inn_ur, data_naming_ur, data_ogrn_ur, data_address_ur, data_phone_ur, data_fio_ur, data_leader_ur,
                 data_doverka_ur, data_year_ur)
 
-    return download_bki(fr'static\БКИ.docx', f'БКИ.docx')
+    return redirect(url_for('manager.bki_page'))
 
 
 @blueprint.route('/submit_form_fiz', methods=['POST'])
@@ -349,15 +349,3 @@ def submit_form_fiz():
 def process_file():
     inn = 'Тут должен быть ИНН'
     return render_template('create_agreements.html', inn=inn)
-
-
-@blueprint.route('/download_bki')
-def download_bki(file_path, filename):
-    try:
-        logging.info(f"Attempting to download file: {file_path}/{filename}")
-        response = send_file(file_path, as_attachment=True, download_name=filename)
-        logging.info("File sent successfully.")
-        return response
-    except Exception as e:
-        logging.info(f"Error: {e}")
-        return f"Error occurred while trying to download the file: {e}"
