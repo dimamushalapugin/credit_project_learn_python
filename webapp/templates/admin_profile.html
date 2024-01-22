@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Page</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f8fa;
+        }
+
+        header {
+            background-color: #1da1f2;
+            color: #fff;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .profile-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        .profile-card {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            max-width: 400px;
+            width: 100%;
+        }
+
+        .profile-image {
+            border-radius: 50%;
+            width: 120px;
+            height: 120px;
+            object-fit: cover;
+            margin-bottom: 20px;
+        }
+
+        .profile-info {
+            text-align: center;
+        }
+
+        .profile-info h2 {
+            margin: 0;
+            color: #333;
+        }
+
+        .profile-info p {
+            margin: 10px 0;
+            color: #657786;
+        }
+
+        .profile-info a {
+            color: #1da1f2;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .profile-info a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Admin Profile</h1>
+</header>
+
+<div class="profile-container">
+    <div class="profile-card">
+        <img src="https://placekitten.com/120/120" alt="Profile Image" class="profile-image">
+        <div class="profile-info">
+            <h2>{{ current_user }}</h2>
+            <p>Email: admin@example.com</p>
+            <p>Joined: January 1, 2022</p>
+            <p><a href="#">Edit Profile</a></p>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

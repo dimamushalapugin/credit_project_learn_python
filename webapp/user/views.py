@@ -69,3 +69,9 @@ def delete_user(user_id):
         db.session.commit()
 
     return redirect(url_for('user.list_of_users'))
+
+
+@blueprint.route('/admin')
+@admin_required
+def admin_page():
+    return render_template('admin_profile.html')
