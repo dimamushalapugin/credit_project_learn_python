@@ -1,4 +1,4 @@
-from flask import Flask, redirect, url_for
+from flask import Flask, redirect, url_for, render_template
 from flask_login import LoginManager, login_required, current_user
 
 from webapp.user.forms import LoginForm
@@ -35,5 +35,10 @@ def create_app():
         if current_user.is_manager:
             return redirect(url_for('manager.managers_page'))
         return redirect(url_for('payment.list_of_all_payments'))
+
+    # Обработчик ошибки 404
+    @app.errorhandler(404)
+    def page_not_found(error):
+        return render_template('404.html'), 404
 
     return app
