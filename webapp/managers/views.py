@@ -12,6 +12,8 @@ from webapp.risk.mongo_db import MongoDB
 from webapp.managers.main_parser import (naming_dadata_bk_ur, ogrn_dadata_bk_ur, address_dadata_bk_ur,
                                          fio_dadata_bk_ur, leader_dadata_bk_ur, doverka_ustav_dadata_bk_ur)
 from webapp.managers.parser_for_bki import replace_bki, replace_bki_fiz
+from webapp.user.auth_utils import manager_required
+
 
 blueprint = Blueprint('manager', __name__, url_prefix='/managers')
 
@@ -28,7 +30,7 @@ def get_folder_names(folder_path):
 
 
 @blueprint.route('/create_agreements')
-@login_required
+@manager_required
 def managers_page():
     folder_path = 'static/agreements'
     folder_names = get_folder_names(folder_path)  # Функция для получения списка папок
@@ -242,7 +244,7 @@ def create_application():
 
 
 @blueprint.route('/create_bki')
-@login_required
+@manager_required
 def bki_page():
     return render_template('create_bki.html')
 

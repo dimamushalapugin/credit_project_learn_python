@@ -30,6 +30,10 @@ class User(db.Model, UserMixin):
     def is_risk(self):
         return self.role == 'risk'
 
+    @property
+    def is_blocked(self):
+        return self.blocked is True
+
     def __repr__(self):
         return f'Пользователь: {self.login}'
 

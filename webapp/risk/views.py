@@ -5,7 +5,7 @@ import time
 from flask import Blueprint, flash, render_template, redirect, request, url_for, send_from_directory
 from flask_login import current_user
 
-from webapp.user.auth_utils import admin_required
+from webapp.user.auth_utils import risk_required
 from webapp.risk.new_create_risk_conclusion import create_conclusion
 from webapp.risk.logger import logging
 from webapp.risk.mongo_db import MongoDB
@@ -25,7 +25,7 @@ def get_folder_names(folder_path):
 
 
 @blueprint.route('/risk_conclusion')
-@admin_required
+@risk_required
 def risk_page():
     folder_path = 'static/files'
     folder_names = get_folder_names(folder_path)  # Функция для получения списка папок
@@ -88,10 +88,3 @@ def download(filename):
     real_path = os.path.join('static', 'files', folder_path).replace('\\', '/').replace(f"/{filename}", '')
     logging.info(f"{current_user} скачивает файл: {filename}")
     return send_from_directory(real_path, filename, as_attachment=True)
-
-
-#  TODO: Найти способ добавить переход на эту страницу после нажати на кнопку создать риск-заключение и не только.
-#   Т.е. для ожидания какой либо функции
-@blueprint.route('/loading')
-def loading():
-    return render_template('loading.html')

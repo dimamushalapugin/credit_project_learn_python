@@ -34,6 +34,8 @@ def create_app():
     def home():
         if current_user.is_manager:
             return redirect(url_for('manager.managers_page'))
+        elif current_user.is_risk:
+            return redirect(url_for('risk.risk_page'))
         return redirect(url_for('payment.list_of_all_payments'))
 
     # Обработчик ошибки 404

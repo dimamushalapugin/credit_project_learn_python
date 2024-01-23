@@ -19,13 +19,13 @@ def full_credit_info(leasing_contract_number):
 
 
 @blueprint.route('/credit_table')
-@manager_required
+@admin_required
 def list_of_all_payments():
     return render_template('credit_table_page.html', result=query_for_all_payments())
 
 
 @blueprint.route('/daily_payments')
-@manager_required
+@admin_required
 def list_of_daily_payments():
     today_str = datetime.now().strftime('%d.%m.%Y')
     return render_template('daily_payments.html', result=query_for_daily_payments(),
