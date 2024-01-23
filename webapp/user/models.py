@@ -7,10 +7,15 @@ class User(db.Model, UserMixin):
     __tablename__ = 'users'
 
     id = db.Column(db.Integer, primary_key=True)
-    login = db.Column(db.String(), unique=True)
-    password = db.Column(db.String())
+    login = db.Column(db.String(length=50), unique=True)
+    password = db.Column(db.String(length=50))
     blocked = db.Column(db.Boolean())
-    role = db.Column(db.String)
+    role = db.Column(db.String(length=50))
+    fullname = db.Column(db.String())
+    email = db.Column(db.String(length=50))
+    url_photo = db.Column(db.String())
+    worknumber = db.Column(db.String())
+    mobilenumber = db.Column(db.String())
 
     def set_password(self, password):
         self.password = generate_password_hash(password)
@@ -40,3 +45,7 @@ class User(db.Model, UserMixin):
     def delete(self):
         db.session.delete(self)
         db.session.commit()
+
+    @property
+    def get_name(self):
+        return self.fullname if self.fullname else self.login

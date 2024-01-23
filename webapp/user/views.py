@@ -74,4 +74,8 @@ def delete_user(user_id):
 @blueprint.route('/admin')
 @admin_required
 def admin_page():
-    return render_template('admin_profile.html')
+    users = User.query.all()
+    return render_template('admin_profile.html', user_name=current_user.fullname, user_email=current_user.email,
+                           user_role=current_user.role, user_login=current_user.login, user_url=current_user.url_photo,
+                           user_work_number=current_user.worknumber, user_mobile_number=current_user.mobilenumber,
+                           users=users)
