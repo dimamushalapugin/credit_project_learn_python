@@ -172,20 +172,10 @@
             <p>Роль: {{ user_role }}</p>
         </div>
         <br>
-        <div class="btn-group">
-            <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown"
-                    aria-expanded="false">
-                Информация по пользователям
-            </button>
-            <ul class="dropdown-menu">
-                <li><a class="dropdown-item" href="#">Список пользователей</a></li>
-                <li><a class="dropdown-item" href="{{ url_for('user.create_user') }}">Добавление нового пользователя</a>
-                </li>
-            </ul>
-        </div>
+        <a class="btn btn-outline-dark" href="{{ url_for('user.create_user') }}">Добавить нового пользователя</a>
         <br><br>
         <div class="form-check form-switch">
-          <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault">
+          <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault" onchange="toggleTableVisibility()">
           <label class="form-check-label" for="flexSwitchCheckDefault">Показать всех пользователей</label>
         </div>
     </div>
@@ -217,6 +207,17 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <!-- Скрипт для управления видимостью карточки с пользователями -->
 <script>
+    document.getElementById('users-table').style.display = 'none';
+    function toggleTableVisibility() {
+        var checkbox = document.getElementById('flexSwitchCheckDefault');
+        var usersTable = document.getElementById('users-table');
+
+        if (checkbox.checked) {
+            usersTable.style.display = 'block';
+        } else {
+            usersTable.style.display = 'none';
+        }
+    }
 </script>
 <br><br><br>
 {% include 'footer.html' %}

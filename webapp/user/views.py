@@ -53,13 +53,6 @@ def create_user():
     return render_template('create_user_page.html')
 
 
-@blueprint.route('/list_user')
-@admin_required
-def list_of_users():
-    users = User.query.all()
-    return render_template('users_list.html', users=users)
-
-
 @blueprint.route('/delete_user/<int:user_id>', methods=['POST'])
 @admin_required
 def delete_user(user_id):
