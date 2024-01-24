@@ -12,6 +12,7 @@
 
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -143,6 +144,28 @@
             vertical-align: middle;
         }
     </style>
+    <style>
+    .status-circle {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        display: inline-block;
+        background-color: #00ff00; /* Яркий зеленый */
+        box-shadow: 0 0 5px rgba(0, 255, 0, 0.8); /* Тень */
+        border: 2px solid #fff; /* Белая обводка */
+    }
+    </style>
+    <style>
+    .status-circle-grey {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        display: inline-block;
+        background-color: #808080; /* Серый цвет */
+        box-shadow: 0 0 5px rgba(128, 128, 128, 0.8); /* Тень */
+        border: 2px solid #fff; /* Белая обводка */
+    }
+</style>
 </head>
 <body>
 {% include 'menu.html' %}
@@ -197,6 +220,13 @@
                         <img src='{{ user.url_photo }}' alt="Profile Image" class="profile-image"
                              style="max-width: 60px; max-height: 60px; border-radius: 50%;"></td>
                     <td>{{ user.email }}</td>
+                    <td>
+                        {% if user.online %}
+                            <div class="status-circle" style="background-color: #00ff00;"></div>
+                        {% else %}
+                            <div class="status-circle-grey" style="background-color: #808080;"></div>
+                        {% endif %}
+                    </td>
                 </tr>
                 {% endfor %}
                 </tbody>
@@ -204,7 +234,15 @@
         </div>
     </div>
 </div>
+<h1>Online Users</h1>
+    <ul>
+        {% for user_id in online_users %}
+            <li>{{ user_id }} - Online</li>
+        {% endfor %}
+    </ul>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+<script>var socket = io.connect('http://' + document.domain + ':' + location.port);</script>
 <!-- Скрипт для управления видимостью карточки с пользователями -->
 <script>
     document.getElementById('users-table').style.display = 'none';
@@ -218,6 +256,9 @@
             usersTable.style.display = 'none';
         }
     }
+</script>
+<script>
+    var socket = io.connect('http://' + document.domain + ':' + location.port);
 </script>
 <br><br><br>
 {% include 'footer.html' %}
