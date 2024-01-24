@@ -521,7 +521,7 @@ def start_filling_agreement(inn_leasee, path_application, path_graphic, signator
         doverka_ustav_leasee = 'Устава'
         for elem in full_name_leasee.split():
             if elem in ['Индивидуальный', 'предприниматель', 'хозяйства']:
-                doverka_ustav_leasee = f'Свидетельства о государственной регистрации физического лица в качестве индивидуального предпринимателя серия от {date_regist}, ОГРНИП {ogrn_leasee}'
+                doverka_ustav_leasee = f'Свидетельства о государственной регистрации физического лица в качестве индивидуального предпринимателя от {date_regist}, ОГРНИП {ogrn_leasee}'
 
         deystvuysh_list_leasee = 'действующей'
         try:
