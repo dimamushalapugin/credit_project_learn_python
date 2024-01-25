@@ -13,7 +13,6 @@ from webapp.managers.views import blueprint as manager_blueprint
 from webapp.db import db
 
 
-
 def create_app():
     app = Flask(__name__)
     app.config.from_pyfile('config.py')
@@ -51,15 +50,21 @@ def create_app():
 
     @socketio.on('connect')
     def handle_connect():
-        user_id = current_user.email
+        user_id = current_user.login
         online_users.add(user_id)
-        emit('update_online_users', {'online_users': list(online_users)}, broadcast=True)
+        emit_update_status(True)
 
     @socketio.on('disconnect')
     def handle_disconnect():
-        user_id = current_user.email
+        user_id = current_user.login
         online_users.discard(user_id)
-        emit('update_online_users', {'online_users': list(online_users)}, broadcast=True)
+        emit_update_status(False)
+
+    def emit_update_status(online):
+        user_login = current_user.login
+        online_users_list = list(online_users)
+        emit('update_online_status', {'user_login': user_login, 'online': online, 'online_users': online_users_list},
+             broadcast=True)
 
     @app.route('/admin')
     @admin_required
