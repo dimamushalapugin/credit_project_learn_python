@@ -703,7 +703,7 @@ def start_filling_agreement(inn_leasee, path_application, path_graphic, signator
                      "{{ number_dl }}", "{{ currency_test }}", "{{ suma_dann[0] }}", "{{ dt.today().day }}",
                      "{{ months[dt.today().month] }}", "{{ dt.today().year }}", "{{ punkt_4_6 }}",
                      "{{ summa_dog_leas }}", "{{ punkt_7_8 }}", "{{ inn_kpp1 }}", "{{ ogrnip }}",
-                     "{{ leader_leasee_pod }}", "{{ imenyemoe }}", "{{ F7 }}", "{{ B93 }}"]
+                     "{{ leader_leasee_pod }}", "{{ imenyemoe }}", "{{ F7copy }}", "{{ B93copy }}"]
         # ,
         new_words = [str(a_lkmb), str(lkmb_podpisant), str(preambula_dolj_lkmb), str(preambula_fio_lkmb),
                      str(deystvuysh_list),
