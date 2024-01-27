@@ -272,6 +272,22 @@ def identification_leasee(leader_leasee):
         leader_leasee_rod_padezh = 'Генерального директора'
     elif leader_leasee.upper() == 'исполняющий обязанности директора'.upper():
         leader_leasee_rod_padezh = 'ИО директора'
+    elif leader_leasee.upper() == 'управляющий'.upper():
+        leader_leasee_rod_padezh = 'Управляющего'
+    elif leader_leasee.upper() == 'председатель'.upper():
+        leader_leasee_rod_padezh = 'Председателя'
+    elif leader_leasee.upper() == 'президент'.upper():
+        leader_leasee_rod_padezh = 'Президента'
+    elif leader_leasee.upper() == 'вице-президент'.upper():
+        leader_leasee_rod_padezh = 'Вице-Президента'
+    elif leader_leasee.upper() == 'исполнительный директор'.upper():
+        leader_leasee_rod_padezh = 'Исполнительного Директора'
+    elif leader_leasee.upper() == 'финансовый директор'.upper():
+        leader_leasee_rod_padezh = 'Финансового Директора'
+    elif leader_leasee.upper() == 'коммерческий директор'.upper():
+        leader_leasee_rod_padezh = 'Коммерческого Директора'
+    elif leader_leasee.upper() == 'глава'.upper():
+        leader_leasee_rod_padezh = 'Главы'
     else:
         leader_leasee_rod_padezh = ''
     leader_leasee_pod = leader_leasee
@@ -365,7 +381,7 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
         else:
             pb_vizor = ''
 
-        if equipment_or_not is not None:
+        if equipment_or_not is None:
             identif_punkt_3_1_1 = ('Предмету лизинга присваивается идентификационный номер, '
                                    'который  вместе с другими данными выбивается на металлическом шильдике (табличке), '
                                    'расположенном на предмете лизинга на видном месте. '
@@ -620,6 +636,20 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
             leader_seller_rod_padezh = 'ИО директора'
         elif leader_seller.upper() == 'управляющий'.upper():
             leader_seller_rod_padezh = 'Управляющего'
+        elif leader_seller.upper() == 'председатель'.upper():
+            leader_seller_rod_padezh = 'Председателя'
+        elif leader_seller.upper() == 'президент'.upper():
+            leader_seller_rod_padezh = 'Президента'
+        elif leader_seller.upper() == 'вице-президент'.upper():
+            leader_seller_rod_padezh = 'Вице-Президента'
+        elif leader_seller.upper() == 'исполнительный директор'.upper():
+            leader_seller_rod_padezh = 'Исполнительного Директора'
+        elif leader_seller.upper() == 'финансовый директор'.upper():
+            leader_seller_rod_padezh = 'Финансового Директора'
+        elif leader_seller.upper() == 'коммерческий директор'.upper():
+            leader_seller_rod_padezh = 'Коммерческого Директора'
+        elif leader_seller.upper() == 'глава'.upper():
+            leader_seller_rod_padezh = 'Главы'
         else:
             leader_seller_rod_padezh = ''
         leader_seller_pod = leader_seller
