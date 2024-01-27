@@ -381,7 +381,7 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
         else:
             pb_vizor = ''
 
-        if equipment_or_not is None:
+        if equipment_or_not == None:
             identif_punkt_3_1_1 = ('Предмету лизинга присваивается идентификационный номер, '
                                    'который  вместе с другими данными выбивается на металлическом шильдике (табличке), '
                                    'расположенном на предмете лизинга на видном месте. '
@@ -653,6 +653,8 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
         else:
             leader_seller_rod_padezh = ''
         leader_seller_pod = leader_seller
+        print('Leaderseller')
+        print(leader_seller, leader_seller_rod_padezh)
         return leader_seller, leader_seller_rod_padezh, leader_seller_pod
 
     def full_rekviti_seller(result_dkp):
@@ -674,7 +676,7 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
             if result_dkp[0]['data']['opf']['short'] == 'ИП':
                 leader_seller = 'Индивидуальный предприниматель'
             else:
-                leader_seller = 'Глава'
+                leader_seller = 'Директор'
             fio_leader_seller = result_dkp[0]['data']['name']['full']
         last_name_dkp, first_name_dkp, patronymic_name_dkp = fio_leader_seller.split()
 
@@ -693,7 +695,7 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
 
     def seller_dkp_all():
         result_dkp = DADATA_BASE.find_by_id("party", inn_seller)
-        full_name_seller = result_dkp[0]['data']['name']['short_with_opf'].replace('"', '')
+        full_name_seller = result_dkp[0]['data']['name']['full_with_opf']
         # print(full_name_seller)
         doverka_ustav_seller = 'Устава'
         for elem in full_name_seller.split():
@@ -771,8 +773,6 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
             imenyemoe = 'именуемое'
         return put_padezh_podpisant_rg, deystvuysh_list_leasee, imenyemoe, doverka_ustav_leasee
 
-    '''выше надо закинуть в реплейс, 
-    это последние недостающие элементы'''
 
     def replace():
         eq_val = equipment_valute()
