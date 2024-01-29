@@ -288,6 +288,8 @@ def identification_leasee(leader_leasee):
         leader_leasee_rod_padezh = 'Коммерческого Директора'
     elif leader_leasee.upper() == 'глава'.upper():
         leader_leasee_rod_padezh = 'Главы'
+    elif leader_leasee.upper() == 'ректор'.upper():
+        leader_leasee_rod_padezh = 'Ректора'
     else:
         leader_leasee_rod_padezh = ''
     leader_leasee_pod = leader_leasee
@@ -618,16 +620,15 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
         return result_dkp
 
     def some_info_seller(result_dkp):
-        leader_seller = 'Индивидуальный предприниматель'
+        leader_seller = ''
         try:
             leader_seller = result_dkp[0]['data']['management']['post']
+            # print(leader_seller)
         except:
             leader_seller = result_dkp[0]['data']['opf']['short']
-        if result_dkp[0]['data']['opf']['short'] == 'ИП':
-            leader_seller = 'Индивидуальный предприниматель'
-        else:
-            leader_seller = 'Глава'
-
+            # print(leader_seller)
+        print('43535')
+        print(leader_seller)
         if leader_seller.upper() == 'директор'.upper():
             leader_seller_rod_padezh = 'Директора'
         elif leader_seller.upper() == 'генеральный директор'.upper():
@@ -650,10 +651,14 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
             leader_seller_rod_padezh = 'Коммерческого Директора'
         elif leader_seller.upper() == 'глава'.upper():
             leader_seller_rod_padezh = 'Главы'
+        elif leader_seller.upper() == 'глава кфх'.upper():
+            leader_seller_rod_padezh = 'Главы'
+        elif leader_seller.upper() == 'ректор'.upper():
+            leader_seller_rod_padezh = 'Ректора'
         else:
             leader_seller_rod_padezh = ''
         leader_seller_pod = leader_seller
-        print('Leaderseller')
+        print('Leaderseller123')
         print(leader_seller, leader_seller_rod_padezh)
         return leader_seller, leader_seller_rod_padezh, leader_seller_pod
 
@@ -851,6 +856,27 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
 
                          ]
 
+        try:
+            payment_dkp[15] = f'{float(payment_dkp[15]):,.2f}'.replace(',', ' ').replace('.', ',')
+        except:
+            pass
+        try:
+            payment_dkp[16] = f'{float(payment_dkp[16]):,.2f}'.replace(',', ' ').replace('.', ',')
+        except:
+            pass
+        try:
+            payment_dkp[17] = f'{float(payment_dkp[17]):,.2f}'.replace(',', ' ').replace('.', ',')
+        except:
+            pass
+        try:
+            payment_dkp[18] = f'{float(payment_dkp[18]):,.2f}'.replace(',', ' ').replace('.', ',')
+        except:
+            pass
+        try:
+            payment_dkp[19] = f'{float(payment_dkp[19]):,.2f}'.replace(',', ' ').replace('.', ',')
+        except:
+            pass
+
         new_words_dkp = [str(eq_val[0]), str(eq_val[1]), str(eq_val[2]), str(eq_val[3]), str(eq_val[4]),
                          str(eq_val[5]), str(eq_val[6]), str(eq_val[7]), str(eq_val[8]), str(eq_val[9]),
                          str(eq_val[10]), str(eq_val[11]), str(eq_val[12]), str(eq_val[13]), str(eq_val[14]),
@@ -859,11 +885,14 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
                          str(payment_dkp[4]), str(payment_dkp[5]), str(payment_dkp[6]), str(payment_dkp[7]),
                          str(payment_dkp[8]), str(payment_dkp[9]), str(payment_dkp[10]), str(payment_dkp[11]),
                          str(payment_dkp[12]), str(payment_dkp[13]), str(payment_dkp[14]),
-                         f'{float(payment_dkp[15]):,.2f}'.replace(',', ' ').replace('.', ','),
-                         f'{float(payment_dkp[16]):,.2f}'.replace(',', ' ').replace('.', ','),
-                         f'{float(payment_dkp[17]):,.2f}'.replace(',', ' ').replace('.', ','),
-                         f'{float(payment_dkp[18]):,.2f}'.replace(',', ' ').replace('.', ','),
-                         f'{float(payment_dkp[19]):,.2f}'.replace(',', ' ').replace('.', ','),
+                         [f'{float(payment_dkp[15]):,.2f}'.replace(',', ' ').replace('.', ',') if payment_dkp[15] != '' else '' for item in payment_dkp],
+                         [f'{float(payment_dkp[16]):,.2f}'.replace(',', ' ').replace('.', ',') if payment_dkp[16] != '' else '' for item in payment_dkp],
+                         [f'{float(payment_dkp[17]):,.2f}'.replace(',', ' ').replace('.', ',') if payment_dkp[17] != '' else '' for item in payment_dkp],
+                         [f'{float(payment_dkp[18]):,.2f}'.replace(',', ' ').replace('.', ',') if payment_dkp[18] != '' else '' for item in payment_dkp],
+                         [f'{float(payment_dkp[19]):,.2f}'.replace(',', ' ').replace('.', ',') if payment_dkp[19] != '' else '' for item in payment_dkp],
+                         # str(payment_dkp[15]), str(payment_dkp[16]), str(payment_dkp[17]), str(payment_dkp[18]),
+                         # str(payment_dkp[19]),
+
                          str(payment_dkp[20]), str(payment_dkp[21]), str(payment_dkp[22]), str(payment_dkp[23]),
                          str(payment_dkp[24]), str(name_and_dover_seller[0]), str(deistv_sell[1]),
                          str(info_about_seller_director[1]),
