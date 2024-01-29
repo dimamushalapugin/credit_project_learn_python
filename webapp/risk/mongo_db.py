@@ -253,8 +253,39 @@ class MongoDB:
             except Exception as e:
                 logging.info(e, exc_info=True)
 
-    def __update_mongodb_bki(self, db, inn):
-        pass
+    @staticmethod
+    def __set_details_bki(db, mongo_data, mongo_key, bki_data):
+        if bki_data.get(mongo_key) != mongo_data.get(mongo_key):
+            logging.info(f'{mongo_data.get(mongo_key)} -> {bki_data.get(mongo_key)}')
+            mongo_data[mongo_key] = bki_data.get(mongo_key)
+            db.update_one({'director_inn': bki_data['director_inn']}, {'$set': {
+                mongo_key: bki_data.get(mongo_key)
+            }})
+
+    def __update_mongodb_bki(self, db, bki_data):
+        try:
+            data = db.find_one({'director_inn': bki_data['director_inn']})
+        except Exception as e:
+            logging.info(e, exc_info=True)
+            data = {}
+
+        logging.info('UPDATE MONGODB BKI')
+        logging.info('=' * 40)
+        try:
+            self.__set_details_bki(db, data, 'director_name', bki_data)
+            self.__set_details_bki(db, data, 'date_of_birth', bki_data)
+            self.__set_details_bki(db, data, 'place_of_birth', bki_data)
+            self.__set_details_bki(db, data, 'passport_series', bki_data)
+            self.__set_details_bki(db, data, 'passport_id', bki_data)
+            self.__set_details_bki(db, data, 'issued_by', bki_data)
+            self.__set_details_bki(db, data, 'issued_when', bki_data)
+            self.__set_details_bki(db, data, 'department_code', bki_data)
+            self.__set_details_bki(db, data, 'address_reg', bki_data)
+            self.__set_details_bki(db, data, 'address_fact', bki_data)
+        except Exception as e:
+            logging.info(e, exc_info=True)
+            logging.info('Не удалось обновить реквизиты директора')
+        logging.info('=' * 40)
 
     def write_to_mongodb_individual_bki(self, bki_data: dict):
         """
@@ -285,8 +316,6 @@ class MongoDB:
             logging.info(f"Директор ({bki_data['director_inn']}) уже есть в MongoDB")
             try:
                 db = self.client.managerBase.directorDetails
-                self.__update_mongodb_bki(db, bki_data['director_inn'])
+                self.__update_mongodb_bki(db, bki_data)
             except Exception as e:
                 logging.info(e, exc_info=True)
-
-
