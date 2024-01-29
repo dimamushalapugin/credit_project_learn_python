@@ -48,7 +48,6 @@ def read_xlsx(path_application, pl):
     inn_kpp_leasee = sheet_zayavlenie['D6'].value
     client_inn = inn_kpp_leasee.split('/')[0] if '/' in inn_kpp_leasee else inn_kpp_leasee
 
-
     formatted_name_leader_leasee = '-'
     leader_leasee = '-'
     address_leasee_expluatazia = '-'
@@ -609,11 +608,11 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
             payment_3 = payment_3 if str(payment_3)[-3] == '.' else str(payment_3) + '0'
             payment_4 = payment_4 if str(payment_4)[-3] == '.' else str(payment_4) + '0'
             payment_5 = payment_5 if str(payment_5)[-3] == '.' else str(payment_5) + '0'
-        return (punkt_2_3_1_pay, punkt_2_3_2_pay, punkt_2_3_3_pay, punkt_2_3_4_pay, punkt_2_3_5_pay, punkt_2_3_1_num,
+        return [punkt_2_3_1_pay, punkt_2_3_2_pay, punkt_2_3_3_pay, punkt_2_3_4_pay, punkt_2_3_5_pay, punkt_2_3_1_num,
                 punkt_2_3_2_num, punkt_2_3_3_num, punkt_2_3_4_num, punkt_2_3_5_num, punkt_2_3_1_numb_pr,
                 punkt_2_3_2_numb_pr, punkt_2_3_3_numb_pr, punkt_2_3_4_numb_pr, punkt_2_3_5_numb_pr, payment_1,
                 payment_2, payment_3, payment_4, payment_5, payment_1_propis, payment_2_propis, payment_3_propis,
-                payment_4_propis, payment_5_propis)
+                payment_4_propis, payment_5_propis]
 
     def result_dadata():
         result_dkp = DADATA_BASE.find_by_id("party", inn_seller)
@@ -778,7 +777,6 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
             imenyemoe = 'именуемое'
         return put_padezh_podpisant_rg, deystvuysh_list_leasee, imenyemoe, doverka_ustav_leasee
 
-
     def replace():
         eq_val = equipment_valute()
         # logging.info(f'{eq_val=}')
@@ -852,30 +850,29 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
                          # данные по лизингополучателю
                          "{{ leader_leasee_pod }}", "{{ leader_leasee_rod_padezh }}", "{{ imenyemoe }}",
                          "{{ put_padezh_podpisant_rg }}", "{{ deystvuysh_list_leasee }}",
-                         "{{ doverka_ustav_leasee }}"
-
+                         "{{ doverka_ustav_leasee }}",
                          ]
 
         try:
             payment_dkp[15] = f'{float(payment_dkp[15]):,.2f}'.replace(',', ' ').replace('.', ',')
-        except:
-            pass
+        except ValueError:
+            payment_dkp[15] = ''
         try:
             payment_dkp[16] = f'{float(payment_dkp[16]):,.2f}'.replace(',', ' ').replace('.', ',')
-        except:
-            pass
+        except ValueError:
+            payment_dkp[16] = ''
         try:
             payment_dkp[17] = f'{float(payment_dkp[17]):,.2f}'.replace(',', ' ').replace('.', ',')
-        except:
-            pass
+        except ValueError:
+            payment_dkp[17] = ''
         try:
             payment_dkp[18] = f'{float(payment_dkp[18]):,.2f}'.replace(',', ' ').replace('.', ',')
-        except:
-            pass
+        except ValueError:
+            payment_dkp[18] = ''
         try:
             payment_dkp[19] = f'{float(payment_dkp[19]):,.2f}'.replace(',', ' ').replace('.', ',')
-        except:
-            pass
+        except ValueError:
+            payment_dkp[19] = ''
 
         new_words_dkp = [str(eq_val[0]), str(eq_val[1]), str(eq_val[2]), str(eq_val[3]), str(eq_val[4]),
                          str(eq_val[5]), str(eq_val[6]), str(eq_val[7]), str(eq_val[8]), str(eq_val[9]),
@@ -884,15 +881,8 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
                          str(payment_dkp[0]), str(payment_dkp[1]), str(payment_dkp[2]), str(payment_dkp[3]),
                          str(payment_dkp[4]), str(payment_dkp[5]), str(payment_dkp[6]), str(payment_dkp[7]),
                          str(payment_dkp[8]), str(payment_dkp[9]), str(payment_dkp[10]), str(payment_dkp[11]),
-                         str(payment_dkp[12]), str(payment_dkp[13]), str(payment_dkp[14]),
-                         [f'{float(payment_dkp[15]):,.2f}'.replace(',', ' ').replace('.', ',') if payment_dkp[15] != '' else '' for item in payment_dkp],
-                         [f'{float(payment_dkp[16]):,.2f}'.replace(',', ' ').replace('.', ',') if payment_dkp[16] != '' else '' for item in payment_dkp],
-                         [f'{float(payment_dkp[17]):,.2f}'.replace(',', ' ').replace('.', ',') if payment_dkp[17] != '' else '' for item in payment_dkp],
-                         [f'{float(payment_dkp[18]):,.2f}'.replace(',', ' ').replace('.', ',') if payment_dkp[18] != '' else '' for item in payment_dkp],
-                         [f'{float(payment_dkp[19]):,.2f}'.replace(',', ' ').replace('.', ',') if payment_dkp[19] != '' else '' for item in payment_dkp],
-                         # str(payment_dkp[15]), str(payment_dkp[16]), str(payment_dkp[17]), str(payment_dkp[18]),
-                         # str(payment_dkp[19]),
-
+                         str(payment_dkp[12]), str(payment_dkp[13]), str(payment_dkp[14]), payment_dkp[15],
+                         payment_dkp[16], payment_dkp[17], payment_dkp[18], payment_dkp[19],
                          str(payment_dkp[20]), str(payment_dkp[21]), str(payment_dkp[22]), str(payment_dkp[23]),
                          str(payment_dkp[24]), str(name_and_dover_seller[0]), str(deistv_sell[1]),
                          str(info_about_seller_director[1]),
@@ -921,8 +911,6 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
                          str(add_inf[2]), str(add_inf[0]), str(add_inf[1]), str(add_inf[3])
                          ]
 
-        # for old, new in zip(old_words_dkp, new_words_dkp):
-        #     print(f'{old}: {new}')
         return old_words_dkp, new_words_dkp
 
     def replace_words_in_dkp(docx_file, old_words_dkp, new_words_dkp):
@@ -935,13 +923,12 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
         kratk_name_seller = result_dadata()[0]['data']['name']['short_with_opf']
         full_seller = full_rekviti_seller(info_about_seller)
         doc = Document(docx_file)
-
+        print(f'Длина списка со старыми словами: {len(old_words_dkp)}')
+        print(f'Длина списка с новыми словами: {len(new_words_dkp)}')
         for paragraph in doc.paragraphs:
             for i in range(len(old_words_dkp)):
                 if old_words_dkp[i] in paragraph.text:
                     paragraph.text = paragraph.text.replace(old_words_dkp[i], str(new_words_dkp[i]))
-
-                    # print(f'_____ {i=}')
 
         for table in doc.tables:
             for row in table.rows:
@@ -1199,12 +1186,15 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
                     doc.element.body.remove(run._element)
         elif len(payment_order.split(' ')) == 3:
             for run in doc.paragraphs:
+                print(f'{run.text.strip()} сравниваем с: {f'2.3.1. Оплата в размере {payment_dkp[5]}% ({payment_dkp[10]}) от стоимости предмета лизинга, что составляет сумму {eq_val[-2]} {payment_dkp[15]} {payment_dkp[20]}, в т.ч. НДС, в течение 15 (пятнадцати) рабочих дней с момента перечисления Лизингополучателем первоначального платежа Покупателю по договору лизинга,'}')
                 if run.text.strip() in [
                     f'2.3.1. Оплата в размере {payment_dkp[5]}% ({payment_dkp[10]}) от стоимости предмета лизинга, что составляет сумму {eq_val[-2]} {payment_dkp[15]} {payment_dkp[20]}, в т.ч. НДС, в течение 15 (пятнадцати) рабочих дней с момента перечисления Лизингополучателем первоначального платежа Покупателю по договору лизинга,',
                     'и в течение 7 (семи) рабочих дней с момента получения Покупателем уведомления Продавца о готовности предмета лизинга к отгрузке согласно п.3.1.1 и после выставления Продавцом счета на оплату.',
                     f'2.3.4. {payment_dkp[3]} платеж в размере {payment_dkp[8]}% ({payment_dkp[13]}) от стоимости предмета лизинга, что составляет сумму {eq_val[-2]} {payment_dkp[18]} {payment_dkp[23]}, в т.ч. НДС 20%, в течение 7 (семи) рабочих дней после выставления Продавцом счета на оплату.',
                     f'2.3.5. {payment_dkp[4]} платеж в размере {payment_dkp[9]}% ({payment_dkp[14]}) от стоимости предмета лизинга, что составляет сумму {eq_val[-2]} {payment_dkp[19]} {payment_dkp[24]}, в т.ч. НДС 20%, в течение 7 (семи) рабочих дней после выставления Продавцом счета на оплату.'
                 ]:
+                    print(run.text.strip())
+                    print(f'Элемент: {run._element}')
                     doc.element.body.remove(run._element)
         elif len(payment_order.split(' ')) == 4:
             for run in doc.paragraphs:
@@ -1226,8 +1216,11 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
         if not os.path.exists(dir_path):
             os.makedirs(dir_path)
         doc.save(fr"{dir_path}\ДКП {inn_client}.docx")
+
     print(equipment_or_not)
     if equipment_or_not is None:
-        replace_words_in_dkp(r"webapp\static\agreement_templates\ШАБЛОН ДКП АВТО ООО_АО.docx", replace()[0], replace()[1])
+        replace_words_in_dkp(r"webapp\static\agreement_templates\ШАБЛОН ДКП АВТО ООО_АО.docx", replace()[0],
+                             replace()[1])
     else:
-        replace_words_in_dkp(r"webapp\static\agreement_templates\ШАБЛОН ДКП ООО_АО (обор).docx", replace()[0], replace()[1])
+        replace_words_in_dkp(r"webapp\static\agreement_templates\ШАБЛОН ДКП ООО_АО (обор).docx", replace()[0],
+                             replace()[1])

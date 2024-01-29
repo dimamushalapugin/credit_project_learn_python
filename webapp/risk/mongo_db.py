@@ -252,3 +252,41 @@ class MongoDB:
                 self.__update_mongodb_director_details(db, director_inn, xlsx, 'director_inn')
             except Exception as e:
                 logging.info(e, exc_info=True)
+
+    def __update_mongodb_bki(self, db, inn):
+        pass
+
+    def write_to_mongodb_individual_bki(self, bki_data: dict):
+        """
+        bki_data = {
+            'director_name': data_naming_fiz,
+            'director_inn': data_inn_fiz,
+            'date_of_birth': data_birthdate_fiz,
+            'place_of_birth': data_birthplace_fiz,
+            'passport_id': data_numb_fiz,
+            'passport_series': data_ser_fiz,
+            'issued_by': data_whoismvd_fiz,
+            'issued_when': data_output_fiz,
+            'department_code': data_code_fiz,
+            'address_reg': data_address_fiz,
+            'address_fact': data_address_fiz,
+            'date': datetime.now().strftime("%d.%m.%Y | %H:%M:%S")
+        }
+        """
+        if not self.check_in_director_base(bki_data['director_inn']):
+            try:
+                db = self.client.managerBase.directorDetails
+                db.insert_one(bki_data)
+                logging.info(f"Реквизиты физ. лица ({bki_data['director_inn']}) успешно записаны в MongoDB")
+            except Exception as e:
+                logging.info("Не записались реквизиты физ. лица в MongoDB")
+                logging.info(e, exc_info=True)
+        else:
+            logging.info(f"Директор ({bki_data['director_inn']}) уже есть в MongoDB")
+            try:
+                db = self.client.managerBase.directorDetails
+                self.__update_mongodb_bki(db, bki_data['director_inn'])
+            except Exception as e:
+                logging.info(e, exc_info=True)
+
+

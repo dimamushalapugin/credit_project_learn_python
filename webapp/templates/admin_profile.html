@@ -145,27 +145,27 @@
         }
     </style>
     <style>
-    .status-circle {
-        width: 10px;
-        height: 10px;
-        border-radius: 50%;
-        display: inline-block;
-        background-color: #00ff00; /* Яркий зеленый */
-        box-shadow: 0 0 5px rgba(0, 255, 0, 0.8); /* Тень */
-        border: 2px solid #fff; /* Белая обводка */
-    }
+        .status-circle {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            display: inline-block;
+            background-color: #00ff00; /* Яркий зеленый */
+            box-shadow: 0 0 5px rgba(0, 255, 0, 0.8); /* Тень */
+            border: 2px solid #fff; /* Белая обводка */
+        }
     </style>
     <style>
-    .status-circle-grey {
-        width: 10px;
-        height: 10px;
-        border-radius: 50%;
-        display: inline-block;
-        background-color: #808080; /* Серый цвет */
-        box-shadow: 0 0 5px rgba(128, 128, 128, 0.8); /* Тень */
-        border: 2px solid #fff; /* Белая обводка */
-    }
-</style>
+        .status-circle-grey {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            display: inline-block;
+            background-color: #808080; /* Серый цвет */
+            box-shadow: 0 0 5px rgba(128, 128, 128, 0.8); /* Тень */
+            border: 2px solid #fff; /* Белая обводка */
+        }
+    </style>
 </head>
 <body>
 {% include 'menu.html' %}
@@ -198,8 +198,9 @@
         <a class="btn btn-outline-dark" href="{{ url_for('user.create_user') }}">Добавить нового пользователя</a>
         <br><br>
         <div class="form-check form-switch">
-          <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault" onchange="toggleTableVisibility()">
-          <label class="form-check-label" for="flexSwitchCheckDefault">Показать всех пользователей</label>
+            <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault"
+                   onchange="toggleTableVisibility()">
+            <label class="form-check-label" for="flexSwitchCheckDefault">Показать всех пользователей</label>
         </div>
     </div>
 </div>
@@ -222,9 +223,9 @@
                     <td>{{ user.email }}</td>
                     <td>
                         {% if user.login in online_users %}
-                            <div class="status-circle" style="background-color: #00ff00;"></div>
+                        <div class="status-circle" style="background-color: #00ff00;" id="{{ user.login }}"></div>
                         {% else %}
-                            <div class="status-circle-grey" style="background-color: #808080;"></div>
+                        <div class="status-circle-grey" style="background-color: #808080;"></div>
                         {% endif %}
                     </td>
                 </tr>
@@ -253,23 +254,6 @@
 </script>
 <script>
     var socket = io.connect('http://' + document.domain + ':' + location.port);
-
-<!--    socket.on('update_online_status', function(data) {-->
-<!--        console.log('Received update_online_status:', data);-->
-
-<!--        // Обновите состояние круга статуса в зависимости от данных с сервера-->
-<!--        var userElement = document.getElementById(data.user_login);-->
-<!--        console.log(data.user_login);-->
-<!--        console.log(userElement);-->
-<!--        if (userElement) {-->
-<!--            console.log('я тут!');-->
-<!--            var statusCircle = userElement.querySelector('.status-circle');-->
-<!--            if (statusCircle) {-->
-<!--                console.log('я теперь тут!');-->
-<!--                statusCircle.style.backgroundColor = data.online ? '#00ff00' : '#808080';-->
-<!--            }-->
-<!--        }-->
-<!--    });-->
 </script>
 <br><br><br>
 {% include 'footer.html' %}

@@ -1,8 +1,8 @@
 import os
-from datetime import date
+from datetime import date, datetime
 
 from flask import Blueprint, flash, render_template, redirect, request, url_for, send_from_directory, jsonify, send_file
-from flask_login import login_required, current_user
+from flask_login import current_user
 
 from webapp.managers.parser_for_application import start_filling_application, start_filling_agreement
 from webapp.managers.parser_for_dkp import start_filling_agreement_dkp
@@ -13,7 +13,6 @@ from webapp.managers.main_parser import (naming_dadata_bk_ur, ogrn_dadata_bk_ur,
                                          fio_dadata_bk_ur, leader_dadata_bk_ur, doverka_ustav_dadata_bk_ur)
 from webapp.managers.parser_for_bki import replace_bki, replace_bki_fiz
 from webapp.user.auth_utils import manager_required
-
 
 blueprint = Blueprint('manager', __name__, url_prefix='/managers')
 
@@ -255,13 +254,13 @@ def autofill():
     data = request.form['data']
     company_details = mongo.read_mongodb_bank_details(data)
     if company_details:
-        autofilled_data = company_details.get('full_name')
-        autofilled_data1 = company_details.get('ogrn')
-        autofilled_data2 = company_details.get('address')
-        autofilled_data3 = company_details.get('director')
+        autofilled_data = company_details.get('full_name', '')
+        autofilled_data1 = company_details.get('ogrn', '')
+        autofilled_data2 = company_details.get('address', '')
+        autofilled_data3 = company_details.get('director', '')
         autofilled_data4 = leader_dadata_bk_ur(data).capitalize()
         autofilled_data5 = doverka_ustav_dadata_bk_ur(data)
-        autofilled_data7 = company_details.get('phone')
+        autofilled_data7 = company_details.get('phone', '')
     else:
         autofilled_data = naming_dadata_bk_ur(data)
         autofilled_data1 = ogrn_dadata_bk_ur(data)
@@ -283,15 +282,21 @@ def autofillfiz():
     data = request.form['data'].strip()
     director_details = mongo.read_mongodb_director_details(data)
     if director_details:
-        autofilled_data = director_details.get('director_name')
-        autofilled_data7 = director_details.get('date_of_birth').split()[0]
-        autofilled_data6 = director_details.get('place_of_birth')
-        autofilled_data1 = director_details.get('passport_series')
-        autofilled_data2 = director_details.get('passport_id')
-        autofilled_data3 = director_details.get('issued_by')
-        autofilled_data4 = director_details.get('issued_when').split()[0]
-        autofilled_data5 = director_details.get('department_code')
-        autofilled_data8 = director_details.get('address_reg')
+        autofilled_data = director_details.get('director_name', '')
+        try:
+            autofilled_data7 = director_details.get('date_of_birth').split()[0]
+        except IndexError:
+            autofilled_data7 = director_details.get('date_of_birth', '')
+        autofilled_data6 = director_details.get('place_of_birth', '')
+        autofilled_data1 = director_details.get('passport_series', '')
+        autofilled_data2 = director_details.get('passport_id', '')
+        autofilled_data3 = director_details.get('issued_by', '')
+        try:
+            autofilled_data4 = director_details.get('issued_when').split()[0]
+        except IndexError:
+            autofilled_data4 = director_details.get('issued_when', '')
+        autofilled_data5 = director_details.get('department_code', '')
+        autofilled_data8 = director_details.get('address_reg', '')
     else:
         autofilled_data = 'Ибнеев Рустем Шамилевич'
         autofilled_data1 = '9223'
@@ -341,6 +346,22 @@ def submit_form_fiz():
     data_birthdate_fiz = request.form['data8']
     data_address_fiz = request.form['data9']
     data_year_fiz = request.form['data10']
+    mongo = MongoDB(current_user)
+    data = {
+        'director_name': data_naming_fiz,
+        'director_inn': data_inn_fiz,
+        'date_of_birth': data_birthdate_fiz,
+        'place_of_birth': data_birthplace_fiz,
+        'passport_id': data_numb_fiz,
+        'passport_series': data_ser_fiz,
+        'issued_by': data_whoismvd_fiz,
+        'issued_when': data_output_fiz,
+        'department_code': data_code_fiz,
+        'address_reg': data_address_fiz,
+        'address_fact': data_address_fiz,
+        'date': datetime.now().strftime("%d.%m.%Y | %H:%M:%S")
+    }
+    mongo.write_to_mongodb_individual_bki(data)
     replace_bki_fiz(data_inn_fiz, data_naming_fiz, data_ser_fiz, data_numb_fiz, data_whoismvd_fiz, data_output_fiz,
                     data_code_fiz,
                     data_birthplace_fiz, data_birthdate_fiz, data_address_fiz, data_year_fiz)
