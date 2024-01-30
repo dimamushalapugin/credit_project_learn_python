@@ -13,7 +13,7 @@ from webapp.managers.main_parser import (naming_dadata_bk_ur, ogrn_dadata_bk_ur,
                                          fio_dadata_bk_ur, leader_dadata_bk_ur, doverka_ustav_dadata_bk_ur)
 from webapp.managers.parser_for_bki import replace_bki, replace_bki_fiz
 from webapp.user.auth_utils import manager_required
-
+from webapp.managers.indiv_bki import FindInd
 blueprint = Blueprint('manager', __name__, url_prefix='/managers')
 
 
@@ -298,15 +298,16 @@ def autofillfiz():
         autofilled_data5 = director_details.get('department_code', '')
         autofilled_data8 = director_details.get('address_reg', '')
     else:
-        autofilled_data = 'Ибнеев Рустем Шамилевич'
-        autofilled_data1 = '9223'
-        autofilled_data2 = '338637'
-        autofilled_data3 = 'МВД по Республике Татарстан'
-        autofilled_data4 = '2023-09-01'
-        autofilled_data5 = '160-002'
-        autofilled_data6 = 'г. Казань'
-        autofilled_data7 = '1978-07-05'
-        autofilled_data8 = 'г. Казань, ул. Ленинградская, д. 60Б, кв. 148'
+        person = FindInd(data)
+        autofilled_data = person.get_fio
+        autofilled_data1 = ''
+        autofilled_data2 = ''
+        autofilled_data3 = ''
+        autofilled_data4 = ''
+        autofilled_data5 = ''
+        autofilled_data6 = ''
+        autofilled_data7 = ''
+        autofilled_data8 = ''
     current_date = date.today()
     autofilled_data9 = current_date.strftime("%Y-%m-%d")
     return jsonify({'data1': autofilled_data, 'data2': autofilled_data1, 'data3': autofilled_data2,
