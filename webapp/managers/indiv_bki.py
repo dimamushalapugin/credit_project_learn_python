@@ -11,6 +11,7 @@ class FindInd:
     """
 
     __url = CHECKO_URL
+    __cache = TTLCache(maxsize=128, ttl=172800)  # TTL в секундах (2 дня)
 
     def __init__(self, inn):
         """
@@ -19,7 +20,6 @@ class FindInd:
         :param inn: ИНН (Идентификационный номер налогоплательщика).
         """
         self.__inn = inn
-        self.cache = TTLCache(maxsize=128, ttl=172800)  # TTL в секундах (2 дня)
 
     @property
     def info(self):
@@ -28,10 +28,10 @@ class FindInd:
 
         :return: Информация в формате JSON или None, если запрос неудачен.
         """
-        if self.__inn in self.cache:
-            return self.cache[self.__inn]
+        if self.__inn in self.__cache:
+            return self.__cache[self.__inn]
         result = self._get_info()
-        self.cache[self.__inn] = result
+        self.__cache[self.__inn] = result
         return result
 
     def _get_info(self):
@@ -60,3 +60,6 @@ class FindInd:
             return self.info.get('data', {}).get('ФИО', '')
         logging.info("Не нашел ФИО физ. лица")
         return ''
+
+    def __repr__(self):
+        return f'{self.__inn}: {self.get_fio}'
