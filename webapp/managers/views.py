@@ -252,15 +252,15 @@ def bki_page():
 def autofill():
     mongo = MongoDB(current_user)
     data = request.form['data']
-    company_details = mongo.read_mongodb_bank_details(data)
+    company_details = mongo.read_mongodb_company_bki(data)
     if company_details:
-        autofilled_data = company_details.get('full_name', '')
-        autofilled_data1 = company_details.get('ogrn', '')
-        autofilled_data2 = company_details.get('address', '')
-        autofilled_data3 = company_details.get('director', '')
-        autofilled_data4 = leader_dadata_bk_ur(data).capitalize()
-        autofilled_data5 = doverka_ustav_dadata_bk_ur(data)
-        autofilled_data7 = company_details.get('phone', '')
+        autofilled_data = company_details.get('company_name', '')
+        autofilled_data1 = company_details.get('company_ogrn', '')
+        autofilled_data2 = company_details.get('company_address', '')
+        autofilled_data3 = company_details.get('signatory_name', '')
+        autofilled_data4 = company_details.get('signatory_position', '')
+        autofilled_data5 = company_details.get('signatory_basis', '')
+        autofilled_data7 = company_details.get('company_phone', '')
     else:
         autofilled_data = naming_dadata_bk_ur(data)
         autofilled_data1 = ogrn_dadata_bk_ur(data)
@@ -328,6 +328,19 @@ def submit_form_ur():
     data_leader_ur = request.form['data6']
     data_doverka_ur = request.form['data7']
     data_year_ur = request.form['data8']
+    mongo = MongoDB(current_user)
+    data = {
+        'company_name': request.form['data1'],
+        'company_inn': request.form['data'],
+        'company_ogrn': request.form['data2'],
+        'company_address': request.form['data3'],
+        'company_phone': request.form['data4'],
+        'signatory_name': request.form['data5'],
+        'signatory_position': request.form['data6'],
+        'signatory_basis': request.form['data7'],
+        'date': datetime.now().strftime("%d.%m.%Y | %H:%M:%S")
+    }
+    mongo.write_to_mongodb_company_bki(data)
     replace_bki(data_inn_ur, data_naming_ur, data_ogrn_ur, data_address_ur, data_phone_ur, data_fio_ur, data_leader_ur,
                 data_doverka_ur, data_year_ur)
 

@@ -75,6 +75,15 @@ class MongoDB:
             logging.info(e, exc_info=True)
             return False
 
+    def check_in_bki_base(self, company_inn):
+        try:
+            db = self.client.managerBase
+            return db.companyBki.find_one({'company_inn': company_inn})
+        except Exception as e:
+            logging.info("Не прочиталась информация в MongoDB")
+            logging.info(e, exc_info=True)
+            return False
+
     def read_mongodb_bank_details(self, client_inn):
         try:
             db = self.client.managerBase
@@ -97,6 +106,28 @@ class MongoDB:
                 logging.info(f"Лизингополучатель (ИНН: {client_inn}) отсутствует в MongoDB")
         except Exception as e:
             logging.info("Не прочиталась информация про банковские реквизиты в MongoDB")
+            logging.info(e, exc_info=True)
+            info = {}
+            return info
+
+    def read_mongodb_company_bki(self, client_inn):
+        try:
+            db = self.client.managerBase
+            if self.check_in_bki_base(client_inn):
+                info = {
+                    'company_name': db.companyBki.find_one({'company_inn': client_inn})['company_name'],
+                    'company_ogrn': db.companyBki.find_one({'company_inn': client_inn})['company_ogrn'],
+                    'company_address': db.companyBki.find_one({'company_inn': client_inn})['company_address'],
+                    'company_phone': db.companyBki.find_one({'company_inn': client_inn})['company_phone'],
+                    'signatory_name': db.companyBki.find_one({'company_inn': client_inn})['signatory_name'],
+                    'signatory_position': db.companyBki.find_one({'company_inn': client_inn})['signatory_position'],
+                    'signatory_basis': db.companyBki.find_one({'company_inn': client_inn})['signatory_basis']
+                }
+                return info
+            else:
+                logging.info(f"Лизингополучатель (ИНН: {client_inn}) отсутствует в MongoDB")
+        except Exception as e:
+            logging.info("Не прочиталась информация по БКИ юр.лица в MongoDB")
             logging.info(e, exc_info=True)
             info = {}
             return info
@@ -254,37 +285,49 @@ class MongoDB:
                 logging.info(e, exc_info=True)
 
     @staticmethod
-    def __set_details_bki(db, mongo_data, mongo_key, bki_data):
+    def __set_details_bki(db, mongo_data, mongo_key, bki_data, key_inn):
         if bki_data.get(mongo_key) != mongo_data.get(mongo_key):
             logging.info(f'{mongo_data.get(mongo_key)} -> {bki_data.get(mongo_key)}')
             mongo_data[mongo_key] = bki_data.get(mongo_key)
-            db.update_one({'director_inn': bki_data['director_inn']}, {'$set': {
+            db.update_one({key_inn: bki_data[key_inn]}, {'$set': {
                 mongo_key: bki_data.get(mongo_key)
             }})
 
     def __update_mongodb_bki(self, db, bki_data):
         try:
-            data = db.find_one({'director_inn': bki_data['director_inn']})
+            if 'director_inn' in bki_data:
+                data = db.find_one({'director_inn': bki_data['director_inn']})
+            else:
+                data = db.find_one({'company_inn': bki_data['company_inn']})
         except Exception as e:
             logging.info(e, exc_info=True)
             data = {}
 
         logging.info('UPDATE MONGODB BKI')
         logging.info('=' * 40)
+
         try:
-            self.__set_details_bki(db, data, 'director_name', bki_data)
-            self.__set_details_bki(db, data, 'date_of_birth', bki_data)
-            self.__set_details_bki(db, data, 'place_of_birth', bki_data)
-            self.__set_details_bki(db, data, 'passport_series', bki_data)
-            self.__set_details_bki(db, data, 'passport_id', bki_data)
-            self.__set_details_bki(db, data, 'issued_by', bki_data)
-            self.__set_details_bki(db, data, 'issued_when', bki_data)
-            self.__set_details_bki(db, data, 'department_code', bki_data)
-            self.__set_details_bki(db, data, 'address_reg', bki_data)
-            self.__set_details_bki(db, data, 'address_fact', bki_data)
+            if 'director_inn' in bki_data:
+                self.__set_details_bki(db, data, 'director_name', bki_data, 'director_inn')
+                self.__set_details_bki(db, data, 'date_of_birth', bki_data, 'director_inn')
+                self.__set_details_bki(db, data, 'place_of_birth', bki_data, 'director_inn')
+                self.__set_details_bki(db, data, 'passport_series', bki_data, 'director_inn')
+                self.__set_details_bki(db, data, 'passport_id', bki_data, 'director_inn')
+                self.__set_details_bki(db, data, 'issued_by', bki_data, 'director_inn')
+                self.__set_details_bki(db, data, 'issued_when', bki_data, 'director_inn')
+                self.__set_details_bki(db, data, 'department_code', bki_data, 'director_inn')
+                self.__set_details_bki(db, data, 'address_reg', bki_data, 'director_inn')
+                self.__set_details_bki(db, data, 'address_fact', bki_data, 'director_inn')
+            else:
+                self.__set_details_bki(db, data, 'company_name', bki_data, 'company_inn')
+                self.__set_details_bki(db, data, 'company_address', bki_data, 'company_inn')
+                self.__set_details_bki(db, data, 'company_phone', bki_data, 'company_inn')
+                self.__set_details_bki(db, data, 'signatory_name', bki_data, 'company_inn')
+                self.__set_details_bki(db, data, 'signatory_position', bki_data, 'company_inn')
+                self.__set_details_bki(db, data, 'signatory_basis', bki_data, 'company_inn')
         except Exception as e:
             logging.info(e, exc_info=True)
-            logging.info('Не удалось обновить реквизиты директора')
+            logging.info('Не удалось обновить реквизиты по БКИ (физ. лицо/юр. лицо)')
         logging.info('=' * 40)
 
     def write_to_mongodb_individual_bki(self, bki_data: dict):
@@ -316,6 +359,38 @@ class MongoDB:
             logging.info(f"Директор ({bki_data['director_inn']}) уже есть в MongoDB")
             try:
                 db = self.client.managerBase.directorDetails
+                self.__update_mongodb_bki(db, bki_data)
+            except Exception as e:
+                logging.info(e, exc_info=True)
+
+    def write_to_mongodb_company_bki(self, bki_data: dict):
+        """
+        bki_data = {
+            'company_name': request.form['data1'],
+            'company_inn': request.form['data'],
+            'company_ogrn': request.form['data2'],
+            'company_address': request.form['data3'],
+            'company_phone': request.form['data4'],
+            'signatory_name': request.form['data5'],
+            'signatory_position': request.form['data6'],
+            'signatory_basis': request.form['data7'],
+            'date': datetime.now().strftime("%d.%m.%Y | %H:%M:%S")
+        }
+        :param bki_data:
+        :return:
+        """
+        if not self.check_in_bki_base(bki_data['company_inn']):
+            try:
+                db = self.client.managerBase.companyBki
+                db.insert_one(bki_data)
+                logging.info(f"Реквизиты юр. лица ({bki_data['company_inn']}) успешно записаны в MongoDB")
+            except Exception as e:
+                logging.info("Не записались реквизиты юр. лица в MongoDB")
+                logging.info(e, exc_info=True)
+        else:
+            logging.info(f"Юр. лицо ({bki_data['company_inn']}) уже есть в MongoDB")
+            try:
+                db = self.client.managerBase.companyBki
                 self.__update_mongodb_bki(db, bki_data)
             except Exception as e:
                 logging.info(e, exc_info=True)
