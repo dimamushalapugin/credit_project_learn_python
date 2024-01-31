@@ -222,7 +222,7 @@
                              style="max-width: 60px; max-height: 60px; border-radius: 50%;"></td>
                     <td>{{ user.email }}</td>
                     <td>
-                        {% if user.login in online_users %}
+                        {% if user.login in online_users or user.login == current_user.login  %}
                         <div class="status-circle" style="background-color: #00ff00;" id="{{ user.login }}"></div>
                         {% else %}
                         <div class="status-circle-grey" style="background-color: #808080;"></div>
