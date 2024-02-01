@@ -271,7 +271,11 @@ def autofill():
         autofilled_data = naming_dadata_bk_ur(data)
         autofilled_data1 = ogrn_dadata_bk_ur(data)
         autofilled_data2 = address_dadata_bk_ur(data)
-        autofilled_data3 = Gender(fio_dadata_bk_ur(data)).get_name
+        try:
+            autofilled_data3 = Gender(fio_dadata_bk_ur(data)).get_name
+        except Exception as ex:
+            logging.info(ex, exc_info=True)
+            autofilled_data3 = fio_dadata_bk_ur(data)
         autofilled_data4 = leader_dadata_bk_ur(data).capitalize()
         autofilled_data5 = doverka_ustav_dadata_bk_ur(data)
         autofilled_data7 = ''
