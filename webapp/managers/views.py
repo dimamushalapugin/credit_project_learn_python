@@ -9,11 +9,17 @@ from webapp.managers.parser_for_dkp import start_filling_agreement_dkp
 from webapp.config import APPLICATION_PATH
 from webapp.risk.logger import logging
 from webapp.risk.mongo_db import MongoDB
-from webapp.managers.main_parser import (naming_dadata_bk_ur, ogrn_dadata_bk_ur, address_dadata_bk_ur,
-                                         fio_dadata_bk_ur, leader_dadata_bk_ur, doverka_ustav_dadata_bk_ur)
+from webapp.managers.main_parser import (naming_dadata_bk_ur,
+                                         ogrn_dadata_bk_ur,
+                                         address_dadata_bk_ur,
+                                         fio_dadata_bk_ur,
+                                         leader_dadata_bk_ur,
+                                         doverka_ustav_dadata_bk_ur)
 from webapp.managers.parser_for_bki import replace_bki, replace_bki_fiz
 from webapp.user.auth_utils import manager_required
 from webapp.managers.indiv_bki import FindInd
+from webapp.managers.find_gender import Gender
+
 blueprint = Blueprint('manager', __name__, url_prefix='/managers')
 
 
@@ -265,7 +271,7 @@ def autofill():
         autofilled_data = naming_dadata_bk_ur(data)
         autofilled_data1 = ogrn_dadata_bk_ur(data)
         autofilled_data2 = address_dadata_bk_ur(data)
-        autofilled_data3 = fio_dadata_bk_ur(data)
+        autofilled_data3 = Gender(fio_dadata_bk_ur(data)).get_name
         autofilled_data4 = leader_dadata_bk_ur(data).capitalize()
         autofilled_data5 = doverka_ustav_dadata_bk_ur(data)
         autofilled_data7 = ''
