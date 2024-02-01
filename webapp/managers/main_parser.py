@@ -78,7 +78,7 @@ def fio_dadata_bk_ur(someone):
     main_result = main_result_dadata(someone)
     ip_or_kfh = 'Нет'
     try:
-        if main_result[0]['data']['opf']['short'] in ['ИП']:
+        if main_result[0]['data']['opf']['short'] in ['ИП', 'ГКФХ']:
             ip_or_kfh = 'Да'
         if ip_or_kfh == 'Нет':
             fio_bki_ur = main_result[0]['data']['management']['name']
