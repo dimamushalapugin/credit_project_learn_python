@@ -44,6 +44,25 @@
 
 
     </style>
+    <style>
+      /* Стили для поля ввода с классом form-control и custom-input */
+      .form-control {
+        width: 100%;
+        padding: 10px;
+        border: none;
+        border-radius: 50px; /* Скругленные углы */
+        box-sizing: border-box;
+        transition: border-color 0.3s ease, background-color 0.3s ease;
+        opacity: 0.3; /* Прозрачность */
+        text-align: center;
+      }
+
+      .form-control:focus {
+        outline: none;
+        border-color: #2ecc71;
+        opacity: 0.7; /* Полная прозрачность при фокусировке */
+      }
+    </style>
 </head>
 <body style="background-image: linear-gradient(to bottom, #FFFFFF, #AF8EE1, #F4BE48);" class="text-center d-flex align-items-center">
 <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
