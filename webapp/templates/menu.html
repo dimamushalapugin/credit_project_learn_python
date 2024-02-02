@@ -1,6 +1,5 @@
 <link rel="icon" href="{{ url_for('static', filename='images/favicon.png') }}" type="image/png">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container">
         <a class="navbar-brand" href="{{ url_for('payment.list_of_all_payments') }}">
@@ -9,7 +8,7 @@
         </a>
         <script>
             var logo = document.getElementById("logo");
-            var scaleFactor = 1.2; // Масштабный коэффициент для увеличения размера
+            var scaleFactor = 1.5; // Масштабный коэффициент для увеличения размера
 
             logo.addEventListener("mouseenter", function() {
               logo.style.transition = "transform 0.4s";
@@ -38,7 +37,7 @@
                     </a>
                     <ul class="dropdown-menu dropdown-menu-dark">
                         <li><a class="dropdown-item" href="{{ url_for('payment.create_payment') }}">Загрузка
-                        графиков</a></li>
+                            графиков</a></li>
                         <li><a class="dropdown-item" href="{{ url_for('payment.list_of_all_payments') }}">Общая
                             таблица</a></li>
                         <li><a class="dropdown-item" href="{{ url_for('payment.list_of_daily_payments') }}">Мониторинг
@@ -53,7 +52,8 @@
                     <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDropdown">
                         <li><a class="dropdown-item" href="{{ url_for('risk.risk_page') }}">Риск заключение</a>
                         </li>
-                        <li><a class="dropdown-item" href="{{ url_for('manager.managers_page') }}">Создание договоров</a>
+                        <li><a class="dropdown-item" href="{{ url_for('manager.managers_page') }}">Создание
+                            договоров</a>
                         </li>
                         <li><a class="dropdown-item" href="{{ url_for('manager.bki_page') }}">Создание БКИ</a>
                         </li>
@@ -66,7 +66,8 @@
                         Программы
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <li><a class="dropdown-item" href="{{ url_for('manager.managers_page') }}">Создание договоров</a>
+                        <li><a class="dropdown-item" href="{{ url_for('manager.managers_page') }}">Создание
+                            договоров</a>
                         </li>
                         <li><a class="dropdown-item" href="{{ url_for('manager.bki_page') }}">Создание БКИ</a>
                         </li>
@@ -94,7 +95,8 @@
         <div style="margin-right: 100px;"></div>
         <ul class="navbar-nav ms-auto">
             <li class="nav-item">
-                <a class="nav-link" href="{{ url_for('user.exit_user') }}">Выход <i class="fa-solid fa-arrow-right-from-bracket"></i></a>
+                <a class="nav-link" href="{{ url_for('user.exit_user') }}">Выход <i
+                        class="fa-solid fa-arrow-right-from-bracket"></i></a>
             </li>
         </ul>
     </div>
