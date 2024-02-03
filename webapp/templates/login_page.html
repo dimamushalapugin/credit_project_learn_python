@@ -63,6 +63,37 @@
         opacity: 0.7; /* Полная прозрачность при фокусировке */
       }
     </style>
+    <style>
+        /* Стили для кнопки */
+        .button {
+          display: inline-block;
+          padding: 10px 70px;
+          font-size: 16px;
+          text-align: center;
+          text-decoration: none;
+          border-radius: 20px;
+          transition: background-color 0.3s ease;
+          cursor: pointer;
+          border: none; /* Убираем рамку */
+          opacity: 0.8; /* Немного прозрачная кнопка */
+        }
+
+        /* Стили для обычного состояния кнопки */
+        .button-normal {
+          background-color: #af8ce5; /* светло-фиолетовый цвет */
+          color: #fff; /* белый цвет текста */
+        }
+
+        /* Стили для состояния кнопки при наведении */
+        .button:hover {
+          background-color: #8a63b0; /* измененный цвет при наведении (темно-фиолетовый) */
+        }
+
+        /* Стили для состояния кнопки при нажатии */
+        .button:active {
+          background-color: #555; /* темно-серый цвет при нажатии */
+        }
+    </style>
 </head>
 <body style="background-image: linear-gradient(to bottom, #FFFFFF, #AF8EE1, #F4BE48);" class="text-center d-flex align-items-center">
 <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
@@ -137,7 +168,7 @@
                     {{ form.password(class="form-control") }}
                 </div>
                 <br>
-                {{ form.submit(class="btn btn-primary") }}
+                {{ form.submit(class="button button-normal") }}
                 <div class="form-group form-check"><br>
                     {{ form.remember_me() }}
                     {{ form.remember_me.label(class_='form-check-label') }}
