@@ -194,21 +194,16 @@
                 </form>
             </div>
         </div>
-        <div class="col-md-auto"><br>
-            <div class="card">
-                <div class="card-body">
-                    <h3 class="card-title">Риск заключения</h3>
-                    <ul class="list-group list-group-flush">
-                        {% for folder_name in folder_names %}
-                        <li class="list-group-item">
-                            <a href="{{ url_for('risk.risk_conclusion_folder', folder_path=folder_name) }}"
-                               class="btn btn-light btn-sm">
-                                <i class="fa-regular fa-folder" style="color: #6b6b6b;"></i> {{ folder_name }}
-                            </a>
-                        </li>
-                        {% endfor %}
-                    </ul>
-                </div>
+        <div class="col-md-auto">
+            <br>
+            <h3 class="card-title">Риск заключения</h3>
+            <div class="list-group">
+                {% for folder_name in folder_names %}
+                <a href="{{ url_for('risk.risk_conclusion_folder', folder_path=folder_name) }}"
+                   class="list-group-item list-group-item-action list-group-item-light">
+                    <i class="fa-regular fa-folder" style="color: #6b6b6b;"></i> {{ folder_name }}
+                </a>
+                {% endfor %}
             </div>
         </div>
     </div>
