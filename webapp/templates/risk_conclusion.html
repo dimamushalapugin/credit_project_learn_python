@@ -11,6 +11,7 @@
         gtag('config', 'G-KQX5FDFY5F');
 
     </script>
+    </script>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -140,7 +141,7 @@
                             дилером/дистрибьютором ПЛ</label>
                     </div>
                     <div class="form-group"><br>
-                        <button type="submit" id="submit-button" class="btn btn-primary btn-block">
+                        <button type="submit" id="submit-button" class="btn btn-outline-primary btn-block">
                             Создать риск-заключение
                         </button>
                     </div>
@@ -196,7 +197,7 @@
         </div>
         <div class="col-md-auto">
             <br>
-            <h3 class="card-title">Риск заключения</h3>
+            <h3 class="card-title text-center">Риск заключения</h3>
             <div class="list-group">
                 {% for folder_name in folder_names %}
                 <a href="{{ url_for('risk.risk_conclusion_folder', folder_path=folder_name) }}"
