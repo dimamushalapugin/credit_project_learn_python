@@ -122,7 +122,8 @@
                         <div class="mb-3">
                             <label>Введите ИНН контрагента</label>
                             <div class="input-group input-group-sm mb-3">
-                                <input id="input1" type="text" name="client_inn" value="" class="form-control" required>
+                                <input id="input1" type="text" name="client_inn" value="" class="form-control"
+                                       oninput="validatePassportSeries(this)" maxlength="10" minlength="10" required>
                                 <button id="autofillButton" type="button" class="btn btn-primary">Автозаполнение
                                 </button>
                             </div>
@@ -131,32 +132,35 @@
                             <label>Введите полное наименование контрагента</label>
                             <div class="input-group input-group-sm mb-3">
                                 <input id="input2" type="text" name="full_name_ur" value="" class="form-control"
-                                       required>
+                                       maxlength="200" required>
                             </div>
                         </div>
                         <div class="mb-3">
                             <label>Введите ОГРН контрагента</label>
                             <div class="input-group input-group-sm mb-3">
-                                <input id="input3" type="text" name="ogrn_ur" value="" class="form-control">
+                                <input id="input3" type="text" name="ogrn_ur" value="" class="form-control"
+                                       oninput="validatePassportSeries(this)" maxlength="13" minlength="13">
                             </div>
                         </div>
                         <div class="mb-3">
                             <label>Введите адрес контрагента</label>
                             <div class="input-group input-group-sm mb-3">
-                                <input id="input4" type="text" name="address_ur" value="" class="form-control">
+                                <input id="input4" type="text" name="address_ur" value="" class="form-control"
+                                       maxlength="150">
                             </div>
                         </div>
                         <div class="mb-3">
                             <label>Введите телефон контрагента</label>
                             <div class="input-group input-group-sm mb-3">
-                                <input id="input5" type="text" name="phone_ur" value="" class="form-control">
+                                <input id="input5" type="text" name="phone_ur" value="" class="form-control"
+                                       maxlength="50">
                             </div>
                         </div>
                         <div class="mb-3">
                             <label>Введите полное ФИО подписанта контрагента в родительном падеже</label>
                             <div class="input-group input-group-sm mb-3">
                                 <input id="input6" type="text" name="fio_signatory_ur" value="" class="form-control"
-                                       placeholder="Краснова Сергея Ивановича">
+                                       placeholder="Краснова Сергея Ивановича" maxlength="50">
                             </div>
                         </div>
                         <div class="mb-3">
@@ -164,14 +168,16 @@
                             <div class="input-group input-group-sm mb-3">
                                 <input id="input7" type="text" name="position_signatory_ur" value=""
                                        class="form-control"
-                                       placeholder="Директора/Генерального директора">
+                                       placeholder="Директора/Генерального директора"
+                                       maxlength="50">
                             </div>
                         </div>
                         <div class="mb-3">
                             <label>На основании каких полномочий будет подписание</label>
                             <div class="input-group input-group-sm mb-3">
                                 <input id="input8" type="text" name="status_signatory_ur" value="" class="form-control"
-                                       placeholder="Устава/Доверенности № ... от дата">
+                                       placeholder="Устава/Доверенности № ... от дата"
+                                       maxlength="50">
                             </div>
                         </div>
                         <div class="mb-3">
@@ -187,11 +193,6 @@
                                     Скачать БКИ
                                 </button>
                             </div>
-                            <!--                            <div class="form-group">-->
-                            <!--                                <button type="submit" id="submit-buttonijara" class="btn btn-outline-primary btn-block">-->
-                            <!--                                    Скачать заявку ООО "Иджара-Лизинг"-->
-                            <!--                                </button>-->
-                            <!--                            </div>-->
                         </div>
                     </form>
                     <form action="" method="POST">
@@ -203,7 +204,8 @@
                         <div class="mb-3">
                             <label>ИНН физического лица</label>
                             <div class="input-group input-group-sm mb-3">
-                                <input id="inputFiz1" type="text" name="inn_fiz" value="" class="form-control" required>
+                                <input id="inputFiz1" type="text" name="inn_fiz" value="" class="form-control"
+                                       oninput="validatePassportSeries(this)" maxlength="12" minlength="12" required>
                                 <button id="autofillButtonFiz" type="button" class="btn btn-primary">Автозаполнение
                                 </button>
                             </div>
@@ -212,7 +214,7 @@
                             <label>Введите полное ФИО физического лица</label>
                             <div class="input-group input-group-sm mb-3">
                                 <input id="inputFiz2" type="text" name="client_fio" value="" class="form-control"
-                                       required>
+                                       maxlength="50" required>
                             </div>
                         </div>
                         <div class="row">
@@ -220,7 +222,9 @@
                                 <div class="mb-3">
                                     <label>Введите серию паспорта</label>
                                     <div class="input-group input-group-sm mb-3">
-                                        <input id="inputFiz3" type="text" name="series" value="" class="form-control"
+                                        <input id="inputFiz3" type="text" name="series" value=""
+                                               class="form-control" oninput="validatePassportSeries(this)"
+                                               maxlength="4" minlength="4"
                                                required>
                                     </div>
                                 </div>
@@ -230,6 +234,7 @@
                                     <label>Введите номер паспорта</label>
                                     <div class="input-group input-group-sm mb-3">
                                         <input id="inputFiz4" type="text" name="number" value="" class="form-control"
+                                               oninput="validatePassportSeries(this)" maxlength="6" minlength="6"
                                                required>
                                     </div>
                                 </div>
@@ -241,7 +246,8 @@
                                     <label>Кем выдан паспорт</label>
                                     <div class="input-group input-group-sm mb-3">
                                         <input id="inputFiz5" type="text" name="who_issued" value=""
-                                               class="form-control" required>
+                                               class="form-control"
+                                               maxlength="100" required>
                                     </div>
                                 </div>
                             </div>
@@ -259,14 +265,14 @@
                             <label>Код подразделения</label>
                             <div class="input-group input-group-sm mb-3">
                                 <input id="inputFiz7" type="text" name="code_passport" value="" class="form-control"
-                                       required>
+                                       maxlength="10" required>
                             </div>
                         </div>
                         <div class="mb-3">
                             <label>Место рождения</label>
                             <div class="input-group input-group-sm mb-3">
                                 <input id="inputFiz8" type="text" name="location_birth" value="" class="form-control"
-                                       required>
+                                       maxlength="100" required>
                             </div>
                         </div>
                         <div class="mb-3">
@@ -280,7 +286,7 @@
                             <label>Адрес регистрации физического лица</label>
                             <div class="input-group input-group-sm mb-3">
                                 <input id="inputFiz10" type="text" name="registration_address" value=""
-                                       class="form-control" required>
+                                       class="form-control" maxlength="100" required>
                             </div>
                         </div>
                         <div class="mb-3">
@@ -304,7 +310,6 @@
         </div>
     </div>
 </div>
-
 
 <script>
     <!--    после ввода ИНН парсит все данные в дадата и вставляет их в поля-->
@@ -482,6 +487,12 @@
                 }
             }, 1000);
         });
+</script>
+<script>
+    function validatePassportSeries(input) {
+        // Заменяем все символы, кроме цифр, на пустую строку
+        input.value = input.value.replace(/[^0-9]/g, '');
+    }
 </script>
 
 
