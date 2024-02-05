@@ -309,7 +309,7 @@ def autofillfiz():
         autofilled_data8 = director_details.get('address_reg', '')
     else:
         person = FindInd(data)
-        autofilled_data = person.get_fio
+        autofilled_data = person.get_fio.strip()
         autofilled_data1 = ''
         autofilled_data2 = ''
         autofilled_data3 = ''
@@ -340,14 +340,14 @@ def submit_form_ur():
     data_year_ur = request.form['data8']
     mongo = MongoDB(current_user)
     data = {
-        'company_name': request.form['data1'],
-        'company_inn': request.form['data'],
-        'company_ogrn': request.form['data2'],
-        'company_address': request.form['data3'],
-        'company_phone': request.form['data4'],
-        'signatory_name': request.form['data5'],
-        'signatory_position': request.form['data6'],
-        'signatory_basis': request.form['data7'],
+        'company_name': request.form['data1'].strip(),
+        'company_inn': request.form['data'].strip(),
+        'company_ogrn': request.form['data2'].strip(),
+        'company_address': request.form['data3'].strip(),
+        'company_phone': request.form['data4'].strip(),
+        'signatory_name': request.form['data5'].strip(),
+        'signatory_position': request.form['data6'].strip(),
+        'signatory_basis': request.form['data7'].strip(),
         'date': datetime.now().strftime("%d.%m.%Y | %H:%M:%S")
     }
     mongo.write_to_mongodb_company_bki(data)
@@ -359,16 +359,16 @@ def submit_form_ur():
 
 @blueprint.route('/submit_form_fiz', methods=['POST'])
 def submit_form_fiz():
-    data_inn_fiz = request.form['data']
-    data_naming_fiz = request.form['data1']
-    data_ser_fiz = request.form['data2']
-    data_numb_fiz = request.form['data3']
-    data_whoismvd_fiz = request.form['data4']
-    data_output_fiz = request.form['data5']
-    data_code_fiz = request.form['data6']
-    data_birthplace_fiz = request.form['data7']
+    data_inn_fiz = request.form['data'].strip()
+    data_naming_fiz = request.form['data1'].strip()
+    data_ser_fiz = request.form['data2'].strip()
+    data_numb_fiz = request.form['data3'].strip()
+    data_whoismvd_fiz = request.form['data4'].strip()
+    data_output_fiz = request.form['data5'].strip()
+    data_code_fiz = request.form['data6'].strip()
+    data_birthplace_fiz = request.form['data7'].strip()
     data_birthdate_fiz = request.form['data8']
-    data_address_fiz = request.form['data9']
+    data_address_fiz = request.form['data9'].strip()
     data_year_fiz = request.form['data10']
     mongo = MongoDB(current_user)
     data = {
