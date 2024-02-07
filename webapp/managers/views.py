@@ -286,6 +286,43 @@ def autofill():
                     'data7': autofilled_data6, 'data8': autofilled_data7})
 
 
+@blueprint.route('/check_inn', methods=['POST'])
+def check_inn():
+    mongo = MongoDB(current_user)
+    inn = request.form.get('inn')
+    try:
+        dir_name = Gender(request.form.get('director_name', '')).get_name
+    except Exception as ex:
+        logging.info(ex, exc_info=True)
+        dir_name = request.form.get('director_name', '')
+    dir_post = request.form.get('director_position', '').capitalize()
+    # Здесь выполняется проверка наличия информации об ИНН в вашей БД
+    company_details = mongo.read_mongodb_company_bki(inn)
+    today = date.today().strftime("%Y-%m-%d")
+    if company_details:
+        company_name = company_details.get('company_name', '')
+        company_ogrn = company_details.get('company_ogrn', '')
+        company_address = company_details.get('company_address', '')
+        signatory_name = company_details.get('signatory_name', '')
+        signatory_position = company_details.get('signatory_position', '')
+        signatory_basis = company_details.get('signatory_basis', '')
+        company_phone = company_details.get('company_phone', '')
+        return jsonify({
+            'company_name': company_name,
+            'company_inn': inn,
+            'company_ogrn': company_ogrn,
+            'company_address': company_address,
+            'signatory_name': signatory_name,
+            'signatory_position': signatory_position,
+            'signatory_basis': signatory_basis,
+            'company_phone': company_phone,
+            'today': today
+        })
+    else:
+        # Если информация не найдена
+        return jsonify({'today': today, 'dir_name': dir_name, 'dir_post': dir_post})
+
+
 @blueprint.route('/autofillfiz', methods=['POST'])
 def autofillfiz():
     mongo = MongoDB(current_user)
