@@ -48,6 +48,41 @@
             flex: auto;
         }
     </style>
+    <style>
+        #loading-indicator {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(240, 240, 240, 0.5);
+            padding: 100%;
+            border-radius: 10px;
+            text-align: center;
+            z-index: 1000;
+        }
+
+        #loading-indicator .loader {
+            border: 8px solid #3498db; /* Цвет круга */
+            border-top: 8px solid #f1c40f; /* Цвет круга при анимации */
+            border-radius: 50%;
+            width: 70px; /* Размер круга */
+            height: 70px; /* Размер круга */
+            animation: spin 1s linear infinite;
+            margin-bottom: 10px;
+        }
+
+        #loading-indicator p {
+            font-size: 20px; /* Размер текста */
+            color: #333; /* Цвет текста */
+            margin: 0;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
 </head>
 <body style="background-image: linear-gradient(to bottom, #FCFDFC, #CCE9FF, #000000);">
 {% include 'menu.html' %}
@@ -62,6 +97,12 @@
         <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
     </symbol>
 </svg>
+<div id="loading-indicator">
+    <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+        <span class="sr-only">Заполняются поля...</span>
+    </div>
+    <p>Заполняются поля...</p>
+</div>
 <div class="container">
     <br>
     <div class="row">
@@ -117,7 +158,7 @@
                     <form action="{{ url_for('manager.create_application') }}" method="POST">
                         <div class="mb-3">
                             <h5 class="card-header"><i class="fa-solid fa-circle-info fa-xs"
-                                                       style="color: #8f8f8f;"></i> Заполнение БКИ юр лица
+                                                       style="color: #8f8f8f;"></i> Заполнение БКИ юр. лица
                             </h5>
                         </div>
                         <div class="mb-3">
@@ -125,8 +166,6 @@
                             <div class="input-group input-group-sm mb-3">
                                 <input id="input1" type="text" name="client_inn" value="" class="form-control"
                                        maxlength="100" required/>
-                                <button id="autofillButton" type="button" class="btn btn-primary">Автозаполнение
-                                </button>
                             </div>
                         </div>
                         <div class="mb-3">
@@ -199,7 +238,7 @@
                     <form action="" method="POST">
                         <div class="mb-3">
                             <h5 class="card-header"><i class="fa-solid fa-circle-info fa-xs"
-                                                       style="color: #8f8f8f;"></i> Заполнение БКИ физического лица
+                                                       style="color: #8f8f8f;"></i> Заполнение БКИ физического лица (ИП/КФХ)
                             </h5>
                         </div>
                         <div class="mb-3">
@@ -500,7 +539,7 @@
 <script>
     $(document).ready(function () {
         $("#inputFiz10").suggestions({
-            token: "44fe540058fe9a1fb279ed76fcda7dac975a37fb",
+            token: "{{ suggestions_token }}",
             type: "ADDRESS",
             onSelect: function(suggestion) {
                 console.log(suggestion);
@@ -510,30 +549,57 @@
 </script>
 <script>
     $("#input1").suggestions({
-        token: "44fe540058fe9a1fb279ed76fcda7dac975a37fb",
+        token: "{{ suggestions_token }}",
         type: "PARTY",
         /* Вызывается, когда пользователь выбирает одну из подсказок */
         onSelect: function(suggestion) {
+            var loadingIndicator = document.getElementById('loading-indicator');
+
+            // Показываем индикатор загрузки
+            if (loadingIndicator) {
+                loadingIndicator.style.display = 'block';
+            }
+
             $.ajax({
                 url: './check_inn', // URL вашего серверного обработчика
                 type: 'POST',
-                data: {inn: suggestion.data.inn,
-                       director_name: suggestion.data.management.name,
-                       director_position: suggestion.data.management.post}, // Отправляем ИНН на сервер
+                data: {
+                    inn: suggestion.data.inn,
+                    director_name: suggestion.data.management.name,
+                    director_position: suggestion.data.management.post
+                }, // Отправляем ИНН на сервер
                 success: function(response) {
-                // Если на сервере найдены данные в БД, заполняем поля из ответа
-                if (response.company_inn) {
-                    $("#input1").val(response.company_inn);
-                    $("#input2").val(response.company_name);
-                    $("#input3").val(response.company_ogrn);
-                    $("#input4").val(response.company_address);
-                    $("#input5").val(response.company_phone);
-                    $("#input6").val(response.signatory_name);
-                    $("#input7").val(response.signatory_position);
-                    $("#input8").val(response.signatory_basis);
+                    // Если на сервере найдены данные в БД, заполняем поля из ответа
+                    if (response.company_inn) {
+                        $("#input1").val(response.company_inn);
+                        $("#input2").val(response.company_name);
+                        $("#input3").val(response.company_ogrn);
+                        $("#input4").val(response.company_address);
+                        $("#input5").val(response.company_phone);
+                        $("#input6").val(response.signatory_name);
+                        $("#input7").val(response.signatory_position);
+                        $("#input8").val(response.signatory_basis);
+                        $("#input9").val(response.today);
+                    } else {
+                        // Если ключ company_inn отсутствует в ответе, используем данные из suggestion.data
+                        $("#input1").val(suggestion.data.inn);
+                        $("#input2").val(suggestion.data.name.full_with_opf);
+                        $("#input3").val(suggestion.data.ogrn);
+                        $("#input4").val(suggestion.data.address.unrestricted_value);
+                        $("#input6").val(response.dir_name);
+                        $("#input7").val(response.dir_post);
+                        $("#input8").val("Устава");
+                        $("#input9").val(response.today);
+                    }
                     $("#input9").val(response.today);
-                } else {
-                    // Если ключ company_inn отсутствует в ответе, используем данные из suggestion.data
+
+                    // Скрываем индикатор загрузки после завершения AJAX-запроса
+                    if (loadingIndicator) {
+                        loadingIndicator.style.display = 'none';
+                    }
+                },
+                error: function(response) {
+                    // Если не удалось связаться с БД или не найдены данные, используем API
                     $("#input1").val(suggestion.data.inn);
                     $("#input2").val(suggestion.data.name.full_with_opf);
                     $("#input3").val(suggestion.data.ogrn);
@@ -542,16 +608,12 @@
                     $("#input7").val(response.dir_post);
                     $("#input8").val("Устава");
                     $("#input9").val(response.today);
+
+                    // Скрываем индикатор загрузки при ошибке
+                    if (loadingIndicator) {
+                        loadingIndicator.style.display = 'none';
+                    }
                 }
-                $("#input9").val(response.today);
-            },
-            error: function(response) {
-                // Если не удалось связаться с БД или не найдены данные, используем API
-                $("#input1").val(suggestion.data.inn);
-                $("#input2").val(suggestion.data.name.full_with_opf);
-                $("#input3").val(suggestion.data.ogrn);
-                $("#input9").val(response.today);
-            }
             });
         }
     });

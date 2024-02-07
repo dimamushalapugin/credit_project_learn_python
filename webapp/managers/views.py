@@ -6,15 +6,9 @@ from flask_login import current_user
 
 from webapp.managers.parser_for_application import start_filling_application, start_filling_agreement
 from webapp.managers.parser_for_dkp import start_filling_agreement_dkp
-from webapp.config import APPLICATION_PATH
+from webapp.config import APPLICATION_PATH, DADATA_TOKEN_BKI
 from webapp.risk.logger import logging
 from webapp.risk.mongo_db import MongoDB
-from webapp.managers.main_parser import (naming_dadata_bk_ur,
-                                         ogrn_dadata_bk_ur,
-                                         address_dadata_bk_ur,
-                                         fio_dadata_bk_ur,
-                                         leader_dadata_bk_ur,
-                                         doverka_ustav_dadata_bk_ur)
 from webapp.managers.parser_for_bki import replace_bki, replace_bki_fiz
 from webapp.user.auth_utils import manager_required
 from webapp.managers.indiv_bki import FindInd
@@ -251,41 +245,12 @@ def create_application():
 @blueprint.route('/create_bki')
 @manager_required
 def bki_page():
-    return render_template('create_bki.html')
+    suggestions_token = DADATA_TOKEN_BKI
+    return render_template('create_bki.html', suggestions_token=suggestions_token)
 
 
-@blueprint.route('/autofill', methods=['POST'])
-def autofill():
-    mongo = MongoDB(current_user)
-    data = request.form['data']
-    company_details = mongo.read_mongodb_company_bki(data)
-    if company_details:
-        autofilled_data = company_details.get('company_name', '')
-        autofilled_data1 = company_details.get('company_ogrn', '')
-        autofilled_data2 = company_details.get('company_address', '')
-        autofilled_data3 = company_details.get('signatory_name', '')
-        autofilled_data4 = company_details.get('signatory_position', '')
-        autofilled_data5 = company_details.get('signatory_basis', '')
-        autofilled_data7 = company_details.get('company_phone', '')
-    else:
-        autofilled_data = naming_dadata_bk_ur(data)
-        autofilled_data1 = ogrn_dadata_bk_ur(data)
-        autofilled_data2 = address_dadata_bk_ur(data)
-        try:
-            autofilled_data3 = Gender(fio_dadata_bk_ur(data)).get_name
-        except Exception as ex:
-            logging.info(ex, exc_info=True)
-            autofilled_data3 = fio_dadata_bk_ur(data)
-        autofilled_data4 = leader_dadata_bk_ur(data).capitalize()
-        autofilled_data5 = doverka_ustav_dadata_bk_ur(data)
-        autofilled_data7 = ''
-    current_date = date.today()
-    autofilled_data6 = current_date.strftime("%Y-%m-%d")
-    return jsonify({'data1': autofilled_data, 'data2': autofilled_data1, 'data3': autofilled_data2,
-                    'data4': autofilled_data3, 'data5': autofilled_data4, 'data6': autofilled_data5,
-                    'data7': autofilled_data6, 'data8': autofilled_data7})
-
-
+#  TODO: нужно ввести доп. проверку по длине ИНН в поле БКИ для юр. лиц.
+#   Чтобы сразу выводило ошибку, что ИП/КФХ нужно вводить в форму для физ. лиц
 @blueprint.route('/check_inn', methods=['POST'])
 def check_inn():
     mongo = MongoDB(current_user)
