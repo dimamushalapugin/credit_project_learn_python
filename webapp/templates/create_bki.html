@@ -168,42 +168,42 @@
                                        maxlength="100" required/>
                             </div>
                         </div>
-                        <div class="mb-3">
+                        <div class="mb-3" id="name_company">
                             <label>Введите полное наименование контрагента</label>
                             <div class="input-group input-group-sm mb-3">
                                 <input id="input2" type="text" name="full_name_ur" value="" class="form-control"
                                        maxlength="200" required>
                             </div>
                         </div>
-                        <div class="mb-3">
+                        <div class="mb-3" id="ogrn_company">
                             <label>Введите ОГРН контрагента</label>
                             <div class="input-group input-group-sm mb-3">
                                 <input id="input3" type="text" name="ogrn_ur" value="" class="form-control"
                                        oninput="validatePassportSeries(this)" maxlength="13" minlength="13">
                             </div>
                         </div>
-                        <div class="mb-3">
+                        <div class="mb-3" id="address_company">
                             <label>Введите адрес контрагента</label>
                             <div class="input-group input-group-sm mb-3">
                                 <input id="input4" type="text" name="address_ur" value="" class="form-control"
                                        maxlength="150">
                             </div>
                         </div>
-                        <div class="mb-3">
+                        <div class="mb-3" id="phone_company">
                             <label>Введите телефон контрагента</label>
                             <div class="input-group input-group-sm mb-3">
                                 <input id="input5" type="text" name="phone_ur" value="" class="form-control"
                                        maxlength="50">
                             </div>
                         </div>
-                        <div class="mb-3">
+                        <div class="mb-3" id="director_name">
                             <label>Введите полное ФИО подписанта контрагента в родительном падеже</label>
                             <div class="input-group input-group-sm mb-3">
                                 <input id="input6" type="text" name="fio_signatory_ur" value="" class="form-control"
                                        placeholder="Краснова Сергея Ивановича" maxlength="50">
                             </div>
                         </div>
-                        <div class="mb-3">
+                        <div class="mb-3" id="director_position">
                             <label>Введите наименование должности подписанта контрагента в родительном падеже</label>
                             <div class="input-group input-group-sm mb-3">
                                 <input id="input7" type="text" name="position_signatory_ur" value=""
@@ -212,7 +212,7 @@
                                        maxlength="50">
                             </div>
                         </div>
-                        <div class="mb-3">
+                        <div class="mb-3" id="director_basis">
                             <label>На основании каких полномочий будет подписание</label>
                             <div class="input-group input-group-sm mb-3">
                                 <input id="input8" type="text" name="status_signatory_ur" value="" class="form-control"
@@ -220,7 +220,7 @@
                                        maxlength="50">
                             </div>
                         </div>
-                        <div class="mb-3">
+                        <div class="mb-3" id="date_today_company">
                             <label>Дата заполнения заявки</label>
                             <div class="input-group input-group-sm mb-3">
                                 <input id="input9" type="date" name="date_zayvka_ur" value="" class="form-control">
@@ -235,10 +235,20 @@
                             </div>
                         </div>
                     </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container">
+    <div class="row">
+        <div class="col-10">
+            <div class="card border-light mb-3">
+                <div class="card-body">
                     <form action="" method="POST">
                         <div class="mb-3">
                             <h5 class="card-header"><i class="fa-solid fa-circle-info fa-xs"
-                                                       style="color: #8f8f8f;"></i> Заполнение БКИ физического лица (ИП/КФХ)
+                                                       style="color: #8f8f8f;"></i> Заполнение БКИ физического лица
                             </h5>
                         </div>
                         <div class="mb-3">
@@ -342,7 +352,7 @@
                             <div class="form-group">
                                 <button type="submit" id="submit-button_fiz" class="btn btn-outline-primary btn-block"
                                         disabled>
-                                    Скачать заявку по физ. лицу ООО "ЛКМБ-РТ"
+                                    Скачать БКИ
                                 </button>
                             </div>
                         </div>
@@ -548,6 +558,19 @@
     });
 </script>
 <script>
+    // Идентификаторы полей, которые нужно скрыть
+    var fieldIds = ['name_company', 'ogrn_company', 'address_company', 'phone_company',
+                    'director_name', 'director_position', 'director_basis', 'date_today_company'];
+
+    // Скрываем все поля
+    fieldIds.forEach(function(id) {
+        var field = document.getElementById(id);
+        if (field) {
+            field.style.display = 'none';
+        }
+    });
+</script>
+<script>
     $("#input1").suggestions({
         token: "{{ suggestions_token }}",
         type: "PARTY",
@@ -586,6 +609,12 @@
                     $("#inputFiz1").val(response.director_inn);
                     $("#inputFiz2").val(response.director_name);
                     $("#inputFiz11").val(response.today);
+
+                    // Скрываем кнопку автозаполнения
+                    var autofillButtonFiz = document.getElementById('autofillButtonFiz');
+                    if (autofillButtonFiz) {
+                        autofillButtonFiz.style.display = 'none';
+                    }
 
                     // Скрываем индикатор загрузки после завершения AJAX-запроса
                     if (loadingIndicator) {
@@ -640,6 +669,17 @@
                         }
                         $("#input9").val(response.today);
 
+                        // Идентификаторы полей, которые нужно показать
+                        var fieldIds = ['name_company', 'ogrn_company', 'address_company', 'phone_company',
+                                        'director_name', 'director_position', 'director_basis', 'date_today_company'];
+
+                        fieldIds.forEach(function(id) {
+                            var field = document.getElementById(id);
+                            if (field) {
+                                field.style.display = 'block';
+                            }
+                        });
+
                         // Скрываем индикатор загрузки после завершения AJAX-запроса
                         if (loadingIndicator) {
                             loadingIndicator.style.display = 'none';
@@ -655,6 +695,13 @@
                         $("#input7").val(response.dir_post);
                         $("#input8").val("Устава");
                         $("#input9").val(response.today);
+
+                        fieldIds.forEach(function(id) {
+                            var field = document.getElementById(id);
+                            if (field) {
+                                field.style.display = 'block';
+                            }
+                        });
 
                         // Скрываем индикатор загрузки при ошибке
                         if (loadingIndicator) {

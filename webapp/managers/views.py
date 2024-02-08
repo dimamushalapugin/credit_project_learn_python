@@ -249,8 +249,6 @@ def bki_page():
     return render_template('create_bki.html', suggestions_token=suggestions_token)
 
 
-#  TODO: нужно ввести доп. проверку по длине ИНН в поле БКИ для юр. лиц.
-#   Чтобы сразу выводило ошибку, что ИП/КФХ нужно вводить в форму для физ. лиц
 @blueprint.route('/check_inn', methods=['POST'])
 def check_inn():
     mongo = MongoDB(current_user)
