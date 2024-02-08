@@ -57,7 +57,7 @@ class FindInd:
         :return: ФИО физического лица или пустая строка, если информация отсутствует.
         """
         if self.info:
-            return self.info.get('data', {}).get('ФИО', '')
+            return self.info.get('data', {}).get('ФИО', '').strip()
         logging.info("Не нашел ФИО физ. лица")
         return ''
 

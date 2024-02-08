@@ -288,6 +288,46 @@ def check_inn():
         return jsonify({'today': today, 'dir_name': dir_name, 'dir_post': dir_post})
 
 
+@blueprint.route('/check_inn_indiv', methods=['POST'])
+def check_inn_indiv():
+    mongo = MongoDB(current_user)
+    inn = request.form.get('inn')
+    director_details = mongo.read_mongodb_director_details(inn)
+    today = date.today().strftime("%Y-%m-%d")
+    if director_details:
+        director_name = director_details.get('director_name', '')
+        try:
+            date_of_birth = director_details.get('date_of_birth').split()[0]
+        except IndexError:
+            date_of_birth = director_details.get('date_of_birth', '')
+        place_of_birth = director_details.get('place_of_birth', '')
+        passport_series = director_details.get('passport_series', '')
+        passport_id = director_details.get('passport_id', '')
+        issued_by = director_details.get('issued_by', '')
+        try:
+            issued_when = director_details.get('issued_when').split()[0]
+        except IndexError:
+            issued_when = director_details.get('issued_when', '')
+        department_code = director_details.get('department_code', '')
+        address_reg = director_details.get('address_reg', '')
+        return jsonify({
+            'director_name': director_name,
+            'director_inn': inn,
+            'date_of_birth': date_of_birth,
+            'place_of_birth': place_of_birth,
+            'passport_series': passport_series,
+            'passport_id': passport_id,
+            'issued_by': issued_by,
+            'issued_when': issued_when,
+            'department_code': department_code,
+            'address_reg': address_reg,
+            'today': today
+        })
+    else:
+        director_name = FindInd(inn).get_fio
+        return jsonify({'today': today, 'director_name': director_name, 'director_inn': inn})
+
+
 @blueprint.route('/autofillfiz', methods=['POST'])
 def autofillfiz():
     mongo = MongoDB(current_user)
@@ -311,7 +351,7 @@ def autofillfiz():
         autofilled_data8 = director_details.get('address_reg', '')
     else:
         person = FindInd(data)
-        autofilled_data = person.get_fio.strip()
+        autofilled_data = person.get_fio
         autofilled_data1 = ''
         autofilled_data2 = ''
         autofilled_data3 = ''
