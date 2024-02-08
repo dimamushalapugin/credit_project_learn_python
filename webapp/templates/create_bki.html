@@ -293,11 +293,10 @@
                         <div class="row">
                             <div class="col">
                                 <div class="mb-3">
-                                    <label>Кем выдан паспорт</label>
+                                    <label>Код подразделения</label>
                                     <div class="input-group input-group-sm mb-3">
-                                        <input id="inputFiz5" type="text" name="who_issued" value=""
-                                               class="form-control"
-                                               maxlength="100" required>
+                                        <input id="inputFiz7" type="text" name="code_passport" value="" class="form-control"
+                                               maxlength="10" required>
                                     </div>
                                 </div>
                             </div>
@@ -311,11 +310,12 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="mb-3">
-                            <label>Код подразделения</label>
+                        <div class="mb-3" id="fms_unit">
+                            <label>Кем выдан паспорт</label>
                             <div class="input-group input-group-sm mb-3">
-                                <input id="inputFiz7" type="text" name="code_passport" value="" class="form-control"
-                                       maxlength="10" required>
+                                <input id="inputFiz5" type="text" name="who_issued" value=""
+                                       class="form-control"
+                                       maxlength="100" required>
                             </div>
                         </div>
                         <div class="mb-3">
@@ -364,6 +364,8 @@
 </div>
 
 <script>
+    var fmsUnit = document.getElementById('fmsUnit');
+    var passportBy = document.getElementById('inputFiz5');
     <!--    после ввода ИНН парсит все данные в дадата и вставляет их в поля-->
             $(document).ready(function() {
                 $('#autofillButton').click(function() {
@@ -467,6 +469,9 @@
                         $('#inputFiz9').val(response.data8);
                         $('#inputFiz10').val(response.data9);
                         $('#inputFiz11').val(response.data10);
+                        if (fmsUnit && passportBy && passportBy.value.trim() !== '') {
+                            fmsUnit.style.display = 'block';
+                        }
                     }
                     });
                 });
@@ -560,7 +565,7 @@
 <script>
     // Идентификаторы полей, которые нужно скрыть
     var fieldIds = ['name_company', 'ogrn_company', 'address_company', 'phone_company',
-                    'director_name', 'director_position', 'director_basis', 'date_today_company'];
+                    'director_name', 'director_position', 'director_basis', 'date_today_company', 'fms_unit'];
 
     // Скрываем все поля
     fieldIds.forEach(function(id) {
@@ -571,6 +576,7 @@
     });
 </script>
 <script>
+    var fmsUnit = document.getElementById('fms_unit');
     $("#input1").suggestions({
         token: "{{ suggestions_token }}",
         type: "PARTY",
@@ -594,6 +600,7 @@
                 success: function(response) {
                     // Если на сервере найдены данные в БД, заполняем поля из ответа
                     if (response.director_inn) {
+                        $("#inputFiz1").val(response.director_inn);
                         $("#inputFiz3").val(response.passport_series);
                         $("#inputFiz4").val(response.passport_id);
                         $("#inputFiz5").val(response.issued_by);
@@ -602,11 +609,14 @@
                         $("#inputFiz8").val(response.place_of_birth);
                         $("#inputFiz9").val(response.date_of_birth);
                         $("#inputFiz10").val(response.address_reg);
+                        if (fmsUnit) {
+                            fmsUnit.style.display = 'block';
+                        }
                     } else {
                         // Если ключ director_inn отсутствует в ответе, используем данные из suggestion.data
+                        $("#inputFiz1").val(suggestion.data.inn);
                     }
                     $("#input1").val("");
-                    $("#inputFiz1").val(response.director_inn);
                     $("#inputFiz2").val(response.director_name);
                     $("#inputFiz11").val(response.today);
 
@@ -709,6 +719,21 @@
                         }
                     }
                 });
+            }
+        }
+    });
+</script>
+<script>
+    var fmsUnit = document.getElementById('fms_unit');
+    $("#inputFiz7").suggestions({
+        token: "{{ suggestions_token }}",
+        type: "FMS_UNIT",
+        /* Вызывается, когда пользователь выбирает одну из подсказок */
+        onSelect: function(suggestion) {
+            $("#inputFiz5").val(suggestion.data.name);
+            $("#inputFiz7").val(suggestion.data.code);
+            if (fmsUnit) {
+                fmsUnit.style.display = 'block';
             }
         }
     });

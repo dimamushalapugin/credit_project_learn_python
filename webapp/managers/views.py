@@ -323,7 +323,7 @@ def check_inn_indiv():
         })
     else:
         director_name = FindInd(inn).get_fio
-        return jsonify({'today': today, 'director_name': director_name, 'director_inn': inn})
+        return jsonify({'today': today, 'director_name': director_name})
 
 
 @blueprint.route('/autofillfiz', methods=['POST'])
