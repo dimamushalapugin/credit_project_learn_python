@@ -11,16 +11,15 @@ def merge_files(app_path):
 
     try:
         # Открыть первую и вторую книги Excel
-        workbook1 = excel_app1.Workbooks.Open(APPLICATION_PATH_LKMB)
-        workbook2 = excel_app2.Workbooks.Open(app_path)
+        workbook1 = excel_app1.Workbooks.Open(app_path)
+        workbook2 = excel_app2.Workbooks.Open(APPLICATION_PATH_LKMB)
 
-        # Копировать листы из второй книги в первую
-        for sheet_index in range(workbook1.Sheets.Count, 0, -1):
-            sheet = workbook1.Sheets(sheet_index)
-            sheet.Copy(Before=workbook2.Sheets(1))
+        for sheet_index in range(1, workbook2.Sheets.Count + 1):
+            sheet = workbook2.Sheets(sheet_index)
+            sheet.Copy(Before=workbook1.Sheets(workbook1.Sheets.Count))
 
         # Сохранить изменения в первой книге
-        workbook2.SaveAs(app_path)
+        workbook1.SaveAs(app_path)
 
     finally:
         # Закрыть книги и завершить работу с Excel
