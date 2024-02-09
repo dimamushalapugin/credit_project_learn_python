@@ -412,12 +412,15 @@ def start_filling_application(inn_leasee, path_application, inn_seller1, inn_sel
                 sheet_anketa_1_list['C21'].value = bank_details.get('phone')
                 sheet_anketa_1_list['F21'].value = bank_details.get('email')
 
-            application_filename = fr'{temporary_path}\Заявка с заключением {inn_leasee}.xlsx'
+            application_filename = fr'{temporary_path}\Заявка с заключением {inn_leasee} (read).xlsx'
             wb.save(application_filename)
             logging.info(f"({current_user}) Запускаем объединение файлов")
-            merge_files(application_filename)
-            logging.info(f"({current_user}) Все успешно сохранилось!")
             application_filename_download = fr'{path_for_download}\Заявка с заключением {inn_leasee}.xlsx'
+            xlsx_name_read = fr'Заявка с заключением {inn_leasee} (read).xlsx'
+            xlsx_name = fr'Заявка с заключением {inn_leasee}.xlsx'
+            merge_files(xlsx_name_read, xlsx_name)
+            logging.info(f"({current_user}) Все успешно сохранилось!")
+
             return application_filename_download
         except Exception as ex:
             logging.info(ex, exc_info=True)

@@ -218,7 +218,6 @@ def upload_files():
 
 @blueprint.route('/download_application')
 def download_application(file_path, filename):
-    # print(f"Attempting to download file: {file_path}/{filename}")
     response = send_file(file_path, as_attachment=True, download_name=filename)
     return response
 
