@@ -18,6 +18,10 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="icon" href="{{ url_for('static', filename='images/favicon.png') }}" type="image/png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link href="http://cdn.jsdelivr.net/npm/suggestions-jquery@21.12.0/dist/css/suggestions.min.css" rel="stylesheet"/>
+    <script src="http://cdn.jsdelivr.net/npm/suggestions-jquery@21.12.0/dist/js/jquery.suggestions.min.js"></script>
     <style>
         #loading-indicator {
             display: none;
@@ -122,11 +126,11 @@
                 <form action="{{ url_for('risk.create_risk_conclusion') }}" method="POST">
                     <div class="form-group">
                         <label>ИНН лизингополучателя</label>
-                        <input type="text" name="client_inn" value="" id='client_inn' class="form-control" required>
+                        <input type="text" name="client_inn" value="" id='client_inn_form' class="form-control" required>
                     </div>
                     <div class="form-group"><br>
                         <label>ИНН поставщика</label>
-                        <input type="text" name="seller_inn" id="seller_inn" value=""
+                        <input type="text" name="seller_inn" id="seller_inn_form" value=""
                                class="form-control" required><br>
                     </div>
                     <div class="form-check form-switch">
@@ -146,8 +150,8 @@
                     </div>
                     <script>
                         // Получаем ссылки на кнопки и инпуты для файлов
-                            var clientINN= document.getElementById("client_inn");
-                            var sellerINN = document.getElementById("seller_inn");
+                            var clientINN= document.getElementById("client_inn_form");
+                            var sellerINN = document.getElementById("seller_inn_form");
                             var submitButton = document.getElementById("submit-button");
 
                             // Блокируем кнопку "Предпроверка" при загрузке страницы
@@ -209,6 +213,24 @@
     </div>
 </div>
 <br><br><br><br><br><br><br><br><br>
+<script>
+    $("#client_inn_form").suggestions({
+        token: "{{ suggestions_token }}",
+        type: "PARTY",
+        /* Вызывается, когда пользователь выбирает одну из подсказок */
+        onSelect: function(suggestion) {
+            $("#client_inn_form").val(suggestion.data.inn);
+        }
+    });
+    $("#seller_inn_form").suggestions({
+        token: "{{ suggestions_token }}",
+        type: "PARTY",
+        /* Вызывается, когда пользователь выбирает одну из подсказок */
+        onSelect: function(suggestion) {
+            $("#seller_inn_form").val(suggestion.data.inn);
+        }
+    });
+</script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 {% include 'footer.html' %}
 </body>

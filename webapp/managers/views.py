@@ -33,7 +33,9 @@ def get_folder_names(folder_path):
 def managers_page():
     folder_path = 'static/agreements'
     folder_names = get_folder_names(folder_path)  # Функция для получения списка папок
-    return render_template('create_agreements.html', folder_names=folder_names)
+    suggestions_token = DADATA_TOKEN_BKI
+    return render_template('create_agreements.html', folder_names=folder_names,
+                           suggestions_token=suggestions_token)
 
 
 @blueprint.route('/create_agreements/<path:folder_path>')
