@@ -12,6 +12,7 @@ from datetime import datetime as dt
 from flask_login import current_user
 from webapp.risk.logger import logging
 from webapp.managers.parser_for_dkp import read_xlsx, number_to_words
+from webapp.managers.merge_two_xlsx import merge_files
 from webapp.config import DADATA_TOKEN, DADATA_BASE
 from webapp.risk.mongo_db import MongoDB
 from openpyxl.worksheet.datavalidation import DataValidation
@@ -336,7 +337,7 @@ def start_filling_application(inn_leasee, path_application, inn_seller1, inn_sel
                             sheet_zayavlenie[f'A{number - 1}'].value = 'Глава'
 
             # заполняем страницу Анкета Стр.1
-            sheet_anketa_1_list = wb['Анкета Стр.1']
+            sheet_anketa_1_list = wb['Анкета_Стр.1']
             sheet_anketa_1_list['F7'].value = ogrn_leasee
             # print(sheet_anketa_1_list['F7'].value)
             sheet_anketa_1_list['H7'].value = okato_leasee
@@ -413,8 +414,10 @@ def start_filling_application(inn_leasee, path_application, inn_seller1, inn_sel
 
             application_filename = fr'{temporary_path}\Заявка с заключением {inn_leasee}.xlsx'
             wb.save(application_filename)
-            application_filename_download = fr'{path_for_download}\Заявка с заключением {inn_leasee}.xlsx'
+            logging.info(f"({current_user}) Запускаем объединение файлов")
+            merge_files(application_filename)
             logging.info(f"({current_user}) Все успешно сохранилось!")
+            application_filename_download = fr'{path_for_download}\Заявка с заключением {inn_leasee}.xlsx'
             return application_filename_download
         except Exception as ex:
             logging.info(ex, exc_info=True)

@@ -74,7 +74,7 @@ def read_xlsx(path_application, pl):
 
     # читаем страницу Анкета Стр.1
 
-    sheet_anketa_1_list = wb['Анкета Стр.1']
+    sheet_anketa_1_list = wb['Анкета_Стр.1']
     director_inn = sheet_anketa_1_list['H25'].value
     mongo = MongoDB(current_user)
     mongo.write_to_mongodb_bank_details(client_inn, sheet_anketa_1_list)
