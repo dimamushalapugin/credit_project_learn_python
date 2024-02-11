@@ -32,6 +32,7 @@ class LeasingContract(db.Model):
     leasing_contract_number = db.Column(db.String, unique=True, index=True)
     company_id = db.Column(db.Integer, db.ForeignKey('companies.id'))
     seller_id = db.Column(db.Integer, db.ForeignKey('sellers.id'))
+    floating_or_not = db.Column(db.Boolean)
 
     payments = db.relationship("Payment", backref="leasing_contract")
 
