@@ -153,7 +153,7 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-10">
+        <div class="col-md-auto">
             <div class="card border-light mb-3">
                 <div class="card-body">
                     <form action="{{ url_for('manager.create_application') }}" method="POST">
@@ -172,8 +172,8 @@
                         <div class="mb-3" id="name_company">
                             <label>Введите полное наименование контрагента</label>
                             <div class="input-group input-group-sm mb-3">
-                                <input id="input2" type="text" name="full_name_ur" value="" class="form-control"
-                                       maxlength="200" required>
+                                <textarea id="input2" name="full_name_ur" class="form-control"
+                                          maxlength="200" required></textarea>
                             </div>
                         </div>
                         <div class="mb-3" id="ogrn_company">
@@ -239,11 +239,7 @@
                 </div>
             </div>
         </div>
-    </div>
-</div>
-<div class="container">
-    <div class="row">
-        <div class="col-10">
+        <div class="col-md-auto">
             <div class="card border-light mb-3">
                 <div class="card-body">
                     <form action="" method="POST">
@@ -271,7 +267,7 @@
                         <div class="row">
                             <div class="col">
                                 <div class="mb-3">
-                                    <label>Введите серию паспорта</label>
+                                    <label>Введите серию пасп.</label>
                                     <div class="input-group input-group-sm mb-3">
                                         <input id="inputFiz3" type="text" name="series" value=""
                                                class="form-control" oninput="validatePassportSeries(this)"
@@ -282,7 +278,7 @@
                             </div>
                             <div class="col">
                                 <div class="mb-3">
-                                    <label>Введите номер паспорта</label>
+                                    <label>Введите номер пасп.</label>
                                     <div class="input-group input-group-sm mb-3">
                                         <input id="inputFiz4" type="text" name="number" value="" class="form-control"
                                                oninput="validatePassportSeries(this)" maxlength="6" minlength="6"
@@ -314,16 +310,16 @@
                         <div class="mb-3" id="fms_unit">
                             <label>Кем выдан паспорт</label>
                             <div class="input-group input-group-sm mb-3">
-                                <input id="inputFiz5" type="text" name="who_issued" value=""
+                                <textarea id="inputFiz5" name="who_issued"
                                        class="form-control"
-                                       maxlength="100" required>
+                                       maxlength="100" required></textarea>
                             </div>
                         </div>
                         <div class="mb-3">
                             <label>Место рождения</label>
                             <div class="input-group input-group-sm mb-3">
-                                <input id="inputFiz8" type="text" name="location_birth" value="" class="form-control"
-                                       maxlength="100" required>
+                                <textarea id="inputFiz8" name="location_birth" class="form-control"
+                                       maxlength="100" required></textarea>
                             </div>
                         </div>
                         <div class="mb-3">
@@ -337,7 +333,7 @@
                             <label>Адрес регистрации физического лица</label>
                             <div id="one_string">
                                 <div class="input-group input-group-sm mb-3">
-                                    <input id="inputFiz10" type="text" name="address" value="" placeholder="Адрес"
+                                    <input id="inputFiz10" type="text" name="address" value="" placeholder=""
                                            class="form-control" maxlength="100" required/>
                                 </div>
                             </div>
