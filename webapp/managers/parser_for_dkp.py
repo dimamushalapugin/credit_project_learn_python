@@ -6,9 +6,10 @@ from typing import Optional
 from docx import Document
 from num2words import num2words
 from flask_login import current_user
-from webapp.config import DADATA_BASE
+from webapp.config import DADATA_BASE, dkp_car_ooo_path, dkp_obor_ooo_path
 from webapp.risk.logger import logging
 from webapp.risk.mongo_db import MongoDB
+from pathlib import Path
 
 
 def read_xlsx(path_application, pl):
@@ -1227,15 +1228,15 @@ def start_filling_agreement_dkp(path_application: str, inn_client: str, inn_sell
                     doc.element.body.remove(run._element)
 
         full_krakt_name_leasee = data_xlsx[8].replace('"', '')
-        dir_path = fr'webapp\static\agreements\{full_krakt_name_leasee} {inn_client}\{dt.today().strftime(f"%d.%m.%Y")}'
+        dir_path = Path('webapp') / 'static' / 'agreements' / f'{full_krakt_name_leasee} {inn_client}' / f'{dt.today().strftime(f"%d.%m.%Y")}'
         if not os.path.exists(dir_path):
             os.makedirs(dir_path)
-        doc.save(fr"{dir_path}\ДКП {inn_client}.docx")
+        doc.save(dir_path / fr"ДКП {inn_client}.docx")
 
     print(equipment_or_not)
     if equipment_or_not is None:
-        replace_words_in_dkp(r"webapp\static\agreement_templates\ШАБЛОН ДКП АВТО ООО_АО.docx", replace()[0],
+        replace_words_in_dkp(dkp_car_ooo_path, replace()[0],
                              replace()[1])
     else:
-        replace_words_in_dkp(r"webapp\static\agreement_templates\ШАБЛОН ДКП ООО_АО (обор).docx", replace()[0],
+        replace_words_in_dkp(dkp_obor_ooo_path, replace()[0],
                              replace()[1])

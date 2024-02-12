@@ -13,16 +13,17 @@ from flask_login import current_user
 from webapp.risk.logger import logging
 from webapp.managers.parser_for_dkp import read_xlsx, number_to_words
 from webapp.managers.merge_two_xlsx import merge_files
-from webapp.config import DADATA_TOKEN, DADATA_BASE
+from webapp.config import DADATA_TOKEN, DADATA_BASE, dl_car_ip_path, dl_obor_ip_path, dl_car_ooo_path, dl_obor_ooo_path
 from webapp.risk.mongo_db import MongoDB
 from openpyxl.worksheet.datavalidation import DataValidation
+from pathlib import Path
 
 
 def start_filling_application(inn_leasee, path_application, inn_seller1, inn_seller2, inn_seller3, inn_seller4):
     mongo = MongoDB(current_user)
     logging.info(f"({current_user}) Этап 1.")
-    temporary_path = r'webapp\static\temporary'
-    path_for_download = r'static\temporary'
+    temporary_path = Path("webapp") / "static" / "temporary"
+    path_for_download = Path("static") / "temporary"
     ip_or_kfh = 'Нет'
     type_business = ''
     full_krakt_name_leasee = ''
@@ -412,10 +413,10 @@ def start_filling_application(inn_leasee, path_application, inn_seller1, inn_sel
                 sheet_anketa_1_list['C21'].value = bank_details.get('phone')
                 sheet_anketa_1_list['F21'].value = bank_details.get('email')
 
-            application_filename = fr'{temporary_path}\Заявка с заключением {inn_leasee} (read).xlsx'
+            application_filename = temporary_path / fr'Заявка с заключением {inn_leasee} (read).xlsx'
             wb.save(application_filename)
             logging.info(f"({current_user}) Запускаем объединение файлов")
-            application_filename_download = fr'{path_for_download}\Заявка с заключением {inn_leasee}.xlsx'
+            application_filename_download = path_for_download / fr'Заявка с заключением {inn_leasee}.xlsx'
             xlsx_name_read = fr'Заявка с заключением {inn_leasee} (read).xlsx'
             xlsx_name = fr'Заявка с заключением {inn_leasee}.xlsx'
             merge_files(xlsx_name_read, xlsx_name)
@@ -441,7 +442,7 @@ def start_filling_agreement(inn_leasee, path_application, path_graphic, signator
 
     full_krakt_name_leasee = result[0]['data']['name']['short_with_opf'].replace('"', '')
 
-    dir_path = fr'webapp\static\agreements\{full_krakt_name_leasee} {inn_leasee}\{dt.today().strftime(f"%d.%m.%Y")}'
+    dir_path = Path('webapp') / 'static' / 'agreements' / f'{full_krakt_name_leasee} {inn_leasee}' / f'{dt.today().strftime(f"%d.%m.%Y")}'
     if not os.path.exists(dir_path):
         os.makedirs(dir_path)
 
@@ -749,7 +750,7 @@ def start_filling_agreement(inn_leasee, path_application, path_graphic, signator
                         for i in range(len(old_words)):
                             if old_words[i] in cell.text:
                                 cell.text = cell.text.replace(old_words[i], new_words[i])
-            doc.save(fr"{dir_path}\ДЛ {inn_leasee}.docx")
+            doc.save(dir_path / fr"ДЛ {inn_leasee}.docx")
 
         def change_font(docx_file, font_name):
             doc = Document(docx_file)
@@ -767,22 +768,22 @@ def start_filling_agreement(inn_leasee, path_application, path_graphic, signator
                                 run.font.name = font_name
                                 run.font.size = Pt(10)  # Установите желаемый размер шрифта
 
-            doc.save(fr"{dir_path}\ДЛ {inn_leasee}.docx")
+            doc.save(dir_path / fr"ДЛ {inn_leasee}.docx")
 
         if len(inn_leasee) == 12:
             if type_pl != 'on':
-                replace_words_in_docx(r"webapp\static\agreement_templates\ШАБЛОН ИП_КФХ.docx", old_words, new_words)
+                replace_words_in_docx(dl_car_ip_path, old_words, new_words)
             else:
-                replace_words_in_docx(r"webapp\static\agreement_templates\ШАБЛОН ИП_КФХ (обор).docx", old_words,
+                replace_words_in_docx(dl_obor_ip_path, old_words,
                                       new_words)
         else:
             if type_pl != 'on':
-                replace_words_in_docx(r"webapp\static\agreement_templates\ШАБЛОН ООО_АО.docx", old_words, new_words)
+                replace_words_in_docx(dl_car_ooo_path, old_words, new_words)
             else:
-                replace_words_in_docx(r"webapp\static\agreement_templates\ШАБЛОН ООО_АО (обор).docx", old_words,
+                replace_words_in_docx(dl_obor_ooo_path, old_words,
                                       new_words)
 
-        change_font(fr"{dir_path}\ДЛ {inn_leasee}.docx", "Times New Roman")
+        change_font(dir_path / fr"ДЛ {inn_leasee}.docx", "Times New Roman")
 
     def grafic_punkty(inn_leasee, path_application, path_graphic, signatory, investor, currency_list, who_is_insure,
                       grafic):
@@ -1170,7 +1171,7 @@ def start_filling_agreement(inn_leasee, path_application, path_graphic, signator
             replacements = {}
             # print('Не сработал график')
 
-        doc = docx.Document(fr"{dir_path}\ДЛ {inn_leasee}.docx")
+        doc = docx.Document(str(dir_path / fr"ДЛ {inn_leasee}.docx"))
         for para in doc.paragraphs:
             for old_word, new_word in replacements.items():
                 for i, run in enumerate(para.runs):
@@ -1304,7 +1305,7 @@ def start_filling_agreement(inn_leasee, path_application, path_graphic, signator
                                         ]:
                     doc.element.body.remove(run._element)
 
-        doc.save(fr"{dir_path}\ДЛ {inn_leasee}.docx")
+        doc.save(dir_path / fr"ДЛ {inn_leasee}.docx")
 
     logging.info(f"({current_user}) ЗАПУСК READ XLSX")
 

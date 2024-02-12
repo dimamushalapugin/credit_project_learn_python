@@ -1,12 +1,13 @@
 import os
 from datetime import date, datetime
+from pathlib import Path
 
 from flask import Blueprint, flash, render_template, redirect, request, url_for, send_from_directory, jsonify, send_file
 from flask_login import current_user
 
 from webapp.managers.parser_for_application import start_filling_application, start_filling_agreement
 from webapp.managers.parser_for_dkp import start_filling_agreement_dkp
-from webapp.config import APPLICATION_PATH, DADATA_TOKEN_BKI
+from webapp.config import APPLICATION_PATH, DADATA_TOKEN_BKI, path_app
 from webapp.risk.logger import logging
 from webapp.risk.mongo_db import MongoDB
 from webapp.managers.parser_for_bki import replace_bki, replace_bki_fiz
@@ -31,7 +32,7 @@ def get_folder_names(folder_path):
 @blueprint.route('/create_agreements')
 @manager_required
 def managers_page():
-    folder_path = 'static/agreements'
+    folder_path = Path('static') / 'agreements'
     folder_names = get_folder_names(folder_path)  # Функция для получения списка папок
     suggestions_token = DADATA_TOKEN_BKI
     return render_template('create_agreements.html', folder_names=folder_names,
@@ -40,7 +41,7 @@ def managers_page():
 
 @blueprint.route('/create_agreements/<path:folder_path>')
 def agreements_folder(folder_path):
-    base_folder = 'webapp/static/agreements'
+    base_folder = Path('webapp') / 'static' / 'agreements'
     absolute_folder_path = os.path.join(base_folder, folder_path).replace('\\', '/')
 
     contents = []
@@ -88,8 +89,8 @@ def create_dl():
     try:
         application_filename = request.form['uploaded_application']
         graphic_filename = request.form['uploaded_graphic']
-        application_path = os.path.join('webapp/static/agreement_templates', application_filename)
-        graphic_path = os.path.join('webapp/static/agreement_templates', graphic_filename)
+        application_path = os.path.join(path_app, application_filename)
+        graphic_path = os.path.join(path_app, graphic_filename)
     except Exception as ex:
         logging.info(ex, exc_info=True)
         logging.info(f"({current_user}) Ошибка!")
@@ -111,7 +112,7 @@ def create_dkp():
     logging.info(f"({current_user}) Нажал на кнопку 'Создать ДКП'")
     try:
         application_filename = request.form['uploaded_application']
-        application_path = os.path.join('webapp/static/agreement_templates', application_filename)
+        application_path = os.path.join(path_app, application_filename)
     except Exception as ex:
         logging.info(ex, exc_info=True)
         logging.info(f"({current_user}) Ошибка!")
@@ -137,11 +138,11 @@ def create_agreement():
         if data.get('check_dl') == 'on':
             application_filename = request.form['uploaded_application']
             graphic_filename = request.form['uploaded_graphic']
-            application_path = os.path.join('webapp/static/agreement_templates', application_filename)
-            graphic_path = os.path.join('webapp/static/agreement_templates', graphic_filename)
+            application_path = os.path.join(path_app, application_filename)
+            graphic_path = os.path.join(path_app, graphic_filename)
         else:
             application_filename = request.form['uploaded_application']
-            application_path = os.path.join('webapp/static/agreement_templates', application_filename)
+            application_path = os.path.join(path_app, application_filename)
             graphic_path = None
 
     except Exception as ex:
@@ -204,9 +205,9 @@ def upload_files():
     else:
         graphic_filename = None
 
-    application_path = os.path.join('webapp/static/agreement_templates', application_filename)
+    application_path = os.path.join(path_app, application_filename)
     if uploaded_graphic is not None:
-        graphic_path = os.path.join('webapp/static/agreement_templates', graphic_filename)
+        graphic_path = os.path.join(path_app, graphic_filename)
     else:
         graphic_path = None
 

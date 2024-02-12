@@ -1,5 +1,7 @@
 from docx import Document
 
+from webapp.config import path_temp, path_bki_company, path_bki_individual
+
 
 def replace_words_in_bki(docx_file, old_words_bki, new_words_bki):
     doc = Document(docx_file)
@@ -16,9 +18,9 @@ def replace_words_in_bki(docx_file, old_words_bki, new_words_bki):
                         cell.text = cell.text.replace(old_words_bki[i], str(new_words_bki[i]))
     new = new_words_bki[0].replace('"', '')
     if all(char.isdigit() for char in new_words_bki[1]):
-        doc.save(fr'webapp/static/temporary/БКИ {new}.docx')
+        doc.save(path_temp / fr'БКИ {new}.docx')
     else:
-        doc.save(fr'webapp/static/temporary/БКИ {new_words_bki[1]}.docx')
+        doc.save(path_temp / fr'БКИ {new_words_bki[1]}.docx')
 
 
 def replace_bki(some1, some2, some3, some4, some5, some6, some7, some8, some9):
@@ -33,8 +35,7 @@ def replace_bki(some1, some2, some3, some4, some5, some6, some7, some8, some9):
 
     new_words_bki = ([str(item) for item in [some2, some3, some1, some4, some5, some7, some6, some8]] +
                      [str(day), str(months[int(month)]), str(year)])
-    replace_words_in_bki(r"webapp/static/agreement_templates/Согласие на получение кредитного отчета Юрлицо.docx",
-                         old_words_bki, new_words_bki)
+    replace_words_in_bki(path_bki_company, old_words_bki, new_words_bki)
     return old_words_bki, new_words_bki
 
 
@@ -57,6 +58,5 @@ def replace_bki_fiz(some1, some2, some3, some4, some5, some6, some7, some8, some
     new_words_bki = ([str(item) for item in [some2, some3, some4, some5, day_mvd, months[int(month_mvd)], year_mvd,
                                              some7, some8, day_birth, months[int(month_birth)], year_birth,
                                              some10, some1, str(day), str(months[int(month)]), str(year)]])
-    replace_words_in_bki(r"webapp/static/agreement_templates/Согласие на получение кредитного отчета Физлицо.docx",
-                         old_words_bki, new_words_bki)
+    replace_words_in_bki(path_bki_individual, old_words_bki, new_words_bki)
     return old_words_bki, new_words_bki

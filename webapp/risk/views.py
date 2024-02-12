@@ -2,6 +2,7 @@ import os
 import re
 import time
 
+from pathlib import Path
 from flask import Blueprint, flash, render_template, redirect, request, url_for, send_from_directory
 from flask_login import current_user
 from webapp.config import DADATA_TOKEN_BKI
@@ -27,7 +28,7 @@ def get_folder_names(folder_path):
 @blueprint.route('/risk_conclusion')
 @risk_required
 def risk_page():
-    folder_path = 'static/files'
+    folder_path = Path('static') / 'files'
     folder_names = get_folder_names(folder_path)  # Функция для получения списка папок
     suggestions_token = DADATA_TOKEN_BKI
     return render_template('risk_conclusion.html', folder_names=folder_names,
@@ -36,7 +37,7 @@ def risk_page():
 
 @blueprint.route('/risk_conclusion/<path:folder_path>')
 def risk_conclusion_folder(folder_path):
-    base_folder = 'webapp/static/files'
+    base_folder = Path('webapp') / 'static' / 'files'
     absolute_folder_path = os.path.join(base_folder, folder_path).replace('\\', '/')
 
     contents = []
