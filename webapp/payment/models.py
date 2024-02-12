@@ -49,10 +49,26 @@ class Payment(db.Model):
     total_amount = db.Column(db.Float)
     credit_contract_id = db.Column(db.Integer, db.ForeignKey('credit_contracts.id'))
 
+    # Отношение с таблицей interest_rate_history
+    interest_rate_history = db.relationship("InterestRateHistory", backref="payment")
     payment_schedules = db.relationship("PaymentSchedule", backref="payment")
 
     def __repr__(self):
         return f'Payment {self.id}, {self.leasing_contract_id}, {self.date_of_issue}, {self.amount}'
+
+
+class InterestRateHistory(db.Model):
+    __tablename__ = 'interest_rate_history'
+
+    id = db.Column(db.Integer, primary_key=True)
+    payment_id = db.Column(db.Integer, db.ForeignKey('payments.id'), nullable=False)
+    effective_date = db.Column(db.Date, nullable=False)
+    interest_rate = db.Column(db.Numeric(precision=10, scale=5), nullable=False)
+    # Связь с таблицей payments
+
+    def __repr__(self):
+        return (f"InterestRateHistory (rate_id={self.rate_id}, loan_id={self.loan_id}, "
+                f"effective_date={self.effective_date}, interest_rate={self.interest_rate})")
 
 
 class PaymentSchedule(db.Model):
@@ -62,7 +78,6 @@ class PaymentSchedule(db.Model):
     payment_id = db.Column(db.Integer, db.ForeignKey('payments.id'))
     payment_date = db.Column(db.Date)
     amount = db.Column(db.Float)
-    interest_rate = db.Column(db.Float)
 
     def __repr__(self):
         return f'PaymentSchedule {self.id}, {self.payment_date}, {self.amount}'
