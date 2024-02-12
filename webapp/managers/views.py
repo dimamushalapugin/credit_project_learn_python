@@ -68,15 +68,15 @@ def create_xlsx_file(data):
 
 
 def create_docx_file(data, application_path, graphic_path):
-    path_application = application_path.replace('/', '\\')
-    path_graphic = graphic_path.replace('/', '\\')
+    path_application = application_path
+    path_graphic = graphic_path
     return start_filling_agreement(data['client_inn'].strip(), path_application, path_graphic, data['signatory'],
                                    data['investor'], data['currency'], data['insurant'], data['graph'], data['pl'],
                                    data['number_dl'], data['seller_inn'], data.get('typeSelect'))
 
 
 def create_docx_file_dkp(data, application_path):
-    path_application = application_path.replace('/', '\\')
+    path_application = application_path
     return start_filling_agreement_dkp(path_application, data['client_inn'].strip(), data['seller_inn'].strip(),
                                        data['number_dl'], data['signatory'], data['investor'], data['currency'],
                                        data['pl'], data.get('typeSelect'), data['type_pl_new_or_not'],
@@ -160,8 +160,8 @@ def create_agreement():
             flash('Ошибка при создании договора. Проверьте правильность прикрепляемых файлов', 'error')
             return redirect(url_for('manager.managers_page'))
         finally:
-            os.remove(application_path.replace('/', '\\'))
-            os.remove(graphic_path.replace('/', '\\'))
+            os.remove(application_path)
+            os.remove(graphic_path)
             return redirect(url_for('manager.managers_page'))
 
     elif data.get('check_dl') == 'on':
@@ -172,8 +172,8 @@ def create_agreement():
             flash(str(e), 'error')
             return redirect(url_for('manager.managers_page'))
         finally:
-            os.remove(application_path.replace('/', '\\'))
-            os.remove(graphic_path.replace('/', '\\'))
+            os.remove(application_path)
+            os.remove(graphic_path)
             return redirect(url_for('manager.managers_page'))
     else:
         try:
@@ -181,7 +181,7 @@ def create_agreement():
         except Exception as e:
             flash(str(e), 'error')
         finally:
-            os.remove(application_path.replace('/', '\\'))
+            os.remove(application_path)
 
     return redirect(url_for('manager.managers_page'))
 
