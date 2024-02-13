@@ -10,7 +10,7 @@ def merge_files(file_name, download_name):
     merged_file_path = os.path.join(ABS_PATH_TEMP, download_name)
 
     # Подключение к серверу xlwings
-    app = xw.App(visible=False)
+    app = xw.App(impl="openpyxl", visible=False)
 
     try:
         # Открытие книг Excel
