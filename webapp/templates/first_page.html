@@ -34,12 +34,20 @@
         .content {
             flex: 1;
         }
+
+        .table {
+          border: 2px solid #000; /* Настройка границы таблицы */
+        }
+
+        .table-responsive {
+          overflow-x: auto; /* Добавление горизонтальной прокрутки для таблицы */
+        }
     </style>
 </head>
 <body style="background-image: linear-gradient(to bottom, #FCFDFC, #CCE9FF, #000000);">
 {% include 'menu.html' %}
 
-<div class="container">
+<div class="container-fluid">
     <div class="row">
         <div class="col-md-auto">
             <div class="card border-light mb-3">
@@ -130,25 +138,29 @@
                 </div>
             </div>
         </div>
- <div class="col-md-8">
+        <div class="col-md-16">
             <div class="card border-light mb-3">
                 <div class="card-body">
                     <div class="table-responsive">
                         <table class="table">
-
                             <tr>
-                                <th>Заголовок 1</th>
-                                <th>Заголовок 2</th>
-                                <th>Заголовок 3</th>
-                                <th>Заголовок 3</th>
-                                <th>Заголовок 3</th>
-                                <th>Заголовок 3</th>
-                                <th>Заголовок 3</th>
-                                <th>Заголовок 3</th>
+                                <th>№</th>
+                                <th>Дата начала периода</th>
+                                <th>Дата окончания периода</th>
+                                <th>Дата уплаты процентов</th>
+                                <th>Остаток ОД на начало периода</th>
+                                <th>Количество дней до погашения ОД</th>
+                                <th>Остаток ОД на конец периода</th>
+                                <th>Количество дней после погашения ОД</th>
+                                <th>Сумма процентов до погашения ОД</th>
+                                <th>Сумма процентов после погашения ОД</th>
+                                <th>Общая сумма процентов</th>
+                                <th>Дата погашения Основного долга</th>
+                                <th>Сумма погашения Основного долга</th>
                                 <!-- Добавьте заголовки для остальных столбцов -->
                             </tr>
 
-                        <tbody>
+                            <tbody>
                             <tr>
                                 <td>Ячейка 1</td>
                                 <td>Ячейка 2</td>
@@ -158,16 +170,21 @@
                                 <td>Ячейка 3</td>
                                 <td>Ячейка 3</td>
                                 <td>Ячейка 3</td>
+                                <td>Ячейка 3</td>
+                                <td>Ячейка 3</td>
+                                <td>Ячейка 3</td>
+                                <td>Ячейка 3</td>
+                                <td>Ячейка 3</td>
                                 <!-- Добавьте содержимое для остальных ячеек -->
                             </tr>
                             <!-- Добавьте дополнительные строки по аналогии -->
-                        </tbody>
-                    </table>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 </div>
 <br>
 
@@ -204,6 +221,12 @@
             $("#seller_inn").val(suggestion.data.inn);
         }
     });
+
+    // Получаем ссылки на инпут для файлов
+    var applicationFileInput = document.getElementById("exampleFileInput");
+
+    applicationFileInput.addEventListener('change', function() {
+    var file = applicationFileInput.files[0];
 </script>
 <script src="{{ url_for('static', filename='js/first-page.js') }}"></script>
 {% include 'footer.html' %}
