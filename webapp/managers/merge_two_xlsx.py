@@ -1,8 +1,8 @@
 import os
-import xlrd
+from openpyxl import load_workbook
+from openpyxl import Workbook
 
 from webapp.config import ABS_PATH_APP, ABS_PATH_TEMP
-from xlutils.copy import copy as xl_copy
 
 
 def merge_files(file_name, download_name):
@@ -11,20 +11,23 @@ def merge_files(file_name, download_name):
     merged_file_path = os.path.join(ABS_PATH_TEMP, download_name)
 
     try:
-        # Открытие первого файла для чтения
-        workbook1 = xlrd.open_workbook(file_path1, formatting_info=True)
-        workbook2 = xlrd.open_workbook(file_path2, formatting_info=True)
+        # Загрузка первого файла для чтения
+        workbook1 = load_workbook(filename=file_path1)
+        # Загрузка второго файла (если он существует) или создание нового
+        try:
+            workbook2 = load_workbook(filename=file_path2)
+        except FileNotFoundError:
+            workbook2 = Workbook()
 
-        # Копирование листа из первого файла во второй
-        wb1_sheet = workbook1.sheet_by_index(0)
-        wb2 = xl_copy(workbook2)
-        wb1 = wb2.add_sheet('Sheet1', cell_overwrite_ok=True)
-        for row in range(wb1_sheet.nrows):
-            for col in range(wb1_sheet.ncols):
-                wb1.write(row, col, wb1_sheet.cell_value(row, col))
+        # Получение листа из первого файла
+        sheet1 = workbook1.active
+        # Копирование листа во второй файл
+        sheet2 = workbook2.copy_worksheet(sheet1)
+        # Переименование скопированного листа (если требуется)
+        sheet2.title = 'Sheet1'
 
         # Сохранение изменений во втором файле
-        wb2.save(merged_file_path)
+        workbook2.save(merged_file_path)
 
     except Exception as e:
         print(f"Ошибка при объединении файлов: {e}")
