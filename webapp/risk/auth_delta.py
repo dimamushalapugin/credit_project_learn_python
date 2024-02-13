@@ -1,6 +1,6 @@
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-from selenium.webdriver.edge.options import Options
+from selenium.webdriver.firefox.options import Options
 
 from webapp.config import LOGIN_DELTA, PASSWORD_DELTA, URL_DELTA
 from webapp.risk.logger import logging
@@ -8,8 +8,8 @@ from webapp.risk.logger import logging
 
 def authorization():
     options = Options()
-    options.add_argument("--headless=new")
-    driver = webdriver.Edge(options=options)
+    options.add_argument("--headless")
+    driver = webdriver.Firefox(options=options)
     try:
         driver.get(URL_DELTA)
         driver.maximize_window()
