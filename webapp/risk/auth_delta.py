@@ -14,6 +14,7 @@ def authorization():
     logging.info(f'Создаем драйвер Selenium')
     service = webdriver.FirefoxService(log_output=subprocess.STDOUT)
     driver = webdriver.Firefox(options=options, service=service)
+    logging.info(f'Создали драйвер Selenium')
     try:
         driver.get(URL_DELTA)
         driver.maximize_window()
