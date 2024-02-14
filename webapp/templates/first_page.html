@@ -19,7 +19,7 @@
     <link rel="icon" href="{{ url_for('static', filename='images/favicon.png') }}" type="image/png">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr@latest/dist/flatpickr.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ru.js"></script>
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.9/xlsx.full.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link href="http://cdn.jsdelivr.net/npm/suggestions-jquery@21.12.0/dist/css/suggestions.min.css" rel="stylesheet"/>
     <script src="http://cdn.jsdelivr.net/npm/suggestions-jquery@21.12.0/dist/js/jquery.suggestions.min.js"></script>
@@ -222,11 +222,69 @@
         }
     });
 
-    // Получаем ссылки на инпут для файлов
-    var applicationFileInput = document.getElementById("exampleFileInput");
+    <!--    Скрипты ниже работают по физику-->
+        <!--    после ввода ИНН парсит все данные в дадата и вставляет их в поля-->
+            function processFile() {
+            var file = document.getElementById("exampleFileInput").files[0];
 
-    applicationFileInput.addEventListener('change', function() {
-    var file = applicationFileInput.files[0];
+            if (file && file.name.endsWith('.xlsx')) {
+                console.log("Файл прочитан");
+                var reader = new FileReader();
+
+                reader.onload = function(e) {
+                    var data = new Uint8Array(e.target.result);
+                    var workbook = XLSX.read(data, { type: 'array' });
+                    // Получаем название первого листа
+                    var firstSheetName = workbook.SheetNames[0];
+
+                    // Получаем данные из первого листа в формате JSON
+                    var firstSheetData = XLSX.utils.sheet_to_json(workbook.Sheets[firstSheetName]);
+
+                    // Выводим данные первого листа в формате JSON
+                    console.log(JSON.stringify(firstSheetData));
+                    // Отправка данных через AJAX
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', './fill_read_from_xlsx', true);
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.onreadystatechange = function() {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                    console.log("Функция сработала");
+                }
+<!--                if (xhr.readyState === 4 && xhr.status === 200) {-->
+<!--                    var response = JSON.parse(xhr.responseText);-->
+<!--                    document.getElementById('inputFiz2').value = response.data1;-->
+<!--                    document.getElementById('inputFiz3').value = response.data2;-->
+<!--                    document.getElementById('inputFiz4').value = response.data3;-->
+<!--                }-->
+            };
+            xhr.send(JSON.stringify({ data: firstSheetData }));
+        };
+
+        reader.readAsArrayBuffer(file);
+
+    } else {
+        console.log("Выбран неверный тип файла или файл не выбран");
+    }
+}
+
+document.getElementById("exampleFileInput").addEventListener("change", processFile);
+
+<!--
+<!--$.ajax({-->
+<!--                        url: './fill_read_from_xlsx',-->
+<!--                        type: 'POST',-->
+<!--                        data: {'data': (JSON.stringify(firstSheetData))},-->
+<!--                        success: function(response)-->
+<!--                        {-->
+<!--                        $('#inputFiz2').val(response.data1);-->
+<!--                        $('#inputFiz3').val(response.data2);-->
+<!--                        $('#inputFiz4').val(response.data3);-->
+<!--                        }-->
+<!--                    }-->
+<!--                    )};-->
+<!--                });-->
+
+
 </script>
 <script src="{{ url_for('static', filename='js/first-page.js') }}"></script>
 {% include 'footer.html' %}
