@@ -65,8 +65,8 @@ def read_from_xlsx():
     data = request.json.get('data')
     # Отправить ответ в формате JSON
     print(data)
-    some_file = []
-    for i in data:
-        some_file.append(i)
-    print(some_file)
+    df = pd.DataFrame(data)
+    start_date = pd.to_datetime(df['Дата погашения Основного долга'], origin='1899-12-30', unit='D')
+    df['Дата погашения Основного долга'] = start_date
+    """здесь надо запустить класс!!!!"""
     return jsonify({"response": "Эти данные переданы обратно"})
