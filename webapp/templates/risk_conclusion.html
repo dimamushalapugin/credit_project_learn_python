@@ -150,31 +150,7 @@
                     </div>
                     <script>
                         // Получаем ссылки на кнопки и инпуты для файлов
-                            var clientINN= document.getElementById("client_inn_form");
-                            var sellerINN = document.getElementById("seller_inn_form");
                             var submitButton = document.getElementById("submit-button");
-
-                            // Блокируем кнопку "Предпроверка" при загрузке страницы
-                            submitButton.disabled = true;
-
-                            // Функция для проверки заполнения полей"
-                            function checkFilesUploaded() {
-                                var clientINNValue = clientINN.value;
-                                var sellerINNValue = sellerINN.value;
-
-                                if (/^\d+$/.test(clientINNValue) && /^\d+$/.test(sellerINNValue) &&
-                                    (clientINNValue.length === 10 || clientINNValue.length === 12) &&
-                                    (sellerINNValue.length === 10 || sellerINNValue.length === 12)) {
-                                    // Если оба поля соответствуют условиям, разблокируем кнопку "Проверка"
-                                    submitButton.disabled = false;
-                                } else {
-                                    // Если условия не выполняются, блокируем кнопку "Проверка"
-                                    submitButton.disabled = true;
-                                }
-                            }
-                        // Добавляем обработчики изменения полей
-                            clientINN.addEventListener("input", checkFilesUploaded);
-                            sellerINN.addEventListener("input", checkFilesUploaded);
 
                         document.addEventListener('DOMContentLoaded', function () {
                             var loadingIndicator = document.getElementById('loading-indicator');
