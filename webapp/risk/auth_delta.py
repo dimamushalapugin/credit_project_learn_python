@@ -1,3 +1,5 @@
+import subprocess
+
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.firefox.options import Options
@@ -9,7 +11,9 @@ from webapp.risk.logger import logging
 def authorization():
     options = Options()
     options.add_argument("--headless")
-    driver = webdriver.Firefox(options=options)
+    logging.info(f'Создаем драйвер Selenium')
+    service = webdriver.FirefoxService(log_output=subprocess.STDOUT)
+    driver = webdriver.Firefox(options=options, service=service)
     try:
         driver.get(URL_DELTA)
         driver.maximize_window()
