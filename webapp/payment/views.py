@@ -1,11 +1,12 @@
 import pandas as pd
 from datetime import datetime
-from flask import Blueprint, render_template, redirect, request, url_for
+from flask import Blueprint, render_template, redirect, request, url_for, jsonify
 from webapp.payment.models import LeasingContract, Payment
 from webapp.sql_queries import write_to_db, assign_leasing_contract_id, find_credit_contract_id, \
     create_payment_schedule, query_for_all_payments, query_for_daily_payments, query_for_bank_debts
 from webapp.user.auth_utils import admin_required
 from webapp.config import DADATA_TOKEN_BKI
+# from webapp.payment.percent_banks import extract_file, PeriodDataProcessor
 
 blueprint = Blueprint('payment', __name__, url_prefix='/payments')
 
@@ -55,3 +56,17 @@ def create_payment():
         create_payment_schedule(new_payment)
         return redirect(url_for('payment.list_of_all_payments'))
     return render_template('first_page.html', suggestions_token=suggestions_token)
+
+
+@blueprint.route('/fill_read_from_xlsx', methods=['GET', 'POST'])
+@admin_required
+def read_from_xlsx():
+    # extract_file(random_file='э')
+    data = request.json.get('data')
+    # Отправить ответ в формате JSON
+    print(data)
+    df = pd.DataFrame(data)
+    start_date = pd.to_datetime(df['Дата погашения Основного долга'], origin='1899-12-30', unit='D')
+    df['Дата погашения Основного долга'] = start_date
+    """здесь надо запустить класс!!!!"""
+    return jsonify({"response": "Эти данные переданы обратно"})
