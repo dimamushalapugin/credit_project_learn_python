@@ -15,6 +15,10 @@ def process_excel(temp_path, finish_path):
     if response.status_code == 200:
         # Файл был успешно обработан, сохраняем его на сервере Linux
         logging.info(f'Путь к обработанному файлу: {finish_path}')
+        if finish_path.exists():
+            logging.info('Файл уже существует, его надо удалить')
+            finish_path.unlink()
+            logging.info('Файл удален')
         with open(finish_path, 'wb') as f:
             logging.info('Сохраняем файл...')
             f.write(response.content)

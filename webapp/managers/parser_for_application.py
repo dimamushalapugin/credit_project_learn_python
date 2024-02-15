@@ -420,6 +420,10 @@ def start_filling_application(inn_leasee, path_application, inn_seller1, inn_sel
             # Форматирование текущей даты в виде "ДД.ММ.ГГ"
             formatted_date = current_date.strftime("%d.%m.%Y")
             application_filename = temporary_path / fr'Заявка с заключением {inn_leasee} ({formatted_date}).xlsx'
+            # Проверка существования файла
+            if application_filename.exists():
+                logging.info(f"({current_user}) Файл уже существует, его надо удалить (Linux)")
+                application_filename.unlink()
             wb.save(application_filename)
             logging.info(f"({current_user}) Запускаем объединение файлов")
             application_filename_download = temporary_path / fr'Заявка с заключением {inn_leasee}.xlsx'
