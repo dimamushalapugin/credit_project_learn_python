@@ -6,7 +6,7 @@ from webapp.sql_queries import write_to_db, assign_leasing_contract_id, find_cre
     create_payment_schedule, query_for_all_payments, query_for_daily_payments, query_for_bank_debts
 from webapp.user.auth_utils import admin_required
 from webapp.config import DADATA_TOKEN_BKI
-# from webapp.payment.percent_banks import extract_file, PeriodDataProcessor
+from webapp.payment.percent_banks import main
 
 blueprint = Blueprint('payment', __name__, url_prefix='/payments')
 
@@ -63,10 +63,12 @@ def create_payment():
 def read_from_xlsx():
     # extract_file(random_file='э')
     data = request.json.get('data')
-    # Отправить ответ в формате JSON
-    print(data)
-    df = pd.DataFrame(data)
-    start_date = pd.to_datetime(df['Дата погашения Основного долга'], origin='1899-12-30', unit='D')
-    df['Дата погашения Основного долга'] = start_date
+    # # Отправить ответ в формате JSON
+    # print(data)
+    # df = pd.DataFrame(data)
+    # begin_date = pd.to_datetime(df['Дата погашения Основного долга'], origin='1899-12-30', unit='D')
+    # df['Дата погашения Основного долга'] = begin_date
+    ab = main(data)()
+    print(ab.print_output_data())
     """здесь надо запустить класс!!!!"""
     return jsonify({"response": "Эти данные переданы обратно"})
