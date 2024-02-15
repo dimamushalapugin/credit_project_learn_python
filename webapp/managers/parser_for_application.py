@@ -12,7 +12,7 @@ from datetime import datetime as dt
 from flask_login import current_user
 from webapp.risk.logger import logging
 from webapp.managers.parser_for_dkp import read_xlsx, number_to_words
-from webapp.managers.merge_two_xlsx import merge_files
+from webapp.managers.merge_two_xlsx import process_excel
 from webapp.config import DADATA_TOKEN, DADATA_BASE, dl_car_ip_path, dl_obor_ip_path, dl_car_ooo_path, dl_obor_ooo_path
 from webapp.risk.mongo_db import MongoDB
 from openpyxl.worksheet.datavalidation import DataValidation
@@ -23,7 +23,7 @@ def start_filling_application(inn_leasee, path_application, inn_seller1, inn_sel
     mongo = MongoDB(current_user)
     logging.info(f"({current_user}) Этап 1.")
     temporary_path = Path("webapp") / "static" / "temporary"
-    path_for_download = Path("static") / "temporary"
+    temporary_path_linux = Path("static") / "temporary"
     ip_or_kfh = 'Нет'
     type_business = ''
     full_krakt_name_leasee = ''
@@ -268,7 +268,8 @@ def start_filling_application(inn_leasee, path_application, inn_seller1, inn_sel
             # заполняем страницу Заявление
             sheet_zayavlenie = wb['Заявление']
             # Создаем список валидации данных
-            dv = DataValidation(type="list", formula1='"Руб с НДС, Китайский юань с НДС, Доллар с НДС"', showDropDown=True)
+            dv = DataValidation(type="list", formula1='"Руб с НДС, Китайский юань с НДС, Доллар с НДС"',
+                                showDropDown=True)
             # Apply the DataValidation object to the cell
             sheet_zayavlenie.add_data_validation(dv)
             dv.add(sheet_zayavlenie['Q21'])
@@ -413,16 +414,20 @@ def start_filling_application(inn_leasee, path_application, inn_seller1, inn_sel
                 sheet_anketa_1_list['C21'].value = bank_details.get('phone')
                 sheet_anketa_1_list['F21'].value = bank_details.get('email')
 
-            application_filename = temporary_path / fr'Заявка с заключением {inn_leasee} (read).xlsx'
+            # сохраняем эксель# Получение текущей даты
+            current_date = datetime.datetime.now()
+
+            # Форматирование текущей даты в виде "ДД.ММ.ГГ"
+            formatted_date = current_date.strftime("%d.%m.%Y")
+            application_filename = temporary_path / fr'Заявка с заключением {inn_leasee} ({formatted_date}).xlsx'
             wb.save(application_filename)
             logging.info(f"({current_user}) Запускаем объединение файлов")
-            application_filename_download = path_for_download / fr'Заявка с заключением {inn_leasee}.xlsx'
-            xlsx_name_read = fr'Заявка с заключением {inn_leasee} (read).xlsx'
-            xlsx_name = fr'Заявка с заключением {inn_leasee}.xlsx'
-            merge_files(xlsx_name_read, xlsx_name)
+            application_filename_download = temporary_path / fr'Заявка с заключением {inn_leasee}.xlsx'
+            application_filename_linux = temporary_path_linux / fr'Заявка с заключением {inn_leasee}.xlsx'
+            process_excel(application_filename, application_filename_download)
             logging.info(f"({current_user}) Все успешно сохранилось!")
 
-            return application_filename_download
+            return application_filename_linux
         except Exception as ex:
             logging.info(ex, exc_info=True)
             raise ValueError
@@ -442,7 +447,8 @@ def start_filling_agreement(inn_leasee, path_application, path_graphic, signator
 
     full_krakt_name_leasee = result[0]['data']['name']['short_with_opf'].replace('"', '')
 
-    dir_path = Path('webapp') / 'static' / 'agreements' / f'{full_krakt_name_leasee} {inn_leasee}' / f'{dt.today().strftime(f"%d.%m.%Y")}'
+    dir_path = Path(
+        'webapp') / 'static' / 'agreements' / f'{full_krakt_name_leasee} {inn_leasee}' / f'{dt.today().strftime(f"%d.%m.%Y")}'
     if not os.path.exists(dir_path):
         os.makedirs(dir_path)
 
