@@ -1,3 +1,4 @@
+var pathFile = "./upload_files";
 // Получаем ссылки на кнопки и инпуты для файлов
 var checkButton = document.getElementById("check-button");
 var applicationFileInput = document.getElementById("applicationFileInput");
@@ -152,7 +153,7 @@ checkButton.addEventListener("click", function() {
     formData.append('uploaded_graphic', graphicFileInput.files[0]);
 
     // Отправляем файлы на сервер
-    fetch("{{ url_for('manager.upload_files') }}", {
+    fetch(pathFile, {
         method: 'POST',
         body: formData
     })
