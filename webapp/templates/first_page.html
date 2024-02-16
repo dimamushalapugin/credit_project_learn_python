@@ -162,7 +162,21 @@
                             </tr>
                             </thead>
                             <tbody id="table_json_body">
-                            <!-- The table data will be populated here -->
+                            <tr>
+                                <td contenteditable="true"></td>
+                                <td contenteditable="true"></td>
+                                <td contenteditable="true"></td>
+                                <td contenteditable="true"></td>
+                                <td contenteditable="true"></td>
+                                <td contenteditable="true"></td>
+                                <td contenteditable="true"></td>
+                                <td contenteditable="true"></td>
+                                <td contenteditable="true"></td>
+                                <td contenteditable="true"></td>
+                                <td contenteditable="true"></td>
+                                <td contenteditable="true"></td>
+                                <td contenteditable="true"></td>
+                            </tr>
                             </tbody>
                         </table>
                     </div>
@@ -219,7 +233,6 @@ function processFile() {
             var firstSheetName = workbook.SheetNames[0];
             var firstSheetData = XLSX.utils.sheet_to_json(workbook.Sheets[firstSheetName]);
             console.log(JSON.stringify(firstSheetData));
-
             if (firstSheetData.length > 0) {
                 var xhr = new XMLHttpRequest();
                 xhr.open('POST', './fill_read_from_xlsx', true);
@@ -231,14 +244,8 @@ function processFile() {
                     if (xhr.readyState === 4 && xhr.status === 200){
                         var response = JSON.parse(xhr.responseText);
                         var tableData = ''; // Initialize an empty string to store the table data
-                        console.log("Файл прочитан2123123");
-<!--                        console.log(JSON.stringify(response));-->
-                        console.log((response));
-                        console.log("АЛМАЗ ЛОХ");
-                        console.log((response.response));
                         if (response) {
                             response.forEach(function(cell) {
-                                console.log(cell);
                                 tableData += `<tr>
                                     <td>${cell['№']}</td>
                                     <td>${cell['Дата начала периода']}</td>
@@ -256,9 +263,17 @@ function processFile() {
                                     <!-- добавьте остальные столбцы здесь -->
                                   </tr>`; // Append each row to the table data
                 });
-                            console.log("Файл прочитан21");
-                        }
+
                         document.getElementById('table_json_body').innerHTML = tableData; // Replace the content of the table body with the received data
+                        // Если вам нужно обновить значения в редактируемых ячейках, вы можете использовать что-то вроде этого:
+                        // Получаем все редактируемые ячейки из тела таблицы
+                        var editableCells = document.querySelectorAll('#table_json_body td');
+
+                        // Устанавливаем атрибут contenteditable в значение "true" для каждой ячейки
+                        editableCells.forEach(function(cell) {
+                          cell.setAttribute('contenteditable', 'true');
+                        });
+                        }
                         }
                 };
                 xhr.send(JSON.stringify({ data: firstSheetData }));
