@@ -1,0 +1,77 @@
+body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.content {
+    flex: 1;
+}
+
+.small-input {
+    max-width: 300px;
+    margin: auto;
+}
+
+.centered-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+/* Стили для поля ввода с классом form-control и custom-input */
+  .form-control {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 50px; /* Скругленные углы */
+    box-sizing: border-box;
+    transition: border-color 0.3s ease, background-color 0.3s ease;
+    opacity: 0.3; /* Прозрачность */
+    text-align: center;
+  }
+
+  .form-control:focus {
+    outline: none;
+    border-color: #2ecc71;
+    opacity: 0.7; /* Полная прозрачность при фокусировке */
+  }
+
+ /* Стили для кнопки */
+.button {
+  display: inline-block;
+  padding: 10px 70px;
+  font-size: 16px;
+  text-align: center;
+  text-decoration: none;
+  border-radius: 20px;
+  transition: background-color 0.3s ease;
+  cursor: pointer;
+  border: none; /* Убираем рамку */
+  opacity: 0.8; /* Немного прозрачная кнопка */
+}
+
+/* Стили для обычного состояния кнопки */
+.button-normal {
+  background-color: #af8ce5; /* светло-фиолетовый цвет */
+  color: #fff; /* белый цвет текста */
+}
+
+/* Стили для состояния кнопки при наведении */
+.button:hover {
+  background-color: #8a63b0; /* измененный цвет при наведении (темно-фиолетовый) */
+}
+
+/* Стили для состояния кнопки при нажатии */
+.button:active {
+  background-color: #555; /* темно-серый цвет при нажатии */
+}
+
+.img-fluid {
+    max-width: 70%;
+    max-height: 70%;
+    height: auto;
+    margin-left: auto;
+    margin-right: auto;
+}

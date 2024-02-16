@@ -6,105 +6,14 @@
     <link rel="icon" href="{{ url_for('static', filename='images/favicon.png') }}" type="image/png">
 
 
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-
-        gtag('config', 'G-KQX5FDFY5F');
-    </script>
+    <script src="{{ url_for('static', filename='js/google_tag.js') }}"></script>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Авторизация</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style-footer.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/login_page.css') }}">
 
-    <style>
-        body {
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .content {
-            flex: 1;
-        }
-
-        .small-input {
-            max-width: 300px;
-            margin: auto;
-        }
-
-        .centered-container {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-        }
-
-
-    </style>
-    <style>
-      /* Стили для поля ввода с классом form-control и custom-input */
-      .form-control {
-        width: 100%;
-        padding: 10px;
-        border: none;
-        border-radius: 50px; /* Скругленные углы */
-        box-sizing: border-box;
-        transition: border-color 0.3s ease, background-color 0.3s ease;
-        opacity: 0.3; /* Прозрачность */
-        text-align: center;
-      }
-
-      .form-control:focus {
-        outline: none;
-        border-color: #2ecc71;
-        opacity: 0.7; /* Полная прозрачность при фокусировке */
-      }
-    </style>
-    <style>
-        /* Стили для кнопки */
-        .button {
-          display: inline-block;
-          padding: 10px 70px;
-          font-size: 16px;
-          text-align: center;
-          text-decoration: none;
-          border-radius: 20px;
-          transition: background-color 0.3s ease;
-          cursor: pointer;
-          border: none; /* Убираем рамку */
-          opacity: 0.8; /* Немного прозрачная кнопка */
-        }
-
-        /* Стили для обычного состояния кнопки */
-        .button-normal {
-          background-color: #af8ce5; /* светло-фиолетовый цвет */
-          color: #fff; /* белый цвет текста */
-        }
-
-        /* Стили для состояния кнопки при наведении */
-        .button:hover {
-          background-color: #8a63b0; /* измененный цвет при наведении (темно-фиолетовый) */
-        }
-
-        /* Стили для состояния кнопки при нажатии */
-        .button:active {
-          background-color: #555; /* темно-серый цвет при нажатии */
-        }
-    </style>
-    <style>
-
-
-    .img-fluid {
-        max-width: 70%;
-        max-height: 70%;
-        height: auto;
-        margin-left: auto;
-        margin-right: auto;
-    }
-    </style>
 </head>
 <body style="background-image: linear-gradient(to bottom, #FFFFFF, #AF8EE1, #F4BE48);" class="text-center d-flex align-items-center">
 <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">

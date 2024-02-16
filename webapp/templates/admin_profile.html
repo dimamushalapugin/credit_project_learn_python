@@ -3,14 +3,7 @@
 <head>
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-KQX5FDFY5F"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-
-        gtag('config', 'G-KQX5FDFY5F');
-
-    </script>
+    <script src="{{ url_for('static', filename='js/google_tag.js') }}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.5/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
     <meta charset="utf-8">
@@ -20,6 +13,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="icon" href="{{ url_for('static', filename='images/favicon.png') }}" type="image/png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin-page.css') }}">
 
     <style>
         body {
@@ -30,140 +24,6 @@
 
         .content {
             flex: 1;
-        }
-    </style>
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-image: linear-gradient(to bottom, #FCFDFC, #CCE9FF, #000000);;
-        }
-
-        header {
-            background-color: #1da1f2;
-            color: #fff;
-            padding: 2px;
-            text-align: center;
-            font-size: 28px;
-            border-bottom: 2px solid #0f81c7;
-            position: relative;
-        }
-
-        header h1 {
-            font-size: 21px; /* Уменьшим размер шрифта */
-            margin: 0;
-        }
-
-        /* Оставим остальные стили без изменений */
-
-        .profile-info h2 {
-            margin: 0;
-            color: #333;
-            font-size: 21px; /* Уменьшим размер шрифта */
-            margin-bottom: 10px;
-        }
-
-        .profile-container {
-            display: flex;
-<!--            justify-content: space-between; /* Новый стиль для выравнивания элементов по краям контейнера */-->
-            align-items: center;
-            margin-top: 20px;
-        }
-
-        .profile-card {
-            background-color: #fff;
-            border-radius: 10px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-            padding: 40px;
-            max-width: 400px;
-            width: 70%; /* Уменьшим ширину, чтобы оставить место для кнопки */
-            margin-top: 20px;
-            margin-left: 300px;
-            text-align: center;
-        }
-
-        /* Новый стиль для кнопки */
-        .profile-btn {
-            background-color: #1da1f2;
-            color: #fff;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-        }
-
-        .profile-image {
-            border-radius: 50%;
-            width: 120px;
-            height: 120px;
-            object-fit: cover;
-            margin-bottom: 20px;
-        }
-
-        .profile-info {
-            text-align: center;
-        }
-
-        .profile-info h2 {
-            margin: 0;
-            color: #333;
-            font-size: 28px;
-            margin-bottom: 10px;
-        }
-
-        .profile-info p {
-            margin: 10px 0;
-            color: #657786;
-        }
-
-        .profile-info a {
-            color: #1da1f2;
-            text-decoration: none;
-            font-weight: bold;
-        }
-
-        .profile-info a:hover {
-            text-decoration: underline;
-        }
-    </style>
-    <style>
-        #users {
-            margin: 0; /* Убираем внешний отступ */
-            padding: 0; /* Убираем внутренний отступ */
-            border-spacing: 0; /* Убираем отступы между ячейками */
-            border-collapse: collapse; /* Убираем отступы между границами ячеек */
-            width: 100%;
-            vertical-align: middle;
-        }
-
-        #users th, #users td {
-            padding: 0px; /* Опционально: устанавливаем отступ внутри ячеек, если это нужно */
-            text-align: center;
-            vertical-align: middle;
-        }
-    </style>
-    <style>
-        .status-circle {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            display: inline-block;
-            background-color: #00ff00; /* Яркий зеленый */
-            box-shadow: 0 0 5px rgba(0, 255, 0, 0.8); /* Тень */
-            border: 2px solid #fff; /* Белая обводка */
-        }
-    </style>
-    <style>
-        .status-circle-grey {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            display: inline-block;
-            background-color: #808080; /* Серый цвет */
-            box-shadow: 0 0 5px rgba(128, 128, 128, 0.8); /* Тень */
-            border: 2px solid #fff; /* Белая обводка */
         }
     </style>
 </head>
@@ -239,22 +99,7 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
 <!-- Скрипт для управления видимостью карточки с пользователями -->
-<script>
-    document.getElementById('users-table').style.display = 'none';
-    function toggleTableVisibility() {
-        var checkbox = document.getElementById('flexSwitchCheckDefault');
-        var usersTable = document.getElementById('users-table');
-
-        if (checkbox.checked) {
-            usersTable.style.display = 'block';
-        } else {
-            usersTable.style.display = 'none';
-        }
-    }
-</script>
-<script>
-    var socket = io.connect('http://' + document.domain + ':' + location.port);
-</script>
+<script src="{{ url_for('static', filename='js/admin_page_check_box.js') }}"></script>
 <br><br><br>
 {% include 'footer.html' %}
 </body>
