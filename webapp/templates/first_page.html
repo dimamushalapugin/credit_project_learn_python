@@ -143,6 +143,7 @@
                 <div class="card-body">
                     <div class="table-responsive">
                         <table class="table">
+                            <thead>
                             <tr>
                                 <th>№</th>
                                 <th>Дата начала периода</th>
@@ -159,25 +160,9 @@
                                 <th>Сумма погашения Основного долга</th>
                                 <!-- Добавьте заголовки для остальных столбцов -->
                             </tr>
-
-                            <tbody>
-                            <tr>
-                                <td>Ячейка 1</td>
-                                <td>Ячейка 2</td>
-                                <td>Ячейка 3</td>
-                                <td>Ячейка 3</td>
-                                <td>Ячейка 3</td>
-                                <td>Ячейка 3</td>
-                                <td>Ячейка 3</td>
-                                <td>Ячейка 3</td>
-                                <td>Ячейка 3</td>
-                                <td>Ячейка 3</td>
-                                <td>Ячейка 3</td>
-                                <td>Ячейка 3</td>
-                                <td>Ячейка 3</td>
-                                <!-- Добавьте содержимое для остальных ячеек -->
-                            </tr>
-                            <!-- Добавьте дополнительные строки по аналогии -->
+                            </thead>
+                            <tbody id="table_json_body">
+                            <!-- The table data will be populated here -->
                             </tbody>
                         </table>
                     </div>
@@ -187,7 +172,6 @@
     </div>
 </div>
 <br>
-
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
     flatpickr("#datepicker", {
@@ -222,67 +206,74 @@
         }
     });
 
-    <!--    Скрипты ниже работают по физику-->
-        <!--    после ввода ИНН парсит все данные в дадата и вставляет их в поля-->
-            function processFile() {
-            var file = document.getElementById("exampleFileInput").files[0];
+function processFile() {
+    var file = document.getElementById("exampleFileInput").files[0];
 
-            if (file && file.name.endsWith('.xlsx')) {
-                console.log("Файл прочитан");
-                var reader = new FileReader();
+    if (file && file.name.endsWith('.xlsx')) {
+        console.log("Файл прочитан");
+        var reader = new FileReader();
 
-                reader.onload = function(e) {
-                    var data = new Uint8Array(e.target.result);
-                    var workbook = XLSX.read(data, { type: 'array' });
-                    // Получаем название первого листа
-                    var firstSheetName = workbook.SheetNames[0];
+        reader.onload = function(e) {
+            var data = new Uint8Array(e.target.result);
+            var workbook = XLSX.read(data, { type: 'array' });
+            var firstSheetName = workbook.SheetNames[0];
+            var firstSheetData = XLSX.utils.sheet_to_json(workbook.Sheets[firstSheetName]);
+            console.log(JSON.stringify(firstSheetData));
 
-                    // Получаем данные из первого листа в формате JSON
-                    var firstSheetData = XLSX.utils.sheet_to_json(workbook.Sheets[firstSheetName]);
-
-                    // Выводим данные первого листа в формате JSON
-                    console.log(JSON.stringify(firstSheetData));
-                    // Отправка данных через AJAX
-            var xhr = new XMLHttpRequest();
-            xhr.open('POST', './fill_read_from_xlsx', true);
-            xhr.setRequestHeader('Content-Type', 'application/json');
-            xhr.onreadystatechange = function() {
-            if (xhr.readyState === 4 && xhr.status === 200) {
-                    console.log("Функция сработала");
-                }
-<!--                if (xhr.readyState === 4 && xhr.status === 200) {-->
-<!--                    var response = JSON.parse(xhr.responseText);-->
-<!--                    document.getElementById('inputFiz2').value = response.data1;-->
-<!--                    document.getElementById('inputFiz3').value = response.data2;-->
-<!--                    document.getElementById('inputFiz4').value = response.data3;-->
-<!--                }-->
-            };
-            xhr.send(JSON.stringify({ data: firstSheetData }));
+            if (firstSheetData.length > 0) {
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', './fill_read_from_xlsx', true);
+                xhr.setRequestHeader('Content-Type', 'application/json');
+                xhr.onerror = function() {
+                    console.error('Произошла ошибка при отправке запроса.');
+                };
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState === 4 && xhr.status === 200){
+                        var response = JSON.parse(xhr.responseText);
+                        var tableData = ''; // Initialize an empty string to store the table data
+                        console.log("Файл прочитан2123123");
+<!--                        console.log(JSON.stringify(response));-->
+                        console.log((response));
+                        console.log("АЛМАЗ ЛОХ");
+                        console.log((response.response));
+                        if (response) {
+                            response.forEach(function(cell) {
+                                console.log(cell);
+                                tableData += `<tr>
+                                    <td>${cell['№']}</td>
+                                    <td>${cell['Дата начала периода']}</td>
+                                    <td>${cell['Дата окончания периода']}</td>
+                                    <td>${cell['Дата уплаты процентов']}</td>
+                                    <td>${cell['Остаток ОД на начало периода']}</td>
+                                    <td>${cell['Количество дней до погашения ОД']}</td>
+                                    <td>${cell['Остаток ОД на конец периода']}</td>
+                                    <td>${cell['Количество дней после погашения ОД']}</td>
+                                    <td>${cell['Сумма процентов до погашения ОД']}</td>
+                                    <td>${cell['Сумма процентов после погашения ОД']}</td>
+                                    <td>${cell['Общая сумма процентов']}</td>
+                                    <td>${cell['Дата погашения Основного долга']}</td>
+                                    <td>${cell['Сумма погашения Основного долга']}</td>
+                                    <!-- добавьте остальные столбцы здесь -->
+                                  </tr>`; // Append each row to the table data
+                });
+                            console.log("Файл прочитан21");
+                        }
+                        document.getElementById('table_json_body').innerHTML = tableData; // Replace the content of the table body with the received data
+                        }
+                };
+                xhr.send(JSON.stringify({ data: firstSheetData }));
+                console.log("Файл прочитан5435");
+            } else {
+                console.log("Данные первого листа пусты или некорректны.");
+            }
         };
-
         reader.readAsArrayBuffer(file);
-
     } else {
         console.log("Выбран неверный тип файла или файл не выбран");
     }
 }
 
 document.getElementById("exampleFileInput").addEventListener("change", processFile);
-
-<!--
-<!--$.ajax({-->
-<!--                        url: './fill_read_from_xlsx',-->
-<!--                        type: 'POST',-->
-<!--                        data: {'data': (JSON.stringify(firstSheetData))},-->
-<!--                        success: function(response)-->
-<!--                        {-->
-<!--                        $('#inputFiz2').val(response.data1);-->
-<!--                        $('#inputFiz3').val(response.data2);-->
-<!--                        $('#inputFiz4').val(response.data3);-->
-<!--                        }-->
-<!--                    }-->
-<!--                    )};-->
-<!--                });-->
 
 
 </script>
