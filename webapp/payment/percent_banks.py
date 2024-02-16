@@ -97,11 +97,11 @@ class PeriodDataProcessor:
                 (self.output_data_new['Сумма погашения Основного долга'].sum() * self.percent
                  / self.define_year(index=0) * zero_line), 2)
             self.output_data_new.loc[0, 'Количество дней до погашения ОД'] = zero_line
-            self.output_data_new.loc[0, 'Остаток ОД на начало периода'] = self.output_data_new[
-                'Сумма погашения Основного долга'].sum()
+            self.output_data_new.loc[0, 'Остаток ОД на начало периода'] = round(self.output_data_new[
+                'Сумма погашения Основного долга'].sum(), 2)
             self.output_data_new.loc[0, 'Количество дней после погашения ОД'] = 0
-            self.output_data_new.loc[0, 'Остаток ОД на конец периода'] = self.output_data_new[
-                'Сумма погашения Основного долга'].sum()
+            self.output_data_new.loc[0, 'Остаток ОД на конец периода'] = round(self.output_data_new[
+                'Сумма погашения Основного долга'].sum(), 2)
             self.output_data_new.loc[0, 'Сумма процентов до погашения ОД'] = round(
                 (self.output_data_new['Сумма погашения Основного долга'].sum() * self.percent
                  / self.define_year(index=0) * zero_line), 2)
