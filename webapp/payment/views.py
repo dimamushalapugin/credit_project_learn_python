@@ -73,3 +73,8 @@ def read_from_xlsx():
     json_serializable_data = response_math_xlxs.to_dict(orient='records')
     print(json_serializable_data)
     return json_serializable_data
+
+@blueprint.route('/writer_read_xlsx', methods=['GET', 'POST'])
+@admin_required
+def writer_from_xlsx():
+    return
