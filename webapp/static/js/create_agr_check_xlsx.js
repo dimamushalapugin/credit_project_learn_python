@@ -1,3 +1,4 @@
+var pathFile = "./upload_files";
 // Получаем ссылки на кнопки и инпуты для файлов
 var checkButton = document.getElementById("check-button");
 var applicationFileInput = document.getElementById("applicationFileInput");
