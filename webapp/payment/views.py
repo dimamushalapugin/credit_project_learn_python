@@ -61,18 +61,12 @@ def create_payment():
 @blueprint.route('/fill_read_from_xlsx', methods=['GET', 'POST'])
 @admin_required
 def read_from_xlsx():
-    # extract_file(random_file='э')
     data = request.json.get('data')
-    # # Отправить ответ в формате JSON
-    # print(data)
-    # df = pd.DataFrame(data)
-    # begin_date = pd.to_datetime(df['Дата погашения Основного долга'], origin='1899-12-30', unit='D')
-    # df['Дата погашения Основного долга'] = begin_date
     file_ = PeriodDataProcessor(data)
     response_math_xlxs = file_.print_output_data()
     json_serializable_data = response_math_xlxs.to_dict(orient='records')
-    print(json_serializable_data)
     return json_serializable_data
+
 
 @blueprint.route('/writer_read_xlsx', methods=['GET', 'POST'])
 @admin_required
