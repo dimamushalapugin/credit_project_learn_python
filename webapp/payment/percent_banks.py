@@ -1,6 +1,7 @@
 import pandas as pd
 from datetime import datetime
 import datetime
+import numpy as np
 
 
 class PeriodDataProcessor:
@@ -96,11 +97,11 @@ class PeriodDataProcessor:
                 (self.output_data_new['Сумма погашения Основного долга'].sum() * self.percent
                  / self.define_year(index=0) * zero_line), 2)
             self.output_data_new.loc[0, 'Количество дней до погашения ОД'] = zero_line
-            self.output_data_new.loc[0, 'Остаток ОД на начало периода'] = self.output_data_new[
-                'Сумма погашения Основного долга'].sum()
+            self.output_data_new.loc[0, 'Остаток ОД на начало периода'] = round(self.output_data_new[
+                'Сумма погашения Основного долга'].sum(), 2)
             self.output_data_new.loc[0, 'Количество дней после погашения ОД'] = 0
-            self.output_data_new.loc[0, 'Остаток ОД на конец периода'] = self.output_data_new[
-                'Сумма погашения Основного долга'].sum()
+            self.output_data_new.loc[0, 'Остаток ОД на конец периода'] = round(self.output_data_new[
+                'Сумма погашения Основного долга'].sum(), 2)
             self.output_data_new.loc[0, 'Сумма процентов до погашения ОД'] = round(
                 (self.output_data_new['Сумма погашения Основного долга'].sum() * self.percent
                  / self.define_year(index=0) * zero_line), 2)
@@ -125,14 +126,18 @@ class PeriodDataProcessor:
                 principal_debt_1_i * self.percent / self.define_year(index=i) * first_line_1_i, 2)
 
             self.output_data_new.loc[i, 'Количество дней до погашения ОД'] = first_line_0_i
-            self.output_data_new.loc[i, 'Остаток ОД на начало периода'] = principal_debt_0_i
+            self.output_data_new.loc[i, 'Остаток ОД на начало периода'] = round(principal_debt_0_i, 2)
             self.output_data_new.loc[i, 'Количество дней после погашения ОД'] = first_line_1_i
-            self.output_data_new.loc[i, 'Остаток ОД на конец периода'] = principal_debt_1_i
+            self.output_data_new.loc[i, 'Остаток ОД на конец периода'] = round(principal_debt_1_i, 2)
             self.output_data_new.loc[i, 'Сумма процентов до погашения ОД'] = principal_monthpay_0_i
             self.output_data_new.loc[i, 'Сумма процентов после погашения ОД'] = principal_monthpay_1_i
             self.output_data_new.loc[i, 'Общая сумма процентов'] = round(
                 principal_monthpay_0_i + principal_monthpay_1_i, 2)
-
+        self.output_data_new = self.output_data_new.fillna(0)
+        self.output_data_new['Дата начала периода'] = self.output_data_new['Дата начала периода'].apply(lambda x: x.strftime('%Y-%m-%d') if x != 0 else 0)
+        self.output_data_new['Дата окончания периода'] = self.output_data_new['Дата окончания периода'].apply(lambda x: x.strftime('%Y-%m-%d') if x != 0 else 0)
+        self.output_data_new['Дата погашения Основного долга'] = self.output_data_new['Дата погашения Основного долга'].apply(lambda x: x.strftime('%Y-%m-%d') if x != 0 else 0)
+        self.output_data_new['Дата уплаты процентов'] = self.output_data_new['Дата уплаты процентов'].apply(lambda x: x.strftime('%Y-%m-%d') if x != 0 else 0)
         # Save the updated output_data to an Excel file
         self.output_data_new.to_excel('updated_output_data.xlsx', index=False)  # Change to self.output_data_new
 

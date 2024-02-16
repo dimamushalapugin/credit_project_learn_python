@@ -8,7 +8,6 @@ from webapp.user.auth_utils import admin_required
 from webapp.config import DADATA_TOKEN_BKI
 from webapp.payment.percent_banks import PeriodDataProcessor
 
-
 blueprint = Blueprint('payment', __name__, url_prefix='/payments')
 
 
@@ -70,6 +69,7 @@ def read_from_xlsx():
     # begin_date = pd.to_datetime(df['Дата погашения Основного долга'], origin='1899-12-30', unit='D')
     # df['Дата погашения Основного долга'] = begin_date
     file_ = PeriodDataProcessor(data)
-    file_.print_output_data()
-    """здесь надо запустить класс!!!!"""
-    return jsonify({"response": "Эти данные переданы обратно"})
+    response_math_xlxs = file_.print_output_data()
+    json_serializable_data = response_math_xlxs.to_dict(orient='records')
+    print(json_serializable_data)
+    return json_serializable_data
