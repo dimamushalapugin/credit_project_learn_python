@@ -290,6 +290,25 @@ function processFile() {
 
 document.getElementById("exampleFileInput").addEventListener("change", processFile);
 
+// Находим кнопку
+var button = document.querySelector('button[name="save_file"]');
+
+// Добавляем обработчик события click
+button.addEventListener('click', function() {
+  // Получаем все редактируемые ячейки из тела таблицы
+  var editableCells = document.querySelectorAll('#table_json_body td');
+  console.log(editableCells);
+  // Создаем массив для хранения данных из ячеек
+  var cellData = [];
+
+  // Проходим по каждой редактируемой ячейке и добавляем ее значение в массив
+  editableCells.forEach(function(cell) {
+    cellData.push(cell.textContent);
+  });
+
+  // Теперь у вас есть массив cellData, который содержит данные из редактируемых ячеек
+  console.log(cellData);
+});
 
 </script>
 <script src="{{ url_for('static', filename='js/first-page.js') }}"></script>
