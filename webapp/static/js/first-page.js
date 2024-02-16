@@ -49,6 +49,13 @@ function updateCreditContracts() {
                         contractSelect.innerHTML += '<option value="№ Ю-4043-КЛВ от 08.07.2022">№ Ю-4043-КЛВ от 08.07.2022</option>';
                         contractSelect.innerHTML += '<option value="№ Ю-4179-КЛВ от 31.03.2023">№ Ю-4179-КЛВ от 31.03.2023</option>';
                     }
+                    else if (investorSelect.value === "bank10") {
+                        contractSelect.innerHTML += '<option value="№ 4518/81-РКЛ/23 от 10.11.2023">№ 4518/81-РКЛ/23 от 10.11.2023</option>';
+                    }
+
+                    else if (investorSelect.value === "bank11") {
+                        contractSelect.innerHTML += '<option value="№ 420F00OUT от 10.11.2023">№ 420F00OUT от 10.11.2023</option>';
+                    }
                 }
 
                 window.onload = function() {
