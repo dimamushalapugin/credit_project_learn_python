@@ -17,10 +17,15 @@ def replace_words_in_bki(docx_file, old_words_bki, new_words_bki):
                     if old_words_bki[i] in cell.text:
                         cell.text = cell.text.replace(old_words_bki[i], str(new_words_bki[i]))
     new = new_words_bki[0].replace('"', '')
+    if len(new) > 110:
+        new = '_'
     if all(char.isdigit() for char in new_words_bki[1]):
         doc.save(path_temp / fr'БКИ {new}.docx')
     else:
-        doc.save(path_temp / fr'БКИ {new_words_bki[1]}.docx')
+        name = new_words_bki[1]
+        if len(name) > 110:
+            name = '_'
+        doc.save(path_temp / fr'БКИ {name}.docx')
 
 
 def replace_bki(some1, some2, some3, some4, some5, some6, some7, some8, some9):

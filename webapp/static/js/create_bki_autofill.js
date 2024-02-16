@@ -48,11 +48,24 @@ var passportBy = document.getElementById('inputFiz5');
                 success: function(response) {
                     // Предполагается, что сервер вернул ссылку на скачивание в переменной response.downloadLink
                     var downloadLink = response.downloadLink;
-
+                    var hrefValue, downloadValue;
                     // Создаем скрытую ссылку для скачивания
                     var link = document.createElement('a');
                     link.href = '/static/temporary/БКИ ' + bkiurLkmb2.replace(/"/g, '') + '.docx';  // Вставляем значение из bkiurLkmb2
                     link.download = 'БКИ ' + bkiurLkmb2.replace(/"/g, '') + '.docx';  // Вставляем значение из bkiurLkmb2
+
+                    if (bkiurLkmb2.length > 110) {
+                        hrefValue = '/static/temporary/БКИ _.docx';
+                        downloadValue = 'БКИ _.docx';
+                    } else {
+                        hrefValue = '/static/temporary/БКИ ' + bkiurLkmb2.replace(/"/g, '') + '.docx';
+                        downloadValue = 'БКИ ' + bkiurLkmb2.replace(/"/g, '') + '.docx';
+                    }
+
+                    // Присваиваем значение href в зависимости от условия
+                    link.href = hrefValue;
+                    link.download = downloadValue;  // Вставляем значение из bkiurLkmb2
+
                     document.body.appendChild(link);
 
                     // Имитируем клик по ссылке для начала скачивания
@@ -145,8 +158,19 @@ var passportBy = document.getElementById('inputFiz5');
 
                     // Создаем скрытую ссылку для скачивания
                     var link = document.createElement('a');
-                    link.href = '/static/temporary/БКИ ' + bkifizLkmb2 + '.docx';  // Вставляем значение из bkiurLkmb2
-                    link.download = 'БКИ ' + bkifizLkmb2 + '.docx';  // Вставляем значение из bkiurLkmb2
+                    var hrefValue, downloadValue;
+                    log.console(bkifizLkmb2.length)
+                    if (bkifizLkmb2.length > 110) {
+                        hrefValue = '/static/temporary/БКИ _.docx';
+                        downloadValue = 'БКИ _.docx';
+                    } else {
+                        hrefValue = '/static/temporary/БКИ ' + bkifizLkmb2 + '.docx';
+                        downloadValue = 'БКИ ' + bkifizLkmb2 + '.docx';
+                    }
+
+                    // Присваиваем значение href в зависимости от условия
+                    link.href = hrefValue;
+                    link.download = downloadValue;  // Вставляем значение из bkiurLkmb2
                     document.body.appendChild(link);
 
                     // Имитируем клик по ссылке для начала скачивания
