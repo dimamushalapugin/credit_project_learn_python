@@ -1,1 +1,1 @@
-export FLASK_APP=webapp && export FLASK_ENV=development && export FLASK_RUN_PORT=8080 && flask run
+gunicorn -b 0.0.0.0:8080 'webapp:create_app()'
