@@ -1,4 +1,4 @@
-var socket = io.connect('http://' + document.domain + ':' + location.port);
+//var socket = io.connect('http://' + document.domain + ':' + location.port);
 document.getElementById('users-table').style.display = 'none';
     function toggleTableVisibility() {
         var checkbox = document.getElementById('flexSwitchCheckDefault');
