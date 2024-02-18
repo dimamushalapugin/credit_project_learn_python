@@ -1,6 +1,6 @@
 import pandas as pd
 from datetime import datetime
-from flask import Blueprint, render_template, redirect, request, url_for, jsonify
+from flask import Blueprint, render_template, redirect, request, url_for
 from webapp.payment.models import LeasingContract, Payment
 from webapp.sql_queries import write_to_db, assign_leasing_contract_id, find_credit_contract_id, \
     create_payment_schedule, query_for_all_payments, query_for_daily_payments, query_for_bank_debts
