@@ -9,7 +9,11 @@ class PeriodDataProcessor:
         self.period_month = self.extract_file(data)[2]
         self.start_date = date_of_issue
         self.last_day_of_month = pd.to_datetime(self.start_date) + pd.offsets.MonthEnd(0)
-        self.percent = float(interest_rate)
+        try:
+            self.percent = float(interest_rate)
+        except ValueError:
+            logging.info("Interest rate is None")
+            self.percent = 0.0
         self.output_data = None
         self.output_data_new = None  # Add this line to initialize the attribute
 
