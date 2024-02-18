@@ -1,36 +1,34 @@
-import pandas as pd
-from datetime import datetime
 import datetime
+import pandas as pd
+from webapp.risk.logger import logging
 
 
 class PeriodDataProcessor:
-    def __init__(self, data):
+    def __init__(self, data, interest_rate, date_of_issue):
         self.data = data
         self.period_month = self.extract_file(data)[2]
-        self.start_date = '2020-10-15'
+        self.start_date = date_of_issue
         self.last_day_of_month = pd.to_datetime(self.start_date) + pd.offsets.MonthEnd(0)
-        self.percent = 0.10
+        self.percent = float(interest_rate)
         self.output_data = None
         self.output_data_new = None  # Add this line to initialize the attribute
 
     pd.set_option('display.max_columns', 25)
     pd.set_option('display.max_rows', 500)
 
-    def extract_file(self, data_json):
+    @staticmethod
+    def extract_file(data_json):
         df = pd.DataFrame(data_json)
         start_date = pd.to_datetime(df['Дата погашения Основного долга'], origin='1899-12-30', unit='D')
         df['Дата погашения Основного долга'] = start_date
-        print(df)
 
         # Convert the "Дата погашения" column to datetime format
         df['Дата погашения Основного долга'] = pd.to_datetime(df['Дата погашения Основного долга'])
         # считает кол-во строк в первом столбце
         num_rows = df.shape[0]
-        print(num_rows)
 
         # Extract the month and year from the first cell of the "Дата погашения" column
         month_year = df['Дата погашения Основного долга'][0].strftime('%B %Y')
-        # print(month_year)
         return month_year, df, num_rows
 
     def create_dataframe(self):
@@ -64,12 +62,10 @@ class PeriodDataProcessor:
         if pd.notnull(date_value):  # Check for non-null values
             date_object = pd.to_datetime(date_value)
             year = date_object.year
-            print(year)  # Replace with the appropriate handling of the year value
         else:
             year = 365
-            print("Date value is null or invalid")  # Handle the case where the date value is null or invalid
+            logging.info("Date value is null or invalid")  # Handle the case where the date value is null or invalid
         days_in_current_year = datetime.date(year, 12, 31).timetuple().tm_yday
-        print(days_in_current_year)
         return days_in_current_year
 
     def process_data(self):
@@ -89,7 +85,6 @@ class PeriodDataProcessor:
                                              axis=1)  # Change to self.output_data_new
 
         if self.output_data_new.loc[0, 'Дата погашения Основного долга'] == 0:  # Change to self.output_data_new
-            print('zero')
             """"делаем расчет для нулевой строки"""
             zero_line = (self.output_data_new.loc[0, 'Дата окончания периода'] - self.output_data_new.loc[
                 0, 'Дата начала периода']).days
@@ -109,7 +104,6 @@ class PeriodDataProcessor:
                  / self.define_year(index=0) * zero_line), 2)
             massive = 1
         else:
-            print('Not zero')
             massive = 0
 
         """"делаем расчет для всех остальных строк"""
@@ -151,5 +145,4 @@ class PeriodDataProcessor:
     def print_output_data(self):
         self.create_dataframe()
         self.process_data()
-        print(self.output_data_new)
         return self.output_data_new

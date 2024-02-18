@@ -269,7 +269,6 @@ function processFile() {
             console.log("ИНН продавца:", sellerInnValue);
             console.log("Дата выдачи кредита:", dateOfIssueValue);
 
-            console.log(JSON.stringify(firstSheetData));
             if (firstSheetData.length > 0) {
                 var xhr = new XMLHttpRequest();
                 xhr.open('POST', './fill_read_from_xlsx', true);

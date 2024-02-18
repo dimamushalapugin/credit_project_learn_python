@@ -8,6 +8,7 @@ from webapp.user.auth_utils import admin_required
 from webapp.config import DADATA_TOKEN_BKI
 from webapp.payment.percent_banks import PeriodDataProcessor
 
+
 blueprint = Blueprint('payment', __name__, url_prefix='/payments')
 
 
@@ -70,10 +71,9 @@ def read_from_xlsx():
     data6 = request.json.get('data6')  # ИНН лизингополучателя
     data7 = request.json.get('data7')  # ИНН продавца
     data8 = request.json.get('data8')  # Дата выдачи кредита
-    file_ = PeriodDataProcessor(data)
+    file_ = PeriodDataProcessor(data, data3, data8)
     response_math_xlxs = file_.print_output_data()
     json_serializable_data = response_math_xlxs.to_dict(orient='records')
-    print(f'Ща будет вывод {data1, data2, data3, data4, data5, data6, data7, data8}')
     return json_serializable_data
 
 
