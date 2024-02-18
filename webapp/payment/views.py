@@ -62,13 +62,18 @@ def create_payment():
 @admin_required
 def read_from_xlsx():
     data = request.json.get('data')
-    data1 = request.json.get('data1') # название банка
-    data2 = request.json.get('data2') # номер КД
+    data1 = request.json.get('data1')  # Название банка
+    data2 = request.json.get('data2')  # Номер КД
+    data3 = request.json.get('data3')  # Размер ставки
+    data4 = request.json.get('data4')  # Ставка плав/фикс
+    data5 = request.json.get('data5')  # Номер ДЛ
+    data6 = request.json.get('data6')  # ИНН лизингополучателя
+    data7 = request.json.get('data7')  # ИНН продавца
+    data8 = request.json.get('data8')  # Дата выдачи кредита
     file_ = PeriodDataProcessor(data)
     response_math_xlxs = file_.print_output_data()
     json_serializable_data = response_math_xlxs.to_dict(orient='records')
-    print(f'Ща будет вывод {data1}')
-    print(f'Ща будет вывод {data2}')
+    print(f'Ща будет вывод {data1, data2, data3, data4, data5, data6, data7, data8}')
     return json_serializable_data
 
 

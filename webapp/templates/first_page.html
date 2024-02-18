@@ -234,14 +234,40 @@ function processFile() {
             var workbook = XLSX.read(data, { type: 'array' });
             var firstSheetName = workbook.SheetNames[0];
             var firstSheetData = XLSX.utils.sheet_to_json(workbook.Sheets[firstSheetName]);
-       /* Вызывается наименование банка и кредитной линии */
+       /* Читается наименование банка, кредитной линии, уровень ставки и плав/фикс */
             var exampleDropdownFormInvestor = document.getElementById("exampleDropdownFormInvestor");
             var investorDropdown = document.getElementById("exampleDropdownFormInvestor");
             var selectedBankName = investorDropdown.options[investorDropdown.selectedIndex].text;
             console.log("Выбранное название банка:", selectedBankName);
+
             var typeCreditDogovor = document.getElementById("typeCreditDogovor");
             var selectedCreditContract = typeCreditDogovor.value;
             console.log("Выбранный номер кредитного договора:", selectedCreditContract);
+
+            var interestRateInput = document.getElementById("interest_rate");
+            var interestRateValue = interestRateInput.value;
+            console.log("Значение поля размера % ставки:", interestRateValue);
+
+            var selectedOption = document.querySelector('input[name="exampleRadios"]:checked').nextElementSibling.textContent.trim();
+            console.log("Выбранное значение радиокнопки:", selectedOption);
+
+        /* Читаются номер ДЛ,  */
+            var leasingContractInput = document.getElementById("leasing_contract");
+            var leasingContractValue = leasingContractInput.value;
+
+            var companyInnInput = document.getElementById("company_inn");
+            var companyInnValue = companyInnInput.value;
+
+            var sellerInnInput = document.getElementById("seller_inn");
+            var sellerInnValue = sellerInnInput.value;
+
+            var dateOfIssueInput = document.getElementById("datepicker");
+            var dateOfIssueValue = dateOfIssueInput.value;
+
+            console.log("Номер договора лизинга:", leasingContractValue);
+            console.log("ИНН лизингополучателя:", companyInnValue);
+            console.log("ИНН продавца:", sellerInnValue);
+            console.log("Дата выдачи кредита:", dateOfIssueValue);
 
             console.log(JSON.stringify(firstSheetData));
             if (firstSheetData.length > 0) {
@@ -290,7 +316,13 @@ function processFile() {
                         xhr.send(JSON.stringify({
                           data: firstSheetData,
                           data1: selectedBankName,
-                          data2: selectedCreditContract
+                          data2: selectedCreditContract,
+                          data3: interestRateValue,
+                          data4: selectedOption,
+                          data5: leasingContractValue,
+                          data6: companyInnValue,
+                          data7: sellerInnValue,
+                          data8: dateOfIssueValue
                         }));
                 console.log("Файл прочитан5435");
             } else {
