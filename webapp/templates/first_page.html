@@ -234,6 +234,15 @@ function processFile() {
             var workbook = XLSX.read(data, { type: 'array' });
             var firstSheetName = workbook.SheetNames[0];
             var firstSheetData = XLSX.utils.sheet_to_json(workbook.Sheets[firstSheetName]);
+       /* Вызывается наименование банка и кредитной линии */
+            var exampleDropdownFormInvestor = document.getElementById("exampleDropdownFormInvestor");
+            var investorDropdown = document.getElementById("exampleDropdownFormInvestor");
+            var selectedBankName = investorDropdown.options[investorDropdown.selectedIndex].text;
+            console.log("Выбранное название банка:", selectedBankName);
+            var typeCreditDogovor = document.getElementById("typeCreditDogovor");
+            var selectedCreditContract = typeCreditDogovor.value;
+            console.log("Выбранный номер кредитного договора:", selectedCreditContract);
+
             console.log(JSON.stringify(firstSheetData));
             if (firstSheetData.length > 0) {
                 var xhr = new XMLHttpRequest();
@@ -278,7 +287,11 @@ function processFile() {
                         }
                         }
                 };
-                xhr.send(JSON.stringify({ data: firstSheetData }));
+                        xhr.send(JSON.stringify({
+                          data: firstSheetData,
+                          data1: selectedBankName,
+                          data2: selectedCreditContract
+                        }));
                 console.log("Файл прочитан5435");
             } else {
                 console.log("Данные первого листа пусты или некорректны.");
