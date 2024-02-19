@@ -14,7 +14,7 @@ from webapp.user.auth_utils import admin_required
 from webapp.config import DADATA_TOKEN_BKI
 from webapp.payment.percent_banks import PeriodDataProcessor
 from webapp.payment.info_about import DescriptionOfLessee
-from webapp.payment.secondary_functions import create_date_format
+from webapp.payment.secondary_functions import create_date_format, floating_or_not
 from webapp.risk.logger import logging
 
 blueprint = Blueprint('payment', __name__, url_prefix='/payments')
@@ -75,13 +75,6 @@ def create_payment():
         # create_payment_schedule(new_payment)  #  TODO: Добавить создание графика платежей ОД и %%
         return redirect(url_for('payment.list_of_all_payments'))
     return render_template('first_page.html', suggestions_token=suggestions_token)
-
-
-def floating_or_not(checkboxes):
-    if checkboxes == 'floating':
-        return True
-    else:
-        return False
 
 
 @blueprint.route('/fill_read_from_xlsx', methods=['GET', 'POST'])
