@@ -89,6 +89,9 @@ class Company(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     company_name = db.Column(db.String)
     company_inn = db.Column(db.String(20), index=True, unique=True)
+    company_ogrn = db.Column(db.String(20), unique=True)
+    company_address = db.Column(db.String(100))
+    company_reg_date = db.Column(db.Date)
 
     leasing_contracts = db.relationship("LeasingContract", backref="company_name")
 
@@ -102,6 +105,9 @@ class Seller(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     seller_name = db.Column(db.String)
     seller_inn = db.Column(db.String(20), index=True, unique=True)
+    seller_ogrn = db.Column(db.String(20), unique=True)
+    seller_address = db.Column(db.String(100))
+    seller_reg_date = db.Column(db.Date)
 
     leasing_contracts = db.relationship("LeasingContract", backref="seller_name")
 
@@ -110,6 +116,7 @@ class Seller(db.Model):
 
     @staticmethod
     def check_in_base(seller_inn):
+        #  TODO: изменить проверку на существование в БД. Проверять по таблице dima_base
         new_seller = Seller.query.filter(
             Seller.seller_inn == seller_inn).first()
         if new_seller:
