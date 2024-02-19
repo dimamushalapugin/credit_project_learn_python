@@ -4,7 +4,7 @@ from webapp.risk.logger import logging
 
 
 class PeriodDataProcessor:
-    def __init__(self, data, interest_rate, date_of_issue):
+    def __init__(self, data, interest_rate, date_of_issue, bank_day_percent):
         self.data = data
         self.period_month = self.extract_file(data)[2]
         self.start_date = date_of_issue
@@ -14,6 +14,7 @@ class PeriodDataProcessor:
         except ValueError:
             logging.info("Interest rate is None")
             self.percent = 0.0
+        self.bank_day_percent = bank_day_percent
         self.output_data = None
         self.output_data_new = None  # Add this line to initialize the attribute
 
@@ -49,8 +50,7 @@ class PeriodDataProcessor:
             'Количество дней после погашения ОД': 0,
             'Сумма процентов до погашения ОД': 0,
             'Сумма процентов после погашения ОД': 0,
-            'Общая сумма процентов': 0
-        })
+            'Общая сумма процентов': 0})
 
         new_row = pd.DataFrame(
             {'№': [0], 'Дата начала периода': [self.start_date], 'Дата окончания периода': [self.last_day_of_month],
@@ -72,7 +72,7 @@ class PeriodDataProcessor:
         days_in_current_year = datetime.date(year, 12, 31).timetuple().tm_yday
         return days_in_current_year
 
-    def process_data(self):
+    def process_data(self, bank_day_percent):
         self.output_data['Дата начала периода'] = pd.to_datetime(self.output_data['Дата начала периода'])
         month_year_table = self.output_data['Дата начала периода'][0].strftime('%B %Y')
 
@@ -134,6 +134,17 @@ class PeriodDataProcessor:
             self.output_data_new.loc[i, 'Общая сумма процентов'] = round(
                 principal_monthpay_0_i + principal_monthpay_1_i, 2)
         self.output_data_new = self.output_data_new.fillna(0)
+
+        if bank_day_percent == 'ПАО «МОСКОВСКИЙ КРЕДИТНЫЙ БАНК»':
+            pass  # надо прописать чтоб если выходные то на след раб день переносилось
+        elif bank_day_percent in ['АО «СМП БАНК»', 'АО КБ «УРАЛ ФД»', 'АО «ИНВЕСТТОРГБАНК»']:
+            pass  # надо прописать чтоб если выходные то ближайших до выходных день перенеслись
+        elif bank_day_percent == 'ПАО «АК БАРС» БАНК':
+            self.output_data_new['Дата уплаты процентов'] += pd.DateOffset(days=10)
+        else:
+            pass
+
+
         self.output_data_new['Дата начала периода'] = self.output_data_new['Дата начала периода'].apply(
             lambda x: x.strftime('%Y-%m-%d') if x != 0 else 0)
         self.output_data_new['Дата окончания периода'] = self.output_data_new['Дата окончания периода'].apply(
@@ -142,11 +153,13 @@ class PeriodDataProcessor:
             'Дата погашения Основного долга'].apply(lambda x: x.strftime('%Y-%m-%d') if x != 0 else 0)
         self.output_data_new['Дата уплаты процентов'] = self.output_data_new['Дата уплаты процентов'].apply(
             lambda x: x.strftime('%Y-%m-%d') if x != 0 else 0)
+
+
         # Save the updated output_data to an Excel file
         self.output_data_new.to_excel('updated_output_data.xlsx', index=False)  # Change to self.output_data_new
 
     # Inside the PeriodDataProcessor class
-    def print_output_data(self):
+    def print_output_data(self, bank_day_percent):
         self.create_dataframe()
-        self.process_data()
+        self.process_data(bank_day_percent)
         return self.output_data_new

@@ -56,6 +56,10 @@ function updateCreditContracts() {
                     else if (investorSelect.value === "bank11") {
                         contractSelect.innerHTML += '<option value="№ 420F00OUT от 10.11.2023">№ 420F00OUT от 10.11.2023</option>';
                     }
+
+                    else if (investorSelect.value === "bank12") {
+                        contractSelect.innerHTML += '<option value="№ 23/КЛВ-09 от 15.08.2023">№ 23/КЛВ-09 от 15.08.2023</option>';
+                    }
                 }
 
                 window.onload = function() {
