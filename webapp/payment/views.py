@@ -65,13 +65,13 @@ def create_payment():
         leasing_contract = assign_leasing_contract_id(leasing_contract_number, client, seller)
         date_of_issue = create_date_format(request.form['date_of_issue'])
         credit_contract = find_credit_contract_id(request.form['credit_contract'])
-        total_amount = float(total_amount_from_xlsx())
+        total_amount = round(float(total_amount_from_xlsx()), 2)
 
         new_payment = Payment(date_of_issue=date_of_issue, leasing_contract_id=leasing_contract,
                               credit_contract_id=credit_contract, total_amount=total_amount,
                               floating_or_not=floating_or_not(request.form['exampleRadios']))
         write_to_db(new_payment)
-        create_interest_rate_table(request.form['interest_rate'])
+        create_interest_rate_table(request.form['interest_rate'], new_payment)
         # create_payment_schedule(new_payment)  #  TODO: Добавить создание графика платежей ОД и %%
         return redirect(url_for('payment.list_of_all_payments'))
     return render_template('first_page.html', suggestions_token=suggestions_token)

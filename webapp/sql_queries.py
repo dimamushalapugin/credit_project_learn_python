@@ -3,7 +3,8 @@ from flask import request
 from sqlalchemy import func
 from webapp.db import db
 from webapp.payment.change_xlsx import change_of_date
-from webapp.payment.models import LeasingContract, Bank, CreditContract, Payment, PaymentSchedule, Company, Seller
+from webapp.payment.models import LeasingContract, Bank, CreditContract, Payment, PaymentSchedule, Company, Seller, \
+    InterestRateHistory
 
 
 def write_to_db(new_data):
@@ -112,6 +113,7 @@ def query_for_daily_payments():
     return result
 
 
-def create_interest_rate_table(interest_rate):
-    #  TODO: Добавить запись % ставки в БД
-    ...
+def create_interest_rate_table(interest_rate, payment):
+    new_interest = InterestRateHistory(payment_id=payment.id, effective_date=payment.date_of_issue,
+                                       interest_rate=interest_rate)
+    write_to_db(new_interest)
