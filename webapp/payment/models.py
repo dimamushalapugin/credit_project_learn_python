@@ -32,7 +32,6 @@ class LeasingContract(db.Model):
     leasing_contract_number = db.Column(db.String, unique=True, index=True)
     company_id = db.Column(db.Integer, db.ForeignKey('companies.id'))
     seller_id = db.Column(db.Integer, db.ForeignKey('sellers.id'))
-    floating_or_not = db.Column(db.Boolean)
 
     payments = db.relationship("Payment", backref="leasing_contract")
 
@@ -47,6 +46,7 @@ class Payment(db.Model):
     leasing_contract_id = db.Column(db.Integer, db.ForeignKey('leasing_contracts.id'))
     date_of_issue = db.Column(db.Date)
     total_amount = db.Column(db.Float)
+    floating_or_not = db.Column(db.Boolean)
     credit_contract_id = db.Column(db.Integer, db.ForeignKey('credit_contracts.id'))
 
     # Отношение с таблицей interest_rate_history

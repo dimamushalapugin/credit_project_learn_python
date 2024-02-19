@@ -68,10 +68,22 @@
                             </div>
                         </div>
                         <div class="mb-3">
+                            <label>Инфо по лизингополучателю</label>
+                            <div class="input-group input-group-sm mb-3">
+                                <textarea id="company_info" name="company_info" class="form-control"></textarea>
+                            </div>
+                        </div>
+                        <div class="mb-3">
                             <label>ИНН продавца</label>
                             <div class="input-group input-group-sm mb-3">
                                 <input type="text" id="seller_inn" name="seller_inn" value="" class="form-control"
                                        required/>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label>Инфо по продавцу</label>
+                            <div class="input-group input-group-sm mb-3">
+                                <textarea id="seller_info" name="seller_info" class="form-control"></textarea>
                             </div>
                         </div>
                         <div class="mb-3">
@@ -212,6 +224,7 @@
         /* Вызывается, когда пользователь выбирает одну из подсказок */
         onSelect: function(suggestion) {
             $("#company_inn").val(suggestion.data.inn);
+            $("#company_info").val(JSON.stringify(suggestion));
         }
     });
     $("#seller_inn").suggestions({
@@ -220,6 +233,7 @@
         /* Вызывается, когда пользователь выбирает одну из подсказок */
         onSelect: function(suggestion) {
             $("#seller_inn").val(suggestion.data.inn);
+            $("#seller_info").val(JSON.stringify(suggestion));
         }
     });
 
@@ -361,6 +375,15 @@ button.addEventListener('click', function() {
   console.log(cellData);
 });
 
+</script>
+<script>
+    // Получаем ссылки на элементы
+    var companyInfo = document.getElementById('company_info');
+    var sellerInfo = document.getElementById('seller_info');
+
+    // Скрываем поля
+    companyInfo.parentElement.parentElement.hidden = true;
+    sellerInfo.parentElement.parentElement.hidden = true;
 </script>
 <script src="{{ url_for('static', filename='js/first-page.js') }}"></script>
 {% include 'footer.html' %}

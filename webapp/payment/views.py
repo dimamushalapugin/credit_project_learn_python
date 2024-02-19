@@ -7,6 +7,7 @@ from webapp.sql_queries import write_to_db, assign_leasing_contract_id, find_cre
 from webapp.user.auth_utils import admin_required
 from webapp.config import DADATA_TOKEN_BKI
 from webapp.payment.percent_banks import PeriodDataProcessor
+from webapp.payment.info_about import DescriptionOfLessee
 
 
 blueprint = Blueprint('payment', __name__, url_prefix='/payments')
@@ -46,15 +47,20 @@ def total_amount_from_xlsx():
 def create_payment():
     suggestions_token = DADATA_TOKEN_BKI
     if request.method == 'POST':
-        leasing_contract = assign_leasing_contract_id(request.form['leasing_contract'])
-        date_of_issue = datetime.strptime(request.form['date_of_issue'], '%Y-%m-%d').date()
-        credit_contract = find_credit_contract_id(request.form['credit_contract'])
-        total_amount = float(total_amount_from_xlsx())
+        client_data = request.form['company_info']
+        seller_data = request.form['seller_info']
+        client = DescriptionOfLessee(client_data)
+        seller = DescriptionOfLessee(seller_data)
 
-        new_payment = Payment(date_of_issue=date_of_issue, leasing_contract_id=leasing_contract,
-                              credit_contract_id=credit_contract, total_amount=total_amount)
-        write_to_db(new_payment)
-        create_payment_schedule(new_payment)
+        # leasing_contract = assign_leasing_contract_id(request.form['leasing_contract'])
+        # date_of_issue = datetime.strptime(request.form['date_of_issue'], '%Y-%m-%d').date()
+        # credit_contract = find_credit_contract_id(request.form['credit_contract'])
+        # total_amount = float(total_amount_from_xlsx())
+        #
+        # new_payment = Payment(date_of_issue=date_of_issue, leasing_contract_id=leasing_contract,
+        #                       credit_contract_id=credit_contract, total_amount=total_amount)
+        # write_to_db(new_payment)
+        # create_payment_schedule(new_payment)
         return redirect(url_for('payment.list_of_all_payments'))
     return render_template('first_page.html', suggestions_token=suggestions_token)
 
