@@ -64,6 +64,7 @@ class InterestRateHistory(db.Model):
     payment_id = db.Column(db.Integer, db.ForeignKey('payments.id'), nullable=False)
     effective_date = db.Column(db.Date, nullable=False)
     interest_rate = db.Column(db.Numeric(precision=10, scale=5), nullable=False)
+
     # Связь с таблицей payments
 
     def __repr__(self):
@@ -114,11 +115,46 @@ class Seller(db.Model):
     def __repr__(self):
         return f'Seller {self.id}, {self.seller_name}: {self.seller_inn}'
 
+
+class DimaBase(db.Model):
+    __tablename__ = 'dima_base'
+
+    id = db.Column(db.Integer, primary_key=True)
+    schedule = db.Column(db.Text)
+    manager = db.Column(db.Text)
+    leasing_receiver_name = db.Column(db.Text)
+    leasing_receiver_inn = db.Column(db.Text)
+    type_start = db.Column(db.Text)
+    region = db.Column(db.Text)
+    product = db.Column(db.Text)
+    client_segment_type = db.Column(db.Text)
+    term = db.Column(db.Integer)
+    activity_type = db.Column(db.Text)
+    product_type = db.Column(db.Text)
+    ra_expert = db.Column(db.Text)
+    leasing_contract_no = db.Column(db.Text)
+    leasing_contract_date = db.Column(db.Date)
+    financing_date = db.Column(db.Date)
+    contract_amount = db.Column(db.Numeric)
+    leasing_object_type = db.Column(db.Text)
+    leasing_prev = db.Column(db.Text)
+    year_of_leasing_object = db.Column(db.Integer)
+    number_of_leasing_objects = db.Column(db.Integer)
+    supplier = db.Column(db.Text)
+    supplier_inn = db.Column(db.Text, index=True)
+    dcp_cost = db.Column(db.Numeric)
+    advance = db.Column(db.Numeric)
+    credit_sum = db.Column(db.Numeric)
+    co_finance = db.Column(db.Numeric)
+    total_rate_percentage = db.Column(db.Numeric)
+    agent = db.Column(db.Text)
+    lkmbrt_margin = db.Column(db.Numeric)
+    agent_percentage = db.Column(db.Numeric)
+
     @staticmethod
     def check_in_base(seller_inn):
-        #  TODO: изменить проверку на существование в БД. Проверять по таблице dima_base
-        new_seller = Seller.query.filter(
-            Seller.seller_inn == seller_inn).first()
+        new_seller = DimaBase.query.filter(
+            DimaBase.supplier_inn == seller_inn).first()
         if new_seller:
             return 'Да'
         return 'Нет'
