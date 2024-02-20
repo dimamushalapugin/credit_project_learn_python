@@ -86,7 +86,8 @@
                 <form action="{{ url_for('risk.create_risk_conclusion') }}" method="POST">
                     <div class="form-group">
                         <label>ИНН лизингополучателя</label>
-                        <input type="text" name="client_inn" value="" id='client_inn_form' class="form-control" required>
+                        <input type="text" name="client_inn" value="" id='client_inn_form' class="form-control"
+                               required>
                     </div>
                     <div class="form-group"><br>
                         <label>ИНН поставщика</label>
@@ -115,17 +116,73 @@
                 </form>
                 <script src="{{ url_for('static', filename='js/risk_inn_dada.js') }}"></script>
             </div>
+            <br>
+            <div class="card card-body">
+                <form action="{{ url_for('risk.create_risk_conclusion_individual') }}" method="POST">
+                    <div class="form-group">
+                        <label>ИНН физ. лица</label>
+                        <input type="text" name="individual_inn" value="" id='individual_inn' class="form-control"
+                               required disabled>
+                    </div>
+                    <div class="form-group"><br>
+                        <button type="submit" id="submit-button-individual" class="btn btn-outline-primary btn-block" disabled>
+                            Проверка физ. лица
+                        </button>
+                    </div>
+                    <!--                    <script>-->
+                    <!--                        Нужна проверка ка кол-во символов-->
+                    <!--                    </script>-->
+
+                </form>
+                <script src="{{ url_for('static', filename='js/risk_inn_dada.js') }}"></script>
+            </div>
+            <br>
+            <div class="accordion accordion-flush" id="accordionFlushExample">
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#flush-collapseOne" aria-expanded="false"
+                                aria-controls="flush-collapseOne">
+                            <b>Проверенные физ. лица</b>
+                        </button>
+                    </h2>
+                    <div id="flush-collapseOne" class="accordion-collapse collapse"
+                         data-bs-parent="#accordionFlushExample">
+                        <div class="list-group">
+                            {% for folder_name in individual_folder_names %}
+                            <a href="{{ url_for('risk.risk_conclusion_folder', folder_path=folder_name) }}"
+                               class="list-group-item list-group-item-action list-group-item-light">
+                                <i class="fa-regular fa-folder" style="color: #6b6b6b;"></i> {{ folder_name }}
+                            </a>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
         <div class="col-md-auto">
             <br>
-            <h3 class="card-title text-center">Риск заключения</h3>
-            <div class="list-group">
-                {% for folder_name in folder_names %}
-                <a href="{{ url_for('risk.risk_conclusion_folder', folder_path=folder_name) }}"
-                   class="list-group-item list-group-item-action list-group-item-light">
-                    <i class="fa-regular fa-folder" style="color: #6b6b6b;"></i> {{ folder_name }}
-                </a>
-                {% endfor %}
+            <div class="accordion accordion-flush" id="accordionFlushExampleTwo">
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#flush-collapseTwo" aria-expanded="false"
+                                aria-controls="flush-collapseTwo">
+                            <b>Риск-заключения</b>
+                        </button>
+                    </h2>
+                    <div id="flush-collapseTwo" class="accordion-collapse collapse"
+                         data-bs-parent="#accordionFlushExample">
+                        <div class="list-group">
+                            {% for folder_name in folder_names %}
+                            <a href="{{ url_for('risk.risk_conclusion_folder', folder_path=folder_name) }}"
+                               class="list-group-item list-group-item-action list-group-item-light">
+                                <i class="fa-regular fa-folder" style="color: #6b6b6b;"></i> {{ folder_name }}
+                            </a>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
