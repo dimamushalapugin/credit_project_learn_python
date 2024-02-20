@@ -70,7 +70,7 @@
                         <div class="mb-3">
                             <label>Инфо по лизингополучателю</label>
                             <div class="input-group input-group-sm mb-3">
-                                <textarea id="company_info" name="company_info" class="form-control"></textarea>
+                                <textarea id="company_info" name="company_info" class="form-control" readonly required></textarea>
                             </div>
                         </div>
                         <div class="mb-3">
@@ -83,7 +83,7 @@
                         <div class="mb-3">
                             <label>Инфо по продавцу</label>
                             <div class="input-group input-group-sm mb-3">
-                                <textarea id="seller_info" name="seller_info" class="form-control"></textarea>
+                                <textarea id="seller_info" name="seller_info" class="form-control" readonly required></textarea>
                             </div>
                         </div>
                         <div class="mb-3">
@@ -127,14 +127,14 @@
                             <label>Выберите ставку (плав/фикс)</label>
                             <div class="form-check">
                                 <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1"
-                                       value="option1" checked>
+                                       value="floating" checked>
                                 <label class="form-check-label" for="exampleRadios1">
                                     Плавающая % ставка
                                 </label>
                             </div>
                             <div class="form-check">
                                 <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios2"
-                                       value="option2">
+                                       value="fixed">
                                 <label class="form-check-label" for="exampleRadios2">
                                     Фиксированная % ставка
                                 </label>
@@ -375,15 +375,6 @@ button.addEventListener('click', function() {
   console.log(cellData);
 });
 
-</script>
-<script>
-    // Получаем ссылки на элементы
-    var companyInfo = document.getElementById('company_info');
-    var sellerInfo = document.getElementById('seller_info');
-
-    // Скрываем поля
-    companyInfo.parentElement.parentElement.hidden = true;
-    sellerInfo.parentElement.parentElement.hidden = true;
 </script>
 <script src="{{ url_for('static', filename='js/first-page.js') }}"></script>
 {% include 'footer.html' %}

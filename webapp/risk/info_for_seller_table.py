@@ -1,6 +1,6 @@
 import json
 
-from webapp.payment.models import Seller
+from webapp.payment.models import DimaBase
 from webapp.risk.logger import logging
 
 
@@ -51,7 +51,7 @@ def read_pages_for_table(seller_inn, info_first, info_delta, is_factory, is_deal
             'Поставщик является заводом-изготовителем предмета лизинга:': 'Да' if is_factory == 'on' else 'Нет',
             'Поставщик является официальным дилером завода-изготовителя предмета лизинга:': 'Да' if is_dealer == 'on' else 'Нет',
             '16. Кредитная история в ООО «ЛКМБ-РТ»': '',
-            'Имеются (имелись) ли у поставщика договоры купли-продажи с ООО «ЛКМБ-РТ»:': Seller.check_in_base(seller_inn)
+            'Имеются (имелись) ли у поставщика договоры купли-продажи с ООО «ЛКМБ-РТ»:': DimaBase.check_in_base(seller_inn)
         }
     except Exception as _ex:
         logging.info(_ex, exc_info=True)
@@ -100,7 +100,7 @@ def read_pages_for_table_individual(seller_inn, info_first, is_factory, is_deale
             'Поставщик является заводом-изготовителем предмета лизинга:': 'Да' if is_factory == 'on' else 'Нет',
             'Поставщик является официальным дилером завода-изготовителя предмета лизинга:': 'Да' if is_dealer == 'on' else 'Нет',
             '16. Кредитная история в ООО «ЛКМБ-РТ»': '',
-            'История в ЛКМБ': Seller.check_in_base(seller_inn)
+            'История в ЛКМБ': DimaBase.check_in_base(seller_inn)
         }
     except Exception as _ex:
         logging.info(_ex, exc_info=True)

@@ -2,13 +2,20 @@ import pandas as pd
 from datetime import datetime
 from flask import Blueprint, render_template, redirect, request, url_for
 from webapp.payment.models import LeasingContract, Payment
-from webapp.sql_queries import write_to_db, assign_leasing_contract_id, find_credit_contract_id, \
-    create_payment_schedule, query_for_all_payments, query_for_daily_payments, query_for_bank_debts
+from webapp.sql_queries import (write_to_db,
+                                assign_leasing_contract_id,
+                                find_credit_contract_id,
+                                create_payment_schedule,
+                                query_for_all_payments,
+                                query_for_daily_payments,
+                                query_for_bank_debts,
+                                create_interest_rate_table)
 from webapp.user.auth_utils import admin_required
 from webapp.config import DADATA_TOKEN_BKI
 from webapp.payment.percent_banks import AkBarsBank, Bank
 from webapp.payment.info_about import DescriptionOfLessee
-
+from webapp.payment.secondary_functions import create_date_format, floating_or_not
+from webapp.risk.logger import logging
 
 blueprint = Blueprint('payment', __name__, url_prefix='/payments')
 
@@ -39,7 +46,7 @@ def list_of_daily_payments():
 @blueprint.route('/total_amount_from_xlsx', methods=['POST'])
 def total_amount_from_xlsx():
     df = pd.read_excel(request.files['uploaded_file'])
-    return str(df['amount'].sum())
+    return str(df['Сумма погашения Основного долга'].sum())
 
 
 @blueprint.route('/first_page', methods=['GET', 'POST'])
@@ -49,18 +56,23 @@ def create_payment():
     if request.method == 'POST':
         client_data = request.form['company_info']
         seller_data = request.form['seller_info']
+        leasing_contract_number = request.form['leasing_contract']
         client = DescriptionOfLessee(client_data)
         seller = DescriptionOfLessee(seller_data)
+        logging.info(f'Лизингополучатель: {client}')
+        logging.info(f'Продавец: {seller}')
 
-        # leasing_contract = assign_leasing_contract_id(request.form['leasing_contract'])
-        # date_of_issue = datetime.strptime(request.form['date_of_issue'], '%Y-%m-%d').date()
-        # credit_contract = find_credit_contract_id(request.form['credit_contract'])
-        # total_amount = float(total_amount_from_xlsx())
-        #
-        # new_payment = Payment(date_of_issue=date_of_issue, leasing_contract_id=leasing_contract,
-        #                       credit_contract_id=credit_contract, total_amount=total_amount)
-        # write_to_db(new_payment)
-        # create_payment_schedule(new_payment)
+        leasing_contract = assign_leasing_contract_id(leasing_contract_number, client, seller)
+        date_of_issue = create_date_format(request.form['date_of_issue'])
+        credit_contract = find_credit_contract_id(request.form['credit_contract'])
+        total_amount = round(float(total_amount_from_xlsx()), 2)
+
+        new_payment = Payment(date_of_issue=date_of_issue, leasing_contract_id=leasing_contract,
+                              credit_contract_id=credit_contract, total_amount=total_amount,
+                              floating_or_not=floating_or_not(request.form['exampleRadios']))
+        write_to_db(new_payment)
+        create_interest_rate_table(request.form['interest_rate'], new_payment)
+        # create_payment_schedule(new_payment)  #  TODO: Добавить создание графика платежей ОД и %%
         return redirect(url_for('payment.list_of_all_payments'))
     return render_template('first_page.html', suggestions_token=suggestions_token)
 

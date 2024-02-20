@@ -3,8 +3,8 @@ from flask import request
 from sqlalchemy import func
 from webapp.db import db
 from webapp.payment.change_xlsx import change_of_date
-from webapp.payment.models import LeasingContract, Bank, CreditContract, Payment, PaymentSchedule, Company, Seller
-from webapp.parsing_egrul import get_customer_name
+from webapp.payment.models import LeasingContract, Bank, CreditContract, Payment, PaymentSchedule, Company, Seller, \
+    InterestRateHistory
 
 
 def write_to_db(new_data):
@@ -12,46 +12,48 @@ def write_to_db(new_data):
     db.session.commit()
 
 
-def assign_leasing_contract_id(request_form):
+def assign_leasing_contract_id(leasing_contract_number, client, seller):
     existing_contract = LeasingContract.query.filter(
-        LeasingContract.leasing_contract_number == request_form).first()
+        LeasingContract.leasing_contract_number == leasing_contract_number).first()
     if existing_contract:
         return existing_contract.id
     else:
-        new_leasing_contract = LeasingContract(leasing_contract_number=request_form, company_id=write_company_id(),
-                                               seller_id=write_seller_id())
+        new_leasing_contract = LeasingContract(leasing_contract_number=leasing_contract_number,
+                                               company_id=write_company_id(client),
+                                               seller_id=write_seller_id(seller))
         write_to_db(new_leasing_contract)
         return new_leasing_contract.id
 
 
-def write_company_id():
+def write_company_id(client_data):
     existing_company = Company.query.filter(
-        Company.company_inn == request.form['company_inn']).first()
+        Company.company_inn == client_data.get_inn).first()
     if not existing_company:
-        new_company = Company(company_inn=request.form['company_inn'],
-                              company_name=get_customer_name(request.form['company_inn']))
+        new_company = Company(company_inn=client_data.get_inn, company_name=client_data.get_name,
+                              company_ogrn=client_data.get_ogrn, company_address=client_data.get_registration_address,
+                              company_reg_date=client_data.get_registration_date)
         write_to_db(new_company)
         return new_company.id
     return existing_company.id
 
 
-def write_seller_id():
+def write_seller_id(seller_data):
     existing_seller = Seller.query.filter(
-        Seller.seller_inn == request.form['seller_inn']).first()
+        Seller.seller_inn == seller_data.get_inn).first()
     if not existing_seller:
-        new_seller = Seller(seller_inn=request.form['seller_inn'],
-                            seller_name=get_customer_name(request.form['seller_inn']))
+        new_seller = Seller(seller_inn=seller_data.get_inn, seller_name=seller_data.get_name,
+                            seller_ogrn=seller_data.get_ogrn, seller_address=seller_data.get_registration_address,
+                            seller_reg_date=seller_data.get_registration_date)
         write_to_db(new_seller)
         return new_seller.id
     return existing_seller.id
 
 
-def find_credit_contract_id(request_form):
+def find_credit_contract_id(credit_contract_name):
     new_credit_contract = CreditContract.query.filter(
-        CreditContract.credit_contract_name == request_form).first()
+        CreditContract.credit_contract_name == credit_contract_name).first()
     if new_credit_contract:
         return new_credit_contract.id
-    return None
 
 
 def create_payment_schedule(new_payment):
@@ -109,3 +111,9 @@ def query_for_daily_payments():
         PaymentSchedule.payment_date,
         Bank.bank_name).all()
     return result
+
+
+def create_interest_rate_table(interest_rate, payment):
+    new_interest = InterestRateHistory(payment_id=payment.id, effective_date=payment.date_of_issue,
+                                       interest_rate=interest_rate)
+    write_to_db(new_interest)
