@@ -6,7 +6,7 @@ from webapp.sql_queries import write_to_db, assign_leasing_contract_id, find_cre
     create_payment_schedule, query_for_all_payments, query_for_daily_payments, query_for_bank_debts
 from webapp.user.auth_utils import admin_required
 from webapp.config import DADATA_TOKEN_BKI
-from webapp.payment.percent_banks import PeriodDataProcessor
+from webapp.payment.percent_banks import AkBarsBank, Bank
 from webapp.payment.info_about import DescriptionOfLessee
 
 
@@ -68,7 +68,7 @@ def create_payment():
 @blueprint.route('/fill_read_from_xlsx', methods=['GET', 'POST'])
 @admin_required
 def read_from_xlsx():
-    data = request.json.get('data')
+    data = request.json.get('data')    # таблица погашения
     data1 = request.json.get('data1')  # Название банка
     data2 = request.json.get('data2')  # Номер КД
     data3 = request.json.get('data3')  # Размер ставки
@@ -77,8 +77,14 @@ def read_from_xlsx():
     data6 = request.json.get('data6')  # ИНН лизингополучателя
     data7 = request.json.get('data7')  # ИНН продавца
     data8 = request.json.get('data8')  # Дата выдачи кредита
-    file_ = PeriodDataProcessor(data, data3, data8, data1)
-    response_math_xlxs = file_.print_output_data(data1)
+    print(data)
+    if data1 == 'ПАО «АК БАРС» БАНК':
+        file_ = AkBarsBank(data, data3, data8, data1)
+        response_math_xlxs = file_.print_output_data()
+    else:
+        print(1233333)
+        file_ = Bank(data, data3, data8, data1)
+    response_math_xlxs = file_.print_output_data()
     json_serializable_data = response_math_xlxs.to_dict(orient='records')
     return json_serializable_data
 

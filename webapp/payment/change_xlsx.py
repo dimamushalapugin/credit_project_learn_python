@@ -13,6 +13,11 @@ def change_of_date(request_filename):
             day += pd.DateOffset(days=1)
         return day
 
+    def get_last_working_day(day):
+        while is_weekend_or_holiday(day):
+            day -= pd.DateOffset(days=1)
+        return day
+
     df['payment_date'] = df['payment_date'].apply(get_next_working_day)
     return df
 
