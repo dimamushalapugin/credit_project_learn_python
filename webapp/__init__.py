@@ -1,6 +1,5 @@
 from flask import Flask, redirect, url_for, render_template
 from flask_login import LoginManager, login_required, current_user
-from flask_socketio import SocketIO, emit
 
 from webapp.user.forms import LoginForm
 from webapp.user.models import User
@@ -17,7 +16,6 @@ def create_app():
     app = Flask(__name__)
     app.config.from_pyfile('config.py')
     db.init_app(app)
-    # socketio = SocketIO(app, cors_allowed_origins="*")
 
     login_manager = LoginManager()
     login_manager.init_app(app)
@@ -45,26 +43,6 @@ def create_app():
     @app.errorhandler(404)
     def page_not_found(error):
         return render_template('404.html'), 404
-
-    # online_users = set()
-
-    # @socketio.on('connect')
-    # def handle_connect():
-    #     user_id = current_user.login
-    #     online_users.add(user_id)
-    #     emit_update_status(True)
-    #
-    # @socketio.on('disconnect')
-    # def handle_disconnect():
-    #     user_id = current_user.login
-    #     online_users.discard(user_id)
-    #     emit_update_status(False)
-
-    # def emit_update_status(online):
-    #     user_login = current_user.login
-    #     online_users_list = list(online_users)
-    #     emit('update_online_status', {'user_login': user_login, 'online': online, 'online_users': online_users_list},
-    #          broadcast=True)
 
     @app.route('/admin')
     @admin_required
