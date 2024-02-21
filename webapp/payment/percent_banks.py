@@ -234,8 +234,7 @@ class AlfaBank(Bank):
 
         if month_year_table == self.extract_file(self.data)[0]:
             new_row_xlsx = self.extract_file(self.data)[1]
-            self.output_data_new = pd.concat([self.output_data, new_row_xlsx], axis=1).drop(
-                columns='№')  # Change to self.output_data_new
+            self.output_data_new = pd.concat([self.output_data, new_row_xlsx], axis=1)  # Change to self.output_data_new
         else:
             new_row_xlsx = pd.DataFrame(
                 {'№': [0], 'Дата погашения Основного долга': 0, 'Сумма погашения Основного долга': 0})
@@ -253,7 +252,7 @@ class AlfaBank(Bank):
                                                                         0, 'Дата начала периода'].replace(
                 day=1) + pd.DateOffset(days=24)
             self.output_data_new['Дата окончания периода'].apply(self.get_next_working_day)
-
+            print(self.output_data_new['Дата окончания периода'].apply(self.get_next_working_day))
             zero_line = (self.output_data_new.loc[0, 'Дата окончания периода'] - self.output_data_new.loc[
                 0, 'Дата начала периода']).days
             self.output_data_new.loc[0, 'Общая сумма процентов'] = round(
@@ -273,47 +272,66 @@ class AlfaBank(Bank):
             massive = 1
         else:
             massive = 0
+        """"делаем расчет для всех остальных строк"""
+        for i in range(massive, len(self.output_data_new)):
+            """"рассчитываем дату начала и  окончания периода"""
+            self.output_data_new.loc[i, 'Дата окончания периода'] = self.output_data_new.loc[
+                                                                        i, 'Дата начала периода'].replace(
+                day=1) + pd.DateOffset(days=24)
+            self.output_data_new['Дата окончания периода'] = self.output_data_new['Дата окончания периода'].apply(
+                self.get_next_working_day)
+            if (i - 1) <= -1:
+                pass
+            elif i == 0:
+                self.output_data_new.loc[i, 'Дата начала периода'] = self.output_data_new.loc[
+                                                                         (i), 'Дата окончания периода'] + pd.DateOffset(
+                    days=1)
+            else:
+                self.output_data_new.loc[i, 'Дата начала периода'] = self.output_data_new.loc[
+                                                                         (
+                                                                                 i - 1), 'Дата окончания периода'] + pd.DateOffset(
+                    days=1)
         print('Here will be output_data')
         print(self.output_data_new['Дата начала периода'])
         print(self.output_data_new['Дата окончания периода'])
-        """"делаем расчет для всех остальных строк"""
-        # for i in range(massive, len(self.output_data_new)):
-        #     first_line_0_i = (
-        #             self.output_data_new.loc[i, 'Дата погашения Основного долга'] - self.output_data_new.loc[
-        #         i, 'Дата начала периода']).days
-        #     first_line_1_i = (self.output_data_new.loc[i, 'Дата окончания периода'] - self.output_data_new.loc[
-        #         i, 'Дата погашения Основного долга']).days
-        #     principal_debt_0_i = round(self.output_data_new['Сумма погашения Основного долга'].iloc[i:].sum(), 2)
-        #     principal_debt_1_i = round(self.output_data_new['Сумма погашения Основного долга'].iloc[(i + 1):].sum(),
-        #                                2)
-        #     principal_monthpay_0_i = round(
-        #         principal_debt_0_i * self.percent / self.define_year(index=i) * first_line_0_i, 2)
-        #     principal_monthpay_1_i = round(
-        #         principal_debt_1_i * self.percent / self.define_year(index=i) * first_line_1_i, 2)
-        #
-        #     self.output_data_new.loc[i, 'Количество дней до погашения ОД'] = first_line_0_i
-        #     self.output_data_new.loc[i, 'Остаток ОД на начало периода'] = round(principal_debt_0_i, 2)
-        #     self.output_data_new.loc[i, 'Количество дней после погашения ОД'] = first_line_1_i
-        #     self.output_data_new.loc[i, 'Остаток ОД на конец периода'] = round(principal_debt_1_i, 2)
-        #     self.output_data_new.loc[i, 'Сумма процентов до погашения ОД'] = principal_monthpay_0_i
-        #     self.output_data_new.loc[i, 'Сумма процентов после погашения ОД'] = principal_monthpay_1_i
-        #     self.output_data_new.loc[i, 'Общая сумма процентов'] = round(
-        #         principal_monthpay_0_i + principal_monthpay_1_i, 2)
-        # self.output_data_new = self.output_data_new.fillna(0)
-        #
-        # self.output_data_new['Дата уплаты процентов'] = (self.output_data_new['Дата уплаты процентов']
-        #                                                  .apply(self.get_next_working_day))
-        #
-        # self.output_data_new['Дата начала периода'] = self.output_data_new['Дата начала периода'].apply(
-        #     lambda x: x.strftime('%Y-%m-%d') if x != 0 else 0)
-        # self.output_data_new['Дата окончания периода'] = self.output_data_new['Дата окончания периода'].apply(
-        #     lambda x: x.strftime('%Y-%m-%d') if x != 0 else 0)
-        # self.output_data_new['Дата погашения Основного долга'] = self.output_data_new[
-        #     'Дата погашения Основного долга'].apply(lambda x: x.strftime('%Y-%m-%d') if x != 0 else 0)
-        # self.output_data_new['Дата уплаты процентов'] = self.output_data_new['Дата уплаты процентов'].apply(
-        #     lambda x: x.strftime('%Y-%m-%d') if x != 0 else 0)
-        # # Save the updated output_data to an Excel file
-        # self.output_data_new.to_excel('updated_output_data.xlsx', index=False)  # Change to self.output_data_new
+        for i in range(massive, len(self.output_data_new)):
+            try:
+                first_line_0_i = (
+                                     self.output_data_new.loc[i, 'Дата погашения Основного долга'] -
+                                     self.output_data_new.loc[
+                                         i, 'Дата начала периода']).days + 1
+                first_line_1_i = (self.output_data_new.loc[i, 'Дата окончания периода'] - self.output_data_new.loc[
+                    i, 'Дата погашения Основного долга']).days
+            except:
+                first_line_0_i = 0
+                first_line_1_i = 0
+            principal_debt_0_i = round(self.output_data_new['Сумма погашения Основного долга'].iloc[i:].sum(), 2)
+            principal_debt_1_i = round(self.output_data_new['Сумма погашения Основного долга'].iloc[(i + 1):].sum(),
+                                       2)
+            principal_monthpay_0_i = round(
+                principal_debt_0_i * self.percent / self.define_year(index=i) * first_line_0_i, 2)
+            principal_monthpay_1_i = round(
+                principal_debt_1_i * self.percent / self.define_year(index=i) * first_line_1_i, 2)
+
+            self.output_data_new.loc[i, 'Количество дней до погашения ОД'] = first_line_0_i
+            self.output_data_new.loc[i, 'Остаток ОД на начало периода'] = round(principal_debt_0_i, 2)
+            self.output_data_new.loc[i, 'Количество дней после погашения ОД'] = first_line_1_i
+            self.output_data_new.loc[i, 'Остаток ОД на конец периода'] = round(principal_debt_1_i, 2)
+            self.output_data_new.loc[i, 'Сумма процентов до погашения ОД'] = principal_monthpay_0_i
+            self.output_data_new.loc[i, 'Сумма процентов после погашения ОД'] = principal_monthpay_1_i
+            self.output_data_new.loc[i, 'Общая сумма процентов'] = round(
+                principal_monthpay_0_i + principal_monthpay_1_i, 2)
+
+        self.output_data_new['Дата начала периода'] = self.output_data_new['Дата начала периода'].apply(
+            lambda x: x.strftime('%Y-%m-%d') if x != 0 else 0)
+        self.output_data_new['Дата окончания периода'] = self.output_data_new['Дата окончания периода'].apply(
+            lambda x: x.strftime('%Y-%m-%d') if x != 0 else 0)
+        self.output_data_new['Дата погашения Основного долга'] = self.output_data_new[
+            'Дата погашения Основного долга'].apply(lambda x: x.strftime('%Y-%m-%d') if x != 0 else 0)
+        self.output_data_new['Дата уплаты процентов'] = self.output_data_new['Дата уплаты процентов'].apply(
+            lambda x: x.strftime('%Y-%m-%d') if x != 0 else 0)
+        # Save the updated output_data to an Excel file
+        self.output_data_new.to_excel('updated_output_data.xlsx', index=False)  # Change to self.output_data_new
 
     def start_function(self):
         self.create_dataframe()
