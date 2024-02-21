@@ -90,6 +90,7 @@
                             <label for="datepicker">Дата выдачи кредита</label>
                             <input type="text" class="form-control flatpickr-input" id="datepicker"
                                    name="date_of_issue"
+                                   value="2022-11-07"
                                    required readonly
                                    data-flatpickr='{"locale": "ru", "dateFormat": "d.m.Y"}'
                                    style="  width: 200px;"></div>
@@ -98,7 +99,7 @@
                             <select class="form-control" id="exampleDropdownFormInvestor" name="investor"
                                     onchange="updateCreditContracts()" required>
                                 <option value="bank1">ПАО «АК БАРС» БАНК</option>
-                                <option value="bank2">АО «АЛЬФА-БАНК»</option>
+                                <option value="bank2" selected>АО «АЛЬФА-БАНК»</option>
                                 <option value="bank4">ПАО АКБ «МЕТАЛЛИНВЕСТБАНК»</option>
                                 <option value="bank5">ПАО «МОСКОВСКИЙ КРЕДИТНЫЙ БАНК»</option>
                                 <option value="bank6">АО «ПЕРВОУРАЛЬСКБАНК»</option>
@@ -119,7 +120,7 @@
                         <div class="mb-3">
                             <label>Размер % ставки (доля, например: 0.16)</label>
                             <div class="input-group input-group-sm mb-3">
-                                <input type="text" id="interest_rate" name="interest_rate" value="" class="form-control"
+                                <input type="text" id="interest_rate" name="interest_rate" value="0.144" class="form-control"
                                        required/>
                             </div>
                         </div>
