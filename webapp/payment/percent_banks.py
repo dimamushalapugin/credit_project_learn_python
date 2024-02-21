@@ -297,9 +297,9 @@ class AlfaBank(Bank):
         for i in range(massive, len(self.output_data_new)):
             try:
                 first_line_0_i = (
-                                     self.output_data_new.loc[i, 'Дата погашения Основного долга'] -
-                                     self.output_data_new.loc[
-                                         i, 'Дата начала периода']).days + 1
+                                         self.output_data_new.loc[i, 'Дата погашения Основного долга'] -
+                                         self.output_data_new.loc[
+                                             i, 'Дата начала периода']).days + 1
                 first_line_1_i = (self.output_data_new.loc[i, 'Дата окончания периода'] - self.output_data_new.loc[
                     i, 'Дата погашения Основного долга']).days
             except:
@@ -321,6 +321,11 @@ class AlfaBank(Bank):
             self.output_data_new.loc[i, 'Сумма процентов после погашения ОД'] = principal_monthpay_1_i
             self.output_data_new.loc[i, 'Общая сумма процентов'] = round(
                 principal_monthpay_0_i + principal_monthpay_1_i, 2)
+
+        condition = (self.output_data_new['Сумма процентов до погашения ОД'] == 0) & (
+            self.output_data_new['Сумма погашения Основного долга'] == 0)
+        indices_to_drop = self.output_data_new.index[condition]
+        self.output_data_new.drop(indices_to_drop, inplace=True)
 
         self.output_data_new['Дата начала периода'] = self.output_data_new['Дата начала периода'].apply(
             lambda x: x.strftime('%Y-%m-%d') if x != 0 else 0)
