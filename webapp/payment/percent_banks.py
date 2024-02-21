@@ -295,6 +295,13 @@ class AlfaBank(Bank):
         print(self.output_data_new['Дата начала периода'])
         print(self.output_data_new['Дата окончания периода'])
         for i in range(massive, len(self.output_data_new)):
+            # year_of_repayment1[i] = pd.to_datetime(self.output_data_new['Дата погашения Основного долга'])
+            # year_of_repayment2 = pd.to_datetime(self.output_data_new['Дата начала периода'])
+            # if year_of_repayment != year_of_repayment2:
+            #     pass
+            # else:
+            # если когда будет желание, то можно прям точно посчитать количество дней часть дней в вискосном году,
+            # а часть невисокосном
             try:
                 first_line_0_i = (
                                          self.output_data_new.loc[i, 'Дата погашения Основного долга'] -
@@ -323,7 +330,7 @@ class AlfaBank(Bank):
                 principal_monthpay_0_i + principal_monthpay_1_i, 2)
 
         condition = (self.output_data_new['Сумма процентов до погашения ОД'] == 0) & (
-            self.output_data_new['Сумма погашения Основного долга'] == 0)
+                self.output_data_new['Сумма погашения Основного долга'] == 0)
         indices_to_drop = self.output_data_new.index[condition]
         self.output_data_new.drop(indices_to_drop, inplace=True)
 
