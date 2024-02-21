@@ -122,49 +122,45 @@
                     <div class="form-group">
                         <label>ИНН физ. лица</label>
                         <input type="text" name="individual_inn" value="" id='individual_inn' class="form-control"
-                               required disabled>
+                               required>
                     </div>
                     <div class="form-group">
                         <label>Фамилия</label>
-                        <input type="text" name="last_name" value="" id='last_name' class="form-control"
-                               required disabled>
+                        <input type="text" name="surname" value="" id='surname' class="form-control"
+                               required>
                     </div>
                     <div class="form-group">
                         <label>Имя</label>
-                        <input type="text" name="first_name" value="" id='first_name' class="form-control"
-                               required disabled>
+                        <input type="text" name="name" value="" id='name' class="form-control"
+                               required>
                     </div>
                     <div class="form-group">
                         <label>Отчество</label>
-                        <input type="text" name="patronymic" value="" id='patronymic' class="form-control"
-                               required disabled>
+                        <input type="text" name="patronymic" value="" id='patronymic' class="form-control">
                     </div>
                     <div class="form-group">
                         <label>Серия паспорта</label>
                         <input type="text" name="serial_passport" value="" id='serial_passport' class="form-control"
-                               required disabled>
+                               required>
                     </div>
                     <div class="form-group">
                         <label>Номер паспорта</label>
                         <input type="text" name="number_passport" value="" id='number_passport' class="form-control"
-                               required disabled>
+                               required>
                     </div>
                     <div class="form-group">
                         <label>Дата рождения</label>
                         <input type="date" name="date_birth" value="" id='date_birth' class="form-control"
-                               required disabled>
+                               required>
                     </div>
                     <div class="form-group"><br>
-                        <button type="submit" id="submit-button-individual" class="btn btn-outline-primary btn-block" disabled>
+                        <button type="submit" id="submit-button-individual" class="btn btn-outline-primary btn-block">
                             Проверка физ. лица
                         </button>
                     </div>
-                    <!--                    <script>-->
-                    <!--                        Нужна проверка ка кол-во символов-->
-                    <!--                    </script>-->
-
                 </form>
                 <script src="{{ url_for('static', filename='js/risk_inn_dada.js') }}"></script>
+                <script src="{{ url_for('static', filename='js/risk_fio_dada.js') }}"></script>
             </div>
             <br>
             <div class="accordion accordion-flush" id="accordionFlushExample">
