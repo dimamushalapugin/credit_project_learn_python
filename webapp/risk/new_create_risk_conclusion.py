@@ -6,7 +6,7 @@ from datetime import datetime as dt
 
 from flask_login import current_user
 
-from webapp.config import PATH_FOR_HTML_PAGES, DADATA_TOKEN, URL_DELTA
+from webapp.config import PATH_FOR_HTML_PAGES, DADATA_TOKEN, URL_DELTA, PATH_FOR_HTML_PAGES_IND
 from webapp.risk.search_client import search_client, update_page
 from webapp.risk.logger import logging
 from webapp.risk.download_page import download_main_page, download_delta_page
@@ -42,7 +42,7 @@ def create_conclusion(client_inn, seller_inn, is_factory, is_dealer):
                 fr'{PATH_FOR_HTML_PAGES}/{short_name} ИНН {client_inn}/{dt.today().strftime(f"%d.%m.%Y")}'):
             os.makedirs(fr'{PATH_FOR_HTML_PAGES}/{short_name} ИНН {client_inn}/{dt.today().strftime(f"%d.%m.%Y")}')
 
-    driver = search_client(client_inn)
+    driver = search_client(client_inn, caller='create_conclusion')
 
     logging.info('Обновляем страницу лизингополучателя')
     update_page(client_inn, driver)
@@ -114,8 +114,12 @@ def create_conclusion(client_inn, seller_inn, is_factory, is_dealer):
                     driver.switch_to.window(driver.window_handles[1])
                     logging.info(f"Current URL: {driver.current_url}")
                     all_information_about_founders.setdefault(founder, dict_founders)
-                    all_information_about_founders[founder].setdefault('full_name', all_information_from_main_page['УЧРЕДИТЕЛИ ФЛ'][founder]['full_name'])
-                    all_information_about_founders[founder].setdefault('percent', all_information_from_main_page['УЧРЕДИТЕЛИ ФЛ'][founder]['percent'])
+                    all_information_about_founders[founder].setdefault('full_name',
+                                                                       all_information_from_main_page['УЧРЕДИТЕЛИ ФЛ'][
+                                                                           founder]['full_name'])
+                    all_information_about_founders[founder].setdefault('percent',
+                                                                       all_information_from_main_page['УЧРЕДИТЕЛИ ФЛ'][
+                                                                           founder]['percent'])
                 else:
                     logging.info('УЧРЕДИТЕЛЬ = ДИРЕКТОР')
                     all_information_about_founders.setdefault(founder, {
@@ -134,7 +138,7 @@ def create_conclusion(client_inn, seller_inn, is_factory, is_dealer):
     if seller_inn != client_inn:
         logging.info('Запуск процесса получения данных по продавцу')
 
-        driver = search_client(seller_inn)
+        driver = search_client(seller_inn, caller='create_conclusion')
 
         logging.info('Обновляем страницу продавца')
         update_page(seller_inn, driver)
@@ -185,7 +189,59 @@ def create_conclusion(client_inn, seller_inn, is_factory, is_dealer):
     logging.info(f'END! ({current_user})')
 
 
-def create_conclusion_individual(individual_inn):
+class IndividualParams:
+    def __init__(self, dict_params):
+        self._data = {form_name: value.strip() if isinstance(value, str) else value for form_name, value in
+                      dict_params.items()}
+
+    @property
+    def get_name(self):
+        return self._data['name']
+
+    @property
+    def get_surname(self):
+        return self._data['surname']
+
+    @property
+    def get_patronymic(self):
+        return self._data['patronymic']
+
+    @property
+    def get_full_name(self):
+        return f'{self._data["surname"]} {self._data["name"]} {self._data["patronymic"]}'
+
+    @property
+    def get_inn(self):
+        return self._data['individual_inn']
+
+    @property
+    def get_passport_serial(self):
+        return self._data['serial_passport']
+
+    @property
+    def get_passport_number(self):
+        return self._data['number_passport']
+
+    @property
+    def get_date_of_birth(self):
+        return self._data['date_birth']
+
+
+def create_conclusion_individual(params):
     logging.info(f'{current_user} - Нажал на кнопку "Проверка физ. лица"')
-    logging.info(f'{current_user} - ИНН: {individual_inn}')
-    ...
+    logging.info("=" * 50)
+    logging.info(f"START ({current_user})")
+    logging.info("=" * 50)
+
+    person = IndividualParams(params)
+    logging.info('Создаем папку под данный проект')
+    try:
+        if not os.path.exists(fr'{PATH_FOR_HTML_PAGES_IND}/{person.get_full_name} ИНН {person.get_inn}/{dt.today().strftime(f"%d.%m.%Y")}'):
+            os.makedirs(fr'{PATH_FOR_HTML_PAGES_IND}/{person.get_full_name} ИНН {person.get_inn}/{dt.today().strftime(f"%d.%m.%Y")}')
+    except Exception as ex:
+        logging.info(ex, exc_info=True)
+        raise ex
+
+    driver = search_client(person.get_inn)
+    logging.info('Обновляем страницу лизингополучателя')
+    update_page(person, driver)

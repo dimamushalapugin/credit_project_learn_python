@@ -43,7 +43,8 @@ def risk_page():
     folder_path = Path('static') / 'files'
     folder_path_individual = Path('static') / 'files-individual'
     folder_names = get_folder_names(folder_path)  # Функция для получения списка папок
-    individual_folder_names = get_folder_names_individual(folder_path_individual)  # Функция для получения списка папок физ. лиц
+    individual_folder_names = get_folder_names_individual(
+        folder_path_individual)  # Функция для получения списка папок физ. лиц
     suggestions_token = DADATA_TOKEN_BKI
     return render_template('risk_conclusion.html', folder_names=folder_names,
                            individual_folder_names=individual_folder_names,
@@ -80,7 +81,7 @@ def create_xlsx_file(data):
 
 def create_xlsx_file_individual(data):
     try:
-        create_conclusion_individual(data['client_inn'])
+        create_conclusion_individual(data)
         return True
     except Exception:
         flash('Вас выбили из Дельты/Ошибка', 'info')
@@ -114,8 +115,7 @@ def create_risk_conclusion_individual():
     logging.info(f"{current_user}  - Нажал на кнопку 'Проверка физ. лица'")
     start_time = time.perf_counter()
     try:
-        data = request.form
-        file_name_individual = create_xlsx_file_individual(data)
+        file_name_individual = create_xlsx_file_individual(request.form)
         end_time = time.perf_counter()
         execution_time = end_time - start_time
         logging.info(f"({current_user}) Риск-заключение создалось за: {execution_time:.1f} сек.")
