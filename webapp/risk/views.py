@@ -65,6 +65,20 @@ def risk_conclusion_folder(folder_path):
     return render_template('risk_conclusion_folder.html', folder_path=folder_path, items=contents)
 
 
+@blueprint.route('/risk-conclusion-individual/<path:folder_path>')
+def risk_conclusion_folder_individual(folder_path):
+    base_folder = Path('webapp') / 'static' / 'files-individual'
+    absolute_folder_path = os.path.join(base_folder, folder_path).replace('\\', '/')
+
+    contents = []
+
+    if os.path.exists(absolute_folder_path) and os.path.isdir(absolute_folder_path):
+        items = os.listdir(absolute_folder_path)
+        contents = [{"name": item, "path": os.path.join(folder_path, item).replace('\\', '/')} for item in items]
+
+    return render_template('risk_conclusion_folder_individual.html', folder_path=folder_path, items=contents)
+
+
 def create_xlsx_file(data):
     pattern = r"^\d{10}$|^\d{12}$"
     if re.match(pattern, data['client_inn']) and re.match(pattern, data['seller_inn']):
@@ -133,5 +147,14 @@ def create_risk_conclusion_individual():
 def download(filename):
     folder_path = request.args.get('folder_path')
     real_path = os.path.join('static', 'files', folder_path).replace('\\', '/').replace(f"/{filename}", '')
+    logging.info(f"{current_user} скачивает файл: {filename}")
+    return send_from_directory(real_path, filename, as_attachment=True)
+
+
+@blueprint.route('/download-individual/<filename>')
+def download_individual(filename):
+    folder_path = request.args.get('folder_path')
+    real_path = os.path.join('static', 'files-individual', folder_path).replace('\\', '/').replace(f"/{filename}", '')
+    logging.info(f"{current_user} путь к файлу: {real_path}")
     logging.info(f"{current_user} скачивает файл: {filename}")
     return send_from_directory(real_path, filename, as_attachment=True)

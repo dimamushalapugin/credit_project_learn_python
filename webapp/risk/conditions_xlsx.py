@@ -8,12 +8,15 @@ from dateutil.relativedelta import relativedelta
 from webapp.risk.logger import logging
 
 
-def main_conditions(file_name):
+def main_conditions(file_name, individual=False):
     wb = openpyxl.load_workbook(file_name)
-    first_list(wb, file_name)
-    second_list(wb, file_name)
-    third_list(wb, file_name)
-    # fourth_list(wb, file_name)
+    if not individual:
+        first_list(wb, file_name)
+        second_list(wb, file_name)
+        third_list(wb, file_name)
+        # fourth_list(wb, file_name)
+    else:
+        second_list(wb, file_name, individual=True)
 
 
 def check_date_of_registration(sheet):
@@ -194,8 +197,11 @@ def first_list(wb, name):
     wb.save(name)
 
 
-def second_list(wb, name):
-    sheet = wb['Дир Учр Пор']
+def second_list(wb, name, individual=False):
+    if not individual:
+        sheet = wb['Дир Учр Пор']
+    else:
+        sheet = wb['Физ. лицо']
     activity_analysis(sheet)
     wb.save(name)
 

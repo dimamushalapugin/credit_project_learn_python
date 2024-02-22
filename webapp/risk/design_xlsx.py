@@ -2,7 +2,7 @@ import openpyxl
 from openpyxl.styles import Alignment, PatternFill, Font
 
 
-def main_design(file_name):
+def main_design(file_name, individual=False):
     wb = openpyxl.load_workbook(file_name)
 
     font_title_name = Font(name='Century Gothic')
@@ -17,14 +17,18 @@ def main_design(file_name):
     color_a2 = PatternFill(start_color='ddeeff', end_color='ddeeff', fill_type='solid')
     color_delta = PatternFill(start_color='e9eef3', end_color='e9eef3', fill_type='solid')
 
-    first_list(wb, file_name, font_title_name, alignment_wrap, font_a1, font_a2, alignment_center_bold, font_bold,
-               color_a2, color_delta, alignment_top_left_bold, alignment_right, font_delta)
-    second_list(wb, file_name, font_title_name, alignment_wrap, font_a2, alignment_center_bold, font_bold, color_a2,
-                color_delta, alignment_top_left_bold, alignment_right, font_delta)
-    third_list(wb, file_name, font_title_name, alignment_wrap, font_a2, alignment_center_bold, font_bold, color_a2,
-               color_delta, alignment_top_left_bold, alignment_right, font_delta)
-    fourth_list(wb, file_name, font_title_name, alignment_wrap, font_a2, alignment_center_bold, font_bold, color_a2,
-                color_delta, alignment_top_left_bold, alignment_right, font_delta)
+    if not individual:
+        first_list(wb, file_name, font_title_name, alignment_wrap, font_a1, font_a2, alignment_center_bold, font_bold,
+                   color_a2, color_delta, alignment_top_left_bold, alignment_right, font_delta)
+        second_list(wb, file_name, font_title_name, alignment_wrap, font_a2, alignment_center_bold, font_bold, color_a2,
+                    color_delta, alignment_top_left_bold, alignment_right, font_delta)
+        third_list(wb, file_name, font_title_name, alignment_wrap, font_a2, alignment_center_bold, font_bold, color_a2,
+                   color_delta, alignment_top_left_bold, alignment_right, font_delta)
+        fourth_list(wb, file_name, font_title_name, alignment_wrap, font_a2, alignment_center_bold, font_bold, color_a2,
+                    color_delta, alignment_top_left_bold, alignment_right, font_delta)
+    else:
+        second_list(wb, file_name, font_title_name, alignment_wrap, font_a2, alignment_center_bold, font_bold, color_a2,
+                    color_delta, alignment_top_left_bold, alignment_right, font_delta, individual=True)
 
 
 def overall_design(sheet, font_title_name, alignment_wrap, alignment_center_bold, font_bold, color_delta,
@@ -187,8 +191,11 @@ def first_list(wb, name, font_title_name, alignment_wrap, font_a1, font_a2, alig
 
 
 def second_list(wb, name, font_title_name, alignment_wrap, font_a2, alignment_center_bold, font_bold, color_a2,
-                color_delta, alignment_top_left_bold, alignment_right, font_delta):
-    sheet = wb['Дир Учр Пор']
+                color_delta, alignment_top_left_bold, alignment_right, font_delta, individual=False):
+    if not individual:
+        sheet = wb['Дир Учр Пор']
+    else:
+        sheet = wb['Физ. лицо']
     overall_design(sheet, font_title_name, alignment_wrap, alignment_center_bold, font_bold, color_delta,
                    alignment_top_left_bold, alignment_right, font_delta)
     sheet['A1'].font = font_a2  # A1 к а2 потому что название Риск-заключение по ... встречается только на 1 листе

@@ -173,7 +173,7 @@
                          data-bs-parent="#accordionFlushExample">
                         <div class="list-group">
                             {% for folder_name in individual_folder_names %}
-                            <a href="{{ url_for('risk.risk_conclusion_folder', folder_path=folder_name) }}"
+                            <a href="{{ url_for('risk.risk_conclusion_folder_individual', folder_path=folder_name) }}"
                                class="list-group-item list-group-item-action list-group-item-light">
                                 <i class="fa-regular fa-folder" style="color: #6b6b6b;"></i> {{ folder_name }}
                             </a>

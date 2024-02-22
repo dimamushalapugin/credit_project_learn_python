@@ -86,14 +86,12 @@ def create_xlsx_file_individual(delta_info: dict, person):
     write_user(delta_info)
 
     logging.info(f"Сохраняем файл. Created by {current_user}")
-    wb.save(
-        fr"{PATH_FOR_HTML_PAGES_IND}/{person.get_full_name} ИНН {person.get_inn}/{dt.today().strftime(f'%d.%m.%Y')}/Анализ физ. лица {person.get_full_name}.xlsx")
+    individual_path = fr"{PATH_FOR_HTML_PAGES_IND}/{person.get_full_name} ИНН {person.get_inn}/{dt.today().strftime(f'%d.%m.%Y')}"
+    wb.save(f"{individual_path}/Анализ физ. лица {person.get_full_name}.xlsx")
 
     logging.info(f"({current_user}). Запускаем оформеление дизайна xlsx")
-    # main_design(
-    #     fr"{PATH_FOR_HTML_PAGES_IND}/{person.get_full_name} ИНН {person.get_inn}/{dt.today().strftime(f'%d.%m.%Y')}/Анализ физ. лица {person.get_full_name}.xlsx")
-    # main_conditions(
-    #     fr"{PATH_FOR_HTML_PAGES_IND}/{person.get_full_name} ИНН {person.get_inn}/{dt.today().strftime(f'%d.%m.%Y')}/Анализ физ. лица {person.get_full_name}.xlsx")
+    main_design(f"{individual_path}/Анализ физ. лица {person.get_full_name}.xlsx", True)
+    main_conditions(f"{individual_path}/Анализ физ. лица {person.get_full_name}.xlsx", True)
 
 
 def create_xlsx_file(inn_client, inn_seller, main_client: dict, delta_client: dict, director_client: dict,
