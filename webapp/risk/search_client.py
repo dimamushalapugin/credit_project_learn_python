@@ -1,36 +1,45 @@
 import time
 
 from selenium.common.exceptions import NoSuchElementException
+from selenium.webdriver import ActionChains
 from selenium.webdriver.common.by import By
 from webapp.risk.auth_delta import authorization
 from webapp.risk.logger import logging
 
 
 def add_person_params(driver, params):
-    driver.find_element(By.XPATH, "//div[@class='popup-btn-submit addParams']").click()
+    logging.info('Добавляем данные о физ. лице')
     # Находим элементы по ID
-    l_name_element = driver.find_element_by_id("l_name")
-    f_name_element = driver.find_element_by_id("f_name")
-    m_name_element = driver.find_element_by_id("m_name")
-    birth_element = driver.find_element_by_id("birth_date")
-    passport_series_element = driver.find_element_by_id("passport_series")
-    passport_number_element = driver.find_element_by_id("passport_number")
-    for elem, param_value in {l_name_element: params.surname,
-                              f_name_element: params.name,
-                              m_name_element: params.patronymic,
-                              birth_element: params.date_birth,
-                              passport_series_element: params.series_passport,
-                              passport_number_element: params.number_passport
+    l_name_element = driver.find_element(By.ID, "l_name")
+    f_name_element = driver.find_element(By.ID, "f_name")
+    m_name_element = driver.find_element(By.ID, "m_name")
+    birth_element = driver.find_element(By.ID, "birth_date")
+    passport_series_element = driver.find_element(By.ID, "passport_series")
+    passport_number_element = driver.find_element(By.ID, "passport_number")
+    for elem, param_value in {l_name_element: params.get_surname,
+                              f_name_element: params.get_name,
+                              m_name_element: params.get_patronymic,
+                              birth_element: params.get_date_of_birth,
+                              passport_series_element: params.get_passport_series,
+                              passport_number_element: params.get_passport_number
                               }.items():
         if not elem.get_attribute("value") and param_value:
             elem.send_keys(param_value)
+    ActionChains(driver) \
+        .click(driver.find_element(By.CSS_SELECTOR, "div[class='popup-btn-submit addParams']")) \
+        .perform()
 
 
 def update_page(client_inn, driver, person=None):
     if person is None:
         try:  # нажимает обновить сверху справа
             driver.implicitly_wait(5)
-            driver.find_element(By.CSS_SELECTOR, "span[class='more__reload_btn_update']").click()
+            logging.info('Нажимаю на кнопку')
+            update_button = driver.find_element(By.CSS_SELECTOR, "span[class='more__reload_btn_update']")
+            ActionChains(driver) \
+                .click(update_button) \
+                .perform()
+            logging.info('Нажал на кнопку')
         except Exception as _ex:
             logging.info(_ex, exc_info=True)
         driver.implicitly_wait(5)
@@ -38,7 +47,9 @@ def update_page(client_inn, driver, person=None):
         match len(client_inn):
             case 12:
                 try:
-                    driver.find_element(By.XPATH, "//div[@class='popup-btn-submit addParams']").click()
+                    ActionChains(driver) \
+                        .click(driver.find_element(By.CSS_SELECTOR, "div[class='popup-btn-submit addParams']")) \
+                        .perform()
                 except Exception as _ex:
                     logging.info('Проверяется физ. лицо, но таблица после нажатия "Обновить все" не появилась')
                     logging.info(_ex, exc_info=True)
@@ -47,15 +58,24 @@ def update_page(client_inn, driver, person=None):
                 logging.info('Проверяется юр. лицо')
     else:
         try:  # нажимает обновить сверху справа
-            driver.implicitly_wait(5)
-            driver.find_element(By.CSS_SELECTOR, "span[class='more__reload_btn_update']").click()
+            logging.info('Нажимаю на кнопку')
+            driver.implicitly_wait(10)
+            update_button = driver.find_element(By.CSS_SELECTOR, "span[class='more__reload_btn_update']")
+            ActionChains(driver) \
+                .click(update_button) \
+                .perform()
+            logging.info('Нажал на кнопку')
         except Exception as _ex:
             logging.info(_ex, exc_info=True)
-            add_person_params(driver, person)
+            try:
+                add_person_params(driver, person)
+            except Exception as _ex:
+                logging.info(_ex, exc_info=True)
 
         try:
             add_person_params(driver, person)
         except Exception as _ex:
+            logging.info(_ex, exc_info=True)
             logging.info('Таблица после нажатия "Обновить все" не появилась')
 
         driver.implicitly_wait(5)
@@ -123,6 +143,10 @@ def search_client(client_inn, caller=None):
             driver.execute_script(f"window.open('{new_url}', '_self');")
             driver.implicitly_wait(2)
             driver.find_element(By.XPATH, "//a[@class='header-nav__link card-title__link']").click()
+            logging.info(f"Current URL: {driver.current_url}")
+            logging.info(f"Меняем вкладку")
+            driver.switch_to.window(driver.window_handles[1])
+            logging.info(f"Current URL: {driver.current_url}")
         except Exception:
             logging.info('Таких людей нет в базе данных Дельты')
             new_url = f"https://sb.deltasecurity.ru/contractor/new-person/?text={client_inn}"

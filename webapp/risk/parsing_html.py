@@ -645,12 +645,19 @@ def read_main_html(client_inn, object_inn, short_name):
     return general_description_of_the_company
 
 
-def read_main_html_individual(client_inn, object_inn, short_name):
-    try:
-        soup = BeautifulSoup(read_main_page(client_inn, object_inn, short_name), 'html.parser')
-    except FileNotFoundError as _ex:
-        logging.info(_ex, exc_info=True)
-        raise _ex
+def read_main_html_individual(client_inn, object_inn, short_name, individual=False):
+    if not individual:
+        try:
+            soup = BeautifulSoup(read_main_page(client_inn, object_inn, short_name), 'html.parser')
+        except FileNotFoundError as _ex:
+            logging.info(_ex, exc_info=True)
+            raise _ex
+    else:
+        try:
+            soup = BeautifulSoup(read_main_page(client_inn, object_inn, short_name, True), 'html.parser')
+        except FileNotFoundError as _ex:
+            logging.info(_ex, exc_info=True)
+            raise _ex
 
     def ind_main_profile(title):
         try:

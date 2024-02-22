@@ -7,7 +7,93 @@ from webapp.risk.design_xlsx import main_design
 from webapp.risk.conditions_xlsx import main_conditions
 from webapp.risk.logger import logging
 from webapp.risk.models import Okved
-from webapp.config import PATH_FOR_HTML_PAGES
+from webapp.config import PATH_FOR_HTML_PAGES, PATH_FOR_HTML_PAGES_IND
+
+
+def create_xlsx_file_individual(delta_info: dict, person):
+    def write_user(data):
+        for index, (key, value) in enumerate(data.items()):
+            if index == 4:  # Кол-во итераций
+                break
+            sheet[f'A{sheet.max_row + 1}'].value = key
+            sheet[f'B{sheet.max_row}'].value = value
+
+        for _ in range(20):
+            sheet[f'A{sheet.max_row + 1}'].value = ''
+        sheet[f'A{sheet.max_row + 1}'].value = 'ПРОВЕРКА ПАСПОРТА'
+        sheet[f'A{sheet.max_row + 1}'].value = 'Паспорт среди недействительных не значится'
+        for _ in range(20):
+            sheet[f'A{sheet.max_row + 1}'].value = ''
+
+        sheet[f'A{sheet.max_row + 2}'].value = 'Регистрация в качестве индивидуального предпринимателя:'
+        if data['Инфо_ИП']:
+            for num in data['Инфо_ИП']:
+                for key, value in data['Инфо_ИП'][num].items():
+                    sheet[f'A{sheet.max_row + 1}'].value = key
+                    sheet[f'B{sheet.max_row}'].value = value
+                sheet[f'A{sheet.max_row + 1}'].value = ''
+        else:
+            sheet[f'A{sheet.max_row + 1}'].value = 'Информация отсутствует'
+            sheet[f'A{sheet.max_row + 1}'].value = ''
+
+        sheet[f'A{sheet.max_row + 1}'].value = 'Адрес регистрации:'
+        sheet[f'B{sheet.max_row}'].value = data['Адрес_регистрации']
+
+        sheet[f'A{sheet.max_row + 2}'].value = 'Информация о регистрирующем органе:'
+        sheet[f'B{sheet.max_row}'].value = data['Имя_налог_органа']
+
+        sheet[f'A{sheet.max_row + 2}'].value = 'Является руководителем:'
+        sheet[f'B{sheet.max_row}'].value = 'Является учредителем:'
+        sheet[f'A{sheet.max_row + 1}'].value = data['История_руководства']['Является руководителем']
+        sheet[f'B{sheet.max_row}'].value = data['История_руководства']['Является учредителем']
+        sheet[f'A{sheet.max_row + 1}'].value = 'Являлся руководителем:'
+        sheet[f'B{sheet.max_row}'].value = 'Являлся учредителем:'
+        sheet[f'A{sheet.max_row + 1}'].value = data['История_руководства']['Являлся руководителем']
+        sheet[f'B{sheet.max_row}'].value = data['История_руководства']['Являлся учредителем']
+
+        for index, (key, value) in enumerate(data.items()):
+            if index == 24:  # Кол-во итераций
+                break
+            if 13 > index >= 9:
+                sheet[f'A{sheet.max_row + 2}'].value = key
+                sheet[f'A{sheet.max_row + 1}'].value = value
+            if 16 > index >= 13:
+                sheet[f'A{sheet.max_row + 2}'].value = key
+                sheet[f'A{sheet.max_row + 1}'].value = value
+                for _ in range(20):
+                    sheet[f'A{sheet.max_row + 1}'].value = ''
+            if index >= 16:
+                sheet[f'A{sheet.max_row + 2}'].value = key
+                sheet[f'A{sheet.max_row + 1}'].value = value
+
+        sheet[f'A{sheet.max_row + 2}'].value = 'СОЦИАЛЬНЫЕ СЕТИ'
+        for _ in range(3):
+            sheet[f'A{sheet.max_row + 1}'].value = ''
+
+    wb = openpyxl.Workbook()
+    sheet = wb.active
+    sheet['A1'].value = f'Анализ физ. лица {person.get_full_name} на {dt.today().strftime(f"%d.%m.%Y")}'
+    try:
+        sheet_name1 = wb.sheetnames[0]  # берем название первого листа
+        wb[sheet_name1].title = 'Физ. лицо'  # дали новое название листу
+    except Exception as _ex:
+        logging.info(_ex, exc_info=True)
+
+    sheet[f'A{sheet.max_row + 1}'].value = '1. Общее описание Физ. лица'
+    sheet[f'A{sheet.max_row + 1}'].value = person.get_full_name
+    sheet[f'A{sheet.max_row + 1}'].value = ''
+
+    write_user(delta_info)
+
+    logging.info(f"Сохраняем файл. Created by {current_user}")
+    wb.save(
+        fr"{PATH_FOR_HTML_PAGES_IND}/{person.get_full_name} ИНН {person.get_inn}/{dt.today().strftime(f'%d.%m.%Y')}/Анализ физ. лица {person.get_full_name}.xlsx")
+
+    logging.info(f"({current_user}). Запускаем оформеление дизайна xlsx")
+    # main_design(
+    #     fr"{PATH_FOR_HTML_PAGES_IND}/{person.get_full_name} ИНН {person.get_inn}/{dt.today().strftime(f'%d.%m.%Y')}/Анализ физ. лица {person.get_full_name}.xlsx")
+    # main_conditions(
+    #     fr"{PATH_FOR_HTML_PAGES_IND}/{person.get_full_name} ИНН {person.get_inn}/{dt.today().strftime(f'%d.%m.%Y')}/Анализ физ. лица {person.get_full_name}.xlsx")
 
 
 def create_xlsx_file(inn_client, inn_seller, main_client: dict, delta_client: dict, director_client: dict,
@@ -398,5 +484,7 @@ def create_xlsx_file(inn_client, inn_seller, main_client: dict, delta_client: di
         fr"{PATH_FOR_HTML_PAGES}/{short_name} ИНН {inn_client}/{dt.today().strftime(f'%d.%m.%Y')}/Риск заключение {inn_client}.xlsx")
 
     logging.info(f"({current_user}). Запускаем оформеление дизайна xlsx")
-    main_design(fr"{PATH_FOR_HTML_PAGES}/{short_name} ИНН {inn_client}/{dt.today().strftime(f'%d.%m.%Y')}/Риск заключение {inn_client}.xlsx")
-    main_conditions(fr"{PATH_FOR_HTML_PAGES}/{short_name} ИНН {inn_client}/{dt.today().strftime(f'%d.%m.%Y')}/Риск заключение {inn_client}.xlsx")
+    main_design(
+        fr"{PATH_FOR_HTML_PAGES}/{short_name} ИНН {inn_client}/{dt.today().strftime(f'%d.%m.%Y')}/Риск заключение {inn_client}.xlsx")
+    main_conditions(
+        fr"{PATH_FOR_HTML_PAGES}/{short_name} ИНН {inn_client}/{dt.today().strftime(f'%d.%m.%Y')}/Риск заключение {inn_client}.xlsx")
