@@ -12,7 +12,7 @@ from webapp.sql_queries import (write_to_db,
                                 create_interest_rate_table)
 from webapp.user.auth_utils import admin_required
 from webapp.config import DADATA_TOKEN_BKI
-from webapp.payment.percent_banks import AkBarsBank, Bank, AlfaBank
+from webapp.payment.percent_banks import AkBarsBank, Bank, AlfaBank, MetallinvestBank
 from webapp.payment.info_about import DescriptionOfLessee
 from webapp.payment.secondary_functions import create_date_format, floating_or_not
 from webapp.risk.logger import logging
@@ -89,12 +89,16 @@ def read_from_xlsx():
     data6 = request.json.get('data6')  # ИНН лизингополучателя
     data7 = request.json.get('data7')  # ИНН продавца
     data8 = request.json.get('data8')  # Дата выдачи кредита
+    print(data8)
     if data1 in ['ПАО «АК БАРС» БАНК', 'ПАО «МОСКОВСКИЙ КРЕДИТНЫЙ БАНК»', 'АО «СМП БАНК»',
                  'АО КБ «УРАЛ ФД»', 'АО «ИНВЕСТТОРГБАНК»']:
         file_ = AkBarsBank(data, data3, data8, data1)
         response_math_xlxs = file_.start_function()
     elif data1 == 'АО «АЛЬФА-БАНК»':
         file_ = AlfaBank(data, data3, data8, data1)
+        response_math_xlxs = file_.start_function()
+    elif data1 == 'ПАО АКБ «МЕТАЛЛИНВЕСТБАНК»':
+        file_ = MetallinvestBank(data, data3, data8, data1)
         response_math_xlxs = file_.start_function()
     else:
         file_ = AlfaBank(data, data3, data8, data1)

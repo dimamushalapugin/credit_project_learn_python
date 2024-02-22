@@ -332,10 +332,10 @@ class AlfaBank(Bank):
         # делаем дату погашения % за последний месяц в дату погашения последнего ОД
         if self.output_data_new['Дата погашения Основного долга'].iloc[-1] == 0:
             self.output_data_new['Дата уплаты процентов'].iloc[-1] = \
-            self.output_data_new['Дата погашения Основного долга'].iloc[-1]
+                self.output_data_new['Дата погашения Основного долга'].iloc[-1]
         elif self.output_data_new['Дата погашения Основного долга'].iloc[-1] != 0:
             self.output_data_new['Дата уплаты процентов'].iloc[-1] = \
-            self.output_data_new['Дата погашения Основного долга'].iloc[-1]
+                self.output_data_new['Дата погашения Основного долга'].iloc[-1]
 
         self.output_data_new['Дата начала периода'] = self.output_data_new['Дата начала периода'].apply(
             lambda x: x.strftime('%Y-%m-%d') if x != 0 else 0)
@@ -353,11 +353,46 @@ class AlfaBank(Bank):
         self.calculate_interest()
         return self.output_data_new
 
-# class MetallinvestBank(Bank):
-#     def __init__(self, loan_amount, interest_rate):
-#         super().__init__("Металлинвест", loan_amount, interest_rate)
-#         self.interest_payment_date = 20  # Погашение процентов каждый 20-й день месяца
-#
-#     def calculate_interest(self):
-#         # Расчет процентов для Металлинвеста
-#         return
+
+class MetallinvestBank(Bank):
+    def __init__(self, data, interest_rate, date_of_issue, bank_day_percent, data8):
+        super().__init__(data, interest_rate, date_of_issue, bank_day_percent)
+        self.data8 = data8
+
+    def create_dataframe(self):
+        self.output_data = pd.DataFrame({
+            '№': range(0, self.period_month),
+            'Дата начала периода': pd.date_range(start=self.start_date, periods=self.period_month, freq='D'),
+            'Остаток ОД на начало периода': 0,
+            'Сумма погашения ОД': 0,
+            'Ставка банка, %': float(12.5),
+            'Кол-во дней': 0,
+            'Кол-во дней в году': 365,
+            'Общая сумма процентов': 0,
+            'Дата уплаты процентов': pd.date_range(start=self.start_date, periods=self.period_month,
+                                                   freq='MS')
+        })
+        # расчет для КД 8365-К
+        self.output_data['Дата уплаты процентов'] += pd.DateOffset(days=24)
+        start_date = pd.to_datetime(self.start_date, format='%Y-%m-%d')
+        start_month = start_date.replace(day=25)
+        new_row = pd.DataFrame(
+            {'№': [0], 'Дата начала периода': [self.start_date],
+             'Дата уплаты процентов': [start_month]})
+        self.output_data = pd.concat([new_row, self.output_data], ignore_index=True)
+        self.output_data = self.output_data.reset_index(drop=True)
+        self.output_data['№'] = self.output_data.index
+        print(self.output_data)
+        # ab = df['Дата погашения Основного долга'].iloc[-1]
+        # a = pd.to_datetime('2021-10-11')
+        # days_difference = (ab - a).days
+        # print(days_difference)
+
+    def calculate_interest(self):
+        self.output_data_new = '0'
+        return self.output_data_new
+
+    def start_function(self):
+        self.create_dataframe()
+        self.calculate_interest()
+        return self.output_data_new
