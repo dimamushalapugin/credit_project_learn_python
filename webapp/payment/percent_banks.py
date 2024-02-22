@@ -252,7 +252,6 @@ class AlfaBank(Bank):
                                                                         0, 'Дата начала периода'].replace(
                 day=1) + pd.DateOffset(days=24)
             self.output_data_new['Дата окончания периода'].apply(self.get_next_working_day)
-            print(self.output_data_new['Дата окончания периода'].apply(self.get_next_working_day))
             zero_line = (self.output_data_new.loc[0, 'Дата окончания периода'] - self.output_data_new.loc[
                 0, 'Дата начала периода']).days
             self.output_data_new.loc[0, 'Общая сумма процентов'] = round(
@@ -291,9 +290,6 @@ class AlfaBank(Bank):
                                                                          (
                                                                                  i - 1), 'Дата окончания периода'] + pd.DateOffset(
                     days=1)
-        print('Here will be output_data')
-        print(self.output_data_new['Дата начала периода'])
-        print(self.output_data_new['Дата окончания периода'])
         for i in range(massive, len(self.output_data_new)):
             # year_of_repayment1[i] = pd.to_datetime(self.output_data_new['Дата погашения Основного долга'])
             # year_of_repayment2 = pd.to_datetime(self.output_data_new['Дата начала периода'])
@@ -333,6 +329,13 @@ class AlfaBank(Bank):
                 self.output_data_new['Сумма погашения Основного долга'] == 0)
         indices_to_drop = self.output_data_new.index[condition]
         self.output_data_new.drop(indices_to_drop, inplace=True)
+        # делаем дату погашения % за последний месяц в дату погашения последнего ОД
+        if self.output_data_new['Дата погашения Основного долга'].iloc[-1] == 0:
+            self.output_data_new['Дата уплаты процентов'].iloc[-1] = \
+            self.output_data_new['Дата погашения Основного долга'].iloc[-1]
+        elif self.output_data_new['Дата погашения Основного долга'].iloc[-1] != 0:
+            self.output_data_new['Дата уплаты процентов'].iloc[-1] = \
+            self.output_data_new['Дата погашения Основного долга'].iloc[-1]
 
         self.output_data_new['Дата начала периода'] = self.output_data_new['Дата начала периода'].apply(
             lambda x: x.strftime('%Y-%m-%d') if x != 0 else 0)

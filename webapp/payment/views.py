@@ -93,8 +93,10 @@ def read_from_xlsx():
                  'АО КБ «УРАЛ ФД»', 'АО «ИНВЕСТТОРГБАНК»']:
         file_ = AkBarsBank(data, data3, data8, data1)
         response_math_xlxs = file_.start_function()
+    elif data1 == 'АО «АЛЬФА-БАНК»':
+        file_ = AlfaBank(data, data3, data8, data1)
+        response_math_xlxs = file_.start_function()
     else:
-    # elif data1 == 'АО «АЛЬФА-БАНК»':
         file_ = AlfaBank(data, data3, data8, data1)
         response_math_xlxs = file_.start_function()
     # else:
