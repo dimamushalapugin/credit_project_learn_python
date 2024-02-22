@@ -6,10 +6,30 @@ from webapp.risk.auth_delta import authorization
 from webapp.risk.logger import logging
 
 
+def add_person_params(driver, params):
+    driver.find_element(By.XPATH, "//div[@class='popup-btn-submit addParams']").click()
+    # Находим элементы по ID
+    l_name_element = driver.find_element_by_id("l_name")
+    f_name_element = driver.find_element_by_id("f_name")
+    m_name_element = driver.find_element_by_id("m_name")
+    birth_element = driver.find_element_by_id("birth_date")
+    passport_series_element = driver.find_element_by_id("passport_series")
+    passport_number_element = driver.find_element_by_id("passport_number")
+    for elem, param_value in {l_name_element: params.surname,
+                              f_name_element: params.name,
+                              m_name_element: params.patronymic,
+                              birth_element: params.date_birth,
+                              passport_series_element: params.series_passport,
+                              passport_number_element: params.number_passport
+                              }.items():
+        if not elem.get_attribute("value") and param_value:
+            elem.send_keys(param_value)
+
+
 def update_page(client_inn, driver, person=None):
-    driver.implicitly_wait(5)
-    if person is not None:
+    if person is None:
         try:  # нажимает обновить сверху справа
+            driver.implicitly_wait(5)
             driver.find_element(By.CSS_SELECTOR, "span[class='more__reload_btn_update']").click()
         except Exception as _ex:
             logging.info(_ex, exc_info=True)
@@ -27,13 +47,14 @@ def update_page(client_inn, driver, person=None):
                 logging.info('Проверяется юр. лицо')
     else:
         try:  # нажимает обновить сверху справа
+            driver.implicitly_wait(5)
             driver.find_element(By.CSS_SELECTOR, "span[class='more__reload_btn_update']").click()
         except Exception as _ex:
             logging.info(_ex, exc_info=True)
-            driver.find_element(By.XPATH, "//div[@class='popup-btn-submit addParams']").click()
+            add_person_params(driver, person)
 
         try:
-            driver.find_element(By.XPATH, "//div[@class='popup-btn-submit addParams']").click()
+            add_person_params(driver, person)
         except Exception as _ex:
             logging.info('Таблица после нажатия "Обновить все" не появилась')
 
