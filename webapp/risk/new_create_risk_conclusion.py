@@ -216,7 +216,7 @@ class IndividualParams:
 
     @property
     def get_passport_serial(self):
-        return self._data['serial_passport']
+        return self._data['series_passport']
 
     @property
     def get_passport_number(self):
@@ -224,7 +224,9 @@ class IndividualParams:
 
     @property
     def get_date_of_birth(self):
-        return self._data['date_birth']
+        input_date = self._data['date_birth']
+        formatted_date = dt.strptime(input_date, "%Y-%m-%d").strftime("%d.%m.%Y")
+        return formatted_date
 
 
 def create_conclusion_individual(params):
@@ -244,4 +246,4 @@ def create_conclusion_individual(params):
 
     driver = search_client(person.get_inn)
     logging.info('Обновляем страницу лизингополучателя')
-    update_page(person, driver)
+    update_page(person, driver, person=person)

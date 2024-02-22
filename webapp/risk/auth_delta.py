@@ -10,7 +10,7 @@ from webapp.risk.logger import logging
 
 def authorization():
     options = Options()
-    # options.add_argument("--headless")
+    options.add_argument("--headless")
     logging.info(f'Создаем драйвер Selenium')
     service = webdriver.FirefoxService(log_output=subprocess.STDOUT)
     driver = webdriver.Firefox(options=options, service=service)
