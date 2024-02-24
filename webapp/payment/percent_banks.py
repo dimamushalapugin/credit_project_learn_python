@@ -365,30 +365,43 @@ class MetallinvestBank(Bank):
     def __init__(self, data, interest_rate, date_of_issue, bank_day_percent):
         super().__init__(data, interest_rate, date_of_issue, bank_day_percent)
 
+    @staticmethod
+    def period_pay_percent_mib1(self):
+        df1 = pd.read_excel(
+            r'C:\Users\User\PycharmProjects\credit_project_learn_python\webapp\payment\Проценты МИБ1.xlsx')
+        return df1
+
     def create_dataframe(self, data):
         self.output_data = pd.DataFrame({
             '№': range(0, self.extract_file(data, self.start_date)[3]),
-            'Дата начала периода': pd.date_range(start=self.start_date, periods=self.extract_file(data, self.start_date)[3], freq='D'),
+            'Дата начала периода': pd.date_range(start=self.start_date,
+                                                 periods=self.extract_file(data, self.start_date)[3], freq='D'),
             'Остаток ОД на начало периода': 0,
             'Сумма погашения ОД': 0,
             'Ставка банка, %': float(12.5),
-            'Кол-во дней': 0,
+            'Кол-во дней': 1,
             'Кол-во дней в году': 365,
             'Общая сумма процентов': 0,
-            'Дата уплаты процентов': pd.date_range(start=self.start_date, periods=self.period_month,
-                                                   freq='MS')
+            'Дата уплаты процентов': 0
         })
+
+        # percent_dataframe = pd.DataFrame({
+        #     '№': range(0, self.extract_file(data, self.start_date)[3]),
+        #     'Дата уплаты процентов': 0
+        # })
+        # # print(percent_dataframe)
+        #
+        # df1 = self.period_pay_percent_mib1()  # Сохраняем результат выполнения функции period_pay_percent_mib1()
+        #
+        # result = df1.merge(percent_dataframe, how='left', on='Дата уплаты процентов')
+        # print(result)
         # расчет для КД 8365-К
-        self.output_data['Дата уплаты процентов'] += pd.DateOffset(days=24)
-        start_date = pd.to_datetime(self.start_date, format='%Y-%m-%d')
-        start_month = start_date.replace(day=25)
-        new_row = pd.DataFrame(
-            {'№': [0], 'Дата начала периода': [self.start_date],
-             'Дата уплаты процентов': [start_month]})
-        self.output_data = pd.concat([new_row, self.output_data], ignore_index=True)
         self.output_data = self.output_data.reset_index(drop=True)
         self.output_data['№'] = self.output_data.index
-        print(self.output_data)
+        sum_od = self.extract_file(data, self.start_date)[1]['Сумма погашения Основного долга'].sum()
+        self.output_data.loc[0, 'Остаток ОД на начало периода'] = round(sum_od, 2)
+        self.output_data.loc[0, 'Кол-во дней'] = 0
+        self.output_data.to_excel('updated_output_data_МИБ1.xlsx', index=False)
 
     def calculate_interest(self):
         self.output_data_new = '0'
