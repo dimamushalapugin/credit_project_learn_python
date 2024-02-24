@@ -1,7 +1,9 @@
 import datetime
+
 import pandas as pd
-from webapp.risk.logger import logging
 from holidays_ru import check_holiday
+
+from webapp.risk.logger import logging
 
 
 class Bank:
@@ -17,13 +19,13 @@ class Bank:
         self.bank_day_percent = bank_day_percent
         self.output_data = None
         self.output_data_new = None  # Add this line to initialize the attribute
-        self.period_month = self.extract_file(data)[2]
+        self.period_month = self.extract_file(data, self.start_date)[2]
 
     pd.set_option('display.max_columns', 25)
     pd.set_option('display.max_rows', 500)
 
     @staticmethod
-    def extract_file(data_json):
+    def extract_file(data_json, date_of_issue):
         df = pd.DataFrame(data_json)
         start_date = pd.to_datetime(df['Дата погашения Основного долга'], origin='1899-12-30', unit='D')
         df['Дата погашения Основного долга'] = start_date
@@ -35,7 +37,10 @@ class Bank:
 
         # Extract the month and year from the first cell of the "Дата погашения" column
         month_year = df['Дата погашения Основного долга'][0].strftime('%B %Y')
-        return month_year, df, num_rows
+        last_day_payment = df['Дата погашения Основного долга'].iloc[-1]
+        start_limit = pd.to_datetime(date_of_issue)
+        days_difference = (last_day_payment - start_limit).days
+        return month_year, df, num_rows, days_difference
 
     @staticmethod
     def is_weekend_or_holiday(day):
@@ -98,14 +103,15 @@ class AkBarsBank(Bank):
         self.output_data['Дата начала периода'] = pd.to_datetime(self.output_data['Дата начала периода'])
         month_year_table = self.output_data['Дата начала периода'][0].strftime('%B %Y')
 
-        if month_year_table == self.extract_file(self.data)[0]:
-            new_row_xlsx = self.extract_file(self.data)[1]
+        if month_year_table == self.extract_file(self.data, self.start_date)[0]:
+            new_row_xlsx = self.extract_file(self.data, self.start_date)[1]
             self.output_data_new = pd.concat([self.output_data, new_row_xlsx], axis=1).drop(
                 columns='№')  # Change to self.output_data_new
         else:
             new_row_xlsx = pd.DataFrame(
                 {'№': [0], 'Дата погашения Основного долга': 0, 'Сумма погашения Основного долга': 0})
-            extract_file_new = pd.concat([new_row_xlsx, self.extract_file(self.data)[1]], ignore_index=True).drop(
+            extract_file_new = pd.concat([new_row_xlsx, self.extract_file(self.data, self.start_date)[1]],
+                                         ignore_index=True).drop(
                 columns='№')
             self.output_data_new = pd.concat([self.output_data, extract_file_new],
                                              axis=1)  # Change to self.output_data_new
@@ -232,13 +238,14 @@ class AlfaBank(Bank):
         self.output_data['Дата начала периода'] = pd.to_datetime(self.output_data['Дата начала периода'])
         month_year_table = self.output_data['Дата начала периода'][0].strftime('%B %Y')
 
-        if month_year_table == self.extract_file(self.data)[0]:
-            new_row_xlsx = self.extract_file(self.data)[1]
+        if month_year_table == self.extract_file(self.data, self.start_date)[0]:
+            new_row_xlsx = self.extract_file(self.data, self.start_date)[1]
             self.output_data_new = pd.concat([self.output_data, new_row_xlsx], axis=1)  # Change to self.output_data_new
         else:
             new_row_xlsx = pd.DataFrame(
                 {'№': [0], 'Дата погашения Основного долга': 0, 'Сумма погашения Основного долга': 0})
-            extract_file_new = pd.concat([new_row_xlsx, self.extract_file(self.data)[1]], ignore_index=True).drop(
+            extract_file_new = pd.concat([new_row_xlsx, self.extract_file(self.data, self.start_date)[1]],
+                                         ignore_index=True).drop(
                 columns='№')
             self.output_data_new = pd.concat([self.output_data, extract_file_new],
                                              axis=1)  # Change to self.output_data_new
@@ -283,7 +290,7 @@ class AlfaBank(Bank):
                 pass
             elif i == 0:
                 self.output_data_new.loc[i, 'Дата начала периода'] = self.output_data_new.loc[
-                                                                         (i), 'Дата окончания периода'] + pd.DateOffset(
+                                                                         i, 'Дата окончания периода'] + pd.DateOffset(
                     days=1)
             else:
                 self.output_data_new.loc[i, 'Дата начала периода'] = self.output_data_new.loc[
@@ -355,14 +362,13 @@ class AlfaBank(Bank):
 
 
 class MetallinvestBank(Bank):
-    def __init__(self, data, interest_rate, date_of_issue, bank_day_percent, data8):
+    def __init__(self, data, interest_rate, date_of_issue, bank_day_percent):
         super().__init__(data, interest_rate, date_of_issue, bank_day_percent)
-        self.data8 = data8
 
-    def create_dataframe(self):
+    def create_dataframe(self, data):
         self.output_data = pd.DataFrame({
-            '№': range(0, self.period_month),
-            'Дата начала периода': pd.date_range(start=self.start_date, periods=self.period_month, freq='D'),
+            '№': range(0, self.extract_file(data, self.start_date)[3]),
+            'Дата начала периода': pd.date_range(start=self.start_date, periods=self.extract_file(data, self.start_date)[3], freq='D'),
             'Остаток ОД на начало периода': 0,
             'Сумма погашения ОД': 0,
             'Ставка банка, %': float(12.5),
@@ -383,16 +389,12 @@ class MetallinvestBank(Bank):
         self.output_data = self.output_data.reset_index(drop=True)
         self.output_data['№'] = self.output_data.index
         print(self.output_data)
-        # ab = df['Дата погашения Основного долга'].iloc[-1]
-        # a = pd.to_datetime('2021-10-11')
-        # days_difference = (ab - a).days
-        # print(days_difference)
 
     def calculate_interest(self):
         self.output_data_new = '0'
         return self.output_data_new
 
-    def start_function(self):
-        self.create_dataframe()
+    def start_function(self, data):
+        self.create_dataframe(data)
         self.calculate_interest()
         return self.output_data_new

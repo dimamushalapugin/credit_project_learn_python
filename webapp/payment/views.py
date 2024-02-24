@@ -99,7 +99,7 @@ def read_from_xlsx():
         response_math_xlxs = file_.start_function()
     elif data1 == 'ПАО АКБ «МЕТАЛЛИНВЕСТБАНК»':
         file_ = MetallinvestBank(data, data3, data8, data1)
-        response_math_xlxs = file_.start_function()
+        response_math_xlxs = file_.start_function(data)
     else:
         file_ = AlfaBank(data, data3, data8, data1)
         response_math_xlxs = file_.start_function()
