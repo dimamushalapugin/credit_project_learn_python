@@ -403,12 +403,15 @@ class MetallinvestBank(Bank):
         self.output_data.loc[0, 'Остаток ОД на начало периода'] = round(sum_od, 2)
         self.output_data.loc[0, 'Кол-во дней'] = 0
         df1 = self.period_pay_percent_mib1()  # Сохраняем результат выполнения функции period_pay_percent_mib1()
-        # НИЖЕ КОД НЕ РАБОТАЕТ, ВПН не выполняется
+        self.output_data = self.output_data.merge(df1['Кол-во дней'], left_index=True, right_index=True)
         # заполняем Остаток ОД
         # Drop the first column from self.output_data
         self.output_data = self.output_data.iloc[:, 1:]
         # Merge the modified self.output_data with df1
-        self.output_data = self.output_data.merge(df1[['Сумма погашения Основного долга']], left_index=True,
+        print(get_extract_file[1]['Дата погашения Основного долга'].iloc[0])
+        print(self.output_data.loc[0, 'Дата начала периода'])
+        # НИЖЕ КОД НЕ РАБОТАЕТ, ВПР выполняется но неправильно
+        self.output_data = self.output_data.merge(get_extract_file[1]['Сумма погашения Основного долга'], left_index=True,
                                                   right_index=True)
         # for elem in range(0, get_extract_file[3]):
         #     if self.output_data.loc[elem, 'Остаток ОД на начало периода'] == df1['Остаток ОД на начало периода']:
