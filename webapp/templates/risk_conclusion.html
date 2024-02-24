@@ -155,6 +155,10 @@
                             Проверка физ. лица
                         </button>
                     </div>
+                    <script>
+                        var suggestionsToken = "{{ suggestions_token }}";
+                    </script>
+                    <script src="{{ url_for('static', filename='js/risk_concl_loader.js') }}"></script>
                 </form>
                 <script src="{{ url_for('static', filename='js/risk_inn_dada.js') }}"></script>
                 <script src="{{ url_for('static', filename='js/risk_fio_dada.js') }}"></script>

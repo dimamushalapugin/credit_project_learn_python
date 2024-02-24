@@ -1,19 +1,20 @@
 import os
 import time
+from pprint import pprint
 
 from dadata import Dadata
 from datetime import datetime as dt
 
 from flask_login import current_user
 
-from webapp.config import PATH_FOR_HTML_PAGES, DADATA_TOKEN, URL_DELTA
+from webapp.config import PATH_FOR_HTML_PAGES, DADATA_TOKEN, URL_DELTA, PATH_FOR_HTML_PAGES_IND
 from webapp.risk.search_client import search_client, update_page
 from webapp.risk.logger import logging
 from webapp.risk.download_page import download_main_page, download_delta_page
 from webapp.risk.parsing_html import read_main_html, read_main_html_individual
 from webapp.risk.parsing_delta_html import read_delta_html
 from webapp.risk.info_for_seller_table import read_pages_for_table, read_pages_for_table_individual
-from webapp.risk.create_xlsx import create_xlsx_file
+from webapp.risk.create_xlsx import create_xlsx_file, create_xlsx_file_individual
 
 
 def create_conclusion(client_inn, seller_inn, is_factory, is_dealer):
@@ -28,10 +29,21 @@ def create_conclusion(client_inn, seller_inn, is_factory, is_dealer):
         short_name = ''
 
     logging.info('Создаем папку под данный проект')
-    if not os.path.exists(fr'{PATH_FOR_HTML_PAGES}/{short_name} ИНН {client_inn}/{dt.today().strftime(f"%d.%m.%Y")}'):
-        os.makedirs(fr'{PATH_FOR_HTML_PAGES}/{short_name} ИНН {client_inn}/{dt.today().strftime(f"%d.%m.%Y")}')
+    try:
+        if not os.path.exists(
+                fr'{PATH_FOR_HTML_PAGES}/{short_name} ИНН {client_inn}/{dt.today().strftime(f"%d.%m.%Y")}'):
+            os.makedirs(fr'{PATH_FOR_HTML_PAGES}/{short_name} ИНН {client_inn}/{dt.today().strftime(f"%d.%m.%Y")}')
+    except Exception as ex:
+        logging.info(ex, exc_info=True)
+        if 'КФУ' in short_name:
+            short_name = 'КФУ'
+        else:
+            short_name = '-'
+        if not os.path.exists(
+                fr'{PATH_FOR_HTML_PAGES}/{short_name} ИНН {client_inn}/{dt.today().strftime(f"%d.%m.%Y")}'):
+            os.makedirs(fr'{PATH_FOR_HTML_PAGES}/{short_name} ИНН {client_inn}/{dt.today().strftime(f"%d.%m.%Y")}')
 
-    driver = search_client(client_inn)
+    driver = search_client(client_inn, caller='create_conclusion')
 
     logging.info('Обновляем страницу лизингополучателя')
     update_page(client_inn, driver)
@@ -103,8 +115,12 @@ def create_conclusion(client_inn, seller_inn, is_factory, is_dealer):
                     driver.switch_to.window(driver.window_handles[1])
                     logging.info(f"Current URL: {driver.current_url}")
                     all_information_about_founders.setdefault(founder, dict_founders)
-                    all_information_about_founders[founder].setdefault('full_name', all_information_from_main_page['УЧРЕДИТЕЛИ ФЛ'][founder]['full_name'])
-                    all_information_about_founders[founder].setdefault('percent', all_information_from_main_page['УЧРЕДИТЕЛИ ФЛ'][founder]['percent'])
+                    all_information_about_founders[founder].setdefault('full_name',
+                                                                       all_information_from_main_page['УЧРЕДИТЕЛИ ФЛ'][
+                                                                           founder]['full_name'])
+                    all_information_about_founders[founder].setdefault('percent',
+                                                                       all_information_from_main_page['УЧРЕДИТЕЛИ ФЛ'][
+                                                                           founder]['percent'])
                 else:
                     logging.info('УЧРЕДИТЕЛЬ = ДИРЕКТОР')
                     all_information_about_founders.setdefault(founder, {
@@ -123,7 +139,7 @@ def create_conclusion(client_inn, seller_inn, is_factory, is_dealer):
     if seller_inn != client_inn:
         logging.info('Запуск процесса получения данных по продавцу')
 
-        driver = search_client(seller_inn)
+        driver = search_client(seller_inn, caller='create_conclusion')
 
         logging.info('Обновляем страницу продавца')
         update_page(seller_inn, driver)
@@ -172,3 +188,77 @@ def create_conclusion(client_inn, seller_inn, is_factory, is_dealer):
     driver.quit()
 
     logging.info(f'END! ({current_user})')
+
+
+class IndividualParams:
+    def __init__(self, dict_params):
+        self._data = {form_name: value.strip() if isinstance(value, str) else value for form_name, value in
+                      dict_params.items()}
+
+    @property
+    def get_name(self):
+        return self._data['name']
+
+    @property
+    def get_surname(self):
+        return self._data['surname']
+
+    @property
+    def get_patronymic(self):
+        return self._data['patronymic']
+
+    @property
+    def get_full_name(self):
+        return f'{self._data["surname"]} {self._data["name"]} {self._data["patronymic"]}'
+
+    @property
+    def get_inn(self):
+        return self._data['individual_inn']
+
+    @property
+    def get_passport_series(self):
+        return self._data['series_passport']
+
+    @property
+    def get_passport_number(self):
+        return self._data['number_passport']
+
+    @property
+    def get_date_of_birth(self):
+        input_date = self._data['date_birth']
+        try:
+            formatted_date = dt.strptime(input_date, "%Y-%m-%d").strftime("%d.%m.%Y")
+        except ValueError:
+            formatted_date = ''
+        return formatted_date
+
+
+def create_conclusion_individual(params):
+    logging.info(f'{current_user} - Нажал на кнопку "Проверка физ. лица"')
+    logging.info("=" * 50)
+    logging.info(f"START ({current_user})")
+    logging.info("=" * 50)
+
+    person = IndividualParams(params)
+    logging.info('Создаем папку под данный проект')
+    try:
+        if not os.path.exists(
+                fr'{PATH_FOR_HTML_PAGES_IND}/{person.get_full_name} ИНН {person.get_inn}/{dt.today().strftime(f"%d.%m.%Y")}'):
+            os.makedirs(
+                fr'{PATH_FOR_HTML_PAGES_IND}/{person.get_full_name} ИНН {person.get_inn}/{dt.today().strftime(f"%d.%m.%Y")}')
+    except Exception as ex:
+        logging.info(ex, exc_info=True)
+        raise ex
+
+    driver = search_client(person.get_inn)
+    logging.info('Обновляем страницу лизингополучателя')
+    update_page(person, driver, person=person)
+    logging.info('Скачиваем страницу физ. лица')
+    download_main_page(driver, person.get_inn, person.get_inn, person.get_full_name, True)
+    all_information_about_individual = read_main_html_individual(person.get_inn, person.get_inn, person.get_full_name,
+                                                                 True)
+    driver.implicitly_wait(3)
+    driver.close()
+    driver.quit()
+    logging.info('Запуск процесса формирования xlsx файла')
+    create_xlsx_file_individual(all_information_about_individual, person)
