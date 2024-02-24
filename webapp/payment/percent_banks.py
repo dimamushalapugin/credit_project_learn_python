@@ -366,7 +366,7 @@ class MetallinvestBank(Bank):
         super().__init__(data, interest_rate, date_of_issue, bank_day_percent)
 
     @staticmethod
-    def period_pay_percent_mib1(self):
+    def period_pay_percent_mib1():
         df1 = pd.read_excel(
             r'C:\Users\User\PycharmProjects\credit_project_learn_python\webapp\payment\Проценты МИБ1.xlsx')
         return df1
@@ -381,8 +381,8 @@ class MetallinvestBank(Bank):
             'Ставка банка, %': float(12.5),
             'Кол-во дней': 1,
             'Кол-во дней в году': 365,
+            'Дата уплаты процентов': 0,
             'Общая сумма процентов': 0,
-            'Дата уплаты процентов': 0
         })
 
         # percent_dataframe = pd.DataFrame({
@@ -391,20 +391,32 @@ class MetallinvestBank(Bank):
         # })
         # # print(percent_dataframe)
         #
-        # df1 = self.period_pay_percent_mib1()  # Сохраняем результат выполнения функции period_pay_percent_mib1()
+
         #
         # result = df1.merge(percent_dataframe, how='left', on='Дата уплаты процентов')
         # print(result)
         # расчет для КД 8365-К
         self.output_data = self.output_data.reset_index(drop=True)
         self.output_data['№'] = self.output_data.index
-        sum_od = self.extract_file(data, self.start_date)[1]['Сумма погашения Основного долга'].sum()
+        get_extract_file = self.extract_file(data, self.start_date)
+        sum_od = get_extract_file[1]['Сумма погашения Основного долга'].sum()
         self.output_data.loc[0, 'Остаток ОД на начало периода'] = round(sum_od, 2)
         self.output_data.loc[0, 'Кол-во дней'] = 0
+        df1 = self.period_pay_percent_mib1()  # Сохраняем результат выполнения функции period_pay_percent_mib1()
+        # заполняем Остаток ОД
+        self.output_data = self.output_data.merge(df1[['Сумма погашения Основного долга']], left_index=True,
+                                                  right_index=True, suffixes=('_left', '_right'),
+                                                  on=self.output_data.columns[1:])
+        # for elem in range(0, get_extract_file[3]):
+        #     if self.output_data.loc[elem, 'Остаток ОД на начало периода'] == df1['Остаток ОД на начало периода']:
+        #         self.output_data.loc[elem, 'Остаток ОД на начало периода'] =
+
+
         self.output_data.to_excel('updated_output_data_МИБ1.xlsx', index=False)
 
     def calculate_interest(self):
-        self.output_data_new = '0'
+        self.output_data_new = self.output_data
+
         return self.output_data_new
 
     def start_function(self, data):
