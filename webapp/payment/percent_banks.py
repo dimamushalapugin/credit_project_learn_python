@@ -375,7 +375,8 @@ class MetallinvestBank(Bank):
         self.output_data = pd.DataFrame({
             '№': range(0, self.extract_file(data, self.start_date)[3]),
             'Дата погашения Основного долга': pd.date_range(start=self.start_date,
-                                                 periods=self.extract_file(data, self.start_date)[3], freq='D'),
+                                                            periods=self.extract_file(data, self.start_date)[3],
+                                                            freq='D'),
             'Остаток ОД на начало периода': 0,
             'Сумма погашения Основного долга': 0,
             'Ставка банка, %': float(12.5),
@@ -395,17 +396,20 @@ class MetallinvestBank(Bank):
         df1 = self.period_pay_percent_mib1()  # Сохраняем результат выполнения функции period_pay_percent_mib1()
         # заполняем Остаток ОД
         self.output_data = self.output_data.drop(self.output_data.columns[0], axis=1)
-        # НИЖЕ КОД НЕ РАБОТАЕТ, ВПР выполняется но неправильно
-        get1 = get_extract_file[1].rename(columns={'Сумма погашения Основного долга': 'Дата начала периода'}, inplace=True)
-        print(get_extract_file[1])
-        print(self.output_data)
-        self.output_data = self.output_data.merge(get1, on=['Дата начала периода'], how='left')
+        get1 = get_extract_file[1]
+        merge_output_data = pd.merge(self.output_data, get1, on=['Дата погашения Основного долга'], how='left',
+                                     suffixes=('_x', ''))
+        merge_output_data.drop('Сумма погашения Основного долга_x', axis=1, inplace=True)
+        merge_output_data.drop('№', axis=1, inplace=True)
+        merge_output_data = merge_output_data[
+            ['Дата погашения Основного долга', 'Остаток ОД на начало периода', 'Сумма погашения Основного долга', 'Ставка банка, %', 'Кол-во дней',
+             'Кол-во дней в году', 'Дата уплаты процентов', 'Общая сумма процентов']]
+
         # for elem in range(0, get_extract_file[3]):
         #     if self.output_data.loc[elem, 'Остаток ОД на начало периода'] == df1['Остаток ОД на начало периода']:
         #         self.output_data.loc[elem, 'Остаток ОД на начало периода'] =
 
-
-        self.output_data.to_excel('updated_output_data_МИБ1.xlsx', index=False)
+        merge_output_data.to_excel('updated_output_data_МИБ1.xlsx', index=False)
 
     def calculate_interest(self):
         self.output_data_new = self.output_data
