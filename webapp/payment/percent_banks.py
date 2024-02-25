@@ -374,10 +374,10 @@ class MetallinvestBank(Bank):
     def create_dataframe(self, data):
         self.output_data = pd.DataFrame({
             '№': range(0, self.extract_file(data, self.start_date)[3]),
-            'Дата начала периода': pd.date_range(start=self.start_date,
+            'Дата погашения Основного долга': pd.date_range(start=self.start_date,
                                                  periods=self.extract_file(data, self.start_date)[3], freq='D'),
             'Остаток ОД на начало периода': 0,
-            'Сумма погашения ОД': 0,
+            'Сумма погашения Основного долга': 0,
             'Ставка банка, %': float(12.5),
             'Кол-во дней': 1,
             'Кол-во дней в году': 365,
@@ -385,16 +385,6 @@ class MetallinvestBank(Bank):
             'Общая сумма процентов': 0,
         })
 
-        # percent_dataframe = pd.DataFrame({
-        #     '№': range(0, self.extract_file(data, self.start_date)[3]),
-        #     'Дата уплаты процентов': 0
-        # })
-        # # print(percent_dataframe)
-        #
-
-        #
-        # result = df1.merge(percent_dataframe, how='left', on='Дата уплаты процентов')
-        # print(result)
         # расчет для КД 8365-К
         self.output_data = self.output_data.reset_index(drop=True)
         self.output_data['№'] = self.output_data.index
@@ -403,16 +393,13 @@ class MetallinvestBank(Bank):
         self.output_data.loc[0, 'Остаток ОД на начало периода'] = round(sum_od, 2)
         self.output_data.loc[0, 'Кол-во дней'] = 0
         df1 = self.period_pay_percent_mib1()  # Сохраняем результат выполнения функции period_pay_percent_mib1()
-        self.output_data = self.output_data.merge(df1['Кол-во дней'], left_index=True, right_index=True)
         # заполняем Остаток ОД
-        # Drop the first column from self.output_data
-        self.output_data = self.output_data.iloc[:, 1:]
-        # Merge the modified self.output_data with df1
-        print(get_extract_file[1]['Дата погашения Основного долга'].iloc[0])
-        print(self.output_data.loc[0, 'Дата начала периода'])
+        self.output_data = self.output_data.drop(self.output_data.columns[0], axis=1)
         # НИЖЕ КОД НЕ РАБОТАЕТ, ВПР выполняется но неправильно
-        self.output_data = self.output_data.merge(get_extract_file[1]['Сумма погашения Основного долга'], left_index=True,
-                                                  right_index=True)
+        get1 = get_extract_file[1].rename(columns={'Сумма погашения Основного долга': 'Дата начала периода'}, inplace=True)
+        print(get_extract_file[1])
+        print(self.output_data)
+        self.output_data = self.output_data.merge(get1, on=['Дата начала периода'], how='left')
         # for elem in range(0, get_extract_file[3]):
         #     if self.output_data.loc[elem, 'Остаток ОД на начало периода'] == df1['Остаток ОД на начало периода']:
         #         self.output_data.loc[elem, 'Остаток ОД на начало периода'] =
