@@ -144,7 +144,10 @@ def activity_analysis(sheet):
                     adjacent_cell.font = font_red
             if cell.value == "Реестр недобросовестнных поставщиков:":
                 adjacent_cell = sheet.cell(row=cell.row, column=cell.column + 1)
-                if "не числится" in adjacent_cell.value:
+                if (
+                    "не числится" in adjacent_cell.value
+                    or "не входит" in adjacent_cell.value
+                ):
                     adjacent_cell.font = font_green
                 else:
                     adjacent_cell.font = font_red
