@@ -23,7 +23,7 @@ from webapp.risk.logger import logging
 from webapp.risk.mongo_db import MongoDB
 
 blueprint = Blueprint("risk", __name__, url_prefix="/risk")
-risk_page = "risk.risk_page"
+risk_page_url = "risk.risk_page"
 
 
 def get_folder_names(folder_path):
@@ -162,12 +162,12 @@ def create_risk_conclusion():
             flash("Файл успешно создан", "success")
             mongo = MongoDB(current_user)
             mongo.write_to_mongodb_risk_count(data["client_inn"], data["seller_inn"])
-            return redirect(url_for(risk_page, file_name=file_name))
+            return redirect(url_for(risk_page_url, file_name=file_name))
         else:
-            return redirect(url_for(risk_page, file_name=file_name))
+            return redirect(url_for(risk_page_url, file_name=file_name))
     except Exception as e:
         flash(str(e), "error")
-        return redirect(url_for(risk_page))
+        return redirect(url_for(risk_page_url))
 
 
 @blueprint.route("/create_xlsx_individual", methods=["POST"])
@@ -184,15 +184,15 @@ def create_risk_conclusion_individual():
         if file_name_individual:
             flash("Файл успешно создан", "success")
             return redirect(
-                url_for(risk_page, file_name_individual=file_name_individual)
+                url_for(risk_page_url, file_name_individual=file_name_individual)
             )
         else:
             return redirect(
-                url_for(risk_page, file_name_individual=file_name_individual)
+                url_for(risk_page_url, file_name_individual=file_name_individual)
             )
     except Exception as e:
         flash(str(e), "error")
-        return redirect(url_for(risk_page))
+        return redirect(url_for(risk_page_url))
 
 
 @blueprint.route("/download/<filename>")
