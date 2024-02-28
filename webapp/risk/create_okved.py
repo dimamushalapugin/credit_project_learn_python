@@ -2,7 +2,7 @@ import openpyxl
 from webapp import db, create_app
 from webapp.risk.models import Okved
 
-workbook = openpyxl.load_workbook('okveds.xlsx')
+workbook = openpyxl.load_workbook("okveds.xlsx")
 sheet = workbook.active
 
 app = create_app()
