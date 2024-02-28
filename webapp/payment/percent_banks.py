@@ -369,6 +369,7 @@ class MetallinvestBank(Bank):
     def period_pay_percent_mib1():
         df1 = pd.read_excel(
             r'C:\Users\User\PycharmProjects\credit_project_learn_python\webapp\payment\Проценты МИБ1.xlsx')
+        print(df1)
         return df1
 
     def create_dataframe(self, data):
@@ -400,16 +401,29 @@ class MetallinvestBank(Bank):
         merge_output_data = pd.merge(self.output_data, get1, on=['Дата погашения Основного долга'], how='left',
                                      suffixes=('_x', ''))
         merge_output_data.drop('Сумма погашения Основного долга_x', axis=1, inplace=True)
-        merge_output_data.drop('№', axis=1, inplace=True)
+        # merge_output_data.drop('№', axis=1, inplace=True)
+        # merge_output_data = merge_output_data[
+        #     ['Дата погашения Основного долга', 'Остаток ОД на начало периода', 'Сумма погашения Основного долга',
+        #      'Ставка банка, %', 'Кол-во дней',
+        #      'Кол-во дней в году', 'Дата уплаты процентов', 'Общая сумма процентов']]
         merge_output_data = merge_output_data[
-            ['Дата погашения Основного долга', 'Остаток ОД на начало периода', 'Сумма погашения Основного долга', 'Ставка банка, %', 'Кол-во дней',
+            ['Дата погашения Основного долга', 'Остаток ОД на начало периода', 'Сумма погашения Основного долга',
+             'Ставка банка, %', 'Кол-во дней',
              'Кол-во дней в году', 'Дата уплаты процентов', 'Общая сумма процентов']]
-
+        print(df1)
+        print(merge_output_data)
+        merge_bank_percent = pd.merge(merge_output_data, df1, on=['Дата погашения Основного долга'], how='left',
+                                      suffixes=('_x', ''))
+        print(merge_bank_percent)
+        merge_bank_percent = merge_bank_percent[
+            ['Дата погашения Основного долга', 'Остаток ОД на начало периода', 'Сумма погашения Основного долга',
+             'Ставка банка, %', 'Кол-во дней',
+             'Кол-во дней в году', 'Дата уплаты процентов', 'Дата по процентам', 'Общая сумма процентов']]
         # for elem in range(0, get_extract_file[3]):
         #     if self.output_data.loc[elem, 'Остаток ОД на начало периода'] == df1['Остаток ОД на начало периода']:
         #         self.output_data.loc[elem, 'Остаток ОД на начало периода'] =
 
-        merge_output_data.to_excel('updated_output_data_МИБ1.xlsx', index=False)
+        merge_bank_percent.to_excel('updated_output_data_МИБ1.xlsx', index=False)
 
     def calculate_interest(self):
         self.output_data_new = self.output_data
