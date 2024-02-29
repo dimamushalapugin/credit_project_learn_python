@@ -31,9 +31,43 @@
     </symbol>
 </svg>
 <br>
-<div class="container text-center">
+<div class="container text-left">
     <div class="row">
         <div class="col-md-6">
+            <table class="table table-dark table-striped">
+                <thead>
+                <tr>
+                    <th scope="col">Показатели ООО "ЛКМБ-РТ"</th>
+                    <th scope="col" id="currentMonth"></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <th scope="row">Сумма нового бизнеса по договорам лизинга (ДЛ)</th>
+                    <td>{{ data.month.sum_dl }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">Сумма нового бизнеса по договорам поставки (ДКП)</th>
+                    <td>{{ data.month.sum_dkp }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">Количество новых договоров</th>
+                    <td>{{ data.month.count_new_contracts }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">Авансы лизингополучателей</th>
+                    <td>{{ data.month.advances }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">Кредиты банков</th>
+                    <td>{{ data.month.credit }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">Соофинансирование ООО "ЛКМБ-РТ"</th>
+                    <td>{{ data.month.co_finance }}</td>
+                </tr>
+                </tbody>
+            </table>
         </div>
         <div class="col-md-6">
             <table class="table table-dark table-striped">
@@ -64,6 +98,40 @@
     </div>
     <div class="row">
         <div class="col-md-6">
+            <table class="table table-dark table-striped">
+                <thead>
+                <tr>
+                    <th scope="col">Показатели ООО "ЛКМБ-РТ"</th>
+                    <th scope="col" id="currentQuarter"></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <th scope="row">Сумма нового бизнеса по договорам лизинга (ДЛ)</th>
+                    <td>{{ data.quarter.sum_dl }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">Сумма нового бизнеса по договорам поставки (ДКП)</th>
+                    <td>{{ data.quarter.sum_dkp }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">Количество новых договоров</th>
+                    <td>{{ data.quarter.count_new_contracts }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">Авансы лизингополучателей</th>
+                    <td>{{ data.quarter.advances }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">Кредиты банков</th>
+                    <td>{{ data.quarter.credit }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">Соофинансирование ООО "ЛКМБ-РТ"</th>
+                    <td>{{ data.quarter.co_finance }}</td>
+                </tr>
+                </tbody>
+            </table>
         </div>
         <div class="col-md-6">
             <table class="table table-dark table-striped">
@@ -94,6 +162,40 @@
     </div>
     <div class="row">
         <div class="col-md-6">
+            <table class="table table-dark table-striped">
+                <thead>
+                <tr>
+                    <th scope="col">Показатели ООО "ЛКМБ-РТ"</th>
+                    <th scope="col" id="currentYear"></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <th scope="row">Сумма нового бизнеса по договорам лизинга (ДЛ)</th>
+                    <td>{{ data.year.sum_dl }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">Сумма нового бизнеса по договорам поставки (ДКП)</th>
+                    <td>{{ data.year.sum_dkp }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">Количество новых договоров</th>
+                    <td>{{ data.year.count_new_contracts }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">Авансы лизингополучателей</th>
+                    <td>{{ data.year.advances }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">Кредиты банков</th>
+                    <td>{{ data.year.credit }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">Соофинансирование ООО "ЛКМБ-РТ"</th>
+                    <td>{{ data.year.co_finance }}</td>
+                </tr>
+                </tbody>
+            </table>
         </div>
         <div class="col-md-6">
             <table class="table table-dark table-striped">
@@ -125,11 +227,11 @@
 </div>
 <script>
     // Получаем текущую дату
-    const prevDate = new Date();
+    const currentDate = new Date();
     // Получаем номер текущего месяца (от 0 до 11)
-    const prevMonth = prevDate.getMonth();
+    const prevMonth = currentDate.getMonth();
     // Получаем текущий год
-    const prevYear = prevDate.getFullYear();
+    const prevYear = currentDate.getFullYear();
 
     // Получаем названия месяцев
     const monthNames = [
@@ -137,10 +239,13 @@
         "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"
     ];
 
-    // Заполняем заголовки таблицы для месяцев
+    // Заполняем заголовки таблицы для месяцев (предыдущий месяц)
     document.getElementById('prevMonth').textContent = `${monthNames[prevMonth - 1]} ${prevYear}`;
     document.getElementById('lastYearMonth').textContent = `${monthNames[prevMonth - 1]} ${prevYear - 1}`;
     document.getElementById('twoYearsAgoMonth').textContent = `${monthNames[prevMonth - 1]} ${prevYear - 2}`;
+
+    // Заполняем заголовки таблицы для месяцев (текущий месяц)
+    document.getElementById('currentMonth').textContent = `${monthNames[prevMonth]} ${prevYear}`;
 
     // Заполняем заголовки таблицы для кварталов
     const prevQuarter = Math.floor(prevMonth / 3) + 1;
@@ -148,20 +253,15 @@
     document.getElementById('lastYearQuarterDL').textContent = `${(prevQuarter - 1 === 0) ? 4 : (prevQuarter - 1)} квартал ${(prevQuarter - 1 === 0) ? (prevYear - 2) : prevYear - 2}`;
     document.getElementById('twoYearsAgoQuarterDL').textContent = `${(prevQuarter - 1 === 0) ? 4 : (prevQuarter - 1)} квартал ${(prevQuarter - 1 === 0) ? (prevYear - 3) : prevYear - 3}`;
 
+// Заполняем заголовки таблицы для кварталов
+    document.getElementById('currentQuarter').textContent = `${prevQuarter} квартал ${prevYear}`;
+
     // Заполняем заголовки таблицы для годов
+    document.getElementById('currentYear').textContent = `${prevYear} год`;
     document.getElementById('prevYearDL').textContent = `${prevYear - 1} год`;
     document.getElementById('lastYearDL').textContent = `${prevYear - 2} год`;
     document.getElementById('twoYearsAgoDL').textContent = `${prevYear - 3} год`;
 
-    // Ваш код для получения и заполнения сумм ДЛ и ДКП
-    // Замените эти значения на реальные данные
-    document.getElementById('prevMonthDL').textContent = "1000";
-    document.getElementById('lastYearMonthDL').textContent = "800";
-    document.getElementById('twoYearsAgoMonthDL').textContent = "600";
-    document.getElementById('prevMonthDKP').textContent = "1200";
-    document.getElementById('lastYearMonthDKP').textContent = "900";
-    document.getElementById('twoYearsAgoMonthDKP').textContent = "700";
-    // Ваш код для получения и заполнения сумм ДЛ и ДКП за кварталы и годы
 </script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 <br><br><br><br><br><br><br><br><br>
