@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-        <!-- Google tag (gtag.js) -->
+    <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-KQX5FDFY5F"></script>
     <script src="{{ url_for('static', filename='js/google_tag.js') }}"></script>
     <meta charset="utf-8">
@@ -31,7 +31,7 @@
     </symbol>
 </svg>
 <br>
-<div class="container text-left">
+<div class="container-fluid text-left">
     <div class="row">
         <div class="col-md-6">
             <table class="table table-dark table-striped">
@@ -81,16 +81,40 @@
                 </thead>
                 <tbody>
                 <tr>
-                    <th scope="row">Общая сумма ДЛ</th>
-                    <td id="prevMonthDL"></td>
-                    <td id="lastYearMonthDL"></td>
-                    <td id="twoYearsAgoMonthDL"></td>
+                    <th scope="row">Сумма нового бизнеса по договорам лизинга (ДЛ)</th>
+                    <td>{{ data.prev_month.sum_dl }}</td>
+                    <td>{{ data.prev_prev_month.sum_dl }}</td>
+                    <td>{{ data.prev_prev_prev_month.sum_dl }}</td>
                 </tr>
                 <tr>
-                    <th scope="row">Общая сумма ДКП</th>
-                    <td id="prevMonthDKP"></td>
-                    <td id="lastYearMonthDKP"></td>
-                    <td id="twoYearsAgoMonthDKP"></td>
+                    <th scope="row">Сумма нового бизнеса по договорам поставки (ДКП)</th>
+                    <td>{{ data.prev_month.sum_dkp }}</td>
+                    <td>{{ data.prev_prev_month.sum_dkp }}</td>
+                    <td>{{ data.prev_prev_prev_month.sum_dkp }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">Количество новых договоров</th>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <th scope="row">Авансы лизингополучателей</th>
+                    <td>{{ data.prev_month.advances }}</td>
+                    <td>{{ data.prev_prev_month.advances }}</td>
+                    <td>{{ data.prev_prev_prev_month.advances }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">Кредиты банков</th>
+                    <td>{{ data.prev_month.credit }}</td>
+                    <td>{{ data.prev_prev_month.credit }}</td>
+                    <td>{{ data.prev_prev_prev_month.credit }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">Соофинансирование ООО "ЛКМБ-РТ"</th>
+                    <td>{{ data.prev_month.co_finance }}</td>
+                    <td>{{ data.prev_prev_month.co_finance }}</td>
+                    <td>{{ data.prev_prev_prev_month.co_finance }}</td>
                 </tr>
                 </tbody>
             </table>
@@ -145,16 +169,40 @@
                 </thead>
                 <tbody>
                 <tr>
-                    <th scope="row">Общая сумма ДЛ</th>
-                    <td id="prevQuarter"></td>
-                    <td id="lastYearQuarter"></td>
-                    <td id="twoYearsAgoQuarter"></td>
+                    <th scope="row">Сумма нового бизнеса по договорам лизинга (ДЛ)</th>
+                    <td>{{ data.prev_quarter.sum_dl }}</td>
+                    <td>{{ data.prev_prev_quarter.sum_dl }}</td>
+                    <td>{{ data.prev_prev_prev_quarter.sum_dl }}</td>
                 </tr>
                 <tr>
-                    <th scope="row">Общая сумма ДКП</th>
-                    <td id="prevQuarterDKP"></td>
-                    <td id="lastYearQuarterDKP"></td>
-                    <td id="twoYearsAgoQuarterDKP"></td>
+                    <th scope="row">Сумма нового бизнеса по договорам поставки (ДКП)</th>
+                    <td>{{ data.prev_quarter.sum_dkp }}</td>
+                    <td>{{ data.prev_prev_quarter.sum_dkp }}</td>
+                    <td>{{ data.prev_prev_prev_quarter.sum_dkp }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">Количество новых договоров</th>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <th scope="row">Авансы лизингополучателей</th>
+                    <td>{{ data.prev_quarter.advances }}</td>
+                    <td>{{ data.prev_prev_quarter.advances }}</td>
+                    <td>{{ data.prev_prev_prev_quarter.advances }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">Кредиты банков</th>
+                    <td>{{ data.prev_quarter.credit }}</td>
+                    <td>{{ data.prev_prev_quarter.credit }}</td>
+                    <td>{{ data.prev_prev_prev_quarter.credit }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">Соофинансирование ООО "ЛКМБ-РТ"</th>
+                    <td>{{ data.prev_quarter.co_finance }}</td>
+                    <td>{{ data.prev_prev_quarter.co_finance }}</td>
+                    <td>{{ data.prev_prev_prev_quarter.co_finance }}</td>
                 </tr>
                 </tbody>
             </table>
@@ -209,16 +257,40 @@
                 </thead>
                 <tbody>
                 <tr>
-                    <th scope="row">Общая сумма ДЛ</th>
-                    <td id="prevYear"></td>
-                    <td id="lastYear"></td>
-                    <td id="twoYearsAgo"></td>
+                    <th scope="row">Сумма нового бизнеса по договорам лизинга (ДЛ)</th>
+                    <td>{{ data.prev_year.sum_dl }}</td>
+                    <td>{{ data.prev_prev_year.sum_dl }}</td>
+                    <td>{{ data.prev_prev_prev_year.sum_dl }}</td>
                 </tr>
                 <tr>
-                    <th scope="row">Общая сумма ДКП</th>
-                    <td id="prevYearDKP"></td>
-                    <td id="lastYearDKP"></td>
-                    <td id="twoYearsAgoDKP"></td>
+                    <th scope="row">Сумма нового бизнеса по договорам поставки (ДКП)</th>
+                    <td>{{ data.prev_year.sum_dkp }}</td>
+                    <td>{{ data.prev_prev_year.sum_dkp }}</td>
+                    <td>{{ data.prev_prev_prev_year.sum_dkp }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">Количество новых договоров</th>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <th scope="row">Авансы лизингополучателей</th>
+                    <td>{{ data.prev_year.advances }}</td>
+                    <td>{{ data.prev_prev_year.advances }}</td>
+                    <td>{{ data.prev_prev_prev_year.advances }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">Кредиты банков</th>
+                    <td>{{ data.prev_year.credit }}</td>
+                    <td>{{ data.prev_prev_year.credit }}</td>
+                    <td>{{ data.prev_prev_prev_year.credit }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">Соофинансирование ООО "ЛКМБ-РТ"</th>
+                    <td>{{ data.prev_year.co_finance }}</td>
+                    <td>{{ data.prev_prev_year.co_finance }}</td>
+                    <td>{{ data.prev_prev_prev_year.co_finance }}</td>
                 </tr>
                 </tbody>
             </table>
@@ -263,7 +335,9 @@
     document.getElementById('twoYearsAgoDL').textContent = `${prevYear - 3} год`;
 
 </script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
 <br><br><br><br><br><br><br><br><br>
 {% include 'footer.html' %}
 </body>

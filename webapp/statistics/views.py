@@ -9,7 +9,7 @@ from flask import (
 )
 from flask_login import current_user
 
-from webapp.payment.sql_queries import query_for_monthly_info
+from webapp.payment.sql_queries import query_for_info
 from webapp.user.auth_utils import admin_required
 from webapp.risk.logger import logging
 
@@ -25,4 +25,4 @@ def expert_ra_page():
 @blueprint.route("/info-from-base")
 @admin_required
 def main_info_page():
-    return render_template("info_from_base.html", data=query_for_monthly_info())
+    return render_template("info_from_base.html", data=query_for_info())

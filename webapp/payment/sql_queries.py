@@ -1,5 +1,8 @@
+import logging
+
 from sqlalchemy import func
 
+from webapp.db import db
 from webapp.payment.models import DimaBase
 
 
@@ -12,20 +15,20 @@ def format_number(number):
 
 def get_sum_indicator(column_name, period):
     current_year = func.EXTRACT("year", func.CURRENT_DATE())
-    current_month = func.EXTRACT(period, func.CURRENT_DATE())
+    current_period = func.EXTRACT(period, func.CURRENT_DATE())
 
     total_amount = (
         DimaBase.query.with_entities(func.sum(column_name))
         .filter(
             func.EXTRACT("year", DimaBase.financing_date) == current_year,
-            func.EXTRACT(period, DimaBase.financing_date) == current_month,
+            func.EXTRACT(period, DimaBase.financing_date) == current_period,
         )
         .scalar()
     )
     return format_number(total_amount)
 
 
-def get_count_contracts_per_some_period(period):
+def get_count_current_period(period):
     current_year = func.EXTRACT("year", func.CURRENT_DATE())
     current_period = func.EXTRACT(period, func.CURRENT_DATE())
 
@@ -40,12 +43,69 @@ def get_count_contracts_per_some_period(period):
     return total_count
 
 
-def query_for_monthly_info():
+def get_sum_for_previous_period(column_name, period, interval=0):
+    current_year = func.EXTRACT("year", func.CURRENT_DATE())
+    current_period = func.EXTRACT(period, func.CURRENT_DATE()).label(
+        "current_period"
+    )  # добавляем ярлык, чтобы можно было обращаться к результату
+
+    if period == "quarter":
+        current_quarter_value = db.session.query(current_period).scalar()
+
+        previous_period = current_period - 1 if current_quarter_value != 1 else 4
+        previous_year = (
+            current_year - 1 if current_quarter_value == 1 else current_year
+        ) - interval
+
+        total_amount = (
+            DimaBase.query.with_entities(func.sum(column_name))
+            .filter(
+                (
+                    (func.EXTRACT("year", DimaBase.financing_date) == current_year)
+                    & (func.EXTRACT(period, DimaBase.financing_date) == previous_period)
+                )
+                | (
+                    (func.EXTRACT("year", DimaBase.financing_date) == previous_year)
+                    & (func.EXTRACT(period, DimaBase.financing_date) == 4)
+                )
+            )
+            .scalar()
+        )
+
+    elif period == "month":
+        current_month_value = db.session.query(current_period).scalar()
+        previous_period = current_period - 1 if current_month_value != 1 else 12
+        previous_year = (
+            current_year - 1 if current_month_value == 1 else current_year
+        ) - interval
+
+        total_amount = (
+            DimaBase.query.with_entities(func.sum(column_name))
+            .filter(
+                (
+                    (func.EXTRACT("year", DimaBase.financing_date) == previous_year)
+                    & (func.EXTRACT(period, DimaBase.financing_date) == previous_period)
+                )
+            )
+            .scalar()
+        )
+    else:
+        previous_period = current_year - 1 - interval
+        total_amount = (
+            DimaBase.query.with_entities(func.sum(column_name))
+            .filter((func.EXTRACT(period, DimaBase.financing_date) == previous_period))
+            .scalar()
+        )
+
+    return format_number(total_amount)
+
+
+def query_for_info():
     info_about_lkmb = {
         "month": {
             "sum_dl": get_sum_indicator(DimaBase.contract_amount, "month"),
             "sum_dkp": get_sum_indicator(DimaBase.dcp_cost, "month"),
-            "count_new_contracts": get_count_contracts_per_some_period("month"),
+            "count_new_contracts": get_count_current_period("month"),
             "advances": get_sum_indicator(DimaBase.advance, "month"),
             "credit": get_sum_indicator(DimaBase.credit_sum, "month"),
             "co_finance": get_sum_indicator(DimaBase.co_finance, "month"),
@@ -53,7 +113,7 @@ def query_for_monthly_info():
         "quarter": {
             "sum_dl": get_sum_indicator(DimaBase.contract_amount, "quarter"),
             "sum_dkp": get_sum_indicator(DimaBase.dcp_cost, "quarter"),
-            "count_new_contracts": get_count_contracts_per_some_period("quarter"),
+            "count_new_contracts": get_count_current_period("quarter"),
             "advances": get_sum_indicator(DimaBase.advance, "quarter"),
             "credit": get_sum_indicator(DimaBase.credit_sum, "quarter"),
             "co_finance": get_sum_indicator(DimaBase.co_finance, "quarter"),
@@ -61,10 +121,90 @@ def query_for_monthly_info():
         "year": {
             "sum_dl": get_sum_indicator(DimaBase.contract_amount, "year"),
             "sum_dkp": get_sum_indicator(DimaBase.dcp_cost, "year"),
-            "count_new_contracts": get_count_contracts_per_some_period("year"),
+            "count_new_contracts": get_count_current_period("year"),
             "advances": get_sum_indicator(DimaBase.advance, "year"),
             "credit": get_sum_indicator(DimaBase.credit_sum, "year"),
             "co_finance": get_sum_indicator(DimaBase.co_finance, "year"),
+        },
+        "prev_month": {
+            "sum_dl": get_sum_for_previous_period(DimaBase.contract_amount, "month"),
+            "sum_dkp": get_sum_for_previous_period(DimaBase.dcp_cost, "month"),
+            "count_new_contracts": "",
+            "advances": get_sum_for_previous_period(DimaBase.advance, "month"),
+            "credit": get_sum_for_previous_period(DimaBase.credit_sum, "month"),
+            "co_finance": get_sum_for_previous_period(DimaBase.co_finance, "month"),
+        },
+        "prev_quarter": {
+            "sum_dl": get_sum_for_previous_period(DimaBase.contract_amount, "quarter"),
+            "sum_dkp": get_sum_for_previous_period(DimaBase.dcp_cost, "quarter"),
+            "count_new_contracts": "",
+            "advances": get_sum_for_previous_period(DimaBase.advance, "quarter"),
+            "credit": get_sum_for_previous_period(DimaBase.credit_sum, "quarter"),
+            "co_finance": get_sum_for_previous_period(DimaBase.co_finance, "quarter"),
+        },
+        "prev_year": {
+            "sum_dl": get_sum_for_previous_period(DimaBase.contract_amount, "year"),
+            "sum_dkp": get_sum_for_previous_period(DimaBase.dcp_cost, "year"),
+            "count_new_contracts": "",
+            "advances": get_sum_for_previous_period(DimaBase.advance, "year"),
+            "credit": get_sum_for_previous_period(DimaBase.credit_sum, "year"),
+            "co_finance": get_sum_for_previous_period(DimaBase.co_finance, "year"),
+        },
+        "prev_prev_month": {
+            "sum_dl": get_sum_for_previous_period(DimaBase.contract_amount, "month", 1),
+            "sum_dkp": get_sum_for_previous_period(DimaBase.dcp_cost, "month", 1),
+            "count_new_contracts": "",
+            "advances": get_sum_for_previous_period(DimaBase.advance, "month", 1),
+            "credit": get_sum_for_previous_period(DimaBase.credit_sum, "month", 1),
+            "co_finance": get_sum_for_previous_period(DimaBase.co_finance, "month", 1),
+        },
+        "prev_prev_quarter": {
+            "sum_dl": get_sum_for_previous_period(
+                DimaBase.contract_amount, "quarter", 1
+            ),
+            "sum_dkp": get_sum_for_previous_period(DimaBase.dcp_cost, "quarter", 1),
+            "count_new_contracts": "",
+            "advances": get_sum_for_previous_period(DimaBase.advance, "quarter", 1),
+            "credit": get_sum_for_previous_period(DimaBase.credit_sum, "quarter", 1),
+            "co_finance": get_sum_for_previous_period(
+                DimaBase.co_finance, "quarter", 1
+            ),
+        },
+        "prev_prev_year": {
+            "sum_dl": get_sum_for_previous_period(DimaBase.contract_amount, "year", 1),
+            "sum_dkp": get_sum_for_previous_period(DimaBase.dcp_cost, "year", 1),
+            "count_new_contracts": "",
+            "advances": get_sum_for_previous_period(DimaBase.advance, "year", 1),
+            "credit": get_sum_for_previous_period(DimaBase.credit_sum, "year", 1),
+            "co_finance": get_sum_for_previous_period(DimaBase.co_finance, "year", 1),
+        },
+        "prev_prev_prev_month": {
+            "sum_dl": get_sum_for_previous_period(DimaBase.contract_amount, "month", 2),
+            "sum_dkp": get_sum_for_previous_period(DimaBase.dcp_cost, "month", 2),
+            "count_new_contracts": "",
+            "advances": get_sum_for_previous_period(DimaBase.advance, "month", 2),
+            "credit": get_sum_for_previous_period(DimaBase.credit_sum, "month", 2),
+            "co_finance": get_sum_for_previous_period(DimaBase.co_finance, "month", 2),
+        },
+        "prev_prev_prev_quarter": {
+            "sum_dl": get_sum_for_previous_period(
+                DimaBase.contract_amount, "quarter", 2
+            ),
+            "sum_dkp": get_sum_for_previous_period(DimaBase.dcp_cost, "quarter", 2),
+            "count_new_contracts": "",
+            "advances": get_sum_for_previous_period(DimaBase.advance, "quarter", 2),
+            "credit": get_sum_for_previous_period(DimaBase.credit_sum, "quarter", 2),
+            "co_finance": get_sum_for_previous_period(
+                DimaBase.co_finance, "quarter", 2
+            ),
+        },
+        "prev_prev_prev_year": {
+            "sum_dl": get_sum_for_previous_period(DimaBase.contract_amount, "year", 2),
+            "sum_dkp": get_sum_for_previous_period(DimaBase.dcp_cost, "year", 2),
+            "count_new_contracts": "",
+            "advances": get_sum_for_previous_period(DimaBase.advance, "year", 2),
+            "credit": get_sum_for_previous_period(DimaBase.credit_sum, "year", 2),
+            "co_finance": get_sum_for_previous_period(DimaBase.co_finance, "year", 2),
         },
     }
     return info_about_lkmb
