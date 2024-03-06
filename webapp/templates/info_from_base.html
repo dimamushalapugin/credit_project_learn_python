@@ -214,6 +214,182 @@
                 <thead>
                 <tr>
                     <th scope="col">Показатели ООО "ЛКМБ-РТ"</th>
+                    <th scope="col" id="halfYear"></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <th scope="row">Сумма нового бизнеса по договорам лизинга (ДЛ)</th>
+                    <td>{{ data.half_year.sum_dl }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">Сумма нового бизнеса по договорам поставки (ДКП)</th>
+                    <td>{{ data.half_year.sum_dkp }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">Количество новых договоров</th>
+                    <td>{{ data.half_year.count_new_contracts }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">Авансы лизингополучателей</th>
+                    <td>{{ data.half_year.advances }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">Кредиты банков</th>
+                    <td>{{ data.half_year.credit }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">Соофинансирование ООО "ЛКМБ-РТ"</th>
+                    <td>{{ data.half_year.co_finance }}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="col-md-6">
+            <table class="table table-dark table-striped">
+                <thead>
+                <tr>
+                    <th scope="col"></th>
+                    <th scope="col" id="prevHalfYear"></th>
+                    <th scope="col" id="twoPrevHalfYear"></th>
+                    <th scope="col" id="threePrevHalfYear"></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <th scope="row">Сумма нового бизнеса по договорам лизинга (ДЛ)</th>
+                    <td>{{ data.prev_half_year.sum_dl }}</td>
+                    <td>{{ data.prev_prev_half_year.sum_dl }}</td>
+                    <td>{{ data.prev_prev_prev_half_year.sum_dl }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">Сумма нового бизнеса по договорам поставки (ДКП)</th>
+                    <td>{{ data.prev_half_year.sum_dkp }}</td>
+                    <td>{{ data.prev_prev_half_year.sum_dkp }}</td>
+                    <td>{{ data.prev_prev_prev_half_year.sum_dkp }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">Количество новых договоров</th>
+                    <td>{{ data.prev_half_year.count_new_contracts }}</td>
+                    <td>{{ data.prev_prev_half_year.count_new_contracts }}</td>
+                    <td>{{ data.prev_prev_prev_half_year.count_new_contracts }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">Авансы лизингополучателей</th>
+                    <td>{{ data.prev_half_year.advances }}</td>
+                    <td>{{ data.prev_prev_half_year.advances }}</td>
+                    <td>{{ data.prev_prev_prev_half_year.advances }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">Кредиты банков</th>
+                    <td>{{ data.prev_half_year.credit }}</td>
+                    <td>{{ data.prev_prev_half_year.credit }}</td>
+                    <td>{{ data.prev_prev_prev_half_year.credit }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">Соофинансирование ООО "ЛКМБ-РТ"</th>
+                    <td>{{ data.prev_half_year.co_finance }}</td>
+                    <td>{{ data.prev_prev_half_year.co_finance }}</td>
+                    <td>{{ data.prev_prev_prev_half_year.co_finance }}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <table class="table table-dark table-striped">
+                <thead>
+                <tr>
+                    <th scope="col">Показатели ООО "ЛКМБ-РТ"</th>
+                    <th scope="col" id="nineMonth"></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <th scope="row">Сумма нового бизнеса по договорам лизинга (ДЛ)</th>
+                    <td>{{ data.nine_month.sum_dl }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">Сумма нового бизнеса по договорам поставки (ДКП)</th>
+                    <td>{{ data.nine_month.sum_dkp }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">Количество новых договоров</th>
+                    <td>{{ data.nine_month.count_new_contracts }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">Авансы лизингополучателей</th>
+                    <td>{{ data.nine_month.advances }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">Кредиты банков</th>
+                    <td>{{ data.nine_month.credit }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">Соофинансирование ООО "ЛКМБ-РТ"</th>
+                    <td>{{ data.nine_month.co_finance }}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="col-md-6">
+            <table class="table table-dark table-striped">
+                <thead>
+                <tr>
+                    <th scope="col"></th>
+                    <th scope="col" id="prevNineMonth"></th>
+                    <th scope="col" id="twoPrevNineMonth"></th>
+                    <th scope="col" id="threePrevNineMonth"></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <th scope="row">Сумма нового бизнеса по договорам лизинга (ДЛ)</th>
+                    <td>{{ data.prev_nine_month.sum_dl }}</td>
+                    <td>{{ data.prev_prev_nine_month.sum_dl }}</td>
+                    <td>{{ data.prev_prev_prev_nine_month.sum_dl }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">Сумма нового бизнеса по договорам поставки (ДКП)</th>
+                    <td>{{ data.prev_nine_month.sum_dkp }}</td>
+                    <td>{{ data.prev_prev_nine_month.sum_dkp }}</td>
+                    <td>{{ data.prev_prev_prev_nine_month.sum_dkp }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">Количество новых договоров</th>
+                    <td>{{ data.prev_nine_month.count_new_contracts }}</td>
+                    <td>{{ data.prev_prev_nine_month.count_new_contracts }}</td>
+                    <td>{{ data.prev_prev_prev_nine_month.count_new_contracts }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">Авансы лизингополучателей</th>
+                    <td>{{ data.prev_nine_month.advances }}</td>
+                    <td>{{ data.prev_prev_nine_month.advances }}</td>
+                    <td>{{ data.prev_prev_prev_nine_month.advances }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">Кредиты банков</th>
+                    <td>{{ data.prev_nine_month.credit }}</td>
+                    <td>{{ data.prev_prev_nine_month.credit }}</td>
+                    <td>{{ data.prev_prev_prev_nine_month.credit }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">Соофинансирование ООО "ЛКМБ-РТ"</th>
+                    <td>{{ data.prev_nine_month.co_finance }}</td>
+                    <td>{{ data.prev_prev_nine_month.co_finance }}</td>
+                    <td>{{ data.prev_prev_prev_nine_month.co_finance }}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <table class="table table-dark table-striped">
+                <thead>
+                <tr>
+                    <th scope="col">Показатели ООО "ЛКМБ-РТ"</th>
                     <th scope="col" id="currentYear"></th>
                 </tr>
                 </thead>
@@ -321,18 +497,30 @@
 
     // Заполняем заголовки таблицы для кварталов
     const prevQuarter = Math.floor(prevMonth / 3) + 1;
-    document.getElementById('prevQuarterDL').textContent = `${(prevQuarter - 1 === 0) ? 4 : (prevQuarter - 1)} квартал ${(prevQuarter - 1 === 0) ? (prevYear - 1) : prevYear - 1}`;
-    document.getElementById('lastYearQuarterDL').textContent = `${(prevQuarter - 1 === 0) ? 4 : (prevQuarter - 1)} квартал ${(prevQuarter - 1 === 0) ? (prevYear - 2) : prevYear - 2}`;
-    document.getElementById('twoYearsAgoQuarterDL').textContent = `${(prevQuarter - 1 === 0) ? 4 : (prevQuarter - 1)} квартал ${(prevQuarter - 1 === 0) ? (prevYear - 3) : prevYear - 3}`;
+    document.getElementById('prevQuarterDL').textContent = `${(prevQuarter - 1 === 0) ? 4 : (prevQuarter - 1)} кв. ${(prevQuarter - 1 === 0) ? (prevYear - 1) : prevYear - 1}`;
+    document.getElementById('lastYearQuarterDL').textContent = `${(prevQuarter - 1 === 0) ? 4 : (prevQuarter - 1)} кв. ${(prevQuarter - 1 === 0) ? (prevYear - 2) : prevYear - 2}`;
+    document.getElementById('twoYearsAgoQuarterDL').textContent = `${(prevQuarter - 1 === 0) ? 4 : (prevQuarter - 1)} кв. ${(prevQuarter - 1 === 0) ? (prevYear - 3) : prevYear - 3}`;
 
-// Заполняем заголовки таблицы для кварталов
-    document.getElementById('currentQuarter').textContent = `${prevQuarter} квартал ${prevYear}`;
+    // Заполняем заголовки таблицы для кварталов
+    document.getElementById('currentQuarter').textContent = `${prevQuarter} кв. ${prevYear}`;
 
     // Заполняем заголовки таблицы для годов
     document.getElementById('currentYear').textContent = `${prevYear} год`;
     document.getElementById('prevYearDL').textContent = `${prevYear - 1} год`;
     document.getElementById('lastYearDL').textContent = `${prevYear - 2} год`;
     document.getElementById('twoYearsAgoDL').textContent = `${prevYear - 3} год`;
+
+    // Заполняем заголовки таблицы для пол года
+    document.getElementById('halfYear').textContent = `6 мес. ${prevYear}`;
+    document.getElementById('prevHalfYear').textContent = `6 мес. ${prevYear - 1}`;
+    document.getElementById('twoPrevHalfYear').textContent = `6 мес. ${prevYear - 2}`;
+    document.getElementById('threePrevHalfYear').textContent = `6 мес. ${prevYear - 3}`;
+
+    // Заполняем заголовки таблицы для 9 мес.
+    document.getElementById('nineMonth').textContent = `9 мес. ${prevYear}`;
+    document.getElementById('prevNineMonth').textContent = `9 мес. ${prevYear - 1}`;
+    document.getElementById('twoPrevNineMonth').textContent = `9 мес. ${prevYear - 2}`;
+    document.getElementById('threePrevNineMonth').textContent = `9 мес. ${prevYear - 3}`;
 
 </script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
