@@ -68,10 +68,7 @@ class InterestRateHistory(db.Model):
     # Связь с таблицей payments
 
     def __repr__(self):
-        return (
-            f"InterestRateHistory (rate_id={self.rate_id}, loan_id={self.loan_id}, "
-            f"effective_date={self.effective_date}, interest_rate={self.interest_rate})"
-        )
+        return f"InterestRateHistory (rate_id={self.payment_id}, interest_rate={self.interest_rate})"
 
 
 class PaymentSchedule(db.Model):
