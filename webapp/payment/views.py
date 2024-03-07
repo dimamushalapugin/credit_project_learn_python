@@ -130,6 +130,7 @@ def read_from_xlsx():
     #     file_ = Bank(data, data3, data8, data1)
     #     response_math_xlxs = file_.print_output_data()
     json_serializable_data = response_math_xlxs.to_dict(orient="records")
+    print(json_serializable_data)
     return json_serializable_data
 
 

@@ -1,12 +1,8 @@
 import datetime
 import pandas as pd
 from holidays_ru import check_holiday
-from sqlalchemy import func
 from webapp.risk.logger import logging
 from webapp.payment.sql_queries import get_nearest_interest_rate
-from webapp.payment.models import InterestRateHistory
-from webapp import db
-from flask import current_app
 
 
 class Bank:
@@ -32,18 +28,18 @@ class Bank:
     @staticmethod
     def extract_file(data_json, date_of_issue):
         df = pd.DataFrame(data_json)
-        pogashenie = "Дата погашения Основного долга"
-        start_date = pd.to_datetime(df[pogashenie], origin="1899-12-30", unit="D")
-        df[pogashenie] = start_date
+        data_pogashenie = "Дата погашения Основного долга"
+        start_date = pd.to_datetime(df[data_pogashenie], origin="1899-12-30", unit="D")
+        df[data_pogashenie] = start_date
 
         # Convert the "Дата погашения" column to datetime format
-        df[pogashenie] = pd.to_datetime(df[pogashenie])
+        df[data_pogashenie] = pd.to_datetime(df[data_pogashenie])
         # считает кол-во строк в первом столбце
         num_rows = df.shape[0]
 
         # Extract the month and year from the first cell of the "Дата погашения" column
-        month_year = df[pogashenie][0].strftime("%B %Y")
-        last_day_payment = df[pogashenie].iloc[-1]
+        month_year = df[data_pogashenie][0].strftime("%B %Y")
+        last_day_payment = df[data_pogashenie].iloc[-1]
         start_limit = pd.to_datetime(date_of_issue)
         days_difference = (last_day_payment - start_limit).days
         return month_year, df, num_rows, days_difference
@@ -662,22 +658,23 @@ class MetallinvestBank(Bank):
         self.output_data["Сумма погашения Основного долга"].fillna(0, inplace=True)
 
     def calculate_interest(self, data):
+        self.output_data_new = self.output_data
         for i in range(1, self.extract_file(data, self.start_date)[3] + 1):
-            ostatok_od_i = self.output_data.loc[(i - 1), "Остаток основного долга"]
-            summary_pogash_i = self.output_data.loc[
+            ostatok_od_i = self.output_data_new.loc[(i - 1), "Остаток основного долга"]
+            summary_pogash_i = self.output_data_new.loc[
                 (i - 1), "Сумма погашения Основного долга"
             ]
-            self.output_data.loc[i, "Остаток основного долга"] = (
+            self.output_data_new.loc[i, "Остаток основного долга"] = (
                 ostatok_od_i - summary_pogash_i
             )
 
-        self.output_data["Кол-во дней в году"] = self.output_data[
+        self.output_data_new["Кол-во дней в году"] = self.output_data_new[
             "Дата начала периода"
         ].apply(self.define_year_test)
-        self.output_data["Ставка банка, %"] = self.output_data[
+        self.output_data_new["Ставка банка, %"] = self.output_data_new[
             "Дата начала периода"
         ].apply(get_nearest_interest_rate)
-        self.output_data["Общая сумма процентов"] = self.output_data.apply(
+        self.output_data_new["Общая сумма процентов"] = self.output_data_new.apply(
             lambda row: float(row["Остаток основного долга"])
             * float(row["Ставка банка, %"])
             * float(row["Кол-во дней"])
@@ -685,8 +682,15 @@ class MetallinvestBank(Bank):
             axis=1,
         )
 
-        self.output_data.to_excel("updated_output_data_МИБ1.xlsx", index=False)
-        return self.output_data
+        self.output_data_new.to_excel("updated_output_data_МИБ1.xlsx", index=False)
+        self.output_data["Дата уплаты процентов"].fillna(0, inplace=True)
+        self.output_data["Остаток основного долга"] = round(
+            self.output_data["Остаток основного долга"], 2
+        )
+        self.output_data["Общая сумма процентов"] = round(
+            self.output_data["Общая сумма процентов"], 2
+        )
+        return self.output_data_new
 
     def start_function(self, data):
         self.create_dataframe(data)
