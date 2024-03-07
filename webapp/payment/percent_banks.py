@@ -681,12 +681,12 @@ class MetallinvestBank(Bank):
         )
 
         self.output_data_new.to_excel("updated_output_data_МИБ1.xlsx", index=False)
-        self.output_data["Дата уплаты процентов"].fillna(0, inplace=True)
-        self.output_data["Остаток основного долга"] = round(
-            self.output_data["Остаток основного долга"], 2
+        self.output_data_new["Дата уплаты процентов"].fillna(0, inplace=True)
+        self.output_data_new["Остаток основного долга"] = round(
+            self.output_data_new["Остаток основного долга"], 2
         )
-        self.output_data["Общая сумма процентов"] = round(
-            self.output_data["Общая сумма процентов"], 2
+        self.output_data_new["Общая сумма процентов"] = round(
+            self.output_data_new["Общая сумма процентов"], 2
         )
         return self.output_data_new
 
