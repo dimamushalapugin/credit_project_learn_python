@@ -59,10 +59,7 @@ class Bank:
         return day
 
     def define_year(self, index):
-        try:
-            date_value = self.output_data_new.loc[index, "Дата окончания периода"]
-        except:
-            date_value = self.output_data_new.loc[index, "Дата начала периода"]
+        date_value = self.output_data_new.loc[index, "Дата окончания периода"]
         if pd.notnull(date_value):  # Check for non-null values
             date_object = pd.to_datetime(date_value)
             year = date_object.year
@@ -74,7 +71,8 @@ class Bank:
         days_in_current_year = datetime.date(year, 12, 31).timetuple().tm_yday
         return days_in_current_year
 
-    def define_year_test(self, data):
+    @staticmethod
+    def define_year_test(data):
         if pd.notnull(data):  # Check for non-null values
             date_object = pd.to_datetime(data)
             year = date_object.year
