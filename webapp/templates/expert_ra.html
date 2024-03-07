@@ -38,14 +38,14 @@
                 <thead>
                 <tr>
                     <th scope="col">2. Показатели деятельности</th>
-                    <th scope="col">Дата</th>
+                    <th scope="col">6 мес. {{ current_year }}</th>
                     <th scope="col"></th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr onclick="copyValue('newBusiness', 'copyNewBusiness', 'newBusinessTitle')">
                     <th scope="row" id="newBusinessTitle">Новый бизнес (НБ) по фин. лизингу (без НДС), млн руб.</th>
-                    <td id="newBusiness"></td>
+                    <td id="newBusiness">{{ expert_ra_6.new_business }}</td>
                     <td><i class="fa-regular fa-copy" id="copyNewBusiness"></i></td>
                 </tr>
                 <tr onclick="copyValue('newOperate', 'copyNewOperate', 'newOperateTitle')">
@@ -106,7 +106,7 @@
                 <thead>
                 <tr>
                     <th scope="col">2.2. Структура НБ по регионам (млн руб.)</th>
-                    <th scope="col">Дата</th>
+                    <th scope="col">6 мес. {{ current_year }}</th>
                     <th scope="col"></th>
                 </tr>
                 </thead>
@@ -179,132 +179,132 @@
                 <thead>
                 <tr>
                     <th scope="col">2.1. Структура по сегментам (млн руб.)</th>
-                    <th scope="col">Объем НБ за *</th>
-                    <th scope="col">Объем НБ за * (субъекты МСБ)</th>
-                    <th scope="col">Лизинговый портфель на *</th>
+                    <th scope="col">Объем НБ за 6 мес. {{ current_year }}</th>
+                    <th scope="col">Объем НБ за 6 мес. {{ current_year }} (субъекты МСБ)</th>
+                    <th scope="col">Лизинговый портфель на 01.10.{{ current_year }}</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr>
                     <th scope="row" id="carTitle">Легковые автомобили</th>
-                    <td id="valueNewBusinessCar">100</td>
-                    <td id="valueNewBusinessMsbCar">50</td>
-                    <td id="leasingPortfolioCar">350</td>
+                    <td class="text-center" id="valueNewBusinessCar" onclick="copyValue2('valueNewBusinessCar', 'carTitle')">100</td>
+                    <td class="text-center" id="valueNewBusinessMsbCar" onclick="copyValue2('valueNewBusinessMsbCar', 'carTitle')">50</td>
+                    <td class="text-center" id="leasingPortfolioCar" onclick="copyValue2('leasingPortfolioCar', 'carTitle')">350</td>
                 </tr>
                 <tr>
                     <th scope="row" id="busTitle">Автобусы и троллейбусы</th>
-                    <td id="valueNewBusinessBus">100</td>
-                    <td id="valueNewBusinessMsbBus">50</td>
-                    <td id="leasingPortfolioBus">350</td>
+                    <td class="text-center" id="valueNewBusinessBus" onclick="copyValue2('valueNewBusinessBus', 'busTitle')">100</td>
+                    <td class="text-center" id="valueNewBusinessMsbBus" onclick="copyValue2('valueNewBusinessMsbBus', 'busTitle')">50</td>
+                    <td class="text-center" id="leasingPortfolioBus" onclick="copyValue2('leasingPortfolioBus', 'busTitle')">350</td>
 
                 </tr>
                 <tr>
                     <th scope="row" id="truckTitle">Грузовой автотранспорт</th>
-                    <td id="valueNewBusinessTruck">100</td>
-                    <td id="valueNewBusinessMsbTruck">50</td>
-                    <td id="leasingPortfolioTruck">350</td>
+                    <td class="text-center" id="valueNewBusinessTruck" onclick="copyValue2('valueNewBusinessTruck', 'truckTitle')">100</td>
+                    <td class="text-center" id="valueNewBusinessMsbTruck" onclick="copyValue2('valueNewBusinessMsbTruck', 'truckTitle')">50</td>
+                    <td class="text-center" id="leasingPortfolioTruck" onclick="copyValue2('leasingPortfolioTruck', 'truckTitle')">350</td>
                 </tr>
                 <tr>
                     <th scope="row" id="trainTitle">Железнодорожная техника</th>
-                    <td id="valueNewBusinessTrain">100</td>
-                    <td id="valueNewBusinessMsbTrain">50</td>
-                    <td id="leasingPortfolioTrain">350</td>
+                    <td class="text-center" id="valueNewBusinessTrain" onclick="copyValue2('valueNewBusinessTrain', 'trainTitle')">100</td>
+                    <td class="text-center" id="valueNewBusinessMsbTrain" onclick="copyValue2('valueNewBusinessMsbTrain', 'trainTitle')">50</td>
+                    <td class="text-center" id="leasingPortfolioTrain" onclick="copyValue2('leasingPortfolioTrain', 'trainTitle')">350</td>
                 </tr>
                 <tr>
                     <th scope="row" id="airTitle">Авиационный транспорт (воздушные суда, вертолеты)</th>
-                    <td id="valueNewBusinessAir">100</td>
-                    <td id="valueNewBusinessMsbAir">50</td>
-                    <td id="leasingPortfolioAir">350</td>
+                    <td class="text-center" id="valueNewBusinessAir" onclick="copyValue2('valueNewBusinessAir', 'airTitle')">100</td>
+                    <td class="text-center" id="valueNewBusinessMsbAir" onclick="copyValue2('valueNewBusinessMsbAir', 'airTitle')">50</td>
+                    <td class="text-center" id="leasingPortfolioAir" onclick="copyValue2('leasingPortfolioAir', 'airTitle')">350</td>
                 </tr>
                 <tr>
                     <th scope="row" id="buildTitle">Строительная и дорожно-строит. техника, вкл. строит. спецтехнику на колесах</th>
-                    <td id="valueNewBusinessBuild">100</td>
-                    <td id="valueNewBusinessMsbBuild">50</td>
-                    <td id="leasingPortfolioBuild">350</td>
+                    <td class="text-center" id="valueNewBusinessBuild" onclick="copyValue2('valueNewBusinessBuild', 'buildTitle')">100</td>
+                    <td class="text-center" id="valueNewBusinessMsbBuild" onclick="copyValue2('valueNewBusinessMsbBuild', 'buildTitle')">50</td>
+                    <td class="text-center" id="leasingPortfolioBuild" onclick="copyValue2('leasingPortfolioBuild', 'buildTitle')">350</td>
                 </tr>
                 <tr>
                     <th scope="row" id="energyTitle">Энергетическое оборудование</th>
-                    <td id="valueNewBusinessEnergy">100</td>
-                    <td id="valueNewBusinessMsbEnergy">50</td>
-                    <td id="leasingPortfolioEnergy">350</td>
+                    <td class="text-center" id="valueNewBusinessEnergy" onclick="copyValue2('valueNewBusinessEnergy', 'energyTitle')">100</td>
+                    <td class="text-center" id="valueNewBusinessMsbEnergy" onclick="copyValue2('valueNewBusinessMsbEnergy', 'energyTitle')">50</td>
+                    <td class="text-center" id="leasingPortfolioEnergy" onclick="copyValue2('leasingPortfolioEnergy', 'energyTitle')">350</td>
                 </tr>
                 <tr>
                     <th scope="row" id="metalTitle">Машиностроит., металлообрабат. и металлургическое оборудование</th>
-                    <td id="valueNewBusinessMetal">100</td>
-                    <td id="valueNewBusinessMsbMetal">50</td>
-                    <td id="leasingPortfolioMetal">350</td>
+                    <td class="text-center" id="valueNewBusinessMetal" onclick="copyValue2('valueNewBusinessMetal', 'metalTitle')">100</td>
+                    <td class="text-center" id="valueNewBusinessMsbMetal" onclick="copyValue2('valueNewBusinessMsbMetal', 'metalTitle')">50</td>
+                    <td class="text-center" id="leasingPortfolioMetal" onclick="copyValue2('leasingPortfolioMetal', 'metalTitle')">350</td>
                 </tr>
                 <tr>
                     <th scope="row" id="industTitle">Оборудование для нефте- и газодобычи и переработки</th>
-                    <td id="valueNewBusinessIndust">100</td>
-                    <td id="valueNewBusinessMsbIndust">50</td>
-                    <td id="leasingPortfolioIndust">350</td>
+                    <td class="text-center" id="valueNewBusinessIndust" onclick="copyValue2('valueNewBusinessIndust', 'industTitle')">100</td>
+                    <td class="text-center" id="valueNewBusinessMsbIndust" onclick="copyValue2('valueNewBusinessMsbIndust', 'industTitle')">50</td>
+                    <td class="text-center" id="leasingPortfolioIndust" onclick="copyValue2('leasingPortfolioIndust', 'industTitle')">350</td>
                 </tr>
                 <tr>
                     <th scope="row" id="agroTitle">Сельскохозяйственная техника и скот</th>
-                    <td id="valueNewBusinessAgro">100</td>
-                    <td id="valueNewBusinessMsbAgro">50</td>
-                    <td id="leasingPortfolioAgro">350</td>
+                    <td class="text-center" id="valueNewBusinessAgro" onclick="copyValue2('valueNewBusinessAgro', 'agroTitle')">100</td>
+                    <td class="text-center" id="valueNewBusinessMsbAgro" onclick="copyValue2('valueNewBusinessMsbAgro', 'agroTitle')">50</td>
+                    <td class="text-center" id="leasingPortfolioAgro" onclick="copyValue2('leasingPortfolioAgro', 'agroTitle')">350</td>
                 </tr>
                 <tr>
                     <th scope="row" id="telTitle">Телекоммуникационное оборудование, оргтехника, компьютеры</th>
-                    <td id="valueNewBusinessTel">100</td>
-                    <td id="valueNewBusinessMsbTel">50</td>
-                    <td id="leasingPortfolioTel">350</td>
+                    <td class="text-center" id="valueNewBusinessTel" onclick="copyValue2('valueNewBusinessTel', 'telTitle')">100</td>
+                    <td class="text-center" id="valueNewBusinessMsbTel" onclick="copyValue2('valueNewBusinessMsbTel', 'telTitle')">50</td>
+                    <td class="text-center" id="leasingPortfolioTel" onclick="copyValue2('leasingPortfolioTel', 'telTitle')">350</td>
                 </tr>
                 <tr>
                     <th scope="row" id="polygraphTitle">Полиграфическое оборудование</th>
-                    <td id="valueNewBusinessPolygraph">100</td>
-                    <td id="valueNewBusinessMsbPolygraph">50</td>
-                    <td id="leasingPortfolioPolygraph">350</td>
+                    <td class="text-center" id="valueNewBusinessPolygraph" onclick="copyValue2('valueNewBusinessPolygraph', 'polygraphTitle')">100</td>
+                    <td class="text-center" id="valueNewBusinessMsbPolygraph" onclick="copyValue2('valueNewBusinessMsbPolygraph', 'polygraphTitle')">50</td>
+                    <td class="text-center" id="leasingPortfolioPolygraph" onclick="copyValue2('leasingPortfolioPolygraph', 'polygraphTitle')">350</td>
                 </tr>
                 <tr>
                     <th scope="row" id="realEstateTitle">Недвижимость (здания и сооружения)</th>
-                    <td id="valueNewBusinessRealEstate">100</td>
-                    <td id="valueNewBusinessMsbRealEstate">50</td>
-                    <td id="leasingPortfolioRealEstate">350</td>
+                    <td class="text-center" id="valueNewBusinessRealEstate" onclick="copyValue2('valueNewBusinessRealEstate', 'realEstateTitle')">100</td>
+                    <td class="text-center" id="valueNewBusinessMsbRealEstate" onclick="copyValue2('valueNewBusinessMsbRealEstate', 'realEstateTitle')">50</td>
+                    <td class="text-center" id="leasingPortfolioRealEstate" onclick="copyValue2('leasingPortfolioRealEstate', 'realEstateTitle')">350</td>
                 </tr>
                 <tr>
                     <th scope="row" id="foodTitle">Оборуд-е для пищевой промыш., вкл. холод-е и оборудование для ресторанов</th>
-                    <td id="valueNewBusinessFood">100</td>
-                    <td id="valueNewBusinessMsbFood">50</td>
-                    <td id="leasingPortfolioFood">350</td>
+                    <td class="text-center" id="valueNewBusinessFood" onclick="copyValue2('valueNewBusinessFood', 'foodTitle')">100</td>
+                    <td class="text-center" id="valueNewBusinessMsbFood" onclick="copyValue2('valueNewBusinessMsbFood', 'foodTitle')">50</td>
+                    <td class="text-center" id="leasingPortfolioFood" onclick="copyValue2('leasingPortfolioFood', 'foodTitle')">350</td>
                 </tr>
                 <tr>
                     <th scope="row" id="cargoTitle">Погрузчики, складское и упаковоч. оборуд-е и оборуд-е для произв. тары</th>
-                    <td id="valueNewBusinessCargo">100</td>
-                    <td id="valueNewBusinessMsbCargo">50</td>
-                    <td id="leasingPortfolioCargo">350</td>
+                    <td class="text-center" id="valueNewBusinessCargo" onclick="copyValue2('valueNewBusinessCargo', 'cargoTitle')">100</td>
+                    <td class="text-center" id="valueNewBusinessMsbCargo" onclick="copyValue2('valueNewBusinessMsbCargo', 'cargoTitle')">50</td>
+                    <td class="text-center" id="leasingPortfolioCargo" onclick="copyValue2('leasingPortfolioCargo', 'cargoTitle')">350</td>
                 </tr>
                 <tr>
                     <th scope="row" id="gkhTitle">Оборудование для ЖКХ</th>
-                    <td id="valueNewBusinessGkh">100</td>
-                    <td id="valueNewBusinessMsbGkh">50</td>
-                    <td id="leasingPortfolioGkh">350</td>
+                    <td class="text-center" id="valueNewBusinessGkh" onclick="copyValue2('valueNewBusinessGkh', 'gkhTitle')">100</td>
+                    <td class="text-center" id="valueNewBusinessMsbGkh" onclick="copyValue2('valueNewBusinessMsbGkh', 'gkhTitle')">50</td>
+                    <td class="text-center" id="leasingPortfolioGkh" onclick="copyValue2('leasingPortfolioGkh', 'gkhTitle')">350</td>
                 </tr>
                 <tr>
                     <th scope="row" id="medTitle">Медицинская техника и фармацевтическое оборудование</th>
-                    <td id="valueNewBusinessMed">100</td>
-                    <td id="valueNewBusinessMsbMed">50</td>
-                    <td id="leasingPortfolioMed">350</td>
+                    <td class="text-center" id="valueNewBusinessMed" onclick="copyValue2('valueNewBusinessMed', 'medTitle')">100</td>
+                    <td class="text-center" id="valueNewBusinessMsbMed" onclick="copyValue2('valueNewBusinessMsbMed', 'medTitle')">50</td>
+                    <td class="text-center" id="leasingPortfolioMed" onclick="copyValue2('leasingPortfolioMed', 'medTitle')">350</td>
                 </tr>
                 <tr>
                     <th scope="row" id="waterTitle">Суда (морские и речные)</th>
-                    <td id="valueNewBusinessWater">100</td>
-                    <td id="valueNewBusinessMsbWater">50</td>
-                    <td id="leasingPortfolioWater">350</td>
+                    <td class="text-center" id="valueNewBusinessWater" onclick="copyValue2('valueNewBusinessWater', 'waterTitle')">100</td>
+                    <td class="text-center" id="valueNewBusinessMsbWater" onclick="copyValue2('valueNewBusinessMsbWater', 'waterTitle')">50</td>
+                    <td class="text-center" id="leasingPortfolioWater" onclick="copyValue2('leasingPortfolioWater', 'waterTitle')">350</td>
                 </tr>
                 <tr>
                     <th scope="row" id="treeTitle">Деревообрабатывающее оборудование</th>
-                    <td id="valueNewBusinessTree">100</td>
-                    <td id="valueNewBusinessMsbTree">50</td>
-                    <td id="leasingPortfolioTree">350</td>
+                    <td class="text-center" id="valueNewBusinessTree" onclick="copyValue2('valueNewBusinessTree', 'treeTitle')">100</td>
+                    <td class="text-center" id="valueNewBusinessMsbTree" onclick="copyValue2('valueNewBusinessMsbTree', 'treeTitle')">50</td>
+                    <td class="text-center" id="leasingPortfolioTree" onclick="copyValue2('leasingPortfolioTree', 'treeTitle')">350</td>
                 </tr>
                 <tr>
                     <th scope="row" id="otherTitle">Прочее имущество всего (укажите ниже какое именно имущество)</th>
-                    <td id="valueNewBusinessOther">100</td>
-                    <td id="valueNewBusinessMsbOther">50</td>
-                    <td id="leasingPortfolioOther">350</td>
+                    <td class="text-center" id="valueNewBusinessOther" onclick="copyValue2('valueNewBusinessOther', 'otherTitle')">100</td>
+                    <td class="text-center" id="valueNewBusinessMsbOther" onclick="copyValue2('valueNewBusinessMsbOther', 'otherTitle')">50</td>
+                    <td class="text-center" id="leasingPortfolioOther" onclick="copyValue2('leasingPortfolioOther', 'otherTitle')">350</td>
                 </tr>
                 </tbody>
             </table>
@@ -316,7 +316,7 @@
                 <thead>
                 <tr>
                     <th scope="col">2.3. Структура НБ по клиентам (млн руб.)</th>
-                    <th scope="col">Дата</th>
+                    <th scope="col">6 мес. {{ current_year }}</th>
                     <th scope="col"></th>
                 </tr>
                 </thead>
@@ -353,7 +353,7 @@
                 <thead>
                 <tr>
                     <th scope="col">3. Объем профинансированных средств</th>
-                    <th scope="col">Дата</th>
+                    <th scope="col">6 мес. {{ current_year }}</th>
                     <th scope="col"></th>
                 </tr>
                 </thead>
@@ -394,56 +394,6 @@
     </div>
 </div>
 <script>
-    // Получаем текущую дату
-    const currentDate = new Date();
-    // Получаем номер текущего месяца (от 0 до 11)
-    const prevMonth = currentDate.getMonth();
-    // Получаем текущий год
-    const prevYear = currentDate.getFullYear();
-
-    // Получаем названия месяцев
-    const monthNames = [
-        "Январь", "Февраль", "Март", "Апрель", "Май", "Июнь",
-        "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"
-    ];
-
-    // Заполняем заголовки таблицы для месяцев (предыдущий месяц)
-    document.getElementById('prevMonth').textContent = `${monthNames[prevMonth - 1]} ${prevYear}`;
-    document.getElementById('lastYearMonth').textContent = `${monthNames[prevMonth - 1]} ${prevYear - 1}`;
-    document.getElementById('twoYearsAgoMonth').textContent = `${monthNames[prevMonth - 1]} ${prevYear - 2}`;
-
-    // Заполняем заголовки таблицы для месяцев (текущий месяц)
-    document.getElementById('currentMonth').textContent = `${monthNames[prevMonth]} ${prevYear}`;
-
-    // Заполняем заголовки таблицы для кварталов
-    const prevQuarter = Math.floor(prevMonth / 3) + 1;
-    document.getElementById('prevQuarterDL').textContent = `${(prevQuarter - 1 === 0) ? 4 : (prevQuarter - 1)} кв. ${(prevQuarter - 1 === 0) ? (prevYear - 1) : prevYear - 1}`;
-    document.getElementById('lastYearQuarterDL').textContent = `${(prevQuarter - 1 === 0) ? 4 : (prevQuarter - 1)} кв. ${(prevQuarter - 1 === 0) ? (prevYear - 2) : prevYear - 2}`;
-    document.getElementById('twoYearsAgoQuarterDL').textContent = `${(prevQuarter - 1 === 0) ? 4 : (prevQuarter - 1)} кв. ${(prevQuarter - 1 === 0) ? (prevYear - 3) : prevYear - 3}`;
-
-    // Заполняем заголовки таблицы для кварталов
-    document.getElementById('currentQuarter').textContent = `${prevQuarter} кв. ${prevYear}`;
-
-    // Заполняем заголовки таблицы для годов
-    document.getElementById('currentYear').textContent = `${prevYear} год`;
-    document.getElementById('prevYearDL').textContent = `${prevYear - 1} год`;
-    document.getElementById('lastYearDL').textContent = `${prevYear - 2} год`;
-    document.getElementById('twoYearsAgoDL').textContent = `${prevYear - 3} год`;
-
-    // Заполняем заголовки таблицы для пол года
-    document.getElementById('halfYear').textContent = `6 мес. ${prevYear}`;
-    document.getElementById('prevHalfYear').textContent = `6 мес. ${prevYear - 1}`;
-    document.getElementById('twoPrevHalfYear').textContent = `6 мес. ${prevYear - 2}`;
-    document.getElementById('threePrevHalfYear').textContent = `6 мес. ${prevYear - 3}`;
-
-    // Заполняем заголовки таблицы для 9 мес.
-    document.getElementById('nineMonth').textContent = `9 мес. ${prevYear}`;
-    document.getElementById('prevNineMonth').textContent = `9 мес. ${prevYear - 1}`;
-    document.getElementById('twoPrevNineMonth').textContent = `9 мес. ${prevYear - 2}`;
-    document.getElementById('threePrevNineMonth').textContent = `9 мес. ${prevYear - 3}`;
-
-</script>
-<script>
     function copyValue(elemId, copyElemId, elemTitle) {
         var ownFundsElement = document.getElementById(elemId);
         var copyIcon = document.getElementById(copyElemId);
@@ -468,6 +418,33 @@
         elemTitle.style.color = "grey";
         setTimeout(function () {
             copyIcon.style.color = "";
+            ownFundsElement.style.color = "";
+            elemTitle.style.color = "";
+        }, 200);
+    }
+</script>
+<script>
+    function copyValue2(elemId, elemTitle) {
+        var ownFundsElement = document.getElementById(elemId);
+        var elemTitle = document.getElementById(elemTitle);
+        var textToCopy = ownFundsElement.textContent;
+
+        // Создание временного элемента для копирования текста
+        var tempInput = document.createElement("input");
+        tempInput.value = textToCopy;
+        document.body.appendChild(tempInput);
+
+        // Выделение текста и копирование
+        tempInput.select();
+        document.execCommand("copy");
+
+        // Удаление временного элемента
+        document.body.removeChild(tempInput);
+
+        // Подсветка иконки копирования
+        ownFundsElement.style.color = "grey";
+        elemTitle.style.color = "grey";
+        setTimeout(function () {
             ownFundsElement.style.color = "";
             elemTitle.style.color = "";
         }, 200);
