@@ -33,7 +33,7 @@
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
                        aria-expanded="false">
-                        Информация по кредитам
+                        <i class="fa-solid fa-bars"></i> Информация по кредитам
                     </a>
                     <ul class="dropdown-menu dropdown-menu-dark">
                         <li><a class="dropdown-item" href="{{ url_for('payment.create_payment') }}">Загрузка
@@ -47,7 +47,7 @@
                 <li class="nav-item dropdown" aria-labelledby="navbarDropdown">
                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
                        aria-expanded="false">
-                        Программы
+                        <i class="fa-brands fa-windows"></i> Программы
                     </a>
                     <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDropdown">
                         <li><a class="dropdown-item" href="{{ url_for('risk.risk_page') }}">Риск заключение</a>
@@ -88,15 +88,15 @@
             </ul>
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('admin_page') }}">{{ current_user }}</a>
+                    <a class="nav-link" href="{{ url_for('admin_page') }}"><i class="fa-regular fa-user"></i> {{ current_user }}</a>
                 </li>
             </ul>
         </div>
         <div style="margin-right: 100px;"></div>
         <ul class="navbar-nav ms-auto">
             <li class="nav-item">
-                <a class="nav-link" href="{{ url_for('user.exit_user') }}">Выход <i
-                        class="fa-solid fa-arrow-right-from-bracket"></i></a>
+                <a class="nav-link" href="{{ url_for('user.exit_user') }}"><i
+                        class="fa-solid fa-arrow-right-from-bracket"></i> Выход</a>
             </li>
         </ul>
     </div>

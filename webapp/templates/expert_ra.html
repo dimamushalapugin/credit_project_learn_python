@@ -1,12 +1,482 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Эксперт РА</title>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-KQX5FDFY5F"></script>
+    <script src="{{ url_for('static', filename='js/google_tag.js') }}"></script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Основная информация</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="icon" href="{{ url_for('static', filename='images/favicon.png') }}" type="image/png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link href="http://cdn.jsdelivr.net/npm/suggestions-jquery@21.12.0/dist/css/suggestions.min.css" rel="stylesheet"/>
+    <script src="http://cdn.jsdelivr.net/npm/suggestions-jquery@21.12.0/dist/js/jquery.suggestions.min.js"></script>
+
 </head>
-<body>
-    <div>
-        <h1>Эксперт РА</h1>
+<body style="background-image: linear-gradient(to bottom, #FCFDFC, #CCE9FF, #000000);">
+{% include 'menu.html' %}
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+    <symbol id="check-circle-fill" fill="currentColor" viewBox="0 0 16 16">
+        <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
+    </symbol>
+    <symbol id="info-fill" fill="currentColor" viewBox="0 0 16 16">
+        <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"/>
+    </symbol>
+    <symbol id="exclamation-triangle-fill" fill="currentColor" viewBox="0 0 16 16">
+        <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+    </symbol>
+</svg>
+<br>
+<div class="container-xxl text-left">
+    <div class="row">
+        <div class="col-md-6">
+            <table class="table table-dark table-striped">
+                <thead>
+                <tr>
+                    <th scope="col">2. Показатели деятельности</th>
+                    <th scope="col">Дата</th>
+                    <th scope="col"></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr onclick="copyValue('newBusiness', 'copyNewBusiness', 'newBusinessTitle')">
+                    <th scope="row" id="newBusinessTitle">Новый бизнес (НБ) по фин. лизингу (без НДС), млн руб.</th>
+                    <td id="newBusiness"></td>
+                    <td><i class="fa-regular fa-copy" id="copyNewBusiness"></i></td>
+                </tr>
+                <tr onclick="copyValue('newOperate', 'copyNewOperate', 'newOperateTitle')">
+                    <th scope="row" id="newOperateTitle">НБ по оперативному лизингу/аренде (без НДС), млн руб.</th>
+                    <td id="newOperate"></td>
+                    <td><i class="fa-regular fa-copy" id="copyNewOperate"></i></td>
+                </tr>
+                <tr onclick="copyValue('sumNewAgreements', 'copySumNewAgreements', 'sumNewAgreementsTitle')">
+                    <th scope="row" id="sumNewAgreementsTitle">Сумма новых договоров фин. и опер. лизинга, млн руб.</th>
+                    <td id="sumNewAgreements"></td>
+                    <td><i class="fa-regular fa-copy" id="copySumNewAgreements"></i></td>
+                </tr>
+                <tr onclick="copyValue('countNewAgreements', 'copyCountNewAgreements', 'countNewAgreementsTitle')">
+                    <th scope="row" id="countNewAgreementsTitle">Количество новых заключенных договоров, штук</th>
+                    <td id="countNewAgreements"></td>
+                    <td><i class="fa-regular fa-copy" id="copyCountNewAgreements"></i></td>
+                </tr>
+                <tr onclick="copyValue('currentPortfolio', 'copyCurrentPortfolio', 'currentPortfolioTitle')">
+                    <th scope="row" id="currentPortfolioTitle">Текущий портфель по фин. лизингу, млн руб.</th>
+                    <td id="currentPortfolio"></td>
+                    <td><i class="fa-regular fa-copy" id="copyCurrentPortfolio"></i></td>
+                </tr>
+                <tr onclick="copyValue('portfolioOperate', 'copyPortfolioOperate', 'portfolioOperateTitle')">
+                    <th scope="row" id="portfolioOperateTitle">Портфель по оперативному лизингу/аренде, млн руб.</th>
+                    <td id="portfolioOperate"></td>
+                    <td><i class="fa-regular fa-copy" id="copyPortfolioOperate"></i></td>
+                </tr>
+                <tr onclick="copyValue('valueLeasingPayments', 'copyValueLeasingPayments', 'valueLeasingPaymentsTitle')">
+                    <th scope="row" id="valueLeasingPaymentsTitle">Объем полученных лизинг. (в т.ч. аренд.) платежей, млн руб.</th>
+                    <td id="valueLeasingPayments"></td>
+                    <td><i class="fa-regular fa-copy" id="copyValueLeasingPayments"></i></td>
+                </tr>
+                <tr onclick="copyValue('financingAssets', 'copyFinancingAssets', 'financingAssetsTitle')">
+                    <th scope="row" id="financingAssetsTitle">Профинансированные средства, млн руб.</th>
+                    <td id="financingAssets"></td>
+                    <td><i class="fa-regular fa-copy" id="copyFinancingAssets"></i></td>
+                </tr>
+                <tr onclick="copyValue('valueAdvances', 'copyValueAdvances', 'valueAdvancesTitle')">
+                    <th scope="row" id="valueAdvancesTitle">Объем полученных авансов, млн руб.</th>
+                    <td id="valueAdvances"></td>
+                    <td><i class="fa-regular fa-copy" id="copyValueAdvances"></i></td>
+                </tr>
+                <tr onclick="copyValue('valueSeizedEstate', 'copyValueSeizedEstate', 'valueSeizedEstateTitle')">
+                    <th scope="row" id="valueSeizedEstateTitle">Объём изъятого имущества, млн. руб.</th>
+                    <td id="valueSeizedEstate"></td>
+                    <td><i class="fa-regular fa-copy" id="copyValueSeizedEstate"></i></td>
+                </tr>
+                <tr onclick="copyValue('realizedEstate', 'copyRealizedEstate', 'realizedEstateTitle')">
+                    <th scope="row" id="realizedEstateTitle">Реализованный объем изъятого имущества, млн. руб.</th>
+                    <td id="realizedEstate"></td>
+                    <td><i class="fa-regular fa-copy" id="copyRealizedEstate"></i></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="col-md-6">
+            <table class="table table-dark table-striped">
+                <thead>
+                <tr>
+                    <th scope="col">2.2. Структура НБ по регионам (млн руб.)</th>
+                    <th scope="col">Дата</th>
+                    <th scope="col"></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr onclick="copyValue('moscow', 'copyMoscow', 'moscowTitle')">
+                    <th scope="row" id="moscowTitle">Москва</th>
+                    <td id="moscow">777,00</td>
+                    <td><i class="fa-regular fa-copy" id="copyMoscow"></i></td>
+                </tr>
+                <tr onclick="copyValue('central', 'copyCentral', 'centralTitle')">
+                    <th scope="row" id="centralTitle">Центральный ФО (за исключением Москвы)</th>
+                    <td id="central">0,00</td>
+                    <td><i class="fa-regular fa-copy"
+                           id="copyCentral"></i></td>
+                </tr>
+                <tr onclick="copyValue('spb', 'copySpb', 'spbTitle')">
+                    <th scope="row" id="spbTitle">Санкт-Петербург</th>
+                    <td id="spb"></td>
+                    <td><i class="fa-regular fa-copy"
+                           id="copySpb"></i></td>
+                </tr>
+                <tr onclick="copyValue('northWest', 'copyNorthWest', 'NorthWestTitle')">
+                    <th scope="row" id="NorthWestTitle">Северо-Западный ФО (за исключением Санкт-Петербурга)</th>
+                    <td id="northWest"></td>
+                    <td><i class="fa-regular fa-copy"
+                           id="copyNorthWest"></i></td>
+                </tr>
+                <tr onclick="copyValue('privolzhsky', 'copyPrivolzhsky', 'privolzhskyTitle')">
+                    <th scope="row" id="privolzhskyTitle">Приволжский ФО</th>
+                    <td id="privolzhsky"></td>
+                    <td><i class="fa-regular fa-copy"
+                           id="copyPrivolzhsky"></i></td>
+                </tr>
+                <tr onclick="copyValue('northKavkaz', 'copyNorthKavkaz', 'NorthKavkazTitle')">
+                    <th scope="row" id="NorthKavkazTitle">Северо-Кавказский ФО</th>
+                    <td id ="northKavkaz"></td>
+                    <td><i class="fa-regular fa-copy"
+                           id="copyNorthKavkaz"></i></td>
+                </tr>
+                <tr onclick="copyValue('south', 'copySouth', 'southTitle')">
+                    <th scope="row" id="southTitle">Южный ФО</th>
+                    <td id="south"></td>
+                    <td><i class="fa-regular fa-copy"
+                           id="copySouth"></i></td>
+                </tr>
+                <tr onclick="copyValue('ural', 'copyUral', 'uralTitle')">
+                    <th scope="row" id="uralTitle">Уральский ФО</th>
+                    <td id="ural"></td>
+                    <td><i class="fa-regular fa-copy"
+                           id="copyUral"></i></td>
+                </tr>
+                <tr onclick="copyValue('siberian', 'copySiberian', 'siberianTitle')">
+                    <th scope="row" id="siberianTitle">Сибирский ФО</th>
+                    <td id="siberian"></td>
+                    <td><i class="fa-regular fa-copy"
+                           id="copySiberian"></i></td>
+                </tr>
+                <tr onclick="copyValue('farEast', 'copyFarEast', 'farEastTitle')">
+                    <th scope="row" id="farEastTitle">Дальневосточный ФО</th>
+                    <td id="farEast"></td>
+                    <td><i class="fa-regular fa-copy" id="copyFarEast"></i></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
+    <div class="row">
+        <div class="col-md-auto">
+            <table class="table table-dark table-striped">
+                <thead>
+                <tr>
+                    <th scope="col">2.1. Структура по сегментам (млн руб.)</th>
+                    <th scope="col">Объем НБ за *</th>
+                    <th scope="col">Объем НБ за * (субъекты МСБ)</th>
+                    <th scope="col">Лизинговый портфель на *</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <th scope="row" id="carTitle">Легковые автомобили</th>
+                    <td id="valueNewBusinessCar">100</td>
+                    <td id="valueNewBusinessMsbCar">50</td>
+                    <td id="leasingPortfolioCar">350</td>
+                </tr>
+                <tr>
+                    <th scope="row" id="busTitle">Автобусы и троллейбусы</th>
+                    <td id="valueNewBusinessBus">100</td>
+                    <td id="valueNewBusinessMsbBus">50</td>
+                    <td id="leasingPortfolioBus">350</td>
+
+                </tr>
+                <tr>
+                    <th scope="row" id="truckTitle">Грузовой автотранспорт</th>
+                    <td id="valueNewBusinessTruck">100</td>
+                    <td id="valueNewBusinessMsbTruck">50</td>
+                    <td id="leasingPortfolioTruck">350</td>
+                </tr>
+                <tr>
+                    <th scope="row" id="trainTitle">Железнодорожная техника</th>
+                    <td id="valueNewBusinessTrain">100</td>
+                    <td id="valueNewBusinessMsbTrain">50</td>
+                    <td id="leasingPortfolioTrain">350</td>
+                </tr>
+                <tr>
+                    <th scope="row" id="airTitle">Авиационный транспорт (воздушные суда, вертолеты)</th>
+                    <td id="valueNewBusinessAir">100</td>
+                    <td id="valueNewBusinessMsbAir">50</td>
+                    <td id="leasingPortfolioAir">350</td>
+                </tr>
+                <tr>
+                    <th scope="row" id="buildTitle">Строительная и дорожно-строит. техника, вкл. строит. спецтехнику на колесах</th>
+                    <td id="valueNewBusinessBuild">100</td>
+                    <td id="valueNewBusinessMsbBuild">50</td>
+                    <td id="leasingPortfolioBuild">350</td>
+                </tr>
+                <tr>
+                    <th scope="row" id="energyTitle">Энергетическое оборудование</th>
+                    <td id="valueNewBusinessEnergy">100</td>
+                    <td id="valueNewBusinessMsbEnergy">50</td>
+                    <td id="leasingPortfolioEnergy">350</td>
+                </tr>
+                <tr>
+                    <th scope="row" id="metalTitle">Машиностроит., металлообрабат. и металлургическое оборудование</th>
+                    <td id="valueNewBusinessMetal">100</td>
+                    <td id="valueNewBusinessMsbMetal">50</td>
+                    <td id="leasingPortfolioMetal">350</td>
+                </tr>
+                <tr>
+                    <th scope="row" id="industTitle">Оборудование для нефте- и газодобычи и переработки</th>
+                    <td id="valueNewBusinessIndust">100</td>
+                    <td id="valueNewBusinessMsbIndust">50</td>
+                    <td id="leasingPortfolioIndust">350</td>
+                </tr>
+                <tr>
+                    <th scope="row" id="agroTitle">Сельскохозяйственная техника и скот</th>
+                    <td id="valueNewBusinessAgro">100</td>
+                    <td id="valueNewBusinessMsbAgro">50</td>
+                    <td id="leasingPortfolioAgro">350</td>
+                </tr>
+                <tr>
+                    <th scope="row" id="telTitle">Телекоммуникационное оборудование, оргтехника, компьютеры</th>
+                    <td id="valueNewBusinessTel">100</td>
+                    <td id="valueNewBusinessMsbTel">50</td>
+                    <td id="leasingPortfolioTel">350</td>
+                </tr>
+                <tr>
+                    <th scope="row" id="polygraphTitle">Полиграфическое оборудование</th>
+                    <td id="valueNewBusinessPolygraph">100</td>
+                    <td id="valueNewBusinessMsbPolygraph">50</td>
+                    <td id="leasingPortfolioPolygraph">350</td>
+                </tr>
+                <tr>
+                    <th scope="row" id="realEstateTitle">Недвижимость (здания и сооружения)</th>
+                    <td id="valueNewBusinessRealEstate">100</td>
+                    <td id="valueNewBusinessMsbRealEstate">50</td>
+                    <td id="leasingPortfolioRealEstate">350</td>
+                </tr>
+                <tr>
+                    <th scope="row" id="foodTitle">Оборуд-е для пищевой промыш., вкл. холод-е и оборудование для ресторанов</th>
+                    <td id="valueNewBusinessFood">100</td>
+                    <td id="valueNewBusinessMsbFood">50</td>
+                    <td id="leasingPortfolioFood">350</td>
+                </tr>
+                <tr>
+                    <th scope="row" id="cargoTitle">Погрузчики, складское и упаковоч. оборуд-е и оборуд-е для произв. тары</th>
+                    <td id="valueNewBusinessCargo">100</td>
+                    <td id="valueNewBusinessMsbCargo">50</td>
+                    <td id="leasingPortfolioCargo">350</td>
+                </tr>
+                <tr>
+                    <th scope="row" id="gkhTitle">Оборудование для ЖКХ</th>
+                    <td id="valueNewBusinessGkh">100</td>
+                    <td id="valueNewBusinessMsbGkh">50</td>
+                    <td id="leasingPortfolioGkh">350</td>
+                </tr>
+                <tr>
+                    <th scope="row" id="medTitle">Медицинская техника и фармацевтическое оборудование</th>
+                    <td id="valueNewBusinessMed">100</td>
+                    <td id="valueNewBusinessMsbMed">50</td>
+                    <td id="leasingPortfolioMed">350</td>
+                </tr>
+                <tr>
+                    <th scope="row" id="waterTitle">Суда (морские и речные)</th>
+                    <td id="valueNewBusinessWater">100</td>
+                    <td id="valueNewBusinessMsbWater">50</td>
+                    <td id="leasingPortfolioWater">350</td>
+                </tr>
+                <tr>
+                    <th scope="row" id="treeTitle">Деревообрабатывающее оборудование</th>
+                    <td id="valueNewBusinessTree">100</td>
+                    <td id="valueNewBusinessMsbTree">50</td>
+                    <td id="leasingPortfolioTree">350</td>
+                </tr>
+                <tr>
+                    <th scope="row" id="otherTitle">Прочее имущество всего (укажите ниже какое именно имущество)</th>
+                    <td id="valueNewBusinessOther">100</td>
+                    <td id="valueNewBusinessMsbOther">50</td>
+                    <td id="leasingPortfolioOther">350</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <table class="table table-dark table-striped">
+                <thead>
+                <tr>
+                    <th scope="col">2.3. Структура НБ по клиентам (млн руб.)</th>
+                    <th scope="col">Дата</th>
+                    <th scope="col"></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr onclick="copyValue('smallBusiness', 'copySmallBusiness', 'smallBusinessTitle')">
+                    <th scope="row" id="smallBusinessTitle">Малый бизнес (ССЧ <100 чел., выручка <0,8 млрд руб.)</th>
+                    <td id="smallBusiness"></td>
+                    <td><i class="fa-regular fa-copy"
+                           id="copySmallBusiness"></i></td>
+                </tr>
+                <tr onclick="copyValue('middleBusiness', 'copyMiddleBusiness', 'middleBusinessTitle')">
+                    <th scope="row" id="middleBusinessTitle">Средний бизнес (CCЧ 100-250 чел., выручка 0,8-2 млрд руб.)</th>
+                    <td id="middleBusiness"></td>
+                    <td><i class="fa-regular fa-copy"
+                           id="copyMiddleBusiness"></i></td>
+                </tr>
+                <tr onclick="copyValue('bigBusiness', 'copyBigBusiness', 'bigBusinessTitle')">
+                    <th scope="row" id="bigBusinessTitle">Крупный бизнес (ССЧ >250 чел., выручка >2 млрд руб.)</th>
+                    <td id="bigBusiness"></td>
+                    <td><i class="fa-regular fa-copy"
+                           id="copyBigBusiness"></i></td>
+                </tr>
+                <tr onclick="copyValue('physicalPersons', 'copyPhysicalPersons', 'physicalPersonsTitle')">
+                    <th scope="row" id="physicalPersonsTitle">Физические лица (ИП не включаются)</th>
+                    <td id="physicalPersons"></td>
+                    <td><i class="fa-regular fa-copy"
+                           id="copyPhysicalPersons"></i></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="col-md-6">
+            <table class="table table-dark table-striped">
+                <thead>
+                <tr>
+                    <th scope="col">3. Объем профинансированных средств</th>
+                    <th scope="col">Дата</th>
+                    <th scope="col"></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr onclick="copyValue('ownFunds', 'copyOwnFunds', 'ownFundsTitle')">
+                    <th scope="row" id="ownFundsTitle">собственные средства (УК+нераспр прибыль)</th>
+                    <td id="ownFunds">10 000,00</td>
+                    <td><i class="fa-regular fa-copy"
+                           id="copyOwnFunds"></i></td>
+                </tr>
+                <tr onclick="copyValue('bankCredits', 'copyBankCredits', 'bankCreditsTitle')">
+                    <th scope="row" id="bankCreditsTitle">банковские кредиты</th>
+                    <td id="bankCredits">20 000,00</td>
+                    <td><i class="fa-regular fa-copy"
+                           id="copyBankCredits"></i></td>
+                </tr>
+                <tr onclick="copyValue('obligations', 'copyObligations', 'obligationsTitle')">
+                    <th scope="row" id="obligationsTitle">облигации</th>
+                    <td id="obligations">30 000,00</td>
+                    <td><i class="fa-regular fa-copy"
+                           id="copyObligations"></i></td>
+                </tr>
+                <tr onclick="copyValue('advance', 'copyAdvance', 'advanceTitle')">
+                    <th scope="row" id="advanceTitle">авансы</th>
+                    <td id="advance">40 000,00</td>
+                    <td><i class="fa-regular fa-copy"
+                           id="copyAdvance"></i></td>
+                </tr>
+                <tr onclick="copyValue('otherFunds', 'copyOtherFunds', 'otherFundsTitle')">
+                    <th scope="row" id="otherFundsTitle">прочие источники</th>
+                    <td id="otherFunds">50 000,00</td>
+                    <td><i class="fa-regular fa-copy"
+                           id="copyOtherFunds"></i></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<script>
+    // Получаем текущую дату
+    const currentDate = new Date();
+    // Получаем номер текущего месяца (от 0 до 11)
+    const prevMonth = currentDate.getMonth();
+    // Получаем текущий год
+    const prevYear = currentDate.getFullYear();
+
+    // Получаем названия месяцев
+    const monthNames = [
+        "Январь", "Февраль", "Март", "Апрель", "Май", "Июнь",
+        "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"
+    ];
+
+    // Заполняем заголовки таблицы для месяцев (предыдущий месяц)
+    document.getElementById('prevMonth').textContent = `${monthNames[prevMonth - 1]} ${prevYear}`;
+    document.getElementById('lastYearMonth').textContent = `${monthNames[prevMonth - 1]} ${prevYear - 1}`;
+    document.getElementById('twoYearsAgoMonth').textContent = `${monthNames[prevMonth - 1]} ${prevYear - 2}`;
+
+    // Заполняем заголовки таблицы для месяцев (текущий месяц)
+    document.getElementById('currentMonth').textContent = `${monthNames[prevMonth]} ${prevYear}`;
+
+    // Заполняем заголовки таблицы для кварталов
+    const prevQuarter = Math.floor(prevMonth / 3) + 1;
+    document.getElementById('prevQuarterDL').textContent = `${(prevQuarter - 1 === 0) ? 4 : (prevQuarter - 1)} кв. ${(prevQuarter - 1 === 0) ? (prevYear - 1) : prevYear - 1}`;
+    document.getElementById('lastYearQuarterDL').textContent = `${(prevQuarter - 1 === 0) ? 4 : (prevQuarter - 1)} кв. ${(prevQuarter - 1 === 0) ? (prevYear - 2) : prevYear - 2}`;
+    document.getElementById('twoYearsAgoQuarterDL').textContent = `${(prevQuarter - 1 === 0) ? 4 : (prevQuarter - 1)} кв. ${(prevQuarter - 1 === 0) ? (prevYear - 3) : prevYear - 3}`;
+
+    // Заполняем заголовки таблицы для кварталов
+    document.getElementById('currentQuarter').textContent = `${prevQuarter} кв. ${prevYear}`;
+
+    // Заполняем заголовки таблицы для годов
+    document.getElementById('currentYear').textContent = `${prevYear} год`;
+    document.getElementById('prevYearDL').textContent = `${prevYear - 1} год`;
+    document.getElementById('lastYearDL').textContent = `${prevYear - 2} год`;
+    document.getElementById('twoYearsAgoDL').textContent = `${prevYear - 3} год`;
+
+    // Заполняем заголовки таблицы для пол года
+    document.getElementById('halfYear').textContent = `6 мес. ${prevYear}`;
+    document.getElementById('prevHalfYear').textContent = `6 мес. ${prevYear - 1}`;
+    document.getElementById('twoPrevHalfYear').textContent = `6 мес. ${prevYear - 2}`;
+    document.getElementById('threePrevHalfYear').textContent = `6 мес. ${prevYear - 3}`;
+
+    // Заполняем заголовки таблицы для 9 мес.
+    document.getElementById('nineMonth').textContent = `9 мес. ${prevYear}`;
+    document.getElementById('prevNineMonth').textContent = `9 мес. ${prevYear - 1}`;
+    document.getElementById('twoPrevNineMonth').textContent = `9 мес. ${prevYear - 2}`;
+    document.getElementById('threePrevNineMonth').textContent = `9 мес. ${prevYear - 3}`;
+
+</script>
+<script>
+    function copyValue(elemId, copyElemId, elemTitle) {
+        var ownFundsElement = document.getElementById(elemId);
+        var copyIcon = document.getElementById(copyElemId);
+        var elemTitle = document.getElementById(elemTitle);
+        var textToCopy = ownFundsElement.textContent;
+
+        // Создание временного элемента для копирования текста
+        var tempInput = document.createElement("input");
+        tempInput.value = textToCopy;
+        document.body.appendChild(tempInput);
+
+        // Выделение текста и копирование
+        tempInput.select();
+        document.execCommand("copy");
+
+        // Удаление временного элемента
+        document.body.removeChild(tempInput);
+
+        // Подсветка иконки копирования
+        copyIcon.style.color = "grey";
+        ownFundsElement.style.color = "grey";
+        elemTitle.style.color = "grey";
+        setTimeout(function () {
+            copyIcon.style.color = "";
+            ownFundsElement.style.color = "";
+            elemTitle.style.color = "";
+        }, 200);
+    }
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+<br><br><br><br><br><br><br><br><br>
+{% include 'footer.html' %}
 </body>
 </html>
