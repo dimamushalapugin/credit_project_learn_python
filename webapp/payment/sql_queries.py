@@ -6,7 +6,7 @@ from webapp.db import db
 from webapp.payment.models import DimaBase
 
 
-def format_number(number):
+def format_number(number, decimals=2):
     if number is None:
         return "0,00"
     else:
