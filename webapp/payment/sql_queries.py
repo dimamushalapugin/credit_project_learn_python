@@ -1,9 +1,8 @@
 import logging
 
 from sqlalchemy import func
-
 from webapp.db import db
-from webapp.payment.models import DimaBase
+from webapp.payment.models import DimaBase, InterestRateHistory
 
 
 def format_number(number):
@@ -368,3 +367,16 @@ def query_for_info():
         },
     }
     return info_about_lkmb
+
+
+def get_nearest_interest_rate(target_date):
+    nearest_entry = (
+        db.session.query(InterestRateHistory)
+        .filter(InterestRateHistory.effective_date <= target_date)
+        .order_by(InterestRateHistory.effective_date.desc())
+        .first()
+    )
+    if nearest_entry:
+        return nearest_entry.interest_rate
+    else:
+        return None

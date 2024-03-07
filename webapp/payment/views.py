@@ -19,6 +19,7 @@ from webapp.payment.info_about import DescriptionOfLessee
 from webapp.payment.secondary_functions import create_date_format, floating_or_not
 from webapp.risk.logger import logging
 
+
 blueprint = Blueprint("payment", __name__, url_prefix="/payments")
 
 

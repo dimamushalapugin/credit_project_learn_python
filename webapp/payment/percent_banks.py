@@ -1,9 +1,12 @@
 import datetime
-
 import pandas as pd
 from holidays_ru import check_holiday
-
+from sqlalchemy import func
 from webapp.risk.logger import logging
+from webapp.payment.sql_queries import get_nearest_interest_rate
+from webapp.payment.models import InterestRateHistory
+from webapp import db
+from flask import current_app
 
 
 class Bank:
@@ -29,21 +32,18 @@ class Bank:
     @staticmethod
     def extract_file(data_json, date_of_issue):
         df = pd.DataFrame(data_json)
-        start_date = pd.to_datetime(
-            df["Дата погашения Основного долга"], origin="1899-12-30", unit="D"
-        )
-        df["Дата погашения Основного долга"] = start_date
+        pogashenie = "Дата погашения Основного долга"
+        start_date = pd.to_datetime(df[pogashenie], origin="1899-12-30", unit="D")
+        df[pogashenie] = start_date
 
         # Convert the "Дата погашения" column to datetime format
-        df["Дата погашения Основного долга"] = pd.to_datetime(
-            df["Дата погашения Основного долга"]
-        )
+        df[pogashenie] = pd.to_datetime(df[pogashenie])
         # считает кол-во строк в первом столбце
         num_rows = df.shape[0]
 
         # Extract the month and year from the first cell of the "Дата погашения" column
-        month_year = df["Дата погашения Основного долга"][0].strftime("%B %Y")
-        last_day_payment = df["Дата погашения Основного долга"].iloc[-1]
+        month_year = df[pogashenie][0].strftime("%B %Y")
+        last_day_payment = df[pogashenie].iloc[-1]
         start_limit = pd.to_datetime(date_of_issue)
         days_difference = (last_day_payment - start_limit).days
         return month_year, df, num_rows, days_difference
@@ -63,10 +63,24 @@ class Bank:
         return day
 
     def define_year(self, index):
-        date_value = self.output_data_new.loc[index, "Дата окончания периода"]
-
+        try:
+            date_value = self.output_data_new.loc[index, "Дата окончания периода"]
+        except:
+            date_value = self.output_data_new.loc[index, "Дата начала периода"]
         if pd.notnull(date_value):  # Check for non-null values
             date_object = pd.to_datetime(date_value)
+            year = date_object.year
+        else:
+            year = 365
+            logging.info(
+                "Date value is null or invalid"
+            )  # Handle the case where the date value is null or invalid
+        days_in_current_year = datetime.date(year, 12, 31).timetuple().tm_yday
+        return days_in_current_year
+
+    def define_year_test(self, data):
+        if pd.notnull(data):  # Check for non-null values
+            date_object = pd.to_datetime(data)
             year = date_object.year
         else:
             year = 365
@@ -447,13 +461,6 @@ class AlfaBank(Bank):
                     + pd.DateOffset(days=1)
                 )
         for i in range(massive, len(self.output_data_new)):
-            # year_of_repayment1[i] = pd.to_datetime(self.output_data_new['Дата погашения Основного долга'])
-            # year_of_repayment2 = pd.to_datetime(self.output_data_new['Дата начала периода'])
-            # if year_of_repayment != year_of_repayment2:
-            #     pass
-            # else:
-            # если когда будет желание, то можно прям точно посчитать количество дней часть дней в вискосном году,
-            # а часть невисокосном
             try:
                 first_line_0_i = (
                     self.output_data_new.loc[i, "Дата погашения Основного долга"]
@@ -560,16 +567,15 @@ class MetallinvestBank(Bank):
         df1 = pd.read_excel(
             r"C:\Users\ШалапугинД\PycharmProjects\credit_project_learn_python\webapp\payment\Проценты МИБ1.xlsx"
         )
-        print(df1)
         return df1
 
     def create_dataframe(self, data):
         self.output_data = pd.DataFrame(
             {
-                "№": range(0, self.extract_file(data, self.start_date)[3]),
+                "№": range(0, self.extract_file(data, self.start_date)[3] + 1),
                 "Дата погашения Основного долга": pd.date_range(
                     start=self.start_date,
-                    periods=self.extract_file(data, self.start_date)[3],
+                    periods=self.extract_file(data, self.start_date)[3] + 1,
                     freq="D",
                 ),
                 "Остаток ОД на начало периода": 0,
@@ -581,7 +587,6 @@ class MetallinvestBank(Bank):
                 "Общая сумма процентов": 0,
             }
         )
-
         # расчет для КД 8365-К
         self.output_data = self.output_data.reset_index(drop=True)
         self.output_data["№"] = self.output_data.index
@@ -592,6 +597,12 @@ class MetallinvestBank(Bank):
         df1 = (
             self.period_pay_percent_mib1()
         )  # Сохраняем результат выполнения функции period_pay_percent_mib1()
+        df1["Дата уплаты процентов"] = df1["Дата уплаты процентов"].apply(
+            lambda x: self.get_next_working_day(x) if x != 0 else 0
+        )
+        df1["Дата погашения Основного долга"] = df1[
+            "Дата погашения Основного долга"
+        ].apply(lambda x: self.get_next_working_day(x) if x != 0 else 0)
         # заполняем Остаток ОД
         self.output_data = self.output_data.drop(self.output_data.columns[0], axis=1)
         get1 = get_extract_file[1]
@@ -617,17 +628,14 @@ class MetallinvestBank(Bank):
                 "Общая сумма процентов",
             ]
         ]
-        print(df1)
-        print(merge_output_data)
         merge_bank_percent = pd.merge(
             merge_output_data,
             df1,
-            on=["Дата уплаты процентов"],
+            on=["Дата погашения Основного долга"],
             how="left",
             suffixes=("_x", ""),
         )
-        print(merge_bank_percent)
-        merge_bank_percent = merge_bank_percent[
+        self.output_data = merge_bank_percent[
             [
                 "Дата погашения Основного долга",
                 "Остаток ОД на начало периода",
@@ -636,22 +644,51 @@ class MetallinvestBank(Bank):
                 "Кол-во дней",
                 "Кол-во дней в году",
                 "Дата уплаты процентов",
-                "Дата по процентам",
                 "Общая сумма процентов",
             ]
         ]
-        # for elem in range(0, get_extract_file[3]):
-        #     if self.output_data.loc[elem, 'Остаток ОД на начало периода'] == df1['Остаток ОД на начало периода']:
-        #         self.output_data.loc[elem, 'Остаток ОД на начало периода'] =
+        self.output_data = self.output_data.rename(
+            columns={
+                "Дата погашения Основного долга": "Дата начала периода",
+                "Остаток ОД на начало периода": "Остаток основного долга",
+            }
+        )
+        self.output_data["№"] = range(
+            0, self.extract_file(data, self.start_date)[3] + 1
+        )
+        self.output_data = self.output_data[
+            ["№"] + [col for col in self.output_data if col != "№"]
+        ]
+        self.output_data["Сумма погашения Основного долга"].fillna(0, inplace=True)
 
-        merge_bank_percent.to_excel("updated_output_data_МИБ1.xlsx", index=False)
+    def calculate_interest(self, data):
+        for i in range(1, self.extract_file(data, self.start_date)[3] + 1):
+            ostatok_od_i = self.output_data.loc[(i - 1), "Остаток основного долга"]
+            summary_pogash_i = self.output_data.loc[
+                (i - 1), "Сумма погашения Основного долга"
+            ]
+            self.output_data.loc[i, "Остаток основного долга"] = (
+                ostatok_od_i - summary_pogash_i
+            )
 
-    def calculate_interest(self):
-        self.output_data_new = self.output_data
+        self.output_data["Кол-во дней в году"] = self.output_data[
+            "Дата начала периода"
+        ].apply(self.define_year_test)
+        self.output_data["Ставка банка, %"] = self.output_data[
+            "Дата начала периода"
+        ].apply(get_nearest_interest_rate)
+        self.output_data["Общая сумма процентов"] = self.output_data.apply(
+            lambda row: float(row["Остаток основного долга"])
+            * float(row["Ставка банка, %"])
+            * float(row["Кол-во дней"])
+            / float(row["Кол-во дней в году"]),
+            axis=1,
+        )
 
-        return self.output_data_new
+        self.output_data.to_excel("updated_output_data_МИБ1.xlsx", index=False)
+        return self.output_data
 
     def start_function(self, data):
         self.create_dataframe(data)
-        self.calculate_interest()
+        self.calculate_interest(data)
         return self.output_data_new
