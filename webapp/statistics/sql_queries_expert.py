@@ -14,7 +14,7 @@ class ExpertRa:
         if num is None:
             return 0
         else:
-            return num / 1.2
+            return float(num) / 1.2
 
     @staticmethod
     def million(num):
@@ -75,6 +75,11 @@ class ExpertRa:
     def get_json(self):
         return {
             "new_business": format_number(
+                self.with_out_nds(
+                    self.million(self.get_sum_indicator(DimaBase.dcp_cost))
+                )
+            ),
+            "sum_new_business": format_number(
                 self.million(self.get_sum_indicator(DimaBase.contract_amount))
-            )
+            ),
         }
