@@ -6,6 +6,7 @@
     var individualInn = document.getElementById('individual_inn');
     var individualName = document.getElementById('name');
     var individualSurname = document.getElementById('surname');
+    var inputInn = document.getElementById('individual_inn');
 
     document.addEventListener('DOMContentLoaded', function () {
     var loadingIndicator = document.getElementById('loading-indicator');
@@ -18,7 +19,6 @@
 
         // Показываем индикатор загрузки
         loadingIndicator.style.display = 'block';
-
         // Здесь можно добавить код для отправки формы или другие действия при нажатии на кнопку
         // Например, использовать AJAX для отправки данных на сервер и дождаться ответа
 
@@ -36,10 +36,8 @@
 
         // Показываем индикатор загрузки
         loadingIndicator.style.display = 'block';
-
         // Здесь можно добавить код для отправки формы или другие действия при нажатии на кнопку
         // Например, использовать AJAX для отправки данных на сервер и дождаться ответа
-
         // В данном примере, просто устанавливаем событие, чтобы скрыть индикатор после полной загрузки страницы
         window.addEventListener('load', function () {
             // Скрываем индикатор загрузки

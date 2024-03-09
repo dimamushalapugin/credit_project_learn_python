@@ -146,52 +146,82 @@ def create_xlsx_file_individual(data):
         raise ValueError("Ошибка")
 
 
+risk_button = False
+
+
 @blueprint.route("/create_xlsx", methods=["POST"])
 def create_risk_conclusion():
-    logging.info(f"{current_user} - Нажал на кнопку 'Создать риск-заключение'")
-    start_time = time.perf_counter()
-    try:
-        data = request.form
-        file_name = create_xlsx_file(data)
-        end_time = time.perf_counter()
-        execution_time = end_time - start_time
-        logging.info(
-            f"({current_user}) - Риск-заключение создалось за: {execution_time:.1f} сек."
+    global risk_button
+    logging.info(f"{current_user} {risk_button}")
+    if not risk_button:
+        logging.info(f"{current_user} {risk_button} в if")
+        risk_button = True
+        logging.info(f"{current_user} - Нажал на кнопку 'Создать риск-заключение'")
+        start_time = time.perf_counter()
+        try:
+            data = request.form
+            file_name = create_xlsx_file(data)
+            end_time = time.perf_counter()
+            execution_time = end_time - start_time
+            logging.info(
+                f"({current_user}) - Риск-заключение создалось за: {execution_time:.1f} сек."
+            )
+            risk_button = False
+            if file_name:
+                flash("Файл успешно создан", "success")
+                mongo = MongoDB(current_user)
+                mongo.write_to_mongodb_risk_count(
+                    data["client_inn"], data["seller_inn"]
+                )
+                return redirect(url_for(risk_page_url, file_name=file_name))
+            else:
+                return redirect(url_for(risk_page_url, file_name=file_name))
+        except Exception as e:
+            risk_button = False
+            flash(str(e), "error")
+            return redirect(url_for(risk_page_url))
+    else:
+        flash(
+            "Уже идет процесс создания риск-заключения. Пожалуйста, подождите...",
+            "info",
         )
-        if file_name:
-            flash("Файл успешно создан", "success")
-            mongo = MongoDB(current_user)
-            mongo.write_to_mongodb_risk_count(data["client_inn"], data["seller_inn"])
-            return redirect(url_for(risk_page_url, file_name=file_name))
-        else:
-            return redirect(url_for(risk_page_url, file_name=file_name))
-    except Exception as e:
-        flash(str(e), "error")
         return redirect(url_for(risk_page_url))
 
 
 @blueprint.route("/create_xlsx_individual", methods=["POST"])
 def create_risk_conclusion_individual():
-    logging.info(f"{current_user}  - Нажал на кнопку 'Проверка физ. лица'")
-    start_time = time.perf_counter()
-    try:
-        file_name_individual = create_xlsx_file_individual(request.form)
-        end_time = time.perf_counter()
-        execution_time = end_time - start_time
-        logging.info(
-            f"({current_user}) Риск-заключение создалось за: {execution_time:.1f} сек."
+    global risk_button
+    logging.info(f"{current_user} {risk_button}")
+    if not risk_button:
+        risk_button = True
+        logging.info(f"{current_user}  - Нажал на кнопку 'Проверка физ. лица'")
+        start_time = time.perf_counter()
+        try:
+            file_name_individual = create_xlsx_file_individual(request.form)
+            end_time = time.perf_counter()
+            execution_time = end_time - start_time
+            logging.info(
+                f"({current_user}) Риск-заключение создалось за: {execution_time:.1f} сек."
+            )
+            risk_button = False
+            if file_name_individual:
+                flash("Файл успешно создан", "success")
+                return redirect(
+                    url_for(risk_page_url, file_name_individual=file_name_individual)
+                )
+            else:
+                return redirect(
+                    url_for(risk_page_url, file_name_individual=file_name_individual)
+                )
+        except Exception as e:
+            risk_button = False
+            flash(str(e), "error")
+            return redirect(url_for(risk_page_url))
+    else:
+        flash(
+            "Уже идет процесс создания риск-заключения. Пожалуйста, подождите...",
+            "info",
         )
-        if file_name_individual:
-            flash("Файл успешно создан", "success")
-            return redirect(
-                url_for(risk_page_url, file_name_individual=file_name_individual)
-            )
-        else:
-            return redirect(
-                url_for(risk_page_url, file_name_individual=file_name_individual)
-            )
-    except Exception as e:
-        flash(str(e), "error")
         return redirect(url_for(risk_page_url))
 
 
