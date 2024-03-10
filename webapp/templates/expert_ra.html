@@ -60,7 +60,7 @@
                 </tr>
                 <tr onclick="copyValue('countNewAgreements', 'copyCountNewAgreements', 'countNewAgreementsTitle')">
                     <th scope="row" id="countNewAgreementsTitle">Количество новых заключенных договоров, штук</th>
-                    <td id="countNewAgreements"></td>
+                    <td id="countNewAgreements">{{ expert_ra_6.new_agreements_count }}</td>
                     <td><i class="fa-regular fa-copy" id="copyCountNewAgreements"></i></td>
                 </tr>
                 <tr onclick="copyValue('currentPortfolio', 'copyCurrentPortfolio', 'currentPortfolioTitle')">
@@ -80,12 +80,12 @@
                 </tr>
                 <tr onclick="copyValue('financingAssets', 'copyFinancingAssets', 'financingAssetsTitle')">
                     <th scope="row" id="financingAssetsTitle">Профинансированные средства, млн руб.</th>
-                    <td id="financingAssets"></td>
+                    <td id="financingAssets">{{ expert_ra_6.financed_value }}</td>
                     <td><i class="fa-regular fa-copy" id="copyFinancingAssets"></i></td>
                 </tr>
                 <tr onclick="copyValue('valueAdvances', 'copyValueAdvances', 'valueAdvancesTitle')">
                     <th scope="row" id="valueAdvancesTitle">Объем полученных авансов, млн руб.</th>
-                    <td id="valueAdvances"></td>
+                    <td id="valueAdvances">{{ expert_ra_6.advance }}</td>
                     <td><i class="fa-regular fa-copy" id="copyValueAdvances"></i></td>
                 </tr>
                 <tr onclick="copyValue('valueSeizedEstate', 'copyValueSeizedEstate', 'valueSeizedEstateTitle')">
@@ -323,25 +323,31 @@
                 <tbody>
                 <tr onclick="copyValue('smallBusiness', 'copySmallBusiness', 'smallBusinessTitle')">
                     <th scope="row" id="smallBusinessTitle">Малый бизнес (ССЧ <100 чел., выручка <0,8 млрд руб.)</th>
-                    <td id="smallBusiness"></td>
+                    <td id="smallBusiness">{{ expert_ra_6.client_segment.small_business }}</td>
                     <td><i class="fa-regular fa-copy"
                            id="copySmallBusiness"></i></td>
                 </tr>
                 <tr onclick="copyValue('middleBusiness', 'copyMiddleBusiness', 'middleBusinessTitle')">
                     <th scope="row" id="middleBusinessTitle">Средний бизнес (CCЧ 100-250 чел., выручка 0,8-2 млрд руб.)</th>
-                    <td id="middleBusiness"></td>
+                    <td id="middleBusiness">{{ expert_ra_6.client_segment.middle_business }}</td>
                     <td><i class="fa-regular fa-copy"
                            id="copyMiddleBusiness"></i></td>
                 </tr>
                 <tr onclick="copyValue('bigBusiness', 'copyBigBusiness', 'bigBusinessTitle')">
                     <th scope="row" id="bigBusinessTitle">Крупный бизнес (ССЧ >250 чел., выручка >2 млрд руб.)</th>
-                    <td id="bigBusiness"></td>
+                    <td id="bigBusiness">{{ expert_ra_6.client_segment.large_business }}</td>
                     <td><i class="fa-regular fa-copy"
                            id="copyBigBusiness"></i></td>
                 </tr>
+                <tr onclick="copyValue('government', 'copyGovernment', 'governmentTitle')">
+                    <th scope="row" id="governmentTitle">Госучреждения (ФГУП, МУП, органы федеральной и местной власти и др.)</th>
+                    <td id="government">{{ expert_ra_6.client_segment.government }}</td>
+                    <td><i class="fa-regular fa-copy"
+                           id="copyGovernment"></i></td>
+                </tr>
                 <tr onclick="copyValue('physicalPersons', 'copyPhysicalPersons', 'physicalPersonsTitle')">
                     <th scope="row" id="physicalPersonsTitle">Физические лица (ИП не включаются)</th>
-                    <td id="physicalPersons"></td>
+                    <td id="physicalPersons">{{ expert_ra_6.client_segment.physical }}</td>
                     <td><i class="fa-regular fa-copy"
                            id="copyPhysicalPersons"></i></td>
                 </tr>
@@ -360,31 +366,31 @@
                 <tbody>
                 <tr onclick="copyValue('ownFunds', 'copyOwnFunds', 'ownFundsTitle')">
                     <th scope="row" id="ownFundsTitle">собственные средства (УК+нераспр прибыль)</th>
-                    <td id="ownFunds">10 000,00</td>
+                    <td id="ownFunds">{{ expert_ra_6.co_finance }}</td>
                     <td><i class="fa-regular fa-copy"
                            id="copyOwnFunds"></i></td>
                 </tr>
                 <tr onclick="copyValue('bankCredits', 'copyBankCredits', 'bankCreditsTitle')">
                     <th scope="row" id="bankCreditsTitle">банковские кредиты</th>
-                    <td id="bankCredits">20 000,00</td>
+                    <td id="bankCredits">{{ expert_ra_6.credit_sum }}</td>
                     <td><i class="fa-regular fa-copy"
                            id="copyBankCredits"></i></td>
                 </tr>
                 <tr onclick="copyValue('obligations', 'copyObligations', 'obligationsTitle')">
                     <th scope="row" id="obligationsTitle">облигации</th>
-                    <td id="obligations">30 000,00</td>
+                    <td id="obligations"></td>
                     <td><i class="fa-regular fa-copy"
                            id="copyObligations"></i></td>
                 </tr>
                 <tr onclick="copyValue('advance', 'copyAdvance', 'advanceTitle')">
                     <th scope="row" id="advanceTitle">авансы</th>
-                    <td id="advance">40 000,00</td>
+                    <td id="advance">{{ expert_ra_6.advance }}</td>
                     <td><i class="fa-regular fa-copy"
                            id="copyAdvance"></i></td>
                 </tr>
                 <tr onclick="copyValue('otherFunds', 'copyOtherFunds', 'otherFundsTitle')">
                     <th scope="row" id="otherFundsTitle">прочие источники</th>
-                    <td id="otherFunds">50 000,00</td>
+                    <td id="otherFunds"></td>
                     <td><i class="fa-regular fa-copy"
                            id="copyOtherFunds"></i></td>
                 </tr>
