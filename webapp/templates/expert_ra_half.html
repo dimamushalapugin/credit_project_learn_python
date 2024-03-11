@@ -74,7 +74,9 @@
                     <td><i class="fa-regular fa-copy" id="copyPortfolioOperate"></i></td>
                 </tr>
                 <tr onclick="copyValue('valueLeasingPayments', 'copyValueLeasingPayments', 'valueLeasingPaymentsTitle')">
-                    <th scope="row" id="valueLeasingPaymentsTitle">Объем полученных лизинг. (в т.ч. аренд.) платежей, млн руб.</th>
+                    <th scope="row" id="valueLeasingPaymentsTitle">Объем полученных лизинг. (в т.ч. аренд.) платежей,
+                        млн руб.
+                    </th>
                     <td id="valueLeasingPayments"></td>
                     <td><i class="fa-regular fa-copy" id="copyValueLeasingPayments"></i></td>
                 </tr>
@@ -113,18 +115,18 @@
                 <tbody>
                 <tr onclick="copyValue('moscow', 'copyMoscow', 'moscowTitle')">
                     <th scope="row" id="moscowTitle">Москва</th>
-                    <td id="moscow">777,00</td>
+                    <td id="moscow">{{ expert_ra_6.region.moscow }}</td>
                     <td><i class="fa-regular fa-copy" id="copyMoscow"></i></td>
                 </tr>
                 <tr onclick="copyValue('central', 'copyCentral', 'centralTitle')">
                     <th scope="row" id="centralTitle">Центральный ФО (за исключением Москвы)</th>
-                    <td id="central">0,00</td>
+                    <td id="central"></td>
                     <td><i class="fa-regular fa-copy"
                            id="copyCentral"></i></td>
                 </tr>
                 <tr onclick="copyValue('spb', 'copySpb', 'spbTitle')">
                     <th scope="row" id="spbTitle">Санкт-Петербург</th>
-                    <td id="spb"></td>
+                    <td id="spb">{{ expert_ra_6.region.spb }}</td>
                     <td><i class="fa-regular fa-copy"
                            id="copySpb"></i></td>
                 </tr>
@@ -142,7 +144,7 @@
                 </tr>
                 <tr onclick="copyValue('northKavkaz', 'copyNorthKavkaz', 'NorthKavkazTitle')">
                     <th scope="row" id="NorthKavkazTitle">Северо-Кавказский ФО</th>
-                    <td id ="northKavkaz"></td>
+                    <td id="northKavkaz"></td>
                     <td><i class="fa-regular fa-copy"
                            id="copyNorthKavkaz"></i></td>
                 </tr>
@@ -187,124 +189,290 @@
                 <tbody>
                 <tr>
                     <th scope="row" id="carTitle">Легковые автомобили</th>
-                    <td class="text-center" id="valueNewBusinessCar" onclick="copyValue2('valueNewBusinessCar', 'carTitle')">100</td>
-                    <td class="text-center" id="valueNewBusinessMsbCar" onclick="copyValue2('valueNewBusinessMsbCar', 'carTitle')">50</td>
-                    <td class="text-center" id="leasingPortfolioCar" onclick="copyValue2('leasingPortfolioCar', 'carTitle')">350</td>
+                    <td class="text-center" id="valueNewBusinessCar"
+                        onclick="copyValue2('valueNewBusinessCar', 'carTitle')">{{
+                        expert_ra_6.leasing_subject.new_business.car }}
+                    </td>
+                    <td class="text-center" id="valueNewBusinessMsbCar"
+                        onclick="copyValue2('valueNewBusinessMsbCar', 'carTitle')">{{
+                        expert_ra_6.leasing_subject.new_business_msb.car }}
+                    </td>
+                    <td class="text-center" id="leasingPortfolioCar"
+                        onclick="copyValue2('leasingPortfolioCar', 'carTitle')">
+                    </td>
                 </tr>
                 <tr>
                     <th scope="row" id="busTitle">Автобусы и троллейбусы</th>
-                    <td class="text-center" id="valueNewBusinessBus" onclick="copyValue2('valueNewBusinessBus', 'busTitle')">100</td>
-                    <td class="text-center" id="valueNewBusinessMsbBus" onclick="copyValue2('valueNewBusinessMsbBus', 'busTitle')">50</td>
-                    <td class="text-center" id="leasingPortfolioBus" onclick="copyValue2('leasingPortfolioBus', 'busTitle')">350</td>
+                    <td class="text-center" id="valueNewBusinessBus"
+                        onclick="copyValue2('valueNewBusinessBus', 'busTitle')">{{
+                        expert_ra_6.leasing_subject.new_business.bus }}
+                    </td>
+                    <td class="text-center" id="valueNewBusinessMsbBus"
+                        onclick="copyValue2('valueNewBusinessMsbBus', 'busTitle')">{{
+                        expert_ra_6.leasing_subject.new_business_msb.bus }}
+                    </td>
+                    <td class="text-center" id="leasingPortfolioBus"
+                        onclick="copyValue2('leasingPortfolioBus', 'busTitle')">
+                    </td>
 
                 </tr>
                 <tr>
                     <th scope="row" id="truckTitle">Грузовой автотранспорт</th>
-                    <td class="text-center" id="valueNewBusinessTruck" onclick="copyValue2('valueNewBusinessTruck', 'truckTitle')">100</td>
-                    <td class="text-center" id="valueNewBusinessMsbTruck" onclick="copyValue2('valueNewBusinessMsbTruck', 'truckTitle')">50</td>
-                    <td class="text-center" id="leasingPortfolioTruck" onclick="copyValue2('leasingPortfolioTruck', 'truckTitle')">350</td>
+                    <td class="text-center" id="valueNewBusinessTruck"
+                        onclick="copyValue2('valueNewBusinessTruck', 'truckTitle')">{{
+                        expert_ra_6.leasing_subject.new_business.truck }}
+                    </td>
+                    <td class="text-center" id="valueNewBusinessMsbTruck"
+                        onclick="copyValue2('valueNewBusinessMsbTruck', 'truckTitle')">{{
+                        expert_ra_6.leasing_subject.new_business_msb.truck }}
+                    </td>
+                    <td class="text-center" id="leasingPortfolioTruck"
+                        onclick="copyValue2('leasingPortfolioTruck', 'truckTitle')">
+                    </td>
                 </tr>
                 <tr>
                     <th scope="row" id="trainTitle">Железнодорожная техника</th>
-                    <td class="text-center" id="valueNewBusinessTrain" onclick="copyValue2('valueNewBusinessTrain', 'trainTitle')">100</td>
-                    <td class="text-center" id="valueNewBusinessMsbTrain" onclick="copyValue2('valueNewBusinessMsbTrain', 'trainTitle')">50</td>
-                    <td class="text-center" id="leasingPortfolioTrain" onclick="copyValue2('leasingPortfolioTrain', 'trainTitle')">350</td>
+                    <td class="text-center" id="valueNewBusinessTrain"
+                        onclick="copyValue2('valueNewBusinessTrain', 'trainTitle')">{{
+                        expert_ra_6.leasing_subject.new_business.train }}
+                    </td>
+                    <td class="text-center" id="valueNewBusinessMsbTrain"
+                        onclick="copyValue2('valueNewBusinessMsbTrain', 'trainTitle')">{{
+                        expert_ra_6.leasing_subject.new_business_msb.train }}
+                    </td>
+                    <td class="text-center" id="leasingPortfolioTrain"
+                        onclick="copyValue2('leasingPortfolioTrain', 'trainTitle')">
+                    </td>
                 </tr>
                 <tr>
                     <th scope="row" id="airTitle">Авиационный транспорт (воздушные суда, вертолеты)</th>
-                    <td class="text-center" id="valueNewBusinessAir" onclick="copyValue2('valueNewBusinessAir', 'airTitle')">100</td>
-                    <td class="text-center" id="valueNewBusinessMsbAir" onclick="copyValue2('valueNewBusinessMsbAir', 'airTitle')">50</td>
-                    <td class="text-center" id="leasingPortfolioAir" onclick="copyValue2('leasingPortfolioAir', 'airTitle')">350</td>
+                    <td class="text-center" id="valueNewBusinessAir"
+                        onclick="copyValue2('valueNewBusinessAir', 'airTitle')">{{
+                        expert_ra_6.leasing_subject.new_business.air }}
+                    </td>
+                    <td class="text-center" id="valueNewBusinessMsbAir"
+                        onclick="copyValue2('valueNewBusinessMsbAir', 'airTitle')">{{
+                        expert_ra_6.leasing_subject.new_business_msb.air }}
+                    </td>
+                    <td class="text-center" id="leasingPortfolioAir"
+                        onclick="copyValue2('leasingPortfolioAir', 'airTitle')">
+                    </td>
                 </tr>
                 <tr>
-                    <th scope="row" id="buildTitle">Строительная и дорожно-строит. техника, вкл. строит. спецтехнику на колесах</th>
-                    <td class="text-center" id="valueNewBusinessBuild" onclick="copyValue2('valueNewBusinessBuild', 'buildTitle')">100</td>
-                    <td class="text-center" id="valueNewBusinessMsbBuild" onclick="copyValue2('valueNewBusinessMsbBuild', 'buildTitle')">50</td>
-                    <td class="text-center" id="leasingPortfolioBuild" onclick="copyValue2('leasingPortfolioBuild', 'buildTitle')">350</td>
+                    <th scope="row" id="buildTitle">Строительная и дорожно-строит. техника, вкл. строит. спецтехнику на
+                        колесах
+                    </th>
+                    <td class="text-center" id="valueNewBusinessBuild"
+                        onclick="copyValue2('valueNewBusinessBuild', 'buildTitle')">{{
+                        expert_ra_6.leasing_subject.new_business.build }}
+                    </td>
+                    <td class="text-center" id="valueNewBusinessMsbBuild"
+                        onclick="copyValue2('valueNewBusinessMsbBuild', 'buildTitle')">{{
+                        expert_ra_6.leasing_subject.new_business_msb.build }}
+                    </td>
+                    <td class="text-center" id="leasingPortfolioBuild"
+                        onclick="copyValue2('leasingPortfolioBuild', 'buildTitle')">
+                    </td>
                 </tr>
                 <tr>
                     <th scope="row" id="energyTitle">Энергетическое оборудование</th>
-                    <td class="text-center" id="valueNewBusinessEnergy" onclick="copyValue2('valueNewBusinessEnergy', 'energyTitle')">100</td>
-                    <td class="text-center" id="valueNewBusinessMsbEnergy" onclick="copyValue2('valueNewBusinessMsbEnergy', 'energyTitle')">50</td>
-                    <td class="text-center" id="leasingPortfolioEnergy" onclick="copyValue2('leasingPortfolioEnergy', 'energyTitle')">350</td>
+                    <td class="text-center" id="valueNewBusinessEnergy"
+                        onclick="copyValue2('valueNewBusinessEnergy', 'energyTitle')">{{
+                        expert_ra_6.leasing_subject.new_business.energy }}
+                    </td>
+                    <td class="text-center" id="valueNewBusinessMsbEnergy"
+                        onclick="copyValue2('valueNewBusinessMsbEnergy', 'energyTitle')">{{
+                        expert_ra_6.leasing_subject.new_business_msb.energy }}
+                    </td>
+                    <td class="text-center" id="leasingPortfolioEnergy"
+                        onclick="copyValue2('leasingPortfolioEnergy', 'energyTitle')">
+                    </td>
                 </tr>
                 <tr>
                     <th scope="row" id="metalTitle">Машиностроит., металлообрабат. и металлургическое оборудование</th>
-                    <td class="text-center" id="valueNewBusinessMetal" onclick="copyValue2('valueNewBusinessMetal', 'metalTitle')">100</td>
-                    <td class="text-center" id="valueNewBusinessMsbMetal" onclick="copyValue2('valueNewBusinessMsbMetal', 'metalTitle')">50</td>
-                    <td class="text-center" id="leasingPortfolioMetal" onclick="copyValue2('leasingPortfolioMetal', 'metalTitle')">350</td>
+                    <td class="text-center" id="valueNewBusinessMetal"
+                        onclick="copyValue2('valueNewBusinessMetal', 'metalTitle')">{{
+                        expert_ra_6.leasing_subject.new_business.metal }}
+                    </td>
+                    <td class="text-center" id="valueNewBusinessMsbMetal"
+                        onclick="copyValue2('valueNewBusinessMsbMetal', 'metalTitle')">{{
+                        expert_ra_6.leasing_subject.new_business_msb.metal }}
+                    </td>
+                    <td class="text-center" id="leasingPortfolioMetal"
+                        onclick="copyValue2('leasingPortfolioMetal', 'metalTitle')">
+                    </td>
                 </tr>
                 <tr>
                     <th scope="row" id="industTitle">Оборудование для нефте- и газодобычи и переработки</th>
-                    <td class="text-center" id="valueNewBusinessIndust" onclick="copyValue2('valueNewBusinessIndust', 'industTitle')">100</td>
-                    <td class="text-center" id="valueNewBusinessMsbIndust" onclick="copyValue2('valueNewBusinessMsbIndust', 'industTitle')">50</td>
-                    <td class="text-center" id="leasingPortfolioIndust" onclick="copyValue2('leasingPortfolioIndust', 'industTitle')">350</td>
+                    <td class="text-center" id="valueNewBusinessIndust"
+                        onclick="copyValue2('valueNewBusinessIndust', 'industTitle')">{{
+                        expert_ra_6.leasing_subject.new_business.indust }}
+                    </td>
+                    <td class="text-center" id="valueNewBusinessMsbIndust"
+                        onclick="copyValue2('valueNewBusinessMsbIndust', 'industTitle')">{{
+                        expert_ra_6.leasing_subject.new_business_msb.indust }}
+                    </td>
+                    <td class="text-center" id="leasingPortfolioIndust"
+                        onclick="copyValue2('leasingPortfolioIndust', 'industTitle')">
+                    </td>
                 </tr>
                 <tr>
                     <th scope="row" id="agroTitle">Сельскохозяйственная техника и скот</th>
-                    <td class="text-center" id="valueNewBusinessAgro" onclick="copyValue2('valueNewBusinessAgro', 'agroTitle')">100</td>
-                    <td class="text-center" id="valueNewBusinessMsbAgro" onclick="copyValue2('valueNewBusinessMsbAgro', 'agroTitle')">50</td>
-                    <td class="text-center" id="leasingPortfolioAgro" onclick="copyValue2('leasingPortfolioAgro', 'agroTitle')">350</td>
+                    <td class="text-center" id="valueNewBusinessAgro"
+                        onclick="copyValue2('valueNewBusinessAgro', 'agroTitle')">{{
+                        expert_ra_6.leasing_subject.new_business.agro }}
+                    </td>
+                    <td class="text-center" id="valueNewBusinessMsbAgro"
+                        onclick="copyValue2('valueNewBusinessMsbAgro', 'agroTitle')">{{
+                        expert_ra_6.leasing_subject.new_business_msb.agro }}
+                    </td>
+                    <td class="text-center" id="leasingPortfolioAgro"
+                        onclick="copyValue2('leasingPortfolioAgro', 'agroTitle')">
+                    </td>
                 </tr>
                 <tr>
                     <th scope="row" id="telTitle">Телекоммуникационное оборудование, оргтехника, компьютеры</th>
-                    <td class="text-center" id="valueNewBusinessTel" onclick="copyValue2('valueNewBusinessTel', 'telTitle')">100</td>
-                    <td class="text-center" id="valueNewBusinessMsbTel" onclick="copyValue2('valueNewBusinessMsbTel', 'telTitle')">50</td>
-                    <td class="text-center" id="leasingPortfolioTel" onclick="copyValue2('leasingPortfolioTel', 'telTitle')">350</td>
+                    <td class="text-center" id="valueNewBusinessTel"
+                        onclick="copyValue2('valueNewBusinessTel', 'telTitle')">{{
+                        expert_ra_6.leasing_subject.new_business.tel }}
+                    </td>
+                    <td class="text-center" id="valueNewBusinessMsbTel"
+                        onclick="copyValue2('valueNewBusinessMsbTel', 'telTitle')">{{
+                        expert_ra_6.leasing_subject.new_business_msb.tel }}
+                    </td>
+                    <td class="text-center" id="leasingPortfolioTel"
+                        onclick="copyValue2('leasingPortfolioTel', 'telTitle')">
+                    </td>
                 </tr>
                 <tr>
                     <th scope="row" id="polygraphTitle">Полиграфическое оборудование</th>
-                    <td class="text-center" id="valueNewBusinessPolygraph" onclick="copyValue2('valueNewBusinessPolygraph', 'polygraphTitle')">100</td>
-                    <td class="text-center" id="valueNewBusinessMsbPolygraph" onclick="copyValue2('valueNewBusinessMsbPolygraph', 'polygraphTitle')">50</td>
-                    <td class="text-center" id="leasingPortfolioPolygraph" onclick="copyValue2('leasingPortfolioPolygraph', 'polygraphTitle')">350</td>
+                    <td class="text-center" id="valueNewBusinessPolygraph"
+                        onclick="copyValue2('valueNewBusinessPolygraph', 'polygraphTitle')">{{
+                        expert_ra_6.leasing_subject.new_business.polygraph }}
+                    </td>
+                    <td class="text-center" id="valueNewBusinessMsbPolygraph"
+                        onclick="copyValue2('valueNewBusinessMsbPolygraph', 'polygraphTitle')">{{
+                        expert_ra_6.leasing_subject.new_business_msb.polygraph }}
+                    </td>
+                    <td class="text-center" id="leasingPortfolioPolygraph"
+                        onclick="copyValue2('leasingPortfolioPolygraph', 'polygraphTitle')">
+                    </td>
                 </tr>
                 <tr>
                     <th scope="row" id="realEstateTitle">Недвижимость (здания и сооружения)</th>
-                    <td class="text-center" id="valueNewBusinessRealEstate" onclick="copyValue2('valueNewBusinessRealEstate', 'realEstateTitle')">100</td>
-                    <td class="text-center" id="valueNewBusinessMsbRealEstate" onclick="copyValue2('valueNewBusinessMsbRealEstate', 'realEstateTitle')">50</td>
-                    <td class="text-center" id="leasingPortfolioRealEstate" onclick="copyValue2('leasingPortfolioRealEstate', 'realEstateTitle')">350</td>
+                    <td class="text-center" id="valueNewBusinessRealEstate"
+                        onclick="copyValue2('valueNewBusinessRealEstate', 'realEstateTitle')">{{
+                        expert_ra_6.leasing_subject.new_business.real_estate }}
+                    </td>
+                    <td class="text-center" id="valueNewBusinessMsbRealEstate"
+                        onclick="copyValue2('valueNewBusinessMsbRealEstate', 'realEstateTitle')">{{
+                        expert_ra_6.leasing_subject.new_business_msb.real_estate }}
+                    </td>
+                    <td class="text-center" id="leasingPortfolioRealEstate"
+                        onclick="copyValue2('leasingPortfolioRealEstate', 'realEstateTitle')">
+                    </td>
                 </tr>
                 <tr>
-                    <th scope="row" id="foodTitle">Оборуд-е для пищевой промыш., вкл. холод-е и оборудование для ресторанов</th>
-                    <td class="text-center" id="valueNewBusinessFood" onclick="copyValue2('valueNewBusinessFood', 'foodTitle')">100</td>
-                    <td class="text-center" id="valueNewBusinessMsbFood" onclick="copyValue2('valueNewBusinessMsbFood', 'foodTitle')">50</td>
-                    <td class="text-center" id="leasingPortfolioFood" onclick="copyValue2('leasingPortfolioFood', 'foodTitle')">350</td>
+                    <th scope="row" id="foodTitle">Оборуд-е для пищевой промыш., вкл. холод-е и оборудование для
+                        ресторанов
+                    </th>
+                    <td class="text-center" id="valueNewBusinessFood"
+                        onclick="copyValue2('valueNewBusinessFood', 'foodTitle')">{{
+                        expert_ra_6.leasing_subject.new_business.food }}
+                    </td>
+                    <td class="text-center" id="valueNewBusinessMsbFood"
+                        onclick="copyValue2('valueNewBusinessMsbFood', 'foodTitle')">{{
+                        expert_ra_6.leasing_subject.new_business_msb.food }}
+                    </td>
+                    <td class="text-center" id="leasingPortfolioFood"
+                        onclick="copyValue2('leasingPortfolioFood', 'foodTitle')">
+                    </td>
                 </tr>
                 <tr>
-                    <th scope="row" id="cargoTitle">Погрузчики, складское и упаковоч. оборуд-е и оборуд-е для произв. тары</th>
-                    <td class="text-center" id="valueNewBusinessCargo" onclick="copyValue2('valueNewBusinessCargo', 'cargoTitle')">100</td>
-                    <td class="text-center" id="valueNewBusinessMsbCargo" onclick="copyValue2('valueNewBusinessMsbCargo', 'cargoTitle')">50</td>
-                    <td class="text-center" id="leasingPortfolioCargo" onclick="copyValue2('leasingPortfolioCargo', 'cargoTitle')">350</td>
+                    <th scope="row" id="cargoTitle">Погрузчики, складское и упаковоч. оборуд-е и оборуд-е для произв.
+                        тары
+                    </th>
+                    <td class="text-center" id="valueNewBusinessCargo"
+                        onclick="copyValue2('valueNewBusinessCargo', 'cargoTitle')">{{
+                        expert_ra_6.leasing_subject.new_business.cargo }}
+                    </td>
+                    <td class="text-center" id="valueNewBusinessMsbCargo"
+                        onclick="copyValue2('valueNewBusinessMsbCargo', 'cargoTitle')">{{
+                        expert_ra_6.leasing_subject.new_business_msb.cargo }}
+                    </td>
+                    <td class="text-center" id="leasingPortfolioCargo"
+                        onclick="copyValue2('leasingPortfolioCargo', 'cargoTitle')">
+                    </td>
                 </tr>
                 <tr>
                     <th scope="row" id="gkhTitle">Оборудование для ЖКХ</th>
-                    <td class="text-center" id="valueNewBusinessGkh" onclick="copyValue2('valueNewBusinessGkh', 'gkhTitle')">100</td>
-                    <td class="text-center" id="valueNewBusinessMsbGkh" onclick="copyValue2('valueNewBusinessMsbGkh', 'gkhTitle')">50</td>
-                    <td class="text-center" id="leasingPortfolioGkh" onclick="copyValue2('leasingPortfolioGkh', 'gkhTitle')">350</td>
+                    <td class="text-center" id="valueNewBusinessGkh"
+                        onclick="copyValue2('valueNewBusinessGkh', 'gkhTitle')">{{
+                        expert_ra_6.leasing_subject.new_business.gkh }}
+                    </td>
+                    <td class="text-center" id="valueNewBusinessMsbGkh"
+                        onclick="copyValue2('valueNewBusinessMsbGkh', 'gkhTitle')">{{
+                        expert_ra_6.leasing_subject.new_business_msb.gkh }}
+                    </td>
+                    <td class="text-center" id="leasingPortfolioGkh"
+                        onclick="copyValue2('leasingPortfolioGkh', 'gkhTitle')">
+                    </td>
                 </tr>
                 <tr>
                     <th scope="row" id="medTitle">Медицинская техника и фармацевтическое оборудование</th>
-                    <td class="text-center" id="valueNewBusinessMed" onclick="copyValue2('valueNewBusinessMed', 'medTitle')">100</td>
-                    <td class="text-center" id="valueNewBusinessMsbMed" onclick="copyValue2('valueNewBusinessMsbMed', 'medTitle')">50</td>
-                    <td class="text-center" id="leasingPortfolioMed" onclick="copyValue2('leasingPortfolioMed', 'medTitle')">350</td>
+                    <td class="text-center" id="valueNewBusinessMed"
+                        onclick="copyValue2('valueNewBusinessMed', 'medTitle')">{{
+                        expert_ra_6.leasing_subject.new_business.med }}
+                    </td>
+                    <td class="text-center" id="valueNewBusinessMsbMed"
+                        onclick="copyValue2('valueNewBusinessMsbMed', 'medTitle')">{{
+                        expert_ra_6.leasing_subject.new_business_msb.med }}
+                    </td>
+                    <td class="text-center" id="leasingPortfolioMed"
+                        onclick="copyValue2('leasingPortfolioMed', 'medTitle')">
+                    </td>
                 </tr>
                 <tr>
                     <th scope="row" id="waterTitle">Суда (морские и речные)</th>
-                    <td class="text-center" id="valueNewBusinessWater" onclick="copyValue2('valueNewBusinessWater', 'waterTitle')">100</td>
-                    <td class="text-center" id="valueNewBusinessMsbWater" onclick="copyValue2('valueNewBusinessMsbWater', 'waterTitle')">50</td>
-                    <td class="text-center" id="leasingPortfolioWater" onclick="copyValue2('leasingPortfolioWater', 'waterTitle')">350</td>
+                    <td class="text-center" id="valueNewBusinessWater"
+                        onclick="copyValue2('valueNewBusinessWater', 'waterTitle')">{{
+                        expert_ra_6.leasing_subject.new_business.water }}
+                    </td>
+                    <td class="text-center" id="valueNewBusinessMsbWater"
+                        onclick="copyValue2('valueNewBusinessMsbWater', 'waterTitle')">{{
+                        expert_ra_6.leasing_subject.new_business_msb.water }}
+                    </td>
+                    <td class="text-center" id="leasingPortfolioWater"
+                        onclick="copyValue2('leasingPortfolioWater', 'waterTitle')">
+                    </td>
                 </tr>
                 <tr>
                     <th scope="row" id="treeTitle">Деревообрабатывающее оборудование</th>
-                    <td class="text-center" id="valueNewBusinessTree" onclick="copyValue2('valueNewBusinessTree', 'treeTitle')">100</td>
-                    <td class="text-center" id="valueNewBusinessMsbTree" onclick="copyValue2('valueNewBusinessMsbTree', 'treeTitle')">50</td>
-                    <td class="text-center" id="leasingPortfolioTree" onclick="copyValue2('leasingPortfolioTree', 'treeTitle')">350</td>
+                    <td class="text-center" id="valueNewBusinessTree"
+                        onclick="copyValue2('valueNewBusinessTree', 'treeTitle')">{{
+                        expert_ra_6.leasing_subject.new_business.tree }}
+                    </td>
+                    <td class="text-center" id="valueNewBusinessMsbTree"
+                        onclick="copyValue2('valueNewBusinessMsbTree', 'treeTitle')">{{
+                        expert_ra_6.leasing_subject.new_business_msb.tree }}
+                    </td>
+                    <td class="text-center" id="leasingPortfolioTree"
+                        onclick="copyValue2('leasingPortfolioTree', 'treeTitle')">
+                    </td>
                 </tr>
                 <tr>
                     <th scope="row" id="otherTitle">Прочее имущество всего (укажите ниже какое именно имущество)</th>
-                    <td class="text-center" id="valueNewBusinessOther" onclick="copyValue2('valueNewBusinessOther', 'otherTitle')">100</td>
-                    <td class="text-center" id="valueNewBusinessMsbOther" onclick="copyValue2('valueNewBusinessMsbOther', 'otherTitle')">50</td>
-                    <td class="text-center" id="leasingPortfolioOther" onclick="copyValue2('leasingPortfolioOther', 'otherTitle')">350</td>
+                    <td class="text-center" id="valueNewBusinessOther"
+                        onclick="copyValue2('valueNewBusinessOther', 'otherTitle')">{{
+                        expert_ra_6.leasing_subject.new_business.other }}
+                    </td>
+                    <td class="text-center" id="valueNewBusinessMsbOther"
+                        onclick="copyValue2('valueNewBusinessMsbOther', 'otherTitle')">{{
+                        expert_ra_6.leasing_subject.new_business_msb.other }}
+                    </td>
+                    <td class="text-center" id="leasingPortfolioOther"
+                        onclick="copyValue2('leasingPortfolioOther', 'otherTitle')">
+                    </td>
                 </tr>
                 </tbody>
             </table>
@@ -328,7 +496,9 @@
                            id="copySmallBusiness"></i></td>
                 </tr>
                 <tr onclick="copyValue('middleBusiness', 'copyMiddleBusiness', 'middleBusinessTitle')">
-                    <th scope="row" id="middleBusinessTitle">Средний бизнес (CCЧ 100-250 чел., выручка 0,8-2 млрд руб.)</th>
+                    <th scope="row" id="middleBusinessTitle">Средний бизнес (CCЧ 100-250 чел., выручка 0,8-2 млрд
+                        руб.)
+                    </th>
                     <td id="middleBusiness">{{ expert_ra_6.client_segment.middle_business }}</td>
                     <td><i class="fa-regular fa-copy"
                            id="copyMiddleBusiness"></i></td>
@@ -340,7 +510,9 @@
                            id="copyBigBusiness"></i></td>
                 </tr>
                 <tr onclick="copyValue('government', 'copyGovernment', 'governmentTitle')">
-                    <th scope="row" id="governmentTitle">Госучреждения (ФГУП, МУП, органы федеральной и местной власти и др.)</th>
+                    <th scope="row" id="governmentTitle">Госучреждения (ФГУП, МУП, органы федеральной и местной власти и
+                        др.)
+                    </th>
                     <td id="government">{{ expert_ra_6.client_segment.government }}</td>
                     <td><i class="fa-regular fa-copy"
                            id="copyGovernment"></i></td>
