@@ -40,32 +40,39 @@
                 <tr>
                     <th scope="col">Показатели ООО "ЛКМБ-РТ"</th>
                     <th scope="col" id="currentMonth"></th>
+                    <th scope="col"></th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr>
-                    <th scope="row">Сумма нового бизнеса по договорам лизинга (ДЛ)</th>
-                    <td>{{ data.month.sum_dl }}</td>
+                <tr onclick="copyValue('sumNewBusiness', 'copySumNewBusiness', 'sumNewBusinessTitle')">
+                    <th scope="row" id="sumNewBusinessTitle">Сумма нового бизнеса по договорам лизинга (ДЛ)</th>
+                    <td id="sumNewBusiness">{{ data.month.sum_dl }}</td>
+                    <td><i class="fa-regular fa-copy" id="copySumNewBusiness"></i></td>
                 </tr>
-                <tr>
-                    <th scope="row">Сумма нового бизнеса по договорам поставки (ДКП)</th>
-                    <td>{{ data.month.sum_dkp }}</td>
+                <tr onclick="copyValue('sumDkp', 'copySumDkp', 'sumDkpTitle')">
+                    <th scope="row" id="sumDkpTitle">Сумма нового бизнеса по договорам поставки (ДКП)</th>
+                    <td id="sumDkp">{{ data.month.sum_dkp }}</td>
+                    <td><i class="fa-regular fa-copy" id="copySumDkp"></i></td>
                 </tr>
-                <tr>
-                    <th scope="row">Количество новых договоров</th>
-                    <td>{{ data.month.count_new_contracts }}</td>
+                <tr onclick="copyValue('countNewContracts', 'copyCountNewContracts', 'countNewContractsTitle')">
+                    <th scope="row" id="countNewContractsTitle">Количество новых договоров</th>
+                    <td id="countNewContracts">{{ data.month.count_new_contracts }}</td>
+                    <td><i class="fa-regular fa-copy" id="copyCountNewContracts"></i></td>
                 </tr>
-                <tr>
-                    <th scope="row">Авансы лизингополучателей</th>
-                    <td>{{ data.month.advances }}</td>
+                <tr onclick="copyValue('advances', 'copyAdvances', 'advancesTitle')">
+                    <th scope="row" id="advancesTitle">Авансы лизингополучателей</th>
+                    <td id="advances">{{ data.month.advances }}</td>
+                    <td><i class="fa-regular fa-copy" id="copyAdvances"></i></td>
                 </tr>
-                <tr>
-                    <th scope="row">Кредиты банков</th>
-                    <td>{{ data.month.credit }}</td>
+                <tr onclick="copyValue('credit', 'copyCredit', 'creditTitle')">
+                    <th scope="row" id="creditTitle">Кредиты банков</th>
+                    <td id="credit">{{ data.month.credit }}</td>
+                    <td><i class="fa-regular fa-copy" id="copyCredit"></i></td>
                 </tr>
-                <tr>
-                    <th scope="row">Соофинансирование ООО "ЛКМБ-РТ"</th>
-                    <td>{{ data.month.co_finance }}</td>
+                <tr onclick="copyValue('coFinance', 'copyCoFinance', 'coFinanceTitle')">
+                    <th scope="row" id="coFinanceTitle">Соофинансирование ООО "ЛКМБ-РТ"</th>
+                    <td id="coFinance">{{ data.month.co_finance }}</td>
+                    <td><i class="fa-regular fa-copy" id="copyCoFinance"></i></td>
                 </tr>
                 </tbody>
             </table>
@@ -128,32 +135,39 @@
                 <tr>
                     <th scope="col">Показатели ООО "ЛКМБ-РТ"</th>
                     <th scope="col" id="currentQuarter"></th>
+                    <th scope="col"></th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr>
-                    <th scope="row">Сумма нового бизнеса по договорам лизинга (ДЛ)</th>
-                    <td>{{ data.quarter.sum_dl }}</td>
+                <tr onclick="copyValue('quarterNewBusiness', 'copyQuarterNewBusiness', 'quarterNewBusinessTitle')">
+                    <th scope="row" id="quarterNewBusinessTitle">Сумма нового бизнеса по договорам лизинга (ДЛ)</th>
+                    <td id="quarterNewBusiness">{{ data.quarter.sum_dl }}</td>
+                    <td><i class="fa-regular fa-copy" id="copyQuarterNewBusiness"></i></td>
                 </tr>
-                <tr>
-                    <th scope="row">Сумма нового бизнеса по договорам поставки (ДКП)</th>
-                    <td>{{ data.quarter.sum_dkp }}</td>
+                <tr onclick="copyValue('quarterSumDkp', 'copyQuarterSumDkp', 'quarterSumDkpTitle')">
+                    <th scope="row" id="quarterSumDkpTitle">Сумма нового бизнеса по договорам поставки (ДКП)</th>
+                    <td id="quarterSumDkp">{{ data.quarter.sum_dkp }}</td>
+                    <td><i class="fa-regular fa-copy" id="copyQuarterSumDkp"></i></td>
                 </tr>
-                <tr>
-                    <th scope="row">Количество новых договоров</th>
-                    <td>{{ data.quarter.count_new_contracts }}</td>
+                <tr onclick="copyValue('quarterCountNewContracts', 'copyQuarterCountNewContracts', 'quarterCountNewContractsTitle')">
+                    <th scope="row" id="quarterCountNewContractsTitle">Количество новых договоров</th>
+                    <td id="quarterCountNewContracts">{{ data.quarter.count_new_contracts }}</td>
+                    <td><i class="fa-regular fa-copy" id="copyQuarterCountNewContracts"></i></td>
                 </tr>
-                <tr>
-                    <th scope="row">Авансы лизингополучателей</th>
-                    <td>{{ data.quarter.advances }}</td>
+                <tr onclick="copyValue('quarterAdvances', 'copyQuarterAdvances', 'quarterAdvancesTitle')">
+                    <th scope="row" id="quarterAdvancesTitle">Авансы лизингополучателей</th>
+                    <td id="quarterAdvances">{{ data.quarter.advances }}</td>
+                    <td><i class="fa-regular fa-copy" id="copyQuarterAdvances"></i></td>
                 </tr>
-                <tr>
-                    <th scope="row">Кредиты банков</th>
-                    <td>{{ data.quarter.credit }}</td>
+                <tr onclick="copyValue('quarterCredit', 'copyQuarterCredit', 'quarterCreditTitle')">
+                    <th scope="row" id="quarterCreditTitle">Кредиты банков</th>
+                    <td id="quarterCredit">{{ data.quarter.credit }}</td>
+                    <td><i class="fa-regular fa-copy" id="copyQuarterCredit"></i></td>
                 </tr>
-                <tr>
-                    <th scope="row">Соофинансирование ООО "ЛКМБ-РТ"</th>
-                    <td>{{ data.quarter.co_finance }}</td>
+                <tr onclick="copyValue('quarterCoFinance', 'copyQuarterCoFinance', 'quarterCoFinanceTitle')">
+                    <th scope="row" id="quarterCoFinanceTitle">Соофинансирование ООО "ЛКМБ-РТ"</th>
+                    <td id="quarterCoFinance">{{ data.quarter.co_finance }}</td>
+                    <td><i class="fa-regular fa-copy" id="copyQuarterCoFinance"></i></td>
                 </tr>
                 </tbody>
             </table>
@@ -216,32 +230,39 @@
                 <tr>
                     <th scope="col">Показатели ООО "ЛКМБ-РТ"</th>
                     <th scope="col" id="halfYear"></th>
+                    <th scope="col"></th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr>
-                    <th scope="row">Сумма нового бизнеса по договорам лизинга (ДЛ)</th>
-                    <td>{{ data.half_year.sum_dl }}</td>
+                <tr onclick="copyValue('halfNewBusiness', 'copyHalfNewBusiness', 'halfNewBusinessTitle')">
+                    <th scope="row" id="halfNewBusinessTitle">Сумма нового бизнеса по договорам лизинга (ДЛ)</th>
+                    <td id="halfNewBusiness">{{ data.half_year.sum_dl }}</td>
+                    <td><i class="fa-regular fa-copy" id="copyHalfNewBusiness"></i></td>
                 </tr>
-                <tr>
-                    <th scope="row">Сумма нового бизнеса по договорам поставки (ДКП)</th>
-                    <td>{{ data.half_year.sum_dkp }}</td>
+                <tr onclick="copyValue('halfSumDkp', 'copyHalfSumDkp', 'halfSumDkpTitle')">
+                    <th scope="row" id="halfSumDkpTitle">Сумма нового бизнеса по договорам поставки (ДКП)</th>
+                    <td id="halfSumDkp">{{ data.half_year.sum_dkp }}</td>
+                    <td><i class="fa-regular fa-copy" id="copyHalfSumDkp"></i></td>
                 </tr>
-                <tr>
-                    <th scope="row">Количество новых договоров</th>
-                    <td>{{ data.half_year.count_new_contracts }}</td>
+                <tr onclick="copyValue('halfCountNewContracts', 'copyHalfCountNewContracts', 'halfCountNewContractsTitle')">
+                    <th scope="row" id="halfCountNewContractsTitle">Количество новых договоров</th>
+                    <td id="halfCountNewContracts">{{ data.half_year.count_new_contracts }}</td>
+                    <td><i class="fa-regular fa-copy" id="copyHalfCountNewContracts"></i></td>
                 </tr>
-                <tr>
-                    <th scope="row">Авансы лизингополучателей</th>
-                    <td>{{ data.half_year.advances }}</td>
+                <tr onclick="copyValue('halfAdvances', 'copyHalfAdvances', 'halfAdvancesTitle')">
+                    <th scope="row" id="halfAdvancesTitle">Авансы лизингополучателей</th>
+                    <td id="halfAdvances">{{ data.half_year.advances }}</td>
+                    <td><i class="fa-regular fa-copy" id="copyHalfAdvances"></i></td>
+
+                <tr onclick="copyValue('halfCredit', 'copyHalfCredit', 'halfCreditTitle')">
+                    <th scope="row" id="halfCreditTitle">Кредиты банков</th>
+                    <td id="halfCredit">{{ data.half_year.credit }}</td>
+                    <td><i class="fa-regular fa-copy" id="copyHalfCredit"></i></td>
                 </tr>
-                <tr>
-                    <th scope="row">Кредиты банков</th>
-                    <td>{{ data.half_year.credit }}</td>
-                </tr>
-                <tr>
-                    <th scope="row">Соофинансирование ООО "ЛКМБ-РТ"</th>
-                    <td>{{ data.half_year.co_finance }}</td>
+                <tr onclick="copyValue('halfCoFinance', 'copyHalfCoFinance', 'halfCoFinanceTitle')">
+                    <th scope="row" id="halfCoFinanceTitle">Соофинансирование ООО "ЛКМБ-РТ"</th>
+                    <td id="halfCoFinance">{{ data.half_year.co_finance }}</td>
+                    <td><i class="fa-regular fa-copy" id="copyHalfCoFinance"></i></td>
                 </tr>
                 </tbody>
             </table>
@@ -304,32 +325,39 @@
                 <tr>
                     <th scope="col">Показатели ООО "ЛКМБ-РТ"</th>
                     <th scope="col" id="nineMonth"></th>
+                    <th scope="col"></th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr>
                     <th scope="row">Сумма нового бизнеса по договорам лизинга (ДЛ)</th>
                     <td>{{ data.nine_month.sum_dl }}</td>
+                    <td><i class="fa-regular fa-copy" id=""></i></td>
                 </tr>
                 <tr>
                     <th scope="row">Сумма нового бизнеса по договорам поставки (ДКП)</th>
                     <td>{{ data.nine_month.sum_dkp }}</td>
+                    <td><i class="fa-regular fa-copy" id=""></i></td>
                 </tr>
                 <tr>
                     <th scope="row">Количество новых договоров</th>
                     <td>{{ data.nine_month.count_new_contracts }}</td>
+                    <td><i class="fa-regular fa-copy" id=""></i></td>
                 </tr>
                 <tr>
                     <th scope="row">Авансы лизингополучателей</th>
                     <td>{{ data.nine_month.advances }}</td>
+                    <td><i class="fa-regular fa-copy" id=""></i></td>
                 </tr>
                 <tr>
                     <th scope="row">Кредиты банков</th>
                     <td>{{ data.nine_month.credit }}</td>
+                    <td><i class="fa-regular fa-copy" id=""></i></td>
                 </tr>
                 <tr>
                     <th scope="row">Соофинансирование ООО "ЛКМБ-РТ"</th>
                     <td>{{ data.nine_month.co_finance }}</td>
+                    <td><i class="fa-regular fa-copy" id=""></i></td>
                 </tr>
                 </tbody>
             </table>
@@ -392,32 +420,39 @@
                 <tr>
                     <th scope="col">Показатели ООО "ЛКМБ-РТ"</th>
                     <th scope="col" id="currentYear"></th>
+                    <th scope="col"></th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr>
                     <th scope="row">Сумма нового бизнеса по договорам лизинга (ДЛ)</th>
                     <td>{{ data.year.sum_dl }}</td>
+                    <td><i class="fa-regular fa-copy" id=""></i></td>
                 </tr>
                 <tr>
                     <th scope="row">Сумма нового бизнеса по договорам поставки (ДКП)</th>
                     <td>{{ data.year.sum_dkp }}</td>
+                    <td><i class="fa-regular fa-copy" id=""></i></td>
                 </tr>
                 <tr>
                     <th scope="row">Количество новых договоров</th>
                     <td>{{ data.year.count_new_contracts }}</td>
+                    <td><i class="fa-regular fa-copy" id=""></i></td>
                 </tr>
                 <tr>
                     <th scope="row">Авансы лизингополучателей</th>
                     <td>{{ data.year.advances }}</td>
+                    <td><i class="fa-regular fa-copy" id=""></i></td>
                 </tr>
                 <tr>
                     <th scope="row">Кредиты банков</th>
                     <td>{{ data.year.credit }}</td>
+                    <td><i class="fa-regular fa-copy" id=""></i></td>
                 </tr>
                 <tr>
                     <th scope="row">Соофинансирование ООО "ЛКМБ-РТ"</th>
                     <td>{{ data.year.co_finance }}</td>
+                    <td><i class="fa-regular fa-copy" id=""></i></td>
                 </tr>
                 </tbody>
             </table>
@@ -474,6 +509,36 @@
         </div>
     </div>
 </div>
+<script>
+    function copyValue(elemId, copyElemId, elemTitle) {
+        var ownFundsElement = document.getElementById(elemId);
+        var copyIcon = document.getElementById(copyElemId);
+        var elemTitle = document.getElementById(elemTitle);
+        var textToCopy = ownFundsElement.textContent;
+
+        // Создание временного элемента для копирования текста
+        var tempInput = document.createElement("input");
+        tempInput.value = textToCopy;
+        document.body.appendChild(tempInput);
+
+        // Выделение текста и копирование
+        tempInput.select();
+        document.execCommand("copy");
+
+        // Удаление временного элемента
+        document.body.removeChild(tempInput);
+
+        // Подсветка иконки копирования
+        copyIcon.style.color = "grey";
+        ownFundsElement.style.color = "grey";
+        elemTitle.style.color = "grey";
+        setTimeout(function () {
+            copyIcon.style.color = "";
+            ownFundsElement.style.color = "";
+            elemTitle.style.color = "";
+        }, 200);
+    }
+</script>
 <script>
     // Получаем текущую дату
     const currentDate = new Date();
