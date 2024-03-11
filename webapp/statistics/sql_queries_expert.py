@@ -6,6 +6,7 @@ from webapp.statistics.add_filters import (
     FILTER_BUSINESS,
     FILTER_REGION_MSK,
     FILTER_REGION_SPB,
+    FILTER_REGION_PRIVOLZHSKY,
 )
 
 
@@ -514,6 +515,15 @@ class ExpertRa:
                 self.with_out_nds(
                     self.million(
                         self.get_sum_indicator(DimaBase.dcp_cost, FILTER_REGION_SPB)
+                    )
+                )
+            ),
+            "privolzhsky": format_number(
+                self.with_out_nds(
+                    self.million(
+                        self.get_sum_indicator(
+                            DimaBase.dcp_cost, FILTER_REGION_PRIVOLZHSKY
+                        )
                     )
                 )
             ),

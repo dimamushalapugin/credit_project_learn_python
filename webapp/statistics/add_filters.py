@@ -9,3 +9,6 @@ FILTER_BUSINESS = [
 
 FILTER_REGION_MSK = [DimaBase.region == "Москва"]
 FILTER_REGION_SPB = [DimaBase.region == "Санкт-Петербург"]
+FILTER_REGION_PRIVOLZHSKY = [
+    DimaBase.region != "Санкт-Петербург" or DimaBase.region != "Москва"
+]

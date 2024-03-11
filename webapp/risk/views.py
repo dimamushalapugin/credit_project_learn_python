@@ -146,17 +146,18 @@ def create_xlsx_file_individual(data):
         raise ValueError("Ошибка")
 
 
-risk_button = False
+risk_button = {"user": "", "status": False}
 
 
 @blueprint.route("/create_xlsx", methods=["POST"])
 def create_risk_conclusion():
     global risk_button
-    logging.info(f"{current_user} {risk_button}")
-    if not risk_button:
-        logging.info(f"{current_user} {risk_button} в if")
-        risk_button = True
+    logging.info(f"{current_user} - {risk_button}")
+    if not risk_button["status"]:
+        risk_button["status"] = True
+        risk_button["user"] = str(current_user)
         logging.info(f"{current_user} - Нажал на кнопку 'Создать риск-заключение'")
+        logging.info(f"{risk_button}")
         start_time = time.perf_counter()
         try:
             data = request.form
@@ -166,7 +167,6 @@ def create_risk_conclusion():
             logging.info(
                 f"({current_user}) - Риск-заключение создалось за: {execution_time:.1f} сек."
             )
-            risk_button = False
             if file_name:
                 flash("Файл успешно создан", "success")
                 mongo = MongoDB(current_user)
@@ -177,12 +177,14 @@ def create_risk_conclusion():
             else:
                 return redirect(url_for(risk_page_url, file_name=file_name))
         except Exception as e:
-            risk_button = False
             flash(str(e), "error")
             return redirect(url_for(risk_page_url))
+        finally:
+            risk_button["status"] = False
+            risk_button["user"] = ""
     else:
         flash(
-            "Уже идет процесс создания риск-заключения. Пожалуйста, подождите...",
+            f"{risk_button['user']} уже запустил процесс создания риск-заключения.\nПожалуйста, подождите...",
             "info",
         )
         return redirect(url_for(risk_page_url))
@@ -192,9 +194,11 @@ def create_risk_conclusion():
 def create_risk_conclusion_individual():
     global risk_button
     logging.info(f"{current_user} {risk_button}")
-    if not risk_button:
-        risk_button = True
+    if not risk_button["status"]:
+        risk_button["status"] = True
+        risk_button["user"] = current_user
         logging.info(f"{current_user}  - Нажал на кнопку 'Проверка физ. лица'")
+        logging.info(f"{risk_button}")
         start_time = time.perf_counter()
         try:
             file_name_individual = create_xlsx_file_individual(request.form)
@@ -203,7 +207,6 @@ def create_risk_conclusion_individual():
             logging.info(
                 f"({current_user}) Риск-заключение создалось за: {execution_time:.1f} сек."
             )
-            risk_button = False
             if file_name_individual:
                 flash("Файл успешно создан", "success")
                 return redirect(
@@ -214,12 +217,14 @@ def create_risk_conclusion_individual():
                     url_for(risk_page_url, file_name_individual=file_name_individual)
                 )
         except Exception as e:
-            risk_button = False
             flash(str(e), "error")
             return redirect(url_for(risk_page_url))
+        finally:
+            risk_button["status"] = False
+            risk_button["user"] = ""
     else:
         flash(
-            "Уже идет процесс создания риск-заключения. Пожалуйста, подождите...",
+            f"{risk_button['user']} уже запустил процесс создания риск-заключения.\nПожалуйста, подождите...",
             "info",
         )
         return redirect(url_for(risk_page_url))
