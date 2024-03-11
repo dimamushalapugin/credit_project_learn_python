@@ -517,15 +517,15 @@ def create_xlsx_file(
                 sheet[f"A{sheet.max_row + 1}"].value = key
                 sheet[f"B{sheet.max_row}"].value = value
 
-            sheet[f"A{sheet.max_row + 3}"].value = (
-                "ПРОВЕРКА НА ДОЛЖНУЮ ОСТМОТРИТЕЛЬНОСТЬ"
-            )
-            for _ in range(20):
-                sheet[f"A{sheet.max_row + 1}"].value = ""
             sheet[f"A{sheet.max_row + 2}"].value = "ИСПОЛНИТЕЛЬНЫЕ ПРОИЗВОДСТВА"
             for _ in range(20):
                 sheet[f"A{sheet.max_row + 1}"].value = ""
             sheet[f"A{sheet.max_row + 2}"].value = "АРБИТРАЖНЫЕ ДЕЛА"
+            for _ in range(20):
+                sheet[f"A{sheet.max_row + 1}"].value = ""
+            sheet[f"A{sheet.max_row + 3}"].value = (
+                "ПРОВЕРКА НА ДОЛЖНУЮ ОСТМОТРИТЕЛЬНОСТЬ"
+            )
 
         else:
             sheet[f"A{sheet.max_row + 1}"].value = (
