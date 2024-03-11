@@ -1,4 +1,6 @@
 from datetime import datetime
+
+from dateutil.relativedelta import relativedelta
 from flask import (
     Blueprint,
     flash,
@@ -25,6 +27,30 @@ def expert_ra_page_half():
         "expert_ra_half.html",
         current_year=current_year,
         expert_ra_6=ExpertRaData(6).get_json(),
+    )
+
+
+@blueprint.route("/expert-ra-nine")
+@admin_required
+def expert_ra_page_nine():
+    current_year = datetime.now().year
+    return render_template(
+        "expert_ra_nine.html",
+        current_year=current_year,
+        expert_ra_6=ExpertRaData(9).get_json(),
+    )
+
+
+@blueprint.route("/expert-ra-year")
+@admin_required
+def expert_ra_page_year():
+    current_year = datetime.now().year
+    prev_year = current_year - 1
+    return render_template(
+        "expert_ra_year.html",
+        current_year=current_year,
+        expert_ra_6=ExpertRaData(12).get_json(),
+        prev_year=prev_year,
     )
 
 

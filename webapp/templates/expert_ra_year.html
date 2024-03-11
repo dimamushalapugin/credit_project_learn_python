@@ -33,14 +33,14 @@
 <br>
 <div class="container-xxl text-left">
     <h2 class="text-center">Данные для заполнения отчета в Эксперт РА</h2>
-    <h3 class="text-center">за 6 мес. {{ current_year }} года</h3><br>
+    <h3 class="text-center">за {{ prev_year }} год</h3><br>
     <div class="row">
         <div class="col-md-6">
             <table class="table table-dark table-striped">
                 <thead>
                 <tr>
                     <th scope="col">2. Показатели деятельности</th>
-                    <th scope="col">6 мес. {{ current_year }}</th>
+                    <th scope="col">{{ prev_year }}</th>
                     <th scope="col"></th>
                 </tr>
                 </thead>
@@ -67,19 +67,19 @@
                 </tr>
                 <tr onclick="copyValue('currentPortfolio', 'copyCurrentPortfolio', 'currentPortfolioTitle')">
                     <th scope="row" id="currentPortfolioTitle">Текущий портфель по фин. лизингу, млн руб.</th>
-                    <td id="currentPortfolio"></td>
+                    <td id="currentPortfolio">2 623,41</td>
                     <td><i class="fa-regular fa-copy" id="copyCurrentPortfolio"></i></td>
                 </tr>
                 <tr onclick="copyValue('portfolioOperate', 'copyPortfolioOperate', 'portfolioOperateTitle')">
                     <th scope="row" id="portfolioOperateTitle">Портфель по оперативному лизингу/аренде, млн руб.</th>
-                    <td id="portfolioOperate"></td>
+                    <td id="portfolioOperate">192,37</td>
                     <td><i class="fa-regular fa-copy" id="copyPortfolioOperate"></i></td>
                 </tr>
                 <tr onclick="copyValue('valueLeasingPayments', 'copyValueLeasingPayments', 'valueLeasingPaymentsTitle')">
                     <th scope="row" id="valueLeasingPaymentsTitle">Объем полученных лизинг. (в т.ч. аренд.) платежей,
                         млн руб.
                     </th>
-                    <td id="valueLeasingPayments"></td>
+                    <td id="valueLeasingPayments"> 1 042,76</td>
                     <td><i class="fa-regular fa-copy" id="copyValueLeasingPayments"></i></td>
                 </tr>
                 <tr onclick="copyValue('financingAssets', 'copyFinancingAssets', 'financingAssetsTitle')">
@@ -110,7 +110,7 @@
                 <thead>
                 <tr>
                     <th scope="col">2.2. Структура НБ по регионам (млн руб.)</th>
-                    <th scope="col">6 мес. {{ current_year }}</th>
+                    <th scope="col">{{ prev_year }}</th>
                     <th scope="col"></th>
                 </tr>
                 </thead>
@@ -183,9 +183,9 @@
                 <thead>
                 <tr>
                     <th scope="col">2.1. Структура по сегментам (млн руб.)</th>
-                    <th scope="col">Объем НБ за 6 мес. {{ current_year }}</th>
-                    <th scope="col">Объем НБ за 6 мес. {{ current_year }} (субъекты МСБ)</th>
-                    <th scope="col">Лизинговый портфель на 01.07.{{ current_year }}</th>
+                    <th scope="col">Объем НБ за {{ prev_year }}</th>
+                    <th scope="col">Объем НБ за {{ prev_year }} (субъекты МСБ)</th>
+                    <th scope="col">Лизинговый портфель на 01.01.{{ current_year }}</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -486,7 +486,7 @@
                 <thead>
                 <tr>
                     <th scope="col">2.3. Структура НБ по клиентам (млн руб.)</th>
-                    <th scope="col">6 мес. {{ current_year }}</th>
+                    <th scope="col">{{ prev_year }}</th>
                     <th scope="col"></th>
                 </tr>
                 </thead>
@@ -533,7 +533,7 @@
                 <thead>
                 <tr>
                     <th scope="col">3. Объем профинансированных средств</th>
-                    <th scope="col">6 мес. {{ current_year }}</th>
+                    <th scope="col">{{ prev_year }}</th>
                     <th scope="col"></th>
                 </tr>
                 </thead>

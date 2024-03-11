@@ -530,7 +530,10 @@ class ExpertRa:
         }
 
     def get_sum_indicator(self, column_name, add_filter: list = []):
-        current_year = func.EXTRACT("year", func.CURRENT_DATE())
+        if self.period == 12:
+            current_year = func.EXTRACT("year", func.CURRENT_DATE()) - 1
+        else:
+            current_year = func.EXTRACT("year", func.CURRENT_DATE())
         total_amount = (
             DimaBase.query.with_entities(func.sum(column_name))
             .filter(
@@ -546,7 +549,10 @@ class ExpertRa:
     def get_sum_segment(
         self, segment: str, column_name: DimaBase, add_filter: list = []
     ):
-        current_year = func.EXTRACT("year", func.CURRENT_DATE())
+        if self.period == 12:
+            current_year = func.EXTRACT("year", func.CURRENT_DATE()) - 1
+        else:
+            current_year = func.EXTRACT("year", func.CURRENT_DATE())
         total_amount = (
             DimaBase.query.with_entities(func.sum(DimaBase.dcp_cost))
             .filter(
@@ -561,7 +567,10 @@ class ExpertRa:
         return total_amount
 
     def get_count_current_period(self):
-        current_year = func.EXTRACT("year", func.CURRENT_DATE())
+        if self.period == 12:
+            current_year = func.EXTRACT("year", func.CURRENT_DATE()) - 1
+        else:
+            current_year = func.EXTRACT("year", func.CURRENT_DATE())
         total_count = (
             DimaBase.query.with_entities(func.count(DimaBase.id))
             .filter(
@@ -595,15 +604,19 @@ class ExpertRaData(ExpertRa):
                     + self.get_sum_indicator(DimaBase.advance)
                 )
             ),
-            "advance": format_number(
-                self.million(self.get_sum_indicator(DimaBase.advance))
-            ),
-            "co_finance": format_number(
-                self.million(self.get_sum_indicator(DimaBase.co_finance))
-            ),
-            "credit_sum": format_number(
-                self.million(self.get_sum_indicator(DimaBase.credit_sum))
-            ),
+            "financed_structure": {
+                "advance": format_number(
+                    self.million(self.get_sum_indicator(DimaBase.advance))
+                ),
+                "co_finance": format_number(
+                    self.million(self.get_sum_indicator(DimaBase.co_finance))
+                ),
+                "credit_sum": format_number(
+                    self.million(self.get_sum_indicator(DimaBase.credit_sum))
+                ),
+                "obligations": format_number(None),
+                "other": format_number(None),
+            },
             "client_segment": self.segments_dict(),
             "leasing_subject": self.leasing_subject_dict(),
             "region": self.region_dict(),
