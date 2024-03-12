@@ -83,6 +83,17 @@ class PaymentSchedule(db.Model):
         return f"PaymentSchedule {self.id}, {self.payment_date}, {self.amount}"
 
 
+class PercentPaymentDate(db.Model):
+    __tablename__ = "percents_dates"
+
+    id = db.Column(db.Integer, primary_key=True)
+    credit_contract_id = db.Column(db.Integer, db.ForeignKey("credit_contracts.id"))
+    payment_date = db.Column(db.Date)
+
+    def __repr__(self):
+        return f"PercentPaymentDate: {self.id}, {self.payment_date}"
+
+
 class Company(db.Model):
     __tablename__ = "companies"
 
