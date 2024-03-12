@@ -524,7 +524,7 @@ def create_xlsx_file(
             for _ in range(20):
                 sheet[f"A{sheet.max_row + 1}"].value = ""
             sheet[f"A{sheet.max_row + 3}"].value = (
-                "ПРОВЕРКА НА ДОЛЖНУЮ ОСТМОТРИТЕЛЬНОСТЬ"
+                "ПРОВЕРКА НА ДОЛЖНУЮ ОСМОТРИТЕЛЬНОСТЬ"
             )
 
         else:
