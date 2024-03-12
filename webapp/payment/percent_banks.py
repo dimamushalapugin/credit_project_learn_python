@@ -702,18 +702,15 @@ class MetallinvestBank(Bank):
                 self.output_data_new.at[index, "Проценты за месяц"] = 0
             else:
                 continue
-        self.output_data_new["Сумма %% нарастающим итогом"] = round(
-            self.output_data_new["Сумма %% нарастающим итогом"], 2
-        )
-        self.output_data_new["Проценты за месяц"] = round(
-            self.output_data_new["Проценты за месяц"], 2
-        )
-        self.output_data_new["Остаток основного долга"] = round(
-            self.output_data_new["Остаток основного долга"], 2
-        )
-        self.output_data_new["Общая сумма процентов"] = round(
-            self.output_data_new["Общая сумма процентов"], 2
-        )
+        columns_to_round = [
+            "Сумма %% нарастающим итогом",
+            "Проценты за месяц",
+            "Остаток основного долга",
+            "Общая сумма процентов",
+        ]
+        self.output_data_new[columns_to_round] = self.output_data_new[
+            columns_to_round
+        ].apply(lambda x: round(x, 2))
         self.output_data_new.to_excel("updated_output_data_МИБ1.xlsx", index=False)
         return self.output_data_new
 
