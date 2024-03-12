@@ -679,15 +679,29 @@ class MetallinvestBank(Bank):
             / float(row["Кол-во дней в году"]),
             axis=1,
         )
-
-        self.output_data_new.to_excel("updated_output_data_МИБ1.xlsx", index=False)
         self.output_data_new["Дата уплаты процентов"].fillna(0, inplace=True)
+        print(self.output_data_new["Дата уплаты процентов"])
+        # Создаем столбец 'Сумма %% итого' и заполняем его значениями
+        cumulative_sum = 0
+        for index, row in self.output_data_new.iterrows():
+            if row["Дата уплаты процентов"] != 0:
+                self.output_data_new.at[index, "Сумма %% нарастающим итогом"] = (
+                    cumulative_sum + row["Общая сумма процентов"]
+                )
+                cumulative_sum = 0
+            else:
+                cumulative_sum += row["Общая сумма процентов"]
+                self.output_data_new.at[index, "Сумма %% нарастающим итогом"] = (
+                    cumulative_sum
+                )
+
         self.output_data_new["Остаток основного долга"] = round(
             self.output_data_new["Остаток основного долга"], 2
         )
         self.output_data_new["Общая сумма процентов"] = round(
             self.output_data_new["Общая сумма процентов"], 2
         )
+        self.output_data_new.to_excel("updated_output_data_МИБ1.xlsx", index=False)
         return self.output_data_new
 
     def start_function(self, data):
