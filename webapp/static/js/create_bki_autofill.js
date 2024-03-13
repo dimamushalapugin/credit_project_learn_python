@@ -101,6 +101,12 @@ var passportBy = document.getElementById('inputFiz5');
         $(document).ready(function() {
             $('#autofillButtonFiz').click(function() {
                 var fiz1 = $('#inputFiz1').val();
+                if (!fiz1.trim()) {
+                    console.log("Пустое поле")
+                    return;  // Если поле пустое, ничего не делаем
+                }
+                var button = $(this);
+                button.prop('disabled', true);
                 $.ajax({
                     url: './autofillfiz',
                     type: 'POST',
@@ -119,6 +125,9 @@ var passportBy = document.getElementById('inputFiz5');
                     if (fmsUnit && passportBy && passportBy.value.trim() !== '') {
                         fmsUnit.style.display = 'block';
                     }
+                },
+                complete: function() {
+                    button.prop('disabled', false);  // Удаляем класс loading после выполнения запроса
                 }
                 });
             });
@@ -138,6 +147,7 @@ var passportBy = document.getElementById('inputFiz5');
             var bkifizLkmb9 = $('#inputFiz9').val();
             var bkifizLkmb10 = $('#inputFiz10').val();
             var bkifizLkmb11 = $('#inputFiz11').val();
+
             $.ajax({
                 url: './submit_form_fiz',
                 type: 'POST',
@@ -159,7 +169,6 @@ var passportBy = document.getElementById('inputFiz5');
                     // Создаем скрытую ссылку для скачивания
                     var link = document.createElement('a');
                     var hrefValue, downloadValue;
-                    log.console(bkifizLkmb2.length)
                     if (bkifizLkmb2.length > 110) {
                         hrefValue = '/static/temporary/БКИ _.docx';
                         downloadValue = 'БКИ _.docx';

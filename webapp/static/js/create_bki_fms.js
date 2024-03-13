@@ -1,6 +1,6 @@
 var fmsUnit = document.getElementById('fms_unit');
 $("#inputFiz7").suggestions({
-    token: "{{ suggestions_token }}",
+    token: suggestionsToken,
     type: "FMS_UNIT",
     /* Вызывается, когда пользователь выбирает одну из подсказок */
     onSelect: function(suggestion) {
