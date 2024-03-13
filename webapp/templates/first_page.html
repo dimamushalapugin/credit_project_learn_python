@@ -170,11 +170,15 @@
                                 <th>Кол-во дней в году</th>
                                 <th>Дата уплаты процентов</th>
                                 <th>Общая сумма процентов</th>
+                                <th>Сумма %% нарастающим итогом</th>
+                                <th>Проценты за месяц</th>
                                 <!-- Добавьте заголовки для остальных столбцов -->
                             </tr>
                             </thead>
                             <tbody id="table_json_body">
                             <tr>
+                                <td contenteditable="true"></td>
+                                <td contenteditable="true"></td>
                                 <td contenteditable="true"></td>
                                 <td contenteditable="true"></td>
                                 <td contenteditable="true"></td>
@@ -304,6 +308,8 @@ function processFile() {
                                     <td>${cell['Кол-во дней в году']}</td>
                                     <td>${cell['Дата уплаты процентов']}</td>
                                     <td>${cell['Общая сумма процентов']}</td>
+                                    <td>${cell['Сумма %% нарастающим итогом']}</td>
+                                    <td>${cell['Проценты за месяц']}</td>
                                     <!-- добавьте остальные столбцы здесь -->
                                   </tr>`; // Append each row to the table data
                 });
