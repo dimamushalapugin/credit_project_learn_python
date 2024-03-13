@@ -73,6 +73,19 @@
                         </li>
                     </ul>
                 </li>
+                {% elif current_user.is_tester%}
+                <li class="nav-item dropdown" aria-labelledby="navbarDropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                       aria-expanded="false">
+                        Программы
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <li><a class="dropdown-item" href="{{ url_for('risk.risk_page') }}">Риск заключение</a>
+                        </li>
+                        <li><a class="dropdown-item" href="{{ url_for('manager.bki_page') }}">Создание БКИ</a>
+                        </li>
+                    </ul>
+                </li>
                 {% else %}
                 <li class="nav-item dropdown" aria-labelledby="navbarDropdown">
                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"

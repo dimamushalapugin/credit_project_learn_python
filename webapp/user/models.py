@@ -4,7 +4,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 
 class User(db.Model, UserMixin):
-    __tablename__ = 'users'
+    __tablename__ = "users"
 
     id = db.Column(db.Integer, primary_key=True)
     login = db.Column(db.String(length=50), unique=True)
@@ -25,22 +25,26 @@ class User(db.Model, UserMixin):
 
     @property
     def is_admin(self):
-        return self.role == 'admin'
+        return self.role == "admin"
 
     @property
     def is_manager(self):
-        return self.role == 'manager'
+        return self.role == "manager"
 
     @property
     def is_risk(self):
-        return self.role == 'risk'
+        return self.role == "risk"
+
+    @property
+    def is_tester(self):
+        return self.role == "tester"
 
     @property
     def is_blocked(self):
         return self.blocked is True
 
     def __repr__(self):
-        return f'Пользователь: {self.login}'
+        return f"Пользователь: {self.login}"
 
     def delete(self):
         db.session.delete(self)
