@@ -1,3 +1,5 @@
+from asgiref.wsgi import WsgiToAsgi
+
 from flask import Flask, redirect, url_for, render_template
 from flask_login import LoginManager, login_required, current_user
 
@@ -62,4 +64,4 @@ def create_app():
             users=users,
         )
 
-    return app
+    return WsgiToAsgi(app)
