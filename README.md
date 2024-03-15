@@ -32,9 +32,16 @@ Welcome to the Financial Analytics Platform! This project is designed for financ
 
 ### Installation
 
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/dimamushalapugin/credit_project_learn_python.git
+Clone the repository:
+```bash
+git clone https://github.com/dimamushalapugin/credit_project_learn_python.git
+```
+
+Install dependencies
+```bash
+cd financial-analytics-platform
+pip install -r requirements.txt
+```
 
 ## Configuration
 
@@ -59,3 +66,17 @@ To set up the databases for the platform, follow these steps:
 
 Once you have completed these steps, you can proceed to run the application.
 
+## Running the Application
+
+Start the Gunicorn server:
+
+```bash
+gunicorn -w 4 -b 0.0.0.0:5000 wsgi:app
+```
+## Support
+
+For any questions, issues, or feedback regarding the Financial Analytics Platform, please contact our team at [blizzardkk@gmail.com](mailto:blizzardkk@gmail.com).
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
