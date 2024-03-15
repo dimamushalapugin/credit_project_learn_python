@@ -39,7 +39,7 @@ git clone https://github.com/dimamushalapugin/credit_project_learn_python.git
 
 Install dependencies
 ```bash
-cd financial-analytics-platform
+cd credit_project_learn_python
 pip install -r requirements.txt
 ```
 
